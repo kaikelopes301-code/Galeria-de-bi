@@ -1,0 +1,37 @@
+table TabelaCategorias
+	lineageTag: 83286b59-93dc-4136-809a-5093fdcabe3f
+
+	column Fornecedor
+		lineageTag: 18300de9-e3c4-423e-bbe9-06294046af47
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Entrega de documentos[Fornecedor]
+
+		annotation SummarizationSetBy = Automatic
+
+	column CategoriasConcatenadas
+		lineageTag: 80eef1d7-13c3-4fbd-90c8-0dcebb1ae90c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [CategoriasConcatenadas]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TabelaCategorias = calculated
+		mode: import
+		source = ```
+				
+				SUMMARIZECOLUMNS(
+				    'Entrega de documentos'[Fornecedor],
+				    "CategoriasConcatenadas",
+				    CONCATENATEX(
+				        VALUES('Entrega de documentos'[Categoria(s)]),
+				        'Entrega de documentos'[Categoria(s)],
+				        ", "
+				    )
+				)
+				
+				```
+
+	annotation PBI_Id = 42be9c9ad1de406babb91590eca605d8
+

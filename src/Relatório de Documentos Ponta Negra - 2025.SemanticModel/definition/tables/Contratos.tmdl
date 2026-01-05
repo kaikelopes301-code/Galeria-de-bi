@@ -1,0 +1,207 @@
+table Contratos
+	lineageTag: 087190bb-78e2-480f-b2b5-a7545f8dad88
+
+	measure 'Categorias Agrupadas' = ```
+			
+			IF(
+			    ISINSCOPE(Contratos[Fornecedor]),
+			    CONCATENATEX(
+			        VALUES(Contratos[Categoria]),
+			        Contratos[Categoria],
+			        ", ",
+			        Contratos[Categoria],
+			        ASC
+			    ),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 531e1d80-b9ba-4db5-bee2-9584a8fe86b2
+
+	column CNPJ
+		dataType: string
+		lineageTag: 7df61d5d-9edd-4487-bc47-ed9045090a3f
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c128ef9c-0b4e-49a0-be5a-f5527458e2b3
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 864f74db-edf7-4dde-a1a7-9f6a7351ab87
+			defaultHierarchy: LocalDateTable_4c70003e-f7b0-478f-b8b0-b04f2fb61756.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5d3cdf95-8231-46b0-aa97-5cc7aaa7fd0d
+		summarizeBy: none
+		sourceColumn: Início Vigência
+
+		variation Variation
+			isDefault
+			relationship: a020eb9c-ae35-4a1a-a48c-577d3dc6ba0e
+			defaultHierarchy: LocalDateTable_6f7c3d1a-c4b0-4a62-a5d8-f7a83be4883c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 37a05a3c-fe47-430a-99de-6e33f45fb145
+		summarizeBy: none
+		sourceColumn: Fim Vigência
+
+		variation Variation
+			isDefault
+			relationship: c88a2474-018d-4ce5-85d8-df60151de58a
+			defaultHierarchy: LocalDateTable_73cbebba-0c00-4a1b-8549-afb0fc619c4f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: 2c5af1c5-99bf-4015-8aec-52dc18378359
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: e7b59119-be1a-42c7-91ee-ed8d145015a1
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0b5d41c1-2820-495f-a36d-05320b16a151
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: d829377f-3b17-4dbb-ac78-73902c885c92
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contrato' = "Mão de obra alocada"
+		lineageTag: fe36a77d-ac0c-4cef-8245-adfe4efb0654
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: 9c2a853f-1f24-4a8c-8b1b-b3ba5f7e1c41
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: f6829d6b-54ea-4315-b785-5260d8dab8d9
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 6ee14f32-f58c-421e-bcf6-19deb03c699c
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 6dad9da9-1184-4272-b7ff-a3281592f995
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 2db1661a-f352-4485-99e8-7f40183059a4
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: ee8d3935-7469-4053-b01a-e71c1b83b3d1
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 5bcf1511-ca2b-4626-9813-5946a6ddde2c
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ-Categoria-Unidade
+		dataType: string
+		lineageTag: f6a867df-6dde-45c6-aa65-a40e99f6d957
+		summarizeBy: none
+		sourceColumn: CNPJ-Categoria-Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)c.OrderNumber[N° do pedido],#(lf)#(tab)c.Id [Id_Contrato],#(lf)    bc.CompanyName[Razão Social],#(lf)   dbo.FNCNPJMask(bc.Document) as [CNPJ],#(lf)    case#(lf)        when c.[Type] = 1 then 'Contínuo'#(lf)        when c.[Type] = 2 then 'Grandes Paradas'#(lf)        when c.[Type] = 4 then 'Eventual'#(lf)        when c.[Type] = 8 then 'Temporário'#(lf)        when c.[Type] = 16 then 'Visitante técnico'#(lf)        when c.[Type] = 32 then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        when c.[Type] = 64 then 'Prestação de serviço eventual fora da área operacional'#(lf)        when c.[Type] = 128 then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        when c.[Type] = 256 then 'Compra Direta, Regulariza e Delegada'#(lf)    end as 'Tipo da contratação',#(lf)    case#(lf)        when c.Sla = 0 then 'Padrão'#(lf)        when c.Sla = 1 then 'Emergencial'#(lf)    end as 'Sla',#(lf)    case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)    end as 'Status',#(lf)    convert(date, c.CreatedAt)[Cadastro no sistema],#(lf)    CONCAT(convert(date, c.ValidityInitial), ' a ',convert(date, c.ValidityFinal))[Vigência], #(lf)    b.TradeName[Unidade],#(lf)#(tab)r.Name AS 'Regional',#(lf)#(tab)ca.[Name][Categoria],#(lf)    p.TradeName[Fornecedor]#(lf)from [Contract] c with(nolock)#(lf)#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)INNER JOIN Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)#(tab)inner join [Provider] p with(nolock) on c.ProviderId = p.Id#(lf)#(tab)#(tab)#(lf)where b.OrganizationId = 'F3950756-D4C8-48B4-A84C-3CB84C7B0B52'#(lf)#(lf)"]),
+				    
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(Fonte, "Vigência", Splitter.SplitTextByDelimiter(" a ", QuoteStyle.Csv), {"Início Vigência", "Fim Vigência"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Início Vigência", type date}, {"Fim Vigência", type date}}),
+				        
+				    // Calcula o primeiro dia do mês de hoje menos 2 meses
+				    ReferenciaData = Date.StartOfMonth(Date.AddMonths(Date.From(DateTime.LocalNow()), -2)),
+				
+				    // Coluna condicional automática baseada na referência calculada
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(
+				        #"Tipo Alterado2",
+				    "Status Contrato",
+				    each if [Início Vigência] <= ReferenciaData and [Fim Vigência] >= ReferenciaData 
+				         then "Vigente"
+				         else "Não Vigente"
+				),
+				    #"Vigentes Filtrados" = Table.SelectRows(#"Coluna Condicional Adicionada", each ([Status Contrato] = "Vigente")),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Vigentes Filtrados", "CNPJ-Categoria-Unidade", each Text.Combine({[CNPJ], [Categoria], [Unidade]}, " - "), type text),
+				    #"Unidade Filtrada" = Table.SelectRows(#"Coluna Mesclada Inserida", each [Unidade] = "SPN")
+				in
+				    #"Unidade Filtrada"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

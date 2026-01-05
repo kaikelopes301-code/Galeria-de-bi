@@ -1,0 +1,109 @@
+table Medidas
+	lineageTag: 7b78c0f7-4eb5-4656-971c-e8b800e1a8da
+
+	measure 'Total de documentos' =
+			
+			CALCULATE(
+			    COUNTROWS(
+			        'Entrega de documentos')
+			        )
+		formatString: 0
+		lineageTag: 46d8088e-4db1-478e-9891-f4eb2bdef242
+
+	measure 'Documentos entregues' = ```
+			
+			    SUM('Entrega de documentos'[Contagem Entregue])
+			```
+		formatString: 0
+		lineageTag: 39cefd31-b1c0-4f52-a2fd-7b43d2bb9b5a
+
+	measure 'Número de contratos' = ```
+			
+			DISTINCTCOUNT(Contratos[CNPJ-Categoria-Unidade])
+			
+			```
+		formatString: 0
+		lineageTag: 36bc78f8-7723-4acc-a281-dcbe1af6b064
+
+	measure 'Nº Fornecedores' = DISTINCTCOUNT(Contratos[Fornecedor])
+		formatString: 0
+		lineageTag: 479f5d8f-2f16-4ab4-92a6-aa1919fe05ee
+
+	measure 'Nº de Categorias' = DISTINCTCOUNT(Contratos[Categoria])
+		formatString: 0
+		lineageTag: ec414c30-fe82-4142-9702-5b0f25f1317f
+
+	measure 'Formatação condicional Documentos Entregues' = ```
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual de Entrega] = 0, "#FFC7CE",
+			    [Percentual de Entrega] < 0.3, "#FFC7CE",
+			    [Percentual de Entrega] < 0.7, "#FFEB9C",
+			    "#C6EFCE"
+			)
+			
+			```
+		lineageTag: dbea37d2-c4e8-48a4-8813-b7813357dcf4
+
+	measure 'Risco Fornecedor' =
+			
+			CALCULATE(SWITCH (
+			    TRUE (),
+			    [Percentual de Entrega] < 0.3, "Alto",
+			    AND ( [Percentual de Entrega] >= 0.3, [Percentual de Entrega] < 0.7 ), "Médio",
+			   [Percentual de Entrega] >= 0.7, "Baixo"
+			), REMOVEFILTERS('Entrega de documentos'[Competência])
+			)
+		lineageTag: 516339b4-88e5-464e-84bf-8530d0a18ec6
+
+	measure 'Percentual de Entrega' = ```
+			DIVIDE(
+			    [Documentos entregues], 
+			    [Total de documentos],"0"
+			)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c32e6cb0-8808-4af3-8821-0e578a130c94
+
+	measure 'Formatação condicional letras Documentos Entregues' = ```
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual de Entrega] = 0, "#9C0006",
+			    [Percentual de Entrega] < 0.3, "#9C0006",
+			    [Percentual de Entrega] < 0.7, "#9C5700",
+			    "#006100"
+			)
+			
+			```
+		lineageTag: f94c8fc9-8cc1-49f1-8e5c-3e1322fdc094
+
+	measure 'Documentos Atrasados' = [Total de documentos] - [Documentos entregues]
+		formatString: 0
+		lineageTag: fa115b59-09ac-4fce-8fed-c88a9e8a0a13
+
+	measure 'Mês Competência' = UPPER(FORMAT(MAX('Entrega de documentos'[Competência]), "MMMM YYYY"))
+		lineageTag: ec7ab2db-b7dd-48c3-8486-d6c3292c59e6
+
+	measure 'Mês inicial' = UPPER(FORMAT(MIN(d_Calendario[Data]), "MMMM YYYY"))
+		lineageTag: 829b596c-6287-41ac-b1bc-82a21c515ada
+
+	measure 'Primeiro mês' = MIN('Entrega de documentos'[Competência])
+		formatString: General Date
+		lineageTag: 2106f420-e68e-4dda-aa95-8e5f8ce9615a
+
+	partition Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+
