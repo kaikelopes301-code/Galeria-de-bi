@@ -1,0 +1,49 @@
+table #Contratos3
+	lineageTag: 50d96c94-5a40-4308-8659-0780eec763b1
+
+	column #Contratos3
+		lineageTag: e9b3ba97-35f3-466a-b6cc-e39f7f53e7c6
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Contratos3 Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Contratos3 Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos3 Campos'
+		isHidden
+		lineageTag: 3f794afb-b6ed-4901-81ab-caa63d24389d
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Contratos3 Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos3 Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: e1c93537-ec95-4f84-8197-faa8a7d827e6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Contratos3 = calculated
+		mode: import
+		source =
+				{
+				    ("Status", NAMEOF('Contratos'[Status]), 0),
+				    ("Tipo de Fornecedor", NAMEOF('Contratos'[Tipo de Fornecedor]), 1),
+				    ("Tipo do Contrato", NAMEOF('Contratos'[Tipo da contratação]), 2)
+				}
+
+	annotation PBI_Id = e253448c07c744e782318223cc550892
+

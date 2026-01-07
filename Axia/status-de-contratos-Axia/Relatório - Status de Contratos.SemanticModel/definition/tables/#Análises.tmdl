@@ -1,0 +1,49 @@
+table #Análises
+	lineageTag: 72c366ac-ba28-48f5-a997-e03ade36a3a1
+
+	column #Análises
+		lineageTag: abaa30d9-324e-42ab-8248-c4cc92d05718
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Análises Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Análises Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Campos'
+		isHidden
+		lineageTag: 9121e006-c1a5-49b9-9da5-ac7ee114806f
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Análises Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 42eee9e2-30ff-44c6-bbc1-1df7e0b248d6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Análises = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Análises'[Fornecedor]), 0),
+				    ("VP", NAMEOF(Contratos[VP]), 1),
+				    ("Gestor", NAMEOF(Contratos[Gestor]), 2)
+				}
+
+	annotation PBI_Id = a63db8a64e1e443fbd11331219065bf0
+

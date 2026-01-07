@@ -1,0 +1,48 @@
+table #Taxa/Analise
+	lineageTag: 11ff6030-a3f2-441b-b3f3-6bc04e10184a
+
+	column #Taxa/Analise
+		lineageTag: e4845c28-86bd-484f-b165-899b3282262e
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Taxa/Analise Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Taxa/Analise Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Taxa/Analise Campos'
+		isHidden
+		lineageTag: 90172734-1b04-43db-8939-285f3d7d5262
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Taxa/Analise Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Taxa/Analise Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 7801062f-65c0-4736-b1ff-88f01f959d62
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Taxa/Analise = calculated
+		mode: import
+		source =
+				{
+				    ("Quantidade de Agendamentos com Envios (Total de Análises)", NAMEOF('Análises'[_Analises_Quantidade_Cartão]), 0),
+				    ("%Taxa Reanálise", NAMEOF('Análises'[_%_Taxa_Reanalise]), 1)
+				}
+
+	annotation PBI_Id = d0d33a915ccf4dbf8520d8fac1e8374a
+

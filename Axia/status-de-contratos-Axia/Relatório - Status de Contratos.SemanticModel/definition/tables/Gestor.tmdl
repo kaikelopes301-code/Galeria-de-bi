@@ -1,0 +1,64 @@
+table Gestor
+	lineageTag: 21e270df-0ff5-40ec-be41-0d8f2b99ae7b
+
+	column 'Id do Contrato'
+		dataType: string
+		lineageTag: f5c9a96f-50b3-4884-85f9-48b532cbec03
+		summarizeBy: none
+		sourceColumn: Id do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: 4fcec598-24a8-40c1-952b-77e225d5e21a
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: c3a852a4-e093-40d9-9ccc-59f549bfda6b
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Gestor'
+		dataType: string
+		lineageTag: 92293411-5680-4ac1-9e5f-229db5823188
+		summarizeBy: none
+		sourceColumn: Email do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mesclado
+		dataType: string
+		lineageTag: fc5ae7d5-9fce-4b94-a985-aafbe372001f
+		summarizeBy: none
+		sourceColumn: Mesclado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Gestor = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)c.OrderNumber[Nº do pedido],#(lf)#(tab)c.Id[Id do Contrato],#(lf)    bc.CompanyName[Razão social],#(lf)    [bc].[Document] AS [CNPJ],#(lf)#(tab)#(lf)    case#(lf)        when c.[Type] = 1 then 'Contínuo'#(lf)        when c.[Type] = 2 then 'Grandes Paradas'#(lf)        when c.[Type] = 4 then 'Eventual'#(lf)        when c.[Type] = 8 then 'Temporário'#(lf)        when c.[Type] = 16 then 'Visitante técnico'#(lf)        when c.[Type] = 32 then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        when c.[Type] = 64 then 'Prestação de serviço eventual fora da área operacional'#(lf)        when c.[Type] = 128 then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        when c.[Type] = 256 then 'Compra Direta, Regulariza e Delegada'#(lf)    end as 'Tipo da contratação',#(lf)     CASE #(lf)#(tab)WHEN c.[FatherId] IS NULL THEN 'Contratado'#(lf)#(tab)ELSE 'Subcontratado'#(lf)      END 'Tipo de Fornecedor',#(lf)    case#(lf)        when c.Sla = 0 then 'Padrão'#(lf)        when c.Sla = 1 then 'Emergencial'#(lf)    end as 'Sla',#(lf)    case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)    end as 'Status',#(lf)    convert(date, c.CreatedAt)[Cadastro no sistema],#(lf)    CONCAT(convert(date, c.ValidityInitial), ' a ',convert(date, c.ValidityFinal))[Vigência], #(lf)    b.TradeName[Unidade],#(lf)#(tab)r.Name AS 'Regional',#(lf)#(tab)ca.[Name][Categoria],#(lf)    p.TradeName[Fornecedor],#(lf)    c.[Value][Valor do contrato],  #(lf)#(tab)cfi3.[Name][Frequência],#(lf)#(tab)cfi5.[Name][VP de Execução do contrato],#(lf)#(tab)cfi7.[Name][VP Requisitante do contrato],#(lf)#(tab)cfv8.[Value][Nome do fiscal técnico],#(lf)#(tab)cfv9.[Value][E-mail do fiscal técnico],#(lf)#(tab)cfv10.[Value][Nome do gestor técnico],#(lf)#(tab)cfv11.[Value][E-mail do gestor técnico],#(lf)#(tab)cfv12.[Value][Nome do gestor administrativo],#(lf)#(tab)cfv13.[Value][E-mail do gestor administrativo],#(lf)#(tab)cfv14.[Value][Nome do SST responsável],#(lf)#(tab)cfv15.[Value][E-mail do SST responsável],#(lf)#(tab)cfv16.[Value][Centro de Custo],#(lf)#(tab)cm.[Name][Nome do Gestor],#(lf)#(tab)cm.[Email][Email do Gestor],#(lf)#(tab)cm.[Phone][Telefone do Gestor]#(lf)#(lf)#(lf)from [Contract] c with(nolock)#(lf)#(tab)#(tab)left join ContractManager cm with(nolock) on cm.ContractId = c.Id#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)INNER JOIN Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)#(tab)inner join [Provider] p with(nolock) on c.ProviderId = p.Id#(lf)#(tab)#(tab)left join CustomFieldValue cfv8 WITH(NOLOCK) ON cfv8.EntityId = c.Id AND cfv8.CustomFieldId = '46797071-E688-4C4D-9D1E-A43BA98C9648' -- Nome do fiscal técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv9 WITH(NOLOCK) ON cfv9.EntityId = c.Id AND cfv9.CustomFieldId = '2DA18E51-F8A5-4BDC-8553-87A17EB27A7C' -- E-mail do fiscal técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv10 WITH(NOLOCK) ON cfv10.EntityId = c.Id AND cfv10.CustomFieldId = '9C244155-B8D4-4F0B-9413-7ECBCAFCD254' -- Nome do gestor técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv11 WITH(NOLOCK) ON cfv11.EntityId = c.Id AND cfv11.CustomFieldId = '7BF74685-4491-455C-9A27-F582AEE0ECA9' -- E-mail do gestor técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv12 WITH(NOLOCK) ON cfv12.EntityId = c.Id AND cfv12.CustomFieldId = '9F3F9320-74D8-4A80-A465-21C47B1D3AB1' -- Nome do gestor administrativo#(lf)#(tab)#(tab)left join CustomFieldValue cfv13 WITH(NOLOCK) ON cfv13.EntityId = c.Id AND cfv13.CustomFieldId = '8909197F-A741-48C4-82A9-02090DAD2FAD' -- E-mail do gestor administrativo#(lf)#(tab)#(tab)left join CustomFieldValue cfv14 WITH(NOLOCK) ON cfv14.EntityId = c.Id AND cfv14.CustomFieldId = '853608BB-71D6-407D-8BF1-413B396A4992' -- Nome do SST responsável#(lf)#(tab)#(tab)left join CustomFieldValue cfv15 WITH(NOLOCK) ON cfv15.EntityId = c.Id AND cfv15.CustomFieldId = '73E86956-CFF0-4D88-940B-F0F09E78E677' -- E-mail do SST responsável#(lf)#(tab)#(tab)left join CustomFieldValue cfv16 WITH(NOLOCK) ON cfv16.EntityId = c.Id AND cfv16.CustomFieldId = 'A684A08F-8759-4429-80C0-23BBB16AF57A' -- Centro de Custo#(lf)#(tab)#(tab)outer apply #(lf)#(tab)#(tab)(#(lf)    select cfi2.[Name] from CustomFieldValue cfv2 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi2 with(nolock) on cfv2.CustomFieldItemId = cfi2.Id#(lf)    where cfv2.EntityId = c.Id#(lf)#(tab)#(tab)and cfv2.[Value] is null#(lf)#(tab)#(tab)and cfv2.Removed = 0#(lf)#(tab)#(tab)and cfi2.Removed = 0#(lf)#(tab)#(tab)AND cfv2.CustomFieldId = '1C30677D-3F2F-4396-93DE-1DA0FD90E592' -- Frequência#(lf)#(tab)) as [cfi3]#(lf)#(tab)outer apply #(lf)#(tab)(#(lf)    select cfi4.[Name] from CustomFieldValue cfv4 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi4 with(nolock) on cfv4.CustomFieldItemId = cfi4.Id#(lf)    where cfv4.EntityId = c.Id#(lf)#(tab)#(tab)and cfv4.[Value] is null#(lf)#(tab)#(tab)and cfv4.Removed = 0#(lf)#(tab)#(tab)and cfi4.Removed = 0#(lf)#(tab)#(tab)AND cfv4.CustomFieldId = '586D0602-B8D0-480F-8565-5A1040393B54' -- VP de Execução do contrato#(lf)#(tab)) as [cfi5]#(lf)#(tab)outer apply #(lf)#(tab)(#(lf)    select cfi6.[Name] from CustomFieldValue cfv6 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi6 with(nolock) on cfv6.CustomFieldItemId = cfi6.Id#(lf)    where cfv6.EntityId = c.Id#(lf)#(tab)#(tab)and cfv6.[Value] is null#(lf)#(tab)#(tab)and cfv6.Removed = 0#(lf)#(tab)#(tab)and cfi6.Removed = 0#(lf)#(tab)#(tab)AND cfv6.CustomFieldId = 'A53C1F6C-9334-4AF9-8B78-03CC327FB6D7' -- VP Requisitante do contrato#(lf)#(tab)) as [cfi7]#(lf)where b.OrganizationId = 'e9654655-6595-4748-991d-6b50831c6ca5'#(lf)#(tab)  and c.Removed = 0#(lf)#(tab)  order by c.OrderNumber #(lf)#(lf)#(lf)#(tab) -- Select * from CustomField Where OrganizationId = 'e9654655-6595-4748-991d-6b50831c6ca5'#(lf)#(lf)#(lf)#(lf)#(lf)#(tab)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Nº do pedido", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Status", type text}, {"Vigência", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado", "Status Gestor", each if [Email do Gestor] = null then "Sem Gestor" else if Text.Contains([Email do Gestor], "eletrobras") then "Gestor Eletrobras" else if Text.Contains([Email do Gestor], "ELETROBRAS") then "Gestor Eletrobras" else "Não Gestor Eletrobras"),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Coluna Condicional Adicionada",{"Razão social", "CNPJ", "Tipo da contratação", "Tipo de Fornecedor", "Sla", "Status", "Cadastro no sistema", "Vigência", "Unidade", "Regional", "Categoria", "Fornecedor", "Valor do contrato", "Frequência", "VP de Execução do contrato", "VP Requisitante do contrato", "Nome do fiscal técnico", "E-mail do fiscal técnico", "Nome do gestor técnico", "E-mail do gestor técnico", "Nome do gestor administrativo", "E-mail do gestor administrativo", "Nome do SST responsável", "E-mail do SST responsável", "Centro de Custo", "Status Gestor", "Nº do pedido"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Colunas Removidas",{{"Nome do Gestor", Order.Descending}}),
+				    #"Linhas Classificadas1" = Table.Sort(#"Linhas Classificadas",{{"Nome do Gestor", Order.Ascending}}),
+				    #"Texto Limpo" = Table.TransformColumns(#"Linhas Classificadas1",{{"Nome do Gestor", Text.Clean, type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Texto Limpo",null,"SEM GESTOR",Replacer.ReplaceValue,{"Nome do Gestor"}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Valor Substituído", "Mesclado", each Text.Combine({[Id do Contrato], [Email do Gestor]}, ""), type text),
+				    #"Duplicatas Removidas1" = Table.Distinct(#"Coluna Mesclada Inserida", {"Mesclado"})
+				in
+				    #"Duplicatas Removidas1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,20 @@
+table Tabela_Empresas
+	lineageTag: cac4d094-4715-48f6-89bb-b8c70ae4125b
+
+	column 'Documentos empresas e funcionarios '
+		lineageTag: 64c3a3fd-7dcb-454c-8d71-abce991dc2be
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[Documentos empresas e funcionarios ]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Tabela_Empresas = calculated
+		mode: import
+		source = ```
+				DISTINCT('Documentos em Análise'[Documentos empresas e funcionarios ])
+				
+				```
+
+	annotation PBI_Id = d8142459b4b5459fb4f5a0596bbb3747
+

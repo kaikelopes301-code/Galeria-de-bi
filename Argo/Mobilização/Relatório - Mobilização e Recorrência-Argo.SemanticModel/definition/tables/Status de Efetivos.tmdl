@@ -1,0 +1,267 @@
+table 'Status de Efetivos'
+	lineageTag: 683980d1-46e0-4951-bd6a-888b2b3276de
+
+	measure '(Cadastro) Quantidade de Efetivos Cadastrados' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 20a8d200-0d5a-4da4-9404-a824ffade7c1
+
+	measure '(Relação) Quantidade Efetivos Cadastrados' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			USERELATIONSHIP('Status de Efetivos'[Nome Fantasia Fornecedor],'Número de Pedido'[Fornecedor]))
+		formatString: #,0
+		lineageTag: 3d6df304-cac1-492b-8dac-078b2a2cbb55
+
+	measure '(Distintas) Quantidade Fornecedores' = CALCULATE(DISTINCTCOUNT('Status de Efetivos'[CNPJ Fornecedor - Faturamento]))
+		formatString: 0
+		lineageTag: da978b34-e2e8-4335-8b24-abe2f44f303f
+
+	measure '(Contratos) Quantidade de Contrato' = DISTINCTCOUNT('Status de Efetivos'[Número Contrato])
+		formatString: 0
+		lineageTag: 6023832d-fe24-42d7-acb1-c50085e967da
+
+	measure '(Ativos Relação) Quantidade Efetivos Cadastrados' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivos'[Situação do Funcionário] = "Ativo",
+			USERELATIONSHIP('Status de Efetivos'[Nome Fantasia Fornecedor],'Número de Pedido'[Fornecedor]))
+		lineageTag: e533a15c-119b-4c28-8396-f8f0e1553ae9
+
+	measure '(Eventual) Quantidade de Contratos Eventuais' = CALCULATE(DISTINCTCOUNT('Status de Efetivos'[Número Contrato]))
+		formatString: 0
+		lineageTag: b0aed4b8-afbc-4f80-80c2-c733b261fbac
+
+	measure '(Contínuos) Quantidade de Contratos Eventuais' =
+			CALCULATE(DISTINCTCOUNT('Status de Efetivos'[Número Contrato]),
+			'Status de Efetivos'[Tipo do Contrato] = "Contínuo")
+		formatString: 0
+		lineageTag: a908ee4c-b4c7-47cd-b208-6ea560641d39
+
+	column Chave
+		dataType: string
+		lineageTag: 2016d9e7-1bd3-4066-a768-9029944c2878
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 7a1065c7-99b7-4158-911f-6e4e4bcff3c1
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: 81a47618-64c7-4a56-ad34-88d010d48c0b
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 43b0c651-4fd0-406f-b019-9444aa33d5e2
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Contrato'
+		dataType: string
+		lineageTag: c14645d4-c18e-473e-96f4-10c83fb0e81a
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: d9218abe-8aa3-433d-958b-712ee46d6e38
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: 30546ea9-1424-40e3-a3bd-0b78ef094c24
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Origem dos dados de fornecedor'
+		dataType: string
+		lineageTag: 692b37a4-55cc-421e-971b-b8418cc68e7f
+		summarizeBy: none
+		sourceColumn: Origem dos dados de fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: 84e706ce-d7b6-4f24-9b01-33028cee79e1
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: af203b9a-d5af-4642-b0c9-af29d5b3c3b7
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: 6a91296f-aa61-4541-9d76-dcf103f4cd6c
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6174e215-a62f-4a42-b654-0ae1a6231686
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		variation Variation
+			isDefault
+			relationship: da662618-6c41-4086-9f8f-5105e029793e
+			defaultHierarchy: LocalDateTable_5229595e-3bd9-449b-ae68-b27c994eb21f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3f3c8942-b11a-41d2-9c7c-3062b9a96ca4
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: d35d9234-f5b2-4acb-a2cb-b8c5164848da
+			defaultHierarchy: LocalDateTable_b84c6a68-eb22-47f6-9c5a-272828697006.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3f513f68-493e-417c-b101-0796be7f3c3f
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: af245971-dd2a-4572-b00c-d42d2d8c6e12
+			defaultHierarchy: LocalDateTable_8d676a90-5326-4fe5-a492-3e4457580b1f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PIS
+		dataType: string
+		lineageTag: 46fb6f10-bb70-4d43-98df-360f133f604f
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 8ad2a35f-5c88-42f7-abd9-65d5fa10e7b1
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: c4e5a829-100d-43f4-9216-f1b6e0439575
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2413d17d-8605-439e-bd83-8858c55749f3
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo de cobrança do funcionário'
+		dataType: string
+		lineageTag: b48fe487-3d7e-4715-8f05-9c7cacb101f2
+		summarizeBy: none
+		sourceColumn: Tipo de cobrança do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave.1'
+		dataType: string
+		lineageTag: ed5ca3ea-085e-44cd-9943-c5dfc215bc8a
+		summarizeBy: none
+		sourceColumn: Chave.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 292e8c1e-2a05-46b1-9e01-5dd1d2a4791b
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Situação do Funcionário'
+		dataType: string
+		lineageTag: d2c047d6-c4c5-4032-affe-503fe106dede
+		summarizeBy: none
+		sourceColumn: Situação do Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column21
+		dataType: string
+		lineageTag: d20dc5c9-fcfc-4933-b838-cbe2f659d566
+		summarizeBy: none
+		sourceColumn: Column21
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status de Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\Argo\12 - Dezembro\Relatório de Efetivos - Argo.xlsx"), null, true),
+				    Planilha1_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Chave", type text}, {"Número Contrato", type any}, {"Nome Fantasia Fornecedor", type text}, {"Razão Social Fornecedor - Contrato", type text}, {"CNPJ Fornecedor - Contrato", type text}, {"Razão Social Fornecedor - Faturamento", type text}, {"CNPJ Fornecedor - Faturamento", type text}, {"Origem dos dados de fornecedor", type text}, {"Nome Fantasia Unidade", type text}, {"Categoria", type text}, {"Tipo do Contrato", type text}, {"Data de cadastro do contrato", type date}, {"Data de início da vigência", type date}, {"Data de fim da vigência", type date}, {"PIS", type text}, {"CPF", type text}, {"Nome", type text}, {"Situação", type text}, {"Data de cadastro", type date}, {"Tipo de cobrança do funcionário", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas em Branco Removidas", "Chave.1", each Text.Combine({[Nome Fantasia Fornecedor], [Categoria], [Nome Fantasia Unidade]}, ""), type text),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"Número Contrato", type text}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado1", "Situação do Funcionário", each if [Situação] <> "Inativo" then "Ativo" else "Inativo")
+				in
+				    #"Coluna Condicional Adicionada"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

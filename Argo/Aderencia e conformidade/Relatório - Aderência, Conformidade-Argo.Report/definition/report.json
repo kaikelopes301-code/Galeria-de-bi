@@ -1,0 +1,551 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.0.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY23SU11",
+      "reportVersionAtImport": {
+        "visual": "1.8.86",
+        "report": "2.0.86",
+        "page": "1.3.86"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "e53ee57d849a1d78dd05",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dCalendário"
+              }
+            },
+            "Property": "Data"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dCalendário",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 1,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      },
+                      "Property": "Data"
+                    }
+                  },
+                  "Right": {
+                    "DateSpan": {
+                      "Expression": {
+                        "Literal": {
+                          "Value": "datetime'2024-08-31T00:00:00'"
+                        }
+                      },
+                      "TimeUnit": 5
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "7e72e64314bbe50de4be",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Contratos"
+              }
+            },
+            "Property": "Fornecedor"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "Contratos",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "Fornecedor"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "null"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "8ae19e3f26527ba810f9",
+        "ordinal": 2,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Contratos"
+              }
+            },
+            "Property": "Unidade"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "Contratos",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "Unidade"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Américas Shopping'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Center Shopping'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Shopping Via Brasil'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'West Shopping'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Shopping Crystal'"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "16f393b2f49b1b1bb9fd",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Contratos"
+              }
+            },
+            "Property": "Categoria"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "Contratos",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "c"
+                              }
+                            },
+                            "Property": "Categoria"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Estacionamento'"
+                            }
+                          }
+                        ],
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'Estacionamento - Sem vínculo direto'"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "filterSortOrder": "Custom"
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publicCustomVisuals": [
+    "bac49510ab1d3fa4399887df4f629646fbf",
+    "horizontalBarChartPBICraft",
+    "verticallinechart5209E4E7CCEFAE766DB5CE0997A7AA9A"
+  ],
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY23SU11",
+          "path": "BaseThemes/CY23SU11.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "aprovado35091074668428335.png",
+          "path": "aprovado35091074668428335.png",
+          "type": "Image"
+        },
+        {
+          "name": "assinatura-do-arquivo_(1)5740382579070329.png",
+          "path": "assinatura-do-arquivo_(1)5740382579070329.png",
+          "type": "Image"
+        },
+        {
+          "name": "atrasado7645346712864846.png",
+          "path": "atrasado7645346712864846.png",
+          "type": "Image"
+        },
+        {
+          "name": "calendario-de-parede_(1)13325364698158215.png",
+          "path": "calendario-de-parede_(1)13325364698158215.png",
+          "type": "Image"
+        },
+        {
+          "name": "calendario_(2)4477837071468873.png",
+          "path": "calendario_(2)4477837071468873.png",
+          "type": "Image"
+        },
+        {
+          "name": "Captura_de_tela_2025-09-29_16342695451830917586.png",
+          "path": "Captura_de_tela_2025-09-29_16342695451830917586.png",
+          "type": "Image"
+        },
+        {
+          "name": "Captura_de_tela_2025-09-29_16407295346767532662.png",
+          "path": "Captura_de_tela_2025-09-29_16407295346767532662.png",
+          "type": "Image"
+        },
+        {
+          "name": "Captura_de_tela_2025-09-29_16435884995623997706.png",
+          "path": "Captura_de_tela_2025-09-29_16435884995623997706.png",
+          "type": "Image"
+        },
+        {
+          "name": "carteira-de-identidade47755403849889966.png",
+          "path": "carteira-de-identidade47755403849889966.png",
+          "type": "Image"
+        },
+        {
+          "name": "casa_(2)9532420787402918.png",
+          "path": "casa_(2)9532420787402918.png",
+          "type": "Image"
+        },
+        {
+          "name": "Center_Shopping_Rio35708140783762454.png",
+          "path": "Center_Shopping_Rio35708140783762454.png",
+          "type": "Image"
+        },
+        {
+          "name": "colaborar7346613278330316.png",
+          "path": "colaborar7346613278330316.png",
+          "type": "Image"
+        },
+        {
+          "name": "Design_sem_nome4410789586621735.png",
+          "path": "Design_sem_nome4410789586621735.png",
+          "type": "Image"
+        },
+        {
+          "name": "diagnostico7452668906616251.png",
+          "path": "diagnostico7452668906616251.png",
+          "type": "Image"
+        },
+        {
+          "name": "distribuicao3446118934782276.png",
+          "path": "distribuicao3446118934782276.png",
+          "type": "Image"
+        },
+        {
+          "name": "documento_(2)33036743070624874.png",
+          "path": "documento_(2)33036743070624874.png",
+          "type": "Image"
+        },
+        {
+          "name": "Group7867635171130887.svg",
+          "path": "Group7867635171130887.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icone9455642094437282.png",
+          "path": "icone9455642094437282.png",
+          "type": "Image"
+        },
+        {
+          "name": "information-circle-svgrepo-com08653465065599841.svg",
+          "path": "information-circle-svgrepo-com08653465065599841.svg",
+          "type": "Image"
+        },
+        {
+          "name": "info_(1)19455832929901962.png",
+          "path": "info_(1)19455832929901962.png",
+          "type": "Image"
+        },
+        {
+          "name": "logo-atlas-inova__es2-branco9867163810310589.png",
+          "path": "logo-atlas-inova__es2-branco9867163810310589.png",
+          "type": "Image"
+        },
+        {
+          "name": "logo-atlas-vertical-branco07585567467153875.png",
+          "path": "logo-atlas-vertical-branco07585567467153875.png",
+          "type": "Image"
+        },
+        {
+          "name": "Logo09507662408435835.png",
+          "path": "Logo09507662408435835.png",
+          "type": "Image"
+        },
+        {
+          "name": "marketing-de-email33944281353993344.png",
+          "path": "marketing-de-email33944281353993344.png",
+          "type": "Image"
+        },
+        {
+          "name": "Rectangle_18436976485716023.svg",
+          "path": "Rectangle_18436976485716023.svg",
+          "type": "Image"
+        },
+        {
+          "name": "risco_(4)5327231803953125.png",
+          "path": "risco_(4)5327231803953125.png",
+          "type": "Image"
+        },
+        {
+          "name": "seta-do-caminhao-para-a-direit36752297805274714.png",
+          "path": "seta-do-caminhao-para-a-direit36752297805274714.png",
+          "type": "Image"
+        },
+        {
+          "name": "target-arrow-svgrepo-com_134970919625620234.svg",
+          "path": "target-arrow-svgrepo-com_134970919625620234.svg",
+          "type": "Image"
+        },
+        {
+          "name": "usuarios-alt3957306876277773.png",
+          "path": "usuarios-alt3957306876277773.png",
+          "type": "Image"
+        },
+        {
+          "name": "Vector38252204746285845.svg",
+          "path": "Vector38252204746285845.svg",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultFilterActionIsDataFilter": true,
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true,
+    "customMemoryLimit": "1048576",
+    "customTimeoutLimit": "225"
+  },
+  "slowDataSourceSettings": {
+    "isCrossHighlightingDisabled": false,
+    "isSlicerSelectionsButtonEnabled": false,
+    "isFilterSelectionsButtonEnabled": false,
+    "isFieldWellButtonEnabled": false,
+    "isApplyAllButtonEnabled": false
+  }
+}

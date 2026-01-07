@@ -1,0 +1,887 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "INDF",
+  "name": "e18824f992b912046500",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "b3777529bcc9e8bd64f4",
+    "filters": {
+      "byExpr": [
+        {
+          "name": "0b4d9572d0c5bc7d7a8b",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Documentos em Análise"
+                }
+              },
+              "Property": "Tipo de Doc"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "79fe203297d3e50093ce",
+          "type": "Categorical",
+          "filter": {
+            "Version": 2,
+            "From": [
+              {
+                "Name": "d",
+                "Entity": "dCalendário",
+                "Type": 0
+              }
+            ],
+            "Where": [
+              {
+                "Condition": {
+                  "Not": {
+                    "Expression": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "d"
+                                }
+                              },
+                              "Property": "Data"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "null"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "dCalendário"
+                }
+              },
+              "Property": "Data"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "fe4680e2b50e2400e129",
+          "type": "Advanced",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "dCalendário"
+                }
+              },
+              "Property": "Data"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "4e1dcef027ea56974333",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Contratos"
+                }
+              },
+              "Property": "Tipo da contratação"
+            }
+          },
+          "howCreated": 1
+        }
+      ]
+    },
+    "sections": {
+      "b3777529bcc9e8bd64f4": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "Filter032e5af7d3c90e68db09",
+              "type": "Categorical",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Documentos em Análise"
+                    }
+                  },
+                  "Property": "Documento"
+                }
+              },
+              "howCreated": 1
+            },
+            {
+              "name": "679603d200b0560d9d41",
+              "type": "Categorical",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Status de Efetivos"
+                    }
+                  },
+                  "Property": "Data de cadastro"
+                }
+              },
+              "howCreated": 1
+            },
+            {
+              "name": "21e6c172eb63ad879da8",
+              "type": "Advanced",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Documentos em Análise"
+                    }
+                  },
+                  "Property": "Competência"
+                }
+              },
+              "howCreated": 1
+            }
+          ]
+        },
+        "visualContainers": {
+          "e7736c18a5902faef973": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "7ee3d1d5330c3606720e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "b715ddb290b900895637",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análise de Colaboradores"
+                        }
+                      },
+                      "Property": "Relação - Quantidade de Colaboradores"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Cadastrados"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "36aa5b452a2318832cfa": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "1ef52333e303d17860c6",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Categoria"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Categoria"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "84cfbe377d1060560e11": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "7c43aa0b1c7e00d90d4a",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Quantidade de Contratos"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Quantidade de Contratos"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "0f760ad2ab9ee4db325b": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "1f3e9bf60037e8b9021d",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Data"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "976e8530a10ecbe3758c",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Data"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Data"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "040496ed66661f59400d": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "012fa0a0013e5625e067",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Total) Documentos"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "c506fee6392c6940d2c8",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "%(Média Mensal) Grupo Risco"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "0f07963e18827c176037",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Aderência) Envio Documento"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "c8223eb153db973c0355",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Conformidade) Aprovados"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Aderência) Envio Documento"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "38a6212bbac8d7466eab": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "67d6e9d3061e39eeed50",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "1 - Quantidade de Docs Aprovados"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "1 - Quantidade de Docs Aprovados"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "7fdc798d00306b1f0303": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "e3cc7d7300ae4074b912",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Enviados) Quantidade"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Enviados) Quantidade"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "5d14235f505a294f3da1": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "Filter87c7f42aa93f2b6e709e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análise de Colaboradores"
+                        }
+                      },
+                      "Property": "Quantidade de Colaboradores"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "bbe98273e2303c058e47",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "958cd143eaa5eb5bb35c",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Basic'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "abe380cf103c06bb01a2": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "69c4f5fc07d3e0a31e9e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Total) Documentos"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Total) Documentos"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "4216ee0fe04b8c3cb0ce": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "0cbf8770068d5ab1c697": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "6dd825a7b4a93556c889": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "af9fdd19a7500b081b51": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "Filter87c7f42aa93f2b6e709e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análise de Colaboradores"
+                        }
+                      },
+                      "Property": "Quantidade de Colaboradores"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "b060c62ba53c74a09c39",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "31c8ae63d04bb634aa60",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Unidade"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Basic'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Unidade"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "889f49fdd6d1bd90567c": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "e91091e594a4d7c74ad3": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "1a487887950e505e5192": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "b81249bd41485c6008b7": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "c3f35b2ae12a97abe7e0": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "caa0ee35cc009ecd5a15": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "a60d641d0170d709cc18": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "304051952d00d57c000b": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "8a1d7f9e91a8beddad5e": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "b5b79b4f8ee0e87806ac": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "8ad6a356157c44053b9d": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "dda64dd5c60e38039d06": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "3d7a5a1492c53460c930": {
+            "isHidden": true,
+            "children": {
+              "96d8d12d4008a6c79b6a": {
+                "isHidden": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

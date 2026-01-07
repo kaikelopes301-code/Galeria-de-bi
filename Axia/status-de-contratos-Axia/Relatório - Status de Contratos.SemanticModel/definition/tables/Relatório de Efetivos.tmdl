@@ -1,0 +1,324 @@
+table 'Relatório de Efetivos'
+	lineageTag: 65167b4d-2770-4dcd-ab3e-57f1a92a5ce6
+
+	measure '(Cadastrados) Quantidade' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 037f9272-79c4-4511-a5eb-60e906ae5ed9
+
+	measure '(Ativos) Colaboradores' =
+			
+			
+			VAR ATIVO = CALCULATE([(Cadastrados) Quantidade],
+			'Relatório de Efetivos'[Situação] <> "Inativo")
+			
+			RETURN IF( ATIVO=BLANK(),0,ATIVO)
+		formatString: #,0
+		lineageTag: 22926821-42fd-4ed9-abf0-9814d6f80d0c
+
+	measure '(Fornecedores) Cadastrados Quantidade' = CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CNPJ]))
+		formatString: 0
+		lineageTag: 63ffd409-113d-4322-a172-79dce550a416
+
+	measure '(Sem Efetivos Cadastrados) CNPJ' = [(CNPJ) Quantidade] -CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CNPJ]))
+		formatString: 0
+		lineageTag: fbeb4568-db09-48d7-9349-6575f55c8316
+
+	measure _CPF_Distintos = CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CPF]))
+		formatString: #,0
+		lineageTag: a59af418-bd30-494d-aa1a-df11726509a5
+
+	measure '_Documentação_Pendente_Quantidade de Colaboradores' =
+			
+			
+			VAR DOCUMENTACAO_PENDENTE = CALCULATE([_CPF_Distintos],'Relatório de Efetivos'[Status de Restrição]= "Documentação Pendente")
+			VAR COLABORADORES_DISTINTOS = [_CPF_Distintos]
+			
+			RETURN IF(DOCUMENTACAO_PENDENTE = BLANK() && COLABORADORES_DISTINTOS >0, 0, DOCUMENTACAO_PENDENTE/COLABORADORES_DISTINTOS)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a57fe558-be6f-48d0-b152-a4289db460a2
+
+	measure _Pedidos_Distintos = CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[Nº do pedido]),'Relatório de Efetivos'[Situação] <> "Inativo")
+		formatString: #,0
+		lineageTag: b351fa1c-01a9-4b87-81b9-4a888be06659
+
+	measure _Inativos_Colaboradores =
+			
+			
+			VAR ATIVO = CALCULATE([(Cadastrados) Quantidade],
+			'Relatório de Efetivos'[Situação] = "Inativo")
+			
+			RETURN IF( ATIVO=BLANK(),0,ATIVO)
+		formatString: #,0
+		lineageTag: e7482585-70eb-49e0-8cad-9511b6341df1
+
+	measure _Efetivos_Mobilizados =
+			CALCULATE([(Cadastrados) Quantidade],
+			'Relatório de Efetivos'[Situação] <> "Inativo",
+			'Relatório de Efetivos'[Status de Restrição] = "Mobilizado")
+		formatString: #,0
+		lineageTag: eb7ad512-d00e-4a4c-8458-4898ae501974
+
+	measure '_%Mobilizados Previstos_' = ```
+			
+			
+			VAR MOB = 'Relatório de Efetivos'[_Efetivos_Mobilizados]
+			
+			Var PREV = [(Ativos) Colaboradores]
+			
+			
+			RETURN 
+			    IF(MOB = 0 && PREV > 0,
+			                    0,
+			                    IF(MOB >0 && PREV = 0, "Sem Previsão Efetivo",
+			                        IF(MOB = 0 && PREV = 0,"Sem Mobilização e Previstos",MOB/PREV)
+			                    )
+			        )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: fa0d3a6f-db6e-46d1-bc4f-67f538fbe37a
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 34a50094-ee17-43b5-8f46-1cd62d739716
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 8059c88f-0866-442e-b684-192a784c1472
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 729c1483-3d70-4260-adcc-ab3383bca3a4
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: d6a8c592-50ab-41ce-b547-520d0bd9f722
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 95293d94-7edd-47ac-a559-e87c8ee80363
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: ba434ef6-bbc9-441d-a59a-f3d388b521c8
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 53ab6ba9-1325-437b-9541-8b8346620233
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: d4d7fbdc-a1fa-43f8-9788-4aa5343211e8
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contratação'
+		dataType: string
+		lineageTag: 18dd8075-8904-4e3f-9d94-5f45ca5df0b1
+		summarizeBy: none
+		sourceColumn: Tipo de contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Carro
+		dataType: string
+		lineageTag: 49a9590e-ba99-4350-abe9-2334a1a8a370
+		summarizeBy: none
+		sourceColumn: Carro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Documento
+		dataType: string
+		lineageTag: 3acd2d16-7b2a-4d57-8e12-e674fa9aa361
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Restrição'
+		dataType: string
+		lineageTag: e3deb523-b330-4fe0-9ae7-beb60b01462f
+		summarizeBy: none
+		sourceColumn: Status de Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8e32c3b6-b0db-43d2-b0ca-608b38cf6f54
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: f379cb5a-b0e2-4eb0-b4a5-7fa3b15c4307
+			defaultHierarchy: LocalDateTable_7cbc5b86-0beb-42b6-959d-1f40731af862.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4da8dd05-a9b3-470c-ad81-5cdc83f4612b
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: 4b10e092-492a-4e18-8beb-f7f3f11cac4e
+			defaultHierarchy: LocalDateTable_e5059b70-51e3-4445-97be-183800ad1795.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: fd632927-b073-47ad-ba53-2ec17eb86cf6
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 076338a7-29e6-40c3-a59b-0307cbfdcae7
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: 14779f3c-12b5-45f5-8660-9526a3f66832
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_RegisterColab
+		dataType: string
+		lineageTag: 0c9affce-b0b3-45ef-ab6d-46b1854b3ca3
+		summarizeBy: none
+		sourceColumn: Id_RegisterColab
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 13254f5f-a9ef-4f90-bc37-4d56832ab79b
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 9148b8dd-819d-4008-bb7d-4735a1dce53a
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: f573ac6e-4eab-4350-8cb8-6362aec5c652
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro do Efetivo'
+		dataType: string
+		lineageTag: 4af39415-901e-46d3-bc7b-55bdf01c1d92
+		summarizeBy: none
+		sourceColumn: Data de Cadastro do Efetivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Atividades'
+		dataType: string
+		lineageTag: fecab0e5-59bf-4f83-92dd-e22fc267917a
+		summarizeBy: none
+		sourceColumn: Início Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Atividades'
+		dataType: string
+		lineageTag: 6d7ca5fd-a855-4053-9f4a-b44864600e22
+		summarizeBy: none
+		sourceColumn: Fim Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contract-Colab = CONCATENATE( 'Relatório de Efetivos'[Id_Contrato],'Relatório de Efetivos'[Id_RegisterColab])
+		lineageTag: d667970c-e201-40ca-ba2a-34b8341b4136
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mesclado
+		dataType: string
+		lineageTag: 16c5558a-d6b6-4364-9c12-d7094bf0ce7f
+		summarizeBy: none
+		sourceColumn: Mesclado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relatório de Efetivos' = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = 'e9654655-6595-4748-991d-6b50831c6ca5';#(lf)#(lf)SELECT #(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)c.OrderNumber as 'Nº do pedido',#(lf)#(tab)Convert(date, c.ValidityInitial) as [Vigência Inicial], #(lf)#(tab)Convert(date, c.ValidityFinal) as [Vigência Final], #(lf)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)#(tab)#(tab)WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finaliza'#(lf)#(tab)#(tab)ELSE 'Vigente'#(lf)#(tab)END AS 'Vigência de Contrato',#(lf)#(lf)#(tab) case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)    end as 'Status',#(lf)#(lf)#(lf)#(tab)bc.CompanyName AS 'Razão Social',#(lf)#(tab)p.TradeName AS 'Fornecedor',#(lf)#(tab)dbo.FNCNPJMask(bc.Document) AS 'CNPJ',#(lf)#(tab)b.TradeName AS 'Unidade',#(lf)#(tab)e.Name AS 'Nome',#(lf)    erc.EmployeeRegisterId as 'Id_RegisterColab',#(lf)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN cs.statusRestriction = ''#(lf)#(tab)#(tab)AND e.Situation = 1 #(lf)#(tab)#(tab)#(tab)THEN 'Inativo'#(lf)#(tab)#(tab)WHEN cs.statusRestriction = ''#(lf)#(tab)#(tab)#(tab)and c.ValidityFinal < GETDATE() #(lf)#(tab)#(tab)#(tab)#(tab)THEN 'Contrato Encerrado'#(lf)#(tab)#(tab)WHEN cs.statusRestriction = ''#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)and c.[Status] <> 0#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)and c.ValidityInitial <= GETDATE()#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)and#(tab)c.ValidityFinal >= GETDATE()#(lf)#(tab)#(tab)#(tab)#(tab)THEN 'Erro de Efetivo'#(lf)#(tab)#(tab)#(tab)WHEN cs.statusRestriction = ''#(lf)#(tab)#(tab)#(tab)#(tab)THEN 'Possivelmente fora do Período de Atividades'#(lf)#(lf)#(tab)#(tab)ELSE cs.statusRestriction #(lf)#(tab)END AS 'Status de Restrição',#(lf)#(lf)     CASE #(lf)        WHEN e.CpfNumber IS NULL OR LTRIM(RTRIM(e.CpfNumber)) = '' THEN NULL#(lf)        ELSE FORMAT(CAST(e.CpfNumber AS BIGINT), '000\.000\.000\-00') #(lf)    END AS CPF,#(lf)#(lf)#(tab)CASE #(lf)        WHEN e.PisNumber IS NULL OR LTRIM(RTRIM(e.PisNumber)) = '' THEN NULL#(lf)        ELSE FORMAT(CAST(e.PisNumber AS BIGINT), '000\.00000\.00\-0') #(lf)    END AS PIS,#(lf)#(lf)    e.ForeignerDocument AS 'Documento Estrangeiro',#(lf)#(lf)    CASE#(lf)        WHEN e.Situation = 0 THEN 'Ativo'#(lf)        WHEN e.Situation = 1 THEN 'Inativo'#(lf)    END AS 'Situação', #(lf)#(lf)#(tab)#(lf)    CASE#(lf)        WHEN e.TypeHiring = 1 THEN 'CLT'#(lf)        WHEN e.TypeHiring = 2 THEN 'PJ (MEI)'#(lf)        WHEN e.TypeHiring = 4 THEN 'Autônomo'#(lf)        WHEN e.TypeHiring = 8 THEN 'Estrangeiro'#(lf)        WHEN e.TypeHiring = 16 THEN 'Sócio'#(lf)        ELSE 'Nenhum'#(lf)    END AS 'Tipo de contratação',#(lf)#(lf)    F.Name AS 'Função',#(lf)#(tab)FORMAT(TRY_CAST(e.[CreatedAt] AS DATE), 'dd/MM/yyyy') AS 'Data de Cadastro do Efetivo',#(lf)#(tab)FORMAT(TRY_CAST(e.ActivityStartDate AS DATE), 'dd/MM/yyyy') AS 'Início Atividades',#(lf)#(tab)FORMAT(TRY_CAST(e.ActivityEndDate AS DATE), 'dd/MM/yyyy') AS 'Fim Atividades'#(lf)#(tab)#(lf)FROM Effective e WITH(NOLOCK)#(lf)#(tab)INNER JOIN Contract c WITH(NOLOCK) ON c.Id = e.ContractId#(lf)#(tab)INNER JOIN BranchCompany bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)#(tab)INNER JOIN Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)#(tab)INNER JOIN Provider p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)#(tab)INNER JOIN [Function] f WITH(NOLOCK) ON f.Id = e.FunctionId#(lf)#(tab)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)#(tab)LEFT JOIN EmployeeRegisterContractStatus AS cs WITH(NOLOCK) ON cs.EmployeeRegisterContractId = erc.Id AND cs.DeliveryKind IS NULL#(lf)#(lf)WHERE#(lf)    b.OrganizationId = @OrganizationId#(lf)    AND c.Removed = 0#(lf)    AND e.Removed = 0#(lf)#(tab)AND erc.Removed = 0#(lf)#(tab)--AND e.Situation <> 1#(lf)#(lf)order by#(lf)#(tab)bc.Document,#(lf)#(tab)e.Name#(lf)#(lf)#(lf)"]),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(Fonte, "Carro", each Text.Combine({[CPF], [Tipo de contratação]}, ""), type text),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Mesclada Inserida1", each [Carro] <> "Nenhum"),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Linhas Filtradas", "Documento", each if [CPF] = null then
+				   if [Documento Estrangeiro] = null then
+				      if [PIS] = null then 
+				         if [Nome] = null then
+				          null
+				         else [Nome]
+				      else [PIS]
+				   else [Documento Estrangeiro]
+				else [CPF]),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Personalização Adicionada", each ([Status de Restrição] <> "Erro de Efetivo" and [Status de Restrição] <> "Possivelmente fora do Período de Atividades")),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas Filtradas1", "Mesclado", each Text.Combine({[Id_Contrato], [Id_RegisterColab]}, ""), type text),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Coluna Mesclada Inserida", {"Mesclado"})
+				in
+				    #"Duplicatas Removidas"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

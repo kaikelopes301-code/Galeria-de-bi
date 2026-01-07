@@ -1,0 +1,52 @@
+table 'Tipo Documentos'
+	lineageTag: 5977190d-aa99-47d4-8a67-b6a242d02ebd
+
+	column Documento
+		dataType: string
+		lineageTag: bb6f517f-6ddb-4b46-900c-ac4cdd37d4ad
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: c8bf1446-440f-4492-8a2e-94b8c69dd6b9
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: d72e1da4-2a3b-4183-b4f0-44878933f004
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento.1'
+		dataType: string
+		lineageTag: 9755848c-c95f-41df-88ee-f6cadb31745b
+		summarizeBy: none
+		sourceColumn: Documento.1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tipo Documentos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("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", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, #"Tipo do documento" = _t, Tipo = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Tipo do documento", type text}, {"Tipo", type text}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Tipo Alterado", {"Documento"}, #"Lista de Documentos", {"Documento"}, "Relatório de Fornecedores", JoinKind.FullOuter),
+				    #"Relatório de Fornecedores Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Relatório de Fornecedores", {"Documento"}, {"Documento.1"}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Relatório de Fornecedores Expandido", {"Documento.1"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Duplicatas Removidas",{{"Documento", Order.Ascending}})
+				in
+				    #"Linhas Classificadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

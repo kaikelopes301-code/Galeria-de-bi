@@ -1,0 +1,109 @@
+table dCalendario_2
+	lineageTag: 9486326c-232e-409a-b8fd-5c51a92c1dbe
+
+	column Data
+		formatString: General Date
+		lineageTag: 334e6458-8502-49ab-bb25-792b6d2a3c4b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Data]
+		sortByColumn: 'Mês Inverso'
+
+		variation Variation
+			isDefault
+			relationship: fd8c557b-284a-43b0-abd4-dff0cacc9952
+			defaultHierarchy: LocalDateTable_98a1e0da-b938-4f64-9404-9010c35ff686.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		formatString: 0
+		lineageTag: 247281c9-3a46-480f-8337-ba56cdc134f1
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ano]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do mês'
+		lineageTag: 22e290a5-c624-4f7c-b08d-e51eb43cccf6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nome do mês]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do mês abreviado'
+		lineageTag: 67724439-86e4-4d71-8627-05106839f26e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nome do mês abreviado]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do mês'
+		formatString: 0
+		lineageTag: 77806cab-3847-413e-8182-20214a6a74b4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Número do mês]
+		sortByColumn: 'Mês Inverso'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ano Inverso'
+		formatString: 0
+		lineageTag: e033b4f0-92e3-49ad-bf66-6513bc848554
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ano Inverso]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ano Inverso Ordinal'
+		formatString: 0
+		lineageTag: 96f340f0-31b4-4410-a7c4-efd741fd6e16
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ano Inverso Ordinal]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Inverso'
+		formatString: 0
+		lineageTag: 8d66de47-012c-44e4-a992-df431d8a4fb8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Mês Inverso]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendario_2 = calculated
+		mode: import
+		source = ```
+				
+				VAR _inicio =
+				    STARTOFYEAR ( FIRSTDATE ( 'Documentos em Análise'[Data da Competência] ) )
+				VAR _final =
+				    ENDOFYEAR ( LASTDATE ( 'Documentos em Análise'[Competência] ) )
+				VAR _datas =
+				    CALENDAR ( _inicio, _final )
+				RETURN
+				ADDCOLUMNS (
+				    SELECTCOLUMNS ( _datas, "Data", [Date] ),
+				    "Ano", YEAR ( [Data] ),
+				    "Nome do mês", FORMAT ( [Data], "mmmm", "pt-BR" ),
+				    "Nome do mês abreviado", FORMAT ( [Data], "MMM - yyyy", "pt-BR" ),
+				    "Número do mês", MONTH ( [Data] ),
+				
+				    -- Ordenação reversa
+				    "Ano Inverso", YEAR ( [Data] ),
+				    "Ano Inverso Ordinal", YEAR([Data]) * -1,
+				    "Mês Inverso", MONTH([Data]) * -1
+				
+				)
+				
+				```
+
+	annotation PBI_Id = e371a3d1b8ca4b00b8c41c9caae11eea
+

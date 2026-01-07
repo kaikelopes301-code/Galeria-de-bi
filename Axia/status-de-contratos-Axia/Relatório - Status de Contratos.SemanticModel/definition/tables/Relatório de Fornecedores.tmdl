@@ -1,0 +1,452 @@
+table 'Relatório de Fornecedores'
+	lineageTag: 791caec4-1468-479f-ab04-9da45e6597a7
+
+	measure _Documentos_Quantidade = ```
+			CALCULATE(DISTINCTCOUNT('Relatório de Fornecedores'[DocumentScheduleId]))
+			
+			
+			```
+		formatString: #,0
+		lineageTag: 2caede20-b36e-47f7-ae8e-d63ee89a0d8e
+
+	measure '(Pendentes) Quantidades' =
+			CALCULATE([_Documentos_Quantidade],
+			'Relatório de Fornecedores'[Status] = "Atrasado" || 'Relatório de Fornecedores'[Status] = "Recusado")
+		lineageTag: ebccdd8b-e494-4118-b3f6-0d3c026148ed
+
+		formatStringDefinition = ```
+				VAR PORC = FORMAT([(%Porcentagem) Pendentes],"#.0%")
+				
+				VAR TOTAL = FORMAT([(Pendentes) Quantidades],"#,###")
+				
+				RETURN """" & TOTAL & " (" & PORC & ")" 
+				```
+
+	measure '(%Porcentagem) Pendentes' =
+			
+			VAR PEDEN = [(Pendentes) Quantidades]
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			RETURN IF(PEDEN = BLANK() && TOTAL >0,
+			0, PEDEN/TOTAL)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 69e394e1-8e8b-4013-9437-f92c99bc9200
+
+	measure '(Pendentes Tabela) Quantidades' =
+			CALCULATE([_Documentos_Quantidade],
+			'Relatório de Fornecedores'[Status] = "Atrasado" || 'Relatório de Fornecedores'[Status] = "Recusado")
+		formatString: 0
+		lineageTag: d50814f9-8dd5-4bcb-8230-7b9ca298da57
+
+	measure _Aprovados_Quantidade = ```
+			
+			
+			VAR APROVADOS = CALCULATE([_Documentos_Quantidade], 'Relatório de Fornecedores'[Status] = "Aprovado")
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			RETURN IF(
+			            APROVADOS = BLANK() &&  TOTAL >0, 
+			            0,
+			            APROVADOS)
+			```
+		formatString: #,0
+		lineageTag: b0bd2f03-6501-466d-b93b-2bbd351c5db8
+
+	measure _Enviados_Quantidade =
+			
+			
+			VAR ENVIADOS = CALCULATE([_Documentos_Quantidade],
+			'Relatório de Fornecedores'[Status] <> "Atrasado")
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			RETURN IF (
+			            ENVIADOS = BLANK() &&  TOTAL >0,
+			                0,
+			                ENVIADOS)
+		formatString: #,0
+		lineageTag: 78a39f8d-b92c-4313-99e8-d1a370d7047d
+
+	measure _%Aderência_ = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR ENVI = [_Enviados_Quantidade]
+			
+			RETURN IF( 
+			        ENVI =BLANK() && TOTAL>0,
+			                    0,
+			                    ENVI/TOTAL)
+			                    
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8ed7c52c-b7ef-4ec4-8d85-c38b95727ccd
+
+	measure _%Conformidade_ = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR APROV = [_Aprovados_Quantidade]
+			
+			RETURN IF( 
+			        APROV =BLANK() && TOTAL>0,
+			                    0,
+			                    APROV/TOTAL)
+			                    
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 35f4466f-f001-4d95-bb0c-01873ba44573
+
+	measure '_%(Total | Aprovados)Conformidade_' = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR APROV = [_Aprovados_Quantidade]
+			
+			RETURN IF( 
+			        APROV =BLANK() && TOTAL>0,
+			                    0,
+			                    APROV/TOTAL)
+			                    
+			```
+		lineageTag: e4dfff24-7477-4a91-9088-b6d0ff0da36d
+
+		formatStringDefinition =
+				VAR CONF = FORMAT([_%Conformidade_],"0%")
+				
+				VAR TOTAL = FORMAT([_Documentos_Quantidade],"#,###")
+				
+				VAR APROV = FORMAT([_Aprovados_Quantidade],"#,###")
+				
+				RETURN """" & CONF & " (" & APROV & "|" & TOTAL & ")"
+
+	measure '_%(Enviados | Agendados)Aderencia_' = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR ENVIO = [_Enviados_Quantidade]
+			
+			RETURN IF( 
+			        ENVIO =BLANK() && TOTAL>0,
+			                    0,
+			                    ENVIO/TOTAL)
+			                    
+			```
+		lineageTag: b8a490cb-d3a9-4054-8a0b-34bfd8ea93ad
+
+		formatStringDefinition =
+				VAR ADE = FORMAT([_%Aderência_],"0%")
+				
+				VAR TOTAL = FORMAT([_Documentos_Quantidade],"#,###")
+				
+				VAR ENVIO = FORMAT([_Enviados_Quantidade],"#,###")
+				
+				RETURN """" & ADE & " (" & ENVIO & "|" & TOTAL & ")"
+
+	measure '_%(NÃO Enviados | Agendados)Aderencia_' = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR ENVIO = (TOTAL - [_Enviados_Quantidade])
+			
+			RETURN IF( 
+			        ENVIO =BLANK() && TOTAL>0,
+			                    0,
+			                    ENVIO/TOTAL)
+			                    
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 10540ade-c38e-4535-a1a6-3439b3e08525
+
+	measure '_%(Não Aprovados | Total)Conformidade_' = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR APROV = (TOTAL - [_Aprovados_Quantidade])
+			
+			RETURN IF( 
+			        APROV =BLANK() && TOTAL>0,
+			                    0,
+			                    APROV/TOTAL)
+			                    
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d9c7e9ab-e196-434f-a0db-935cd3e498f8
+
+	measure '_NÃO EnviadosAderencia_' =
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR ENVIO = (TOTAL - [_Enviados_Quantidade])
+			
+			RETURN  ENVIO
+		formatString: #,0
+		lineageTag: 7ec36c61-e833-4cc0-b972-5053e27acb48
+
+	measure '_Não Conformidade_' = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR APROV =(Total -  [_Aprovados_Quantidade])
+			
+			RETURN APROV
+			                    
+			```
+		formatString: #,0
+		lineageTag: 2ea6023b-d62a-4d3a-beff-27e98ef2e1f8
+
+	measure _EnviadosAderencia_ =
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR ENVIO = ([_Enviados_Quantidade])
+			
+			RETURN  ENVIO
+		formatString: #,0
+		lineageTag: f0fcc28a-3ec4-466a-863a-d6342e72839b
+
+	measure _Conformidade_ = ```
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			VAR APROV = [_Aprovados_Quantidade]
+			
+			RETURN APROV
+			                    
+			```
+		formatString: #,0
+		lineageTag: d6090982-de89-461b-8f93-045d431d545a
+
+	measure _Efetivos_ativos =
+			
+			VAR CPFs = CALCULATE([_CPF_Distintos],'Relatório de Efetivos'[Situação] <> "Inativo", USERELATIONSHIP('Relatório de Efetivos'[Id_Contrato],'Relatório de Fornecedores'[Id_Contrato]))
+			
+			VAR TOTAL = [_Documentos_Quantidade]
+			
+			RETURN IF(CPFs = BLANK() && TOTAL >0,0,CPFs)
+		formatString: 0
+		lineageTag: 6596dc82-0ec9-4816-9625-80c4e9d77148
+
+	measure _Doc_Aprov_Mob = CALCULATE([_Aprovados_Quantidade], USERELATIONSHIP(Contratos[Id do Contrato],'Relatório de Efetivos'[Id_Contrato]))
+		formatString: #,0
+		lineageTag: fc97d61e-a449-42ef-b90b-1615e774dfad
+
+	column Documento
+		dataType: string
+		lineageTag: 5d689542-7cef-45c6-8bb9-a5ccf6d0ba42
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: e6beed39-75d9-4ef5-aeb3-746fc984ffc5
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: ae86a756-d7a4-40c2-8635-04a23fc6514e
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 948f16c5-834c-47ce-bc25-a1bb2e5fd54a
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: afeefb51-0ea1-4cd5-8d4e-317d119961e0
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 9aebe007-42d3-47dd-961c-122f5265490c
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ef560329-2d7f-4855-bbc1-3bc6c0cc8db7
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: e0af7e83-30e1-4a7a-ac0b-80ad6e27adbd
+			defaultHierarchy: LocalDateTable_d68d5a29-a8b8-4fe6-a6c7-eed9a8e35dc8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data da Análise'
+		dataType: string
+		lineageTag: e77e96e3-00e6-4690-9732-36aa354aaaf3
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 86c44bc6-2ebd-430e-9d21-83921d61d6a3
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 4554641e-28f2-4431-8c15-a375d6aea7d2
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a7e6f16e-f03c-4b68-95d8-d142a17be429
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 0304f9be-4815-4280-94b0-35c326bc9709
+			defaultHierarchy: LocalDateTable_d38a3e4f-e9fb-40f1-b993-fea0d3757db4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: d058dde0-7cb6-490c-bb3f-18f45a216128
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação de Documentos' =
+			
+			
+			VAR CLASS = LOOKUPVALUE('Tipo Documentos'[Tipo],'Tipo Documentos'[Documento],'Relatório de Fornecedores'[Documento])
+			
+			RETURN CLASS
+		lineageTag: c4ada89e-aa07-4605-848c-4bad7a2c325e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Efetivos ativos' = CALCULATE([_CPF_Distintos],'Relatório de Efetivos'[Situação] <> "Inativo", USERELATIONSHIP('Relatório de Efetivos'[Id_Contrato],'Relatório de Fornecedores'[Id_Contrato]))
+		formatString: 0
+		lineageTag: 2c0ca272-8f4f-4e57-a7e1-c303578fbb13
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column VP = LOOKUPVALUE(Contratos[VP],Contratos[Id do Contrato],'Relatório de Fornecedores'[Id_Contrato])
+		lineageTag: b0ad1a3e-f175-4a11-a09e-98c1df201ba6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gestor =
+			
+			VAR IdC = 'Relatório de Fornecedores'[Id_Contrato]
+			VAR Gestores =
+			    CALCULATETABLE(
+			        VALUES(Contratos[Gestor]),
+			        FILTER(ALL(Contratos), Contratos[Id do Contrato] = IdC)
+			    )
+			RETURN
+			CONCATENATEX(Gestores, Contratos[Gestor], ", ")
+		lineageTag: 5fe2928d-0aa6-4aa1-b469-c7526a8a44a5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_RegistroColab
+		dataType: string
+		lineageTag: d6160e0a-8e5d-4974-b895-95d632eb783c
+		summarizeBy: none
+		sourceColumn: Id_RegistroColab
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contract-Colaborador =
+			
+			
+			IF('Relatório de Fornecedores'[Id_RegistroColab] = BLANK(),BLANK(),CONCATENATE('Relatório de Fornecedores'[Id_Contrato],'Relatório de Fornecedores'[Id_RegistroColab]))
+		lineageTag: 91be75f5-1a1f-4f36-868c-ede192ffd674
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Mobilização' =
+			
+			VAR Efe = LOOKUPVALUE('Relatório de Efetivos'[Status de Restrição],'Relatório de Efetivos'[Contract-Colab],'Relatório de Fornecedores'[Contract-Colaborador])
+			
+			RETURN IF(Efe = BLANK(), "Empresa",
+			            IF(Efe = "Mobilizado", "Mobilizado",
+			                "Não Mobilizado"))
+		lineageTag: b900099f-895c-4281-80b8-1f7dee789794
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Restrição de Acesso'
+		dataType: string
+		lineageTag: 434a4418-edd5-482c-aed7-a89002caa754
+		summarizeBy: none
+		sourceColumn: Restrição de Acesso
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 60fada75-2ce6-4689-b073-5f3c6924d6a4
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 43cea998-a543-4125-9d33-18b698af776b
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relatório de Fornecedores' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = CAST(GETDATE() AS DATETIME);#(lf)DECLARE @organizationId uniqueidentifier = 'e9654655-6595-4748-991d-6b50831c6ca5';#(lf)DECLARE @initialDate datetime2 = '2024-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = CAST(GETDATE() AS DATETIME);#(lf)#(lf)SELECT DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)    [ds].Id AS [DocumentScheduleId],#(lf)    CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)        WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS [Tipo do documento],#(lf)     CASE WHEN d.EmployeeRestrictions = 0 THEN 'Não'#(lf)         WHEN d.EmployeeRestrictions = 1 THEN 'Sim'#(lf)         ELSE '--' END AS [Restrição de Acesso],#(lf)                          #(lf)   c.id  AS [Id_Contrato],#(lf)  #(lf)    [bc].[CompanyName] AS [Razão Social],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    dbo.FormatCNPJ([bc].[Document]) AS [CNPJ],#(lf)    CASE WHEN [er].[Name] IS NULL THEN '---' ELSE [er].[Name] END AS [Funcionário],#(lf)    er.Id AS [Id_RegistroColab],#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(lf)    Case#(lf)        WHEN d.Frequency = 2 and d.DeliveryKind = 0 THEN FORMAT(DATEADD(MONTH, -1, [ds].[ExpectedUploadAt]), 'MM/yyyy')#(lf)        ELSE FORMAT([ds].[ExpectedUploadAt], 'MM/yyyy')#(lf)    END AS [Competência],#(lf)#(lf)    FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)    CASE#(lf)        WHEN [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL) THEN 'Atrasado'#(lf)        WHEN [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL) THEN 'Próxima Entrega'#(lf)        WHEN [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0 THEN 'Recusado'#(lf)        WHEN [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0 THEN 'Próxima Entrega Recusado'#(lf)        WHEN [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL THEN 'Em Análise'#(lf)        WHEN [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 0 THEN 'Aprovado'#(lf)        WHEN [ds].[UploadedAt] IS NOT NULL AND [ds].[IsValidated] IS NOT NULL AND [ds].[IsValidated] = 1 THEN 'Aprovado'#(lf)        ELSE '--'#(lf)    END AS [Status],#(lf)    b.TradeName AS [Unidade],#(lf)    cat.Name AS [Categoria]#(lf)#(lf)#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)#(tab)INNER JOIN [DocumentScheduleContractBI] AS [dscBI] WITH (NOLOCK) ON dscBI.DocumentScheduleId = ds.Id#(lf)    INNER JOIN [Contract] AS [c] WITH (NOLOCK) ON c.Id = dscBI.ContractId #(lf)    INNER JOIN Building b                 WITH (NOLOCK) ON b.Id = c.BuildingId#(lf)    INNER JOIN Category cat               WITH (NOLOCK) ON cat.Id = c.CategoryId#(lf)    #(lf)    #(lf)WHERE#(lf)    [ds].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Archived] = CAST(0 AS bit)#(lf)    AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] < @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)    AND [c].[removed] = 0#(lf)#(lf)#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Prazo de Envio", type date}, {"Competência", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

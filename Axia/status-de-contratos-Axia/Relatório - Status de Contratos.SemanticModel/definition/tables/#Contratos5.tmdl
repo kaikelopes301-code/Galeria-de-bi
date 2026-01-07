@@ -1,0 +1,50 @@
+table #Contratos5
+	lineageTag: 6611b64e-77a1-44db-95ee-aae75efa5157
+
+	column #Contratos5
+		lineageTag: 0162efc5-1227-4565-a9da-e3ce1c54d58f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Contratos5 Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Contratos5 Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos5 Campos'
+		isHidden
+		lineageTag: 1e06510f-f8c1-452c-a7ef-be35116dcc68
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Contratos5 Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos5 Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: d03c31e8-95ac-4f2a-b568-81352101e8aa
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Contratos5 = calculated
+		mode: import
+		source =
+				{
+				    ("Gestor", NAMEOF('Contratos'[Gestor]), 0),
+				    ("Unidade", NAMEOF('Contratos'[Unidade]), 1),
+				    ("VP", NAMEOF('Contratos'[VP]), 2),
+				    ("Fornecedor", NAMEOF('Contratos'[Fornecedor]), 3)
+				}
+
+	annotation PBI_Id = 123f70a707d644cd88b832277f3b9798
+

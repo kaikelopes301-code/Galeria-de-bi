@@ -1,0 +1,50 @@
+table TabelaUnidades
+	lineageTag: 295b870e-2e2e-4948-b775-c6f74dde8171
+
+	column Unidade
+		lineageTag: 30a2c30f-9907-4acc-af1d-643c9f958236
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Unidade]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Grupo
+		lineageTag: c45d2ef9-5ea6-441f-b973-3b94b68a3d6e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Grupo]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TabelaUnidades = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Unidade", STRING,
+				    "Grupo", STRING,
+				    {
+				        {"Taquara Plaza", "Grupo 1"},
+				        {"Campinas Shopping", "Grupo 1"},
+				        {"Shopping Vale do Aço", "Grupo 1"},
+				        {"Ourinhos Plaza Shopping", "Grupo 1"},
+				        {"Itaboraí Plaza", "Grupo 2"},
+				        {"Shopping Praça Nova Araçatuba", "Grupo 2"},
+				        {"Boa Vista Shopping", "Grupo 2"},
+				        {"Shopping Sete Lagoas", "Grupo 2"},
+				        {"Pruden Shopping", "Grupo 3"},
+				        {"Shopping Praça Nova Santa Maria", "Grupo 3"},
+				        {"Shopping Park Sul", "Grupo 3"},
+				        {"Rio 2 Shopping", "Grupo 3"},
+				        {"Shopping Park Lagos", "Grupo 3"},
+				        {"Norte Sul Plaza", "Grupo 4"},
+				        {"Multicenter Itaipu", "Grupo 4"},
+				        {"Vogue Square", "Grupo 4"},
+				        {"Shopping Três Lagoas", "Grupo 4"},
+				        {"Shopping Park Europeu", "Grupo 4"}
+				    }
+				)
+
+	annotation PBI_Id = ff578b121d5946cd9455d4d067440670
+

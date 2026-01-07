@@ -1,0 +1,32 @@
+table #ControleProximaEntrega
+	lineageTag: 86c2b7f9-4c9a-47f7-9184-b45b6dfab86f
+
+	measure Modo_ProximaEntrega = ```
+			SELECTEDVALUE('#ControleProximaEntrega'[Opção], "Ignorar Próximas Entregas")
+			
+			```
+		lineageTag: 0b552d56-f465-437e-87db-e93d42c00624
+
+	column Opção
+		lineageTag: 938a4345-3ccb-44e6-becf-1efb58e1ef0f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Opção]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #ControleProximaEntrega = calculated
+		mode: import
+		source = ```
+				DATATABLE(
+				    "Opção", STRING,
+				    {
+				        {"Ignorar Próximas Entregas"},
+				        {"Incluir Próximas Entregas"}
+				    }
+				)
+				
+				```
+
+	annotation PBI_Id = 0039e5108889470a81e0c79b849e3ca6
+

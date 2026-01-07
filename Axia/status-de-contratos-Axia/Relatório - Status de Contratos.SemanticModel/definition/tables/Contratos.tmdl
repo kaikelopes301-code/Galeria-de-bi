@@ -1,0 +1,586 @@
+table Contratos
+	lineageTag: bdecbffc-38e8-4d06-949c-cddd30512e72
+
+	measure '(Contratos) Quantidade' = CALCULATE(DISTINCTCOUNT(Contratos[Id do Contrato]))
+		formatString: #,0
+		lineageTag: e0fefaf6-4769-4338-b1a9-74c37f4f539a
+
+	measure '(Distintos) Contratos' = CALCULATE(DISTINCTCOUNT(Contratos[Nº do Contrato]))
+		formatString: #,0
+		lineageTag: 7f2b6f31-7813-4417-8c0c-fae95015bedb
+
+	measure '(CNPJ) Quantidade' = CALCULATE(DISTINCTCOUNT(Contratos[CNPJ]))
+		formatString: #,0
+		lineageTag: f81668a5-ce83-4cce-a559-fb7654a99705
+
+	measure '(Fornecedores) Quantidade' = CALCULATE(DISTINCTCOUNT(Contratos[Fornecedor]))
+		formatString: #,0
+		lineageTag: 8899f3a3-da92-47a6-85b1-d9c00080bf3f
+
+	measure Hoje =
+			
+			VAR HOJE = TODAY()
+			
+			RETURN "Data da Exportação: " & HOJE
+		lineageTag: 80f19418-ca90-43f8-b513-0ca16bae5431
+
+	measure '(Sem Efeitos) Contratos'
+		lineageTag: 421dc82e-42fd-4b75-81cd-71cb382dd969
+
+	measure _Sem_Gestor_ =
+			CALCULATE([(Distintos) Contratos],
+			Contratos[Gestor] = "Sem Gestor")
+		formatString: 0
+		lineageTag: b05b62c3-2fd0-45a3-81a7-f0b2c924901b
+
+	measure _Pendente_Mobilização_ = ```
+			CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[Nº do pedido]), 
+			'Relatório de Efetivos'[Status de Restrição] <>  "Mobilizado" && 
+			'Relatório de Efetivos'[Situação] <>  "Inativo")
+			```
+		formatString: #,0
+		lineageTag: 52ea6051-ac4e-4f4b-8c89-050494c31e1e
+
+	measure _Pedidos_Sem_Status =
+			
+			CALCULATE(
+			    COUNTROWS(
+			        EXCEPT(
+			            VALUES(Contratos[Nº do Contrato]),
+			            SELECTCOLUMNS(
+			                FILTER(
+			                    'Relatório de Efetivos',
+			                    'Relatório de Efetivos'[Situação] <> "Inativo"
+			                ),
+			                "Nº do pedido", 'Relatório de Efetivos'[Nº do pedido]
+			            )
+			        )
+			    )
+			)
+		formatString: 0
+		lineageTag: 97cbcb82-5887-4e4c-9e99-3b45ff7f2837
+
+	measure _Status_Pendência_Mobilização =
+			
+			
+			VAR PENDENTE = [_Pendente_Mobilização_]
+			
+			RETURN IF (PENDENTE>0, "Com Pendência","Sem Pendência")
+		lineageTag: e886d37d-d78e-4dd1-b25e-a8c4a867d8fb
+
+	measure _Status_Pedidos_Sem_Mobilização =
+			
+			VAR SEMBOB = [_Pedidos_Sem_Status]
+			
+			RETURN IF(SEMBOB >0 && SEMBOB <> BLANK(), "Sem Mobilização","Com Mobilização")
+		lineageTag: 0e47dd62-94d6-43d6-8a7a-edb47f8a8fc9
+
+	measure Cor_ContratoAVencer =
+			
+			VAR Contrato = VALUES(Contratos[Contrato a Vencer])
+			
+			RETURN
+			IF(Contrato = "Vencido há mais de 2 meses", "#990000",   -- Vermelho escuro
+			IF(Contrato = "Vencido há 1-2 meses",       "#CC0000",   -- Vermelho médio
+			IF(Contrato = "Vencido recente",            "#E06666",   -- Vermelho claro
+			IF(Contrato = "Vence hoje",                 "#FFD966",   -- Amarelo escuro
+			IF(Contrato = "Falta 1 dia",                "#FFF2CC",   -- Amarelo claro
+			IF(Contrato = "Falta menos de 1 semana",    "#D9EAD3",   -- Verde claro
+			IF(Contrato = "Falta até 1 mês",            "#B6D7A8",   -- Verde médio
+			IF(Contrato = "Falta até 2 meses",          "#A2C4C9",   -- Verde azulado
+			IF(Contrato = "Falta mais de 2 meses",      "#C9DAF8",   -- Azul pastel
+			BLANK()
+			)))))))))
+		lineageTag: 3983d393-541b-4fd6-be1e-6a33286d1e73
+
+	measure _Pedidos_100%_Mobilizados = ```
+			
+			CALCULATE(
+			    COUNTROWS(
+			        FILTER(
+			            VALUES('Relatório de Efetivos'[Nº do pedido]),
+			            VAR PedidoAtual = 'Relatório de Efetivos'[Nº do pedido]
+			            VAR TotalAtivos = 
+			                CALCULATE(
+			                    COUNTROWS('Relatório de Efetivos'),
+			                    'Relatório de Efetivos'[Nº do pedido] = PedidoAtual,
+			                    'Relatório de Efetivos'[Situação] <> "Inativo"
+			                )
+			            VAR TotalMobilizados = 
+			                CALCULATE(
+			                    COUNTROWS('Relatório de Efetivos'),
+			                    'Relatório de Efetivos'[Nº do pedido] = PedidoAtual,
+			                    'Relatório de Efetivos'[Situação] <> "Inativo",
+			                    'Relatório de Efetivos'[Status de Restrição] = "Mobilizado"
+			                )
+			            RETURN
+			                TotalAtivos > 0 && TotalMobilizados = TotalAtivos
+			        )
+			    )
+			)
+			```
+		formatString: 0
+		lineageTag: b2109772-f322-45e2-82e6-7949a62af1d1
+
+	measure 'Quantidade de Aprovados' = [_Aprovados_Quantidade]
+		formatString: 0
+		lineageTag: 7cccf46a-e9a2-4857-bbcd-df6e7a5b58e8
+
+	measure _Efetivos_Previsto_ =
+			
+			SUMX(
+			    DISTINCT(Contratos[Id do Contrato]),
+			    CALCULATE(
+			        MAX(Contratos[Quantidade Efetivos Contratadas])
+			    )
+			)
+		formatString: #,0
+		lineageTag: 78a9e20f-5307-4254-a937-33cd2bcf1947
+
+	measure Medida
+		lineageTag: 2480e97d-7698-4616-820b-95bf0e12d51f
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure '(_%Mobilizados Previstos_)' = ```
+			
+			
+			VAR MOB = 'Relatório de Efetivos'[_Efetivos_Mobilizados]
+			
+			Var PREV = Contratos[_Efetivos_Previsto_]
+			
+			
+			RETURN 
+			    IF(MOB = 0 && PREV > 0,
+			                    0,
+			                    IF(MOB >0 && PREV = 0, "Sem Previsão Efetivo",
+			                        IF(MOB = 0 && PREV = 0,"Sem Mobilização e Previstos",MOB/PREV)
+			                    )
+			        )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 84e8efd8-b71a-409f-9cfd-f3a9d6558e9a
+
+	measure _Contratos_Sem_Efetivos_Ativos = CALCULATE(DISTINCTCOUNT(Contratos[Nº do Contrato]), Contratos[Colaboradores Ativos] = BLANK())
+		formatString: #,0
+		lineageTag: 7d7b0e41-408e-470a-9a53-3aee52dbf123
+
+	measure _Contratos_Sem_Efetivos_Mobilizados = CALCULATE(DISTINCTCOUNT(Contratos[Nº do Contrato]), Contratos[Efetivos_Mobilizados] = BLANK())
+		formatString: #,0
+		lineageTag: fc8106d7-13ce-4e43-b1cf-5c6ef97693f5
+
+	column CNPJ
+		dataType: string
+		lineageTag: 65994f1c-1309-4271-9c4c-93185ed16c4c
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: bc407221-7dbd-40f7-961c-3551f27b2744
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 53081f9d-d1e2-4406-8587-034ad3136bf7
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: c50d06ce-ccc3-49da-a07d-927cdfd16292
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0f764b8d-400c-4472-bd12-c836342c13ed
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do Contrato'
+		dataType: string
+		lineageTag: 315a9f6a-2370-4870-a042-de17e74929fa
+		summarizeBy: none
+		sourceColumn: Nº do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: 4d5d8ede-7fb1-4051-84bf-43e86f45b332
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: d8dcb81d-7c80-405d-b21d-50be1314f48c
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Id do Contrato'
+		dataType: string
+		lineageTag: ac9f4bf6-c4a5-458b-85d4-7ed741c65028
+		summarizeBy: none
+		sourceColumn: Id do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 155b10a6-e82a-4b58-ae18-9d670dc7bfde
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column VP
+		dataType: string
+		lineageTag: c2658467-a004-4ccf-bb4a-7c075229eb1a
+		summarizeBy: none
+		sourceColumn: VP
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email_Gestor
+		dataType: string
+		lineageTag: a263acd5-9276-4af1-9eb0-29c62db20884
+		summarizeBy: none
+		sourceColumn: Email_Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: c29be53b-ab7f-494e-803e-ff9fd84cb69c
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: faa5ff60-e284-46e6-85f0-71cc18fe0b36
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Vigência'
+		dataType: string
+		lineageTag: aeeca71c-dcc9-431d-8e2a-d9fe0b405e05
+		summarizeBy: none
+		sourceColumn: Status Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade Colaboradores' =
+			
+			VAR EFETIVOS = [(Ativos) Colaboradores]
+			
+			RETURN IF(EFETIVOS=BLANK(),
+			        0,
+			        EFETIVOS)
+		formatString: 0
+		lineageTag: 08e7bcb2-24cc-44ef-bdcb-d1416bb3ebf9
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Cadastro de Efetivos' =
+			
+			IF(
+			    Contratos[Quantidade Colaboradores]=0,
+			        "Sem Efetivos Cadastrados",
+			        "Com Efetivos Cadastrados")
+		lineageTag: 88bc170e-e670-4c25-8930-ed8daf0cae1a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Possui Efetivo Cadastrado' = ```
+			
+			
+			VAR EFETIVOS = [(Cadastrados) Quantidade]
+			
+			RETURN IF( 
+			            EFETIVOS = BLANK(),
+			            "Sem Efetivos Cadastrados",
+			            "Há Efetivos Cadastrados")
+			```
+		lineageTag: 3511e41d-de26-4eef-a895-c70468e091ed
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: b7af57d6-c7a6-4816-87cf-404757489d96
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Gestor Email'
+		dataType: string
+		lineageTag: a0534f07-4f2b-4174-be2b-6acf5c0cb47a
+		summarizeBy: none
+		sourceColumn: Status Gestor Email
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Gestor'
+		dataType: string
+		lineageTag: 684dc941-3fc5-4321-b159-e178d142ec41
+		summarizeBy: none
+		sourceColumn: Status Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contrato a Vencer'
+		dataType: string
+		lineageTag: e28c8b8b-9bb6-4a7e-94f0-0df568504f17
+		summarizeBy: none
+		sourceColumn: Contrato a Vencer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gestor
+		dataType: string
+		lineageTag: 75c5e1f6-8813-4199-bab8-d2e698fb8011
+		summarizeBy: none
+		sourceColumn: Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias Vencido'
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e8d1947-220c-456c-a3ea-7966c31eade3
+		summarizeBy: sum
+		sourceColumn: Dias Vencido
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Fonte_ContratoAVencer = ```
+			
+			VAR CorFundo = 
+			    SWITCH(
+			        TRUE(),
+			        Contratos[Contrato a Vencer] = "Vencido há mais de 2 meses", "#FFFFFF", -- branco (fundo vermelho escuro)
+			        Contratos[Contrato a Vencer] = "Vencido há 1-2 meses",       "#FFFFFF", -- branco (fundo vermelho médio)
+			        Contratos[Contrato a Vencer] = "Vencido recente",            "#000000", -- preto (vermelho claro)
+			        Contratos[Contrato a Vencer] = "Vence hoje",                 "#000000", -- preto (amarelo escuro)
+			        Contratos[Contrato a Vencer] = "Falta 1 dia",                "#000000", -- preto (amarelo claro)
+			        Contratos[Contrato a Vencer] = "Falta menos de 1 semana",    "#000000", -- preto (verde claro)
+			        Contratos[Contrato a Vencer] = "Falta até 1 mês",            "#000000", -- preto (verde médio)
+			        Contratos[Contrato a Vencer] = "Falta até 2 meses",          "#000000", -- preto (azul pastel)
+			        Contratos[Contrato a Vencer] = "Falta mais de 2 meses",      "#000000", -- preto (azul claro)
+			        "#000000" -- padrão
+			    )
+			
+			RETURN CorFundo
+			```
+		lineageTag: f71179d6-f91a-47aa-a889-1c4958c8f9af
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do gestor técnico'
+		dataType: string
+		lineageTag: 3af49d8a-3706-4e2b-a2ca-0d8fdd7e0ec2
+		summarizeBy: none
+		sourceColumn: E-mail do gestor técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do fiscal técnico'
+		dataType: string
+		lineageTag: e3cc0f19-b63e-4e0b-8087-9cc9718ff226
+		summarizeBy: none
+		sourceColumn: E-mail do fiscal técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Documentos' = [_Documentos_Quantidade]
+		formatString: 0
+		lineageTag: 90375eed-e151-4845-b4f4-c6cf304a5063
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Enviados = [_Enviados_Quantidade]
+		formatString: 0
+		lineageTag: 0d141bf8-3719-4c03-b94b-b688994aa047
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Aprovados = [_Aprovados_Quantidade]
+		formatString: 0
+		lineageTag: 3ae88d59-29de-4ed2-b5ce-a3e00e6219ef
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Aderência = [_%Aderência_]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9dd0e7c1-d2f2-48e2-b8a4-be9d7a3e0261
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conformidade = [_%Conformidade_]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 32ced17f-1442-49ab-88eb-d40b0240870d
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ed6df60f-bee5-4a7c-9e8c-6d57a31c0373
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 76694ee3-71e6-4d9c-a8cc-6f88f54ad489
+			defaultHierarchy: LocalDateTable_e11370c5-cc22-4ee5-9158-74dc96b861c9.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 42db4e87-74dd-4d6b-8dc6-01aa111471c2
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: d790f786-614c-4ec2-b145-eb3548867a40
+			defaultHierarchy: LocalDateTable_5b0643ad-10ac-43fe-bb41-71240982e974.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Origem do Gestor'
+		dataType: string
+		lineageTag: b8e75102-085e-4bbf-9b5e-13c53964f96a
+		summarizeBy: none
+		sourceColumn: Origem do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade Efetivos Contratadas'
+		dataType: int64
+		formatString: 0
+		lineageTag: 84b3ebd8-107b-491f-bdf9-e0d91a4a75e9
+		summarizeBy: sum
+		sourceColumn: Quantidade Efetivos Contratadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column Efetivos_Mobilizados =
+			CALCULATE([(Cadastrados) Quantidade],
+			'Relatório de Efetivos'[Situação] <> "Inativo",
+			'Relatório de Efetivos'[Status de Restrição] = "Mobilizado")
+		formatString: 0
+		lineageTag: 52ddff53-9a5b-4781-a1e6-611a4d8465cf
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Colaboradores Ativos' = CALCULATE(COUNTROWS('Relatório de Efetivos'),'Relatório de Efetivos'[Situação] <> "Inativo")
+		formatString: 0
+		lineageTag: 57a43e4b-e7fb-4e60-ac32-59a56ec220d3
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Contato'
+		dataType: string
+		lineageTag: d123df27-a1ed-4146-833c-50521fe1ede8
+		summarizeBy: none
+		sourceColumn: Nome do Contato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Contato'
+		dataType: string
+		lineageTag: 6efa8dc0-fe98-4da1-bb2f-578adb941b0c
+		summarizeBy: none
+		sourceColumn: Email do Contato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="SELECT Distinct#(lf)    c.OrderNumber            AS [Nº do pedido],#(lf)    c.Id                     AS [Id do Contrato],#(lf)    bc.CompanyName           AS [Razão social],#(lf)    bc.[Document]            AS [CNPJ],#(lf)    cc.[Name]                AS [Nome do Contato],#(lf)#(tab)cc.[Email]               AS [Email do Contato],#(lf)ISNULL(#(lf)    CASE#(lf)        WHEN c.[Type] = 1   THEN 'Contínuo'#(lf)        WHEN c.[Type] = 2   THEN 'Grandes Paradas'#(lf)        WHEN c.[Type] = 4   THEN 'Eventual'#(lf)        WHEN c.[Type] = 8   THEN 'Temporário'#(lf)        WHEN c.[Type] = 16  THEN 'Visitante técnico'#(lf)        WHEN c.[Type] = 32  THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        WHEN c.[Type] = 64  THEN 'Prestação de serviço eventual fora da área operacional'#(lf)        WHEN c.[Type] = 128 THEN 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        WHEN c.[Type] = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)    END,'SEM TIPO DE CONTRATAÇÃO') AS [Tipo da contratação],#(lf)c.ContractedEffectiveQuantity as [Quantidade Efetivos Contratadas],#(lf)    CASE WHEN c.Sla = 0 THEN 'Padrão'#(lf)         WHEN c.Sla = 1 THEN 'Emergencial' END AS [Sla],#(lf)#(lf)    CASE WHEN c.[Status] = 0 THEN 'Regular'#(lf)         WHEN c.[Status] = 1 THEN 'Aguardando Ação do Gestor'#(lf)         WHEN c.[Status] = 2 THEN 'Aguardando Ação do Fornecedor'#(lf)         WHEN c.[Status] = 3 THEN 'Arquivado' END AS [Status],#(lf)#(lf)    CONVERT(date, c.CreatedAt)                                             AS [Cadastro no sistema],#(lf)#(tab)CONVERT(date, c.ValidityInitial) as [Vigência Inicial],#(lf)    CONVERT(date, c.ValidityFinal) AS [Vigência Final],#(lf)    b.TradeName                                                             AS [Unidade],#(lf)    r.Name                                                                  AS [Regional],#(lf)    ca.[Name]                                                               AS [Categoria],#(lf)    p.TradeName                                                             AS [Fornecedor],#(lf)    c.[Value]                                                               AS [Valor do contrato],#(lf)#(lf)    -- se existir ""eletro"", usa os campos do cm_eletro; senão, usa o cm_any (pode ser NULL)#(lf)    ISNULL(CASE WHEN cm_eletro.Id IS NOT NULL THEN cm_eletro.[Name]  ELSE cm_any.[Name] END,'SEM GESTOR')   AS [Nome do Gestor],#(lf)    CASE WHEN cm_eletro.Id IS NOT NULL THEN cm_eletro.[Email] ELSE cm_any.[Email] END AS [Email do Gestor],#(lf)    CASE WHEN cm_eletro.Id IS NOT NULL THEN cm_eletro.[Phone] ELSE cm_any.[Phone] END AS [Telefone do Gestor],#(lf)#(lf)    -- opcional: flag pra entender a origem#(lf)    CASE WHEN cm_eletro.Id IS NOT NULL THEN 'E-mail contém eletro' ELSE 'Fallback (sem eletro)' END AS [Origem do Gestor],#(lf)#(lf)    cfi3.[Name]   AS [Frequência],#(lf)    cfi5.[Name]   AS [VP de Execução do contrato],#(lf)    cfi7.[Name]   AS [VP Requisitante do contrato],#(lf)    cfv10.[Value] AS [Nome do gestor técnico],#(lf)    cfv11.[Value] AS [E-mail do gestor técnico],#(lf)    cfv8.[Value]  AS [Nome do fiscal técnico],#(lf)    cfv9.[Value]  AS [E-mail do fiscal técnico],#(lf)    cfv12.[Value] AS [Nome do gestor administrativo],#(lf)    cfv13.[Value] AS [E-mail do gestor administrativo],#(lf)    cfv14.[Value] AS [Nome do SST responsável],#(lf)    cfv15.[Value] AS [E-mail do SST responsável],#(lf)    cfv16.[Value] AS [Centro de Custo]#(lf)#(lf)FROM [Contract] c WITH (NOLOCK)#(lf)INNER JOIN Building b       WITH (NOLOCK) ON b.Id = c.BuildingId#(lf)INNER JOIN Region r         WITH (NOLOCK) ON r.Id = b.RegionId#(lf)INNER JOIN BranchCompany bc WITH (NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)INNER JOIN [Category] ca    WITH (NOLOCK) ON ca.Id = c.CategoryId#(lf)INNER JOIN [Provider] p     WITH (NOLOCK) ON c.ProviderId = p.Id#(lf)left join ContractContact cc with(nolock) on cc.ContractId = c.Id AND cc.Removed = 0#(lf)#(lf)/* 1) conjunto de gestores cujo EMAIL contém ""eletro"" (pode devolver várias linhas) */#(lf)OUTER APPLY (#(lf)    SELECT cm1.Id, cm1.[Name], cm1.[Email], cm1.[Phone]#(lf)    FROM ContractManager cm1 WITH (NOLOCK)#(lf)    WHERE cm1.ContractId = c.Id#(lf)      AND cm1.Removed = 0#(lf)      AND cm1.Email COLLATE Latin1_General_CI_AI LIKE '%eletro%'#(lf)) AS cm_eletro#(lf)#(lf)/* 2) fallback: um gestor qualquer (se existir) */#(lf)OUTER APPLY (#(lf)    SELECT TOP (1) cm2.Id, cm2.[Name], cm2.[Email], cm2.[Phone]#(lf)    FROM ContractManager cm2 WITH (NOLOCK)#(lf)    WHERE cm2.ContractId = c.Id#(lf)      AND cm2.Removed = 0#(lf)    ORDER BY cm2.Id -- ou cm2.CreatedAt DESC se preferir o mais recente#(lf)) AS cm_any#(lf)#(lf)LEFT JOIN CustomFieldValue cfv8  WITH (NOLOCK) ON cfv8.EntityId = c.Id AND cfv8.CustomFieldId  = '46797071-E688-4C4D-9D1E-A43BA98C9648'#(lf)LEFT JOIN CustomFieldValue cfv9  WITH (NOLOCK) ON cfv9.EntityId = c.Id AND cfv9.CustomFieldId  = '2DA18E51-F8A5-4BDC-8553-87A17EB27A7C'#(lf)LEFT JOIN CustomFieldValue cfv10 WITH (NOLOCK) ON cfv10.EntityId = c.Id AND cfv10.CustomFieldId = '9C244155-B8D4-4F0B-9413-7ECBCAFCD254'#(lf)LEFT JOIN CustomFieldValue cfv11 WITH (NOLOCK) ON cfv11.EntityId = c.Id AND cfv11.CustomFieldId = '7BF74685-4491-455C-9A27-F582AEE0ECA9'#(lf)LEFT JOIN CustomFieldValue cfv12 WITH (NOLOCK) ON cfv12.EntityId = c.Id AND cfv12.CustomFieldId = '9F3F9320-74D8-4A80-A465-21C47B1D3AB1'#(lf)LEFT JOIN CustomFieldValue cfv13 WITH (NOLOCK) ON cfv13.EntityId = c.Id AND cfv13.CustomFieldId = '8909197F-A741-48C4-82A9-02090DAD2FAD'#(lf)LEFT JOIN CustomFieldValue cfv14 WITH (NOLOCK) ON cfv14.EntityId = c.Id AND cfv14.CustomFieldId = '853608BB-71D6-407D-8BF1-413B396A4992'#(lf)LEFT JOIN CustomFieldValue cfv15 WITH (NOLOCK) ON cfv15.EntityId = c.Id AND cfv15.CustomFieldId = '73E86956-CFF0-4D88-940B-F0F09E78E677'#(lf)LEFT JOIN CustomFieldValue cfv16 WITH (NOLOCK) ON cfv16.EntityId = c.Id AND cfv16.CustomFieldId = 'A684A08F-8759-4429-80C0-23BBB16AF57A'#(lf)#(lf)OUTER APPLY (#(lf)    SELECT cfi2.[Name]#(lf)    FROM CustomFieldValue cfv2 WITH (NOLOCK)#(lf)    INNER JOIN CustomFieldItem cfi2 WITH (NOLOCK) ON cfv2.CustomFieldItemId = cfi2.Id#(lf)    WHERE cfv2.EntityId = c.Id#(lf)      AND cfv2.[Value] IS NULL#(lf)      AND cfv2.Removed = 0#(lf)      AND cfi2.Removed = 0#(lf)      AND cfv2.CustomFieldId = '1C30677D-3F2F-4396-93DE-1DA0FD90E592'#(lf)) AS cfi3#(lf)#(lf)OUTER APPLY (#(lf)    SELECT cfi4.[Name]#(lf)    FROM CustomFieldValue cfv4 WITH (NOLOCK)#(lf)    INNER JOIN CustomFieldItem cfi4 WITH (NOLOCK) ON cfv4.CustomFieldItemId = cfi4.Id#(lf)    WHERE cfv4.EntityId = c.Id#(lf)      AND cfv4.[Value] IS NULL#(lf)      AND cfv4.Removed = 0#(lf)      AND cfi4.Removed = 0#(lf)      AND cfv4.CustomFieldId = '586D0602-B8D0-480F-8565-5A1040393B54'#(lf)) AS cfi5#(lf)#(lf)OUTER APPLY (#(lf)    SELECT cfi6.[Name]#(lf)    FROM CustomFieldValue cfv6 WITH (NOLOCK)#(lf)    INNER JOIN CustomFieldItem cfi6 WITH (NOLOCK) ON cfv6.CustomFieldItemId = cfi6.Id#(lf)    WHERE cfv6.EntityId = c.Id#(lf)      AND cfv6.[Value] IS NULL#(lf)      AND cfv6.Removed = 0#(lf)      AND cfi6.Removed = 0#(lf)      AND cfv6.CustomFieldId = 'A53C1F6C-9334-4AF9-8B78-03CC327FB6D7'#(lf)) AS cfi7#(lf)#(lf)WHERE b.OrganizationId = 'e9654655-6595-4748-991d-6b50831c6ca5'#(lf)  AND c.Removed = 0#(lf)#(lf)ORDER BY c.OrderNumber;#(lf)"]),
+				    #"Coluna Condicional Adicionada2" = Table.AddColumn(Fonte, "Tipo de Fornecedor", each if Text.Contains([Nº do pedido], "S") then "Subcontratado" else "Contratado"),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Coluna Condicional Adicionada2",{{"Nº do pedido", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Status", type text}, {"Vigência Inicial", type date},{"Vigência Final", type date}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Tipo Alterado", "Status Vigência", each if [Vigência Inicial] > DateTime.Date(DateTime.LocalNow()) then "Vigência Futura" else if [Vigência Final] < DateTime.Date(DateTime.LocalNow()) then "Vigência Finalizada" else "Vigente"),
+				    #"Texto Limpo" = Table.TransformColumns(#"Coluna Condicional Adicionada1",{{"Nome do Gestor", Text.Clean, type text}}),
+				    #"Colunas Renomeadas5" = Table.RenameColumns(#"Texto Limpo",{{"Email do Gestor", "Email_Gestor"}, {"Nome do Gestor", "Gestor"}}),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Colunas Renomeadas5", "Índice", 0, 1, Int64.Type),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Índice Adicionado",{{"Email_Gestor", Text.Upper, type text}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Texto em Maiúscula", "Status Gestor Email", each if [Email_Gestor] = null then "Sem Gestor" else if Text.Contains([Email_Gestor], "AXIA") then "Gestor AXIA" else if [Email_Gestor] = "SEM GESTOR" then "Sem Gestor" else "Não Gestor AXIA"),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Coluna Condicional Adicionada", "Personalizar.1", each if [Gestor] = null then "Sem Gestor" else if [Status Gestor Email] = "Gestor AXIA" then [Status Gestor Email] else if [Status Gestor Email] = "Não Gestor AXIA" then [Status Gestor Email] else "Sem Gestor"),
+				    #"Colunas Renomeadas3" = Table.RenameColumns(#"Personalização Adicionada3",{{"Personalizar.1", "Status Gestor"}}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Colunas Renomeadas3", "Contrato a Vencer", each let
+				    Hoje = Date.From(DateTime.LocalNow()),
+				    Diferenca = Duration.Days([Vigência Final] - Hoje)
+				in
+				   if Diferenca < -60 then "Vencido há mais de 2 meses"
+				else if Diferenca <= -30 then "Vencido há 1-2 meses"
+				else if Diferenca < 0 then "Vencido recente (menos de 1 mês)"
+				else if Diferenca = 0 then "Vence hoje"
+				else if Diferenca = 1 then "Falta 1 dia"
+				else if Diferenca <= 7 then "Falta menos de 1 semana"
+				else if Diferenca <= 30 then "Falta até 1 mês"
+				else if Diferenca <= 60 then "Falta até 2 meses"
+				else "Falta mais de 2 meses"),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Personalização Adicionada4", "Personalizar", each let
+				    Hoje = Date.From(DateTime.LocalNow()),
+				    Diferenca = Duration.Days([Vigência Final] - Hoje)
+				
+				    in
+				    Diferenca),
+				    #"Colunas Renomeadas6" = Table.RenameColumns(#"Personalização Adicionada",{{"Personalizar", "Dias Vencido"}}),
+				    #"Colunas Renomeadas4" = Table.RenameColumns(#"Colunas Renomeadas6",{{"Nº do pedido", "Nº do Contrato"}}),
+				    #"Texto em Maiúscula1" = Table.TransformColumns(#"Colunas Renomeadas4",{{"Gestor", Text.Upper, type text}, {"Id do Contrato", Text.Upper, type text}}),
+				    #"Valor Substituído12" = Table.ReplaceValue(#"Texto em Maiúscula1",null,"Sem VP",Replacer.ReplaceValue,{"VP de Execução do contrato"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Valor Substituído12",{{"VP de Execução do contrato", "VP"}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Colunas Renomeadas2",{"Sla", "Cadastro no sistema", "Valor do contrato", "VP Requisitante do contrato", "Nome do gestor técnico", "Nome do fiscal técnico",  "Nome do gestor administrativo", "E-mail do gestor administrativo", "Nome do SST responsável", "E-mail do SST responsável", "Centro de Custo", "Frequência"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

@@ -1,0 +1,49 @@
+table '#Contratos 2'
+	lineageTag: 2d5fa8cc-5e29-4019-a183-299ab6f2b6ab
+
+	column #Contratos
+		lineageTag: a70501d4-b593-437a-a353-fa0379a1fd20
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Contratos Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Contratos Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos Campos'
+		isHidden
+		lineageTag: bf564702-d5d9-4f75-b58f-a8031ee531dc
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Contratos Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Contratos Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 425f80a4-c990-43e2-863c-b646a6cfae0e
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '#Contratos 2' = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Contratos'[Razão social]), 0),
+				    ("Regional", NAMEOF('Contratos'[Regional]), 1),
+				    ("Unidade", NAMEOF('Contratos'[Unidade]), 2)
+				}
+
+	annotation PBI_Id = 74d0e9dfeca84068a7098aac8937e32f
+

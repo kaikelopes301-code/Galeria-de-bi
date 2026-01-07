@@ -1,0 +1,17 @@
+table TabelaGrupos
+	lineageTag: 1993d8b5-9589-4a65-9180-5bb263fb5c1a
+
+	column Grupo
+		lineageTag: f523155c-6120-4b30-8b8a-d3cd3bbd5863
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: TabelaUnidades[Grupo]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TabelaGrupos = calculated
+		mode: import
+		source = DISTINCT(TabelaUnidades[Grupo])
+
+	annotation PBI_Id = 825959167f184b67bf55fbfaf29bacad
+

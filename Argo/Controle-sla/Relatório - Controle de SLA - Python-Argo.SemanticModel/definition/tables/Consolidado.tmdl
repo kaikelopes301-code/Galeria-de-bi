@@ -1,0 +1,127 @@
+table Consolidado
+	lineageTag: 3ab19e98-55ab-4a6c-a187-0f21d59aae5d
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 5de5ced9-dd65-4f48-812c-d761cd4bac40
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 383f126c-4f8b-4580-aa2e-95ae08724418
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 71aa2de9-4b59-4fc6-801f-48fecb0e74f7
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: e949f237-894f-471b-9499-4ab7cc14c5e9
+			defaultHierarchy: LocalDateTable_612b6c6a-92e5-46ae-a679-57714a45ef5a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a36b3ce8-2625-466f-8eba-e5c8b422b632
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: 708b6cce-934d-47d1-b59a-af6fb32b5df6
+			defaultHierarchy: LocalDateTable_863c214e-ff39-4d79-a90b-81b1cba4a3ed.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 660afb25-6fb5-406b-8719-2e08e08cb963
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 5c33fe06-3f50-4d4c-97ea-74e38d1bc01d
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Colaborador
+		dataType: string
+		lineageTag: a593fcde-6c05-44c7-bab5-2af092ee1399
+		summarizeBy: none
+		sourceColumn: Id_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave CPF'
+		dataType: string
+		lineageTag: 101cf103-5dc9-4897-964c-967b4fd99e0f
+		summarizeBy: none
+		sourceColumn: Chave CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: dde0fce4-0a80-428e-90dc-c004a49a31d4
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 3fc58f20-6c7c-44b3-88c8-781ba594f619
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 1a9185a6-6781-4bf8-a24a-2f09e99fb518
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 524d6a83-8471-4ee1-b279-3430997feaf6
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Consolidado = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Atvos\03 - SLA's\sql\Relatorio_Agrupado_Completo.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Número Contrato", type text}, {"Id_Contrato", type text}, {"Fornecedor", type text}, {"Razão Social", type text}, {"Unidade", type text}, {"Data de início da vigência", type datetime}, {"Data de fim da vigência", type datetime}, {"CPF", type text}, {"Nome", type text}, {"Id_Colaborador", type text}}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Tipo Alterado", "Chave CPF", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text)
+				in
+				    #"Coluna Mesclada Inserida"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

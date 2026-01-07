@@ -1,0 +1,39 @@
+table DataHoje
+	lineageTag: 700d4fdc-c7b0-4020-b6dd-db699460b397
+
+	measure 'Data Atualização' =
+			
+			VAR HOJE =
+			    MAX ( DataHoje[DataHoje] )
+			VAR ONTEM =
+			    HOJE - 1
+			RETURN
+			    "Data Atualização dos Dados: " & FORMAT ( ONTEM, "DD/MM/YYYY" ) & " " & "23:30"
+		lineageTag: 8dde68d2-b4c1-4af4-b2bd-b9cebca0235f
+
+	column DataHoje
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 154e1743-f870-48ae-b938-547fc08b9eb7
+		summarizeBy: none
+		sourceColumn: DataHoje
+
+		variation Variation
+			isDefault
+			relationship: c193a52b-8bab-4961-a006-d8ea078e5ba4
+			defaultHierarchy: LocalDateTable_4410491e-f589-4cbc-bb89-428ee7c40d47.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DataHoje = m
+		mode: import
+		source =
+				let
+				    Fonte = DateTime.LocalNow()
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = DateTime
+

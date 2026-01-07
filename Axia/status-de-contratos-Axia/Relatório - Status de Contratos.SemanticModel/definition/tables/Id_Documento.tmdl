@@ -1,0 +1,56 @@
+table Id_Documento
+	lineageTag: 683d9822-e2bd-4eed-93e8-94546c96cfee
+
+	column Id_Documento
+		lineageTag: 70341439-72b9-4e63-aec7-0d4fc7e3c12b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Análises[Id_Documento]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade de Análises' =
+			
+			CALCULATE(COUNT('Análises'[Id_Documento]))
+		formatString: 0
+		lineageTag: 121bd15c-94c0-4348-af62-a497409ac319
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Faixa = ```
+			
+			IF(Id_Documento[Quantidade de Análises] = 1, "Sem Reanálise",
+			    IF(Id_Documento[Quantidade de Análises] = 2, "1 vez",
+			        IF(Id_Documento[Quantidade de Análises] <= 4, "2 a 3 vezes",
+			            IF(Id_Documento[Quantidade de Análises] <= 6, "4 a 5 vezes",
+			                IF(Id_Documento[Quantidade de Análises] <= 8, "5 a 7 vezes",
+			                    IF(Id_Documento[Quantidade de Análises] <= 12, "8 a 11 vezes",
+			                        IF(Id_Documento[Quantidade de Análises] <= 16, "12 a 15 vezes",
+			                            IF(Id_Documento[Quantidade de Análises]  <= 20, "16 a 19 vezes",
+			                                IF(Id_Documento[Quantidade de Análises]  <= 24, "20 a 23 vezes",
+			                                    IF(Id_Documento[Quantidade de Análises]  > 24, "Mais 23 Vezes",
+			                                        "Sem Classificação"
+			                                    )
+			                                )
+			                            )
+			                        )
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+			
+			```
+		lineageTag: edc00293-df8d-4955-8061-ccd825cd8242
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Id_Documento = calculated
+		mode: import
+		source = CALCULATETABLE(DISTINCT('Análises'[Id_Documento]))
+
+	annotation PBI_Id = 34a72617c78f4a9cb2fb9da56296269a
+

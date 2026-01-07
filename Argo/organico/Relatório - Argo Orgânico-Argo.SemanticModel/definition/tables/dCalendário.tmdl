@@ -1,0 +1,29 @@
+table dCalendário
+	lineageTag: deefdb87-1b73-4596-ba7a-295ae91f816d
+
+	column Date
+		formatString: Short Date
+		lineageTag: b3568cac-232b-463c-9633-d649178a538e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 67511d98-afd8-4e12-a03c-4f4f57c2a47a
+			defaultHierarchy: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês = 'dCalendário'[Date].[Mês]
+		lineageTag: f9963724-f634-451d-a441-0b59582882e8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2024,04,01),DATE(2025,12,31))
+
+	annotation PBI_Id = 47228ca7a2ec489686807956ed4015c1
+

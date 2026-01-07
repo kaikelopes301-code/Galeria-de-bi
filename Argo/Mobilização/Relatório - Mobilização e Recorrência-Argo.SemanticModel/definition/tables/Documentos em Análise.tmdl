@@ -1,0 +1,525 @@
+table 'Documentos em Análise'
+	lineageTag: 941748fe-575a-4074-ae85-ff049f2ce062
+
+	measure 'Documentos Total' = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]))
+		formatString: #,0
+		lineageTag: 04d5e06f-36b4-43ce-8f4f-22bbd1954c85
+
+	measure 'Documentos em Análise' =
+			IF(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Em Análise")=0,0,CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Em Análise"))
+		formatString: 0
+		lineageTag: 2af97cb3-ff8f-40b7-9231-ac5b3dfb19ba
+
+	measure '1 - %Aprovados' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Aprovado")/[Documentos Total] + 0
+		lineageTag: bf552cbf-8d4e-4736-b064-ac3992b0df9d
+
+		formatStringDefinition =
+				VAR APRO =FORMAT([1 - %Aprovados],"0.0%")
+				
+				VAR TOTAL = [Documentos Total]
+				
+				RETURN """" & APRO & " (" & TOTAL & ")"
+
+	measure '1 - Quantidade de Docs Aprovados' =
+			if(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Aprovado") = 0,
+			"N/A"
+			, (CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Aprovado")))
+		formatString: #,0
+		lineageTag: 11ee845c-1ee6-49f2-8a6f-8c6ee98a4c5d
+
+	measure '3 - %Atrasados' =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado")+ CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado"))/[Documentos Total]
+		lineageTag: 0053bc5e-4e3b-4f7f-ba80-0fb5015ae793
+
+		formatStringDefinition =
+				VAR vAtrasado = FORMAT([3 - %Atrasados],"0.0%")
+				VAR vTotal = [Documentos Total]
+				VAR vResultados = """" & vAtrasado & " (" & vTotal & ")"
+				return vResultados
+
+	measure '3 - Atrasados' = ```
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado") +  
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado")
+			```
+		formatString: #,0
+		lineageTag: 1333a4cf-2038-48a7-9d87-23b33dac0f17
+
+	measure '2 - %Recusados' =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado") + CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Próximas Entregas Recusadas"))/[Quantidade de Enviados]
+		lineageTag: bf8ea3ae-05c6-4da5-b1d2-48a02abd6a7f
+
+		formatStringDefinition =
+				VAR vRecusado = FORMAT([2 - %Recusados],"0.0%")
+				VAR vEnviados = [Quantidade de Enviados]
+				VAR vresultado = """" & vRecusado & " (" & vEnviados & ")"
+				return vresultado
+
+	measure '2 - Recusados' = ```
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado") + 
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Próximas Entregaas Recusadas")
+			```
+		formatString: #,0
+		lineageTag: 6b7513c8-21ca-431b-8a71-3638f9bc270c
+
+	measure '4 - %Quantidade de Enviados' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] <> "Atrasado")/[Documentos Total]  + 0
+		lineageTag: dec939ec-684d-443d-b5cc-80e2d74c63ea
+
+		formatStringDefinition =
+				VAR PORCEN = FORMAT([4 - %Quantidade de Enviados],"0.0%")
+				
+				VAR TOTAL = [Documentos Total]
+				
+				RETURN """" & PORCEN & " (" & TOTAL & ")"
+
+	measure 'Quantidade de Enviados' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] <> "Atrasado")
+		formatString: #,0
+		lineageTag: 227b0b6c-139e-4bbc-91f5-5947713a5084
+
+	measure 'Quantidade de Enviados dividido por Documentos Total' =
+			
+			DIVIDE([Quantidade de Enviados], [Documentos Total])
+		lineageTag: 4563817b-edea-4742-a4db-3cf8fddf0535
+
+		formatStringDefinition =
+				VAR vEnviados = FORMAT([Quantidade de Enviados dividido por Documentos Total], "0.0%")
+				VAR vTotal = [Documentos Total]
+				VAR vResultado = """" & vEnviados & " (" & vTotal & ")"
+				RETURN vResultado
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "MathematicalDivision"
+				}
+
+		changedProperty = FormatString
+
+	measure %Aprovados =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Status] = "Aprovado")+0)/[Documentos Total]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c6bd1d2a-cea2-4029-86f1-befe81dc18f2
+
+	measure %Recusados =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado") + CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Próximas Entregas Recusadas"))/[Quantidade de Enviados]
+		formatString: 0%;-0%;0%
+		lineageTag: 122791aa-7e05-4c81-8408-54a5fbd781e4
+
+	measure %Atrasados =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado") + CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado"))/[Documentos Total]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a4e5238a-8926-4371-8c98-f126e2b84440
+
+	measure 'Quantidade de Analisado' = ```
+			CALCULATE(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] <> "Atrasado",
+			'Documentos em Análise'[Status] <> "Em Análise"))
+			
+			```
+		formatString: #,0
+		lineageTag: b7a2b6b1-ded9-43e3-ba59-23fdc6ab3439
+
+	measure 'Não Analisados' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado")
+		formatString: #,0
+		lineageTag: 1f105f0e-1510-473e-9fbd-836474bb154f
+
+	measure 'Em Análise' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Em Análise")
+		formatString: #,0
+		lineageTag: d5965d6d-a3e3-461d-abef-c1d1da00dfb5
+
+	measure '%Quantidade de Enviados' = ```
+			
+			    (CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Status] <> "Atrasado")+0)/[Documentos Total]
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 686f7950-5935-4cb6-b511-dbc9223258eb
+
+	measure 'Peso 3' = ```
+			(IF(
+			    CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 1)<1,
+			    
+			    (((CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 3,
+			       'Documentos em Análise'[Status] <> "Aprovado"))/[Qunat Peso 3]))+0,
+			    
+			    ((((3/4)*CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 3,
+			       'Documentos em Análise'[Status] <> "Aprovado")))/[Qunat Peso 3])))+0
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9a286f2f-04b6-40fb-abbb-81b31291dbd4
+
+	measure 'Qunat Peso 1' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 1)
+		formatString: 0
+		lineageTag: df2541e8-9a25-4f00-9435-7608e39c3f15
+
+	measure 'Peso 1' = ```
+			(IF(
+			    CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 3)<1,
+			    
+			    ((CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 1,
+			       'Documentos em Análise'[Status] <> "Aprovado"))/[Qunat Peso 1])+0,
+			    
+			    (((1/4)*CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 1,
+			       'Documentos em Análise'[Status] <> "Aprovado"))/[Qunat Peso 1])))+ 0
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bd6c8b62-db58-4b25-b8e1-4d014c447849
+
+	measure 'Qunat Peso 3' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 3)
+		formatString: 0
+		lineageTag: 3848ae26-b978-40dd-87fe-a74deb120435
+
+	measure 'Risco Críticos' = AVERAGEX(VALUES('Documentos em Análise'[Número do Pedido]),[Peso 1] + [Peso 3])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 08a200f9-cdae-45c7-9e60-790a9c9582c0
+
+	measure 'Quantidade Fornecedores - Total' = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[CNPJ]))
+		formatString: 0
+		lineageTag: a97ca23e-3625-46fe-a07a-ef2a728e4e98
+
+	measure 'Quantidade Contratos - Total' = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[Número do Pedido]))
+		formatString: 0
+		lineageTag: 6360696d-3583-4992-8d06-46131b05c66d
+
+	measure 'NUMERO DE PEDIDOS' = DISTINCTCOUNT('Documentos em Análise'[Número do Pedido])
+		formatString: 0
+		lineageTag: ac406a88-917f-4828-88a4-be92007d7ffa
+
+	measure '%(Média Mensal) Aderência' = [%Quantidade de Enviados] + 0
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 08f66f33-9d66-4549-a7fd-aedc37d60f49
+
+	measure '%(Média Mensal) Conformidade' = [%Aprovados]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: eeb72fcd-9935-4986-8772-65ccf8e69fa1
+
+	measure '%(Média Mensal) Grupo Risco' = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[Risco Críticos]) + 0
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f259783d-acd9-461b-8907-b19e9512daff
+
+	measure '!Exportação EXCEL' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Peso do Documentos] = 3)
+		formatString: 0
+		lineageTag: e79e9921-f6cc-4fca-845c-e85ea4d5584e
+
+	measure '!Exportação EXCEL (Enviados)' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Peso do Documentos] = 3,
+			'Documentos em Análise'[Status (Reclassificado)] ="Enviado")+0
+		formatString: 0
+		lineageTag: fefdd3d1-44f8-4922-bff3-cd5c9991e45e
+
+	measure '!Exportação EXCEL (Ñ Enviados)' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Peso do Documentos] = 3,
+			'Documentos em Análise'[Status (Reclassificado)] ="Não Enviado")+0
+		formatString: 0
+		lineageTag: 8af37ee6-8bdb-4fc8-8517-249376895325
+
+	measure '(Contínuos) Contratos' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[Número do Pedido]),
+			'Documentos em Análise'[Tipo de Contrato] = "Contínuo")
+		formatString: 0
+		lineageTag: 987a86a7-b14d-43af-9d8c-06eab4e10771
+
+	measure '(Eventual) Contratos' =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[Número do Pedido]),
+			'Documentos em Análise'[Tipo de Contrato] = "Eventual")
+		formatString: 0
+		lineageTag: 86c98c09-bb58-4583-8aa2-06ba38230cbe
+
+	measure (%Recusado) =
+			(CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado") + CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Próximas Entregas Recusadas"))/[Quantidade de Enviados]
+		lineageTag: 758970d9-2ab8-4d74-8fa9-4e1768fcabc4
+
+		formatStringDefinition =
+				VAR ENVI = [Quantidade de Enviados]
+				
+				VAR POR = FORMAT([%Recusados],"0.0%")
+				
+				RETURN """" & POR & " (" & ENVI & ")"
+
+	column Documento
+		dataType: string
+		lineageTag: d5f82226-1c97-4b36-856d-fe9033aa5fe0
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: abd7cc4e-5251-4dd9-bca6-2fdefef44b0f
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: d1db0887-7608-4921-b0d0-55e8d967cfae
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contrato'
+		dataType: string
+		lineageTag: 3643d765-de0a-41b0-baf5-0d6d577e16a1
+		summarizeBy: none
+		sourceColumn: Tipo de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 9d70f986-7488-4fc4-b868-ee31c27c0126
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: b3cd0473-d63b-419b-b1dc-d03b258440e2
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 8c86c10a-baf0-4066-9d85-63ccd661bee4
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 88631286-9557-4c4a-99e1-e66718300c15
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: b6118b9f-17b5-4365-b86a-94681a560edc
+			defaultHierarchy: LocalDateTable_601600e6-bb4d-43b9-b6d2-852c3b8420b6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: 3dfe1e27-a33e-4342-9b1e-08c28976946d
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: 61d21e61-d1e7-45c6-912e-66113eaf8bcb
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: fe7f7f20-4582-46a3-9b12-cd3d02ff1fa8
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status (Reclassificado)'
+		dataType: string
+		lineageTag: aa9f93ea-f496-4430-b672-823e7a1c17ee
+		summarizeBy: none
+		sourceColumn: Status (Reclassificado)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: 5813ea47-6254-43c1-b215-017a8c334e3f
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Chave Fornecedores'
+		dataType: string
+		lineageTag: 1bc51141-3225-4207-beb8-7fe0d9d28f80
+		summarizeBy: none
+		sourceColumn: Chave Fornecedores
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: 63f5bf03-e1a4-47cd-ad96-94d47f271c71
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data da Análise'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: eab0069a-5b47-46f7-b4a3-47c3cfbd278e
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		variation Variation
+			isDefault
+			relationship: e3235d18-953f-4421-a55e-8ccd744820af
+			defaultHierarchy: LocalDateTable_357696e8-dd17-4215-94fe-b3ee76ea8695.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Peso do Documentos' = LOOKUPVALUE('Classificação Docs'[Peso],'Classificação Docs'[Documento],'Documentos em Análise'[Documento])
+		formatString: 0
+		lineageTag: aaea68fa-a9a8-4ea7-b743-2bd84f46926a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Status Forne'
+		dataType: string
+		lineageTag: e0270797-9abb-4d60-a5df-f3980818c9ae
+		summarizeBy: none
+		sourceColumn: Chave Status Forne
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave de Número de Pedido'
+		dataType: string
+		lineageTag: 6a43df49-8322-4adf-9095-5540df1b4b09
+		summarizeBy: none
+		sourceColumn: Chave de Número de Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início do Mês'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4dc0a292-2d87-4b75-81e0-5fd916acc229
+		summarizeBy: none
+		sourceColumn: Início do Mês
+
+		variation Variation
+			isDefault
+			relationship: a9d9fd61-8d69-4f49-a994-a87c6d8f60ae
+			defaultHierarchy: LocalDateTable_48db6bef-46cc-436d-b9b3-ecc8ff826528.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo de Documento' = LOOKUPVALUE('SETUP de Documentos'[Tipo de Entrega],'SETUP de Documentos'[Documento],'Documentos em Análise'[Documento])
+		lineageTag: 54c9833c-f7d3-412f-9fad-78995385e806
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 1228754f-9671-4fd1-9c5c-2e201158974d
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 16830768-97c2-4524-a66e-dcfa071162b5
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos em Análise' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\Argo\12 - Dezembro\Relatório de Fornecedores - Argo.xlsx"), null, true),
+				    Planilha1_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Documento", type text}, {"DocumentScheduleId", type text}, {"Número do Pedido", type any}, {"Tipo de Contrato", type text}, {"Fornecedor", type text}, {"CNPJ", type text}, {"Funcionário", type text}, {"Prazo de Envio", type date}, {"Status", type text}, {"Unidade(s)", type text}, {"Categoria(s)", type text}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado", "Status (Reclassificado)", each if Text.Contains([Status], "Recusado") then "Enviado" else if [Status] = "Aprovado" then "Enviado" else if [Status] = "Em Análise" then "Enviado" else if [Status] = "Atrasado" then "Não Enviado" else null),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Coluna Condicional Adicionada", "Competência", each Date.AddMonths([Prazo de Envio],-1)),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Tipo Alterado1", "Chave Fornecedores", each [Fornecedor]&[#"Categoria(s)"]),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Número do Pedido", type text}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado2", "Chave", each [Fornecedor]&[CNPJ]&[#"Unidade(s)"]&[#"Categoria(s)"]&[Número do Pedido]),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Personalização Adicionada2","---","",Replacer.ReplaceValue,{"Data da Análise"}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Valor Substituído",{{"Data da Análise", type date}}),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Tipo Alterado3", "Chave Status Forne", each [Fornecedor]&[#"Categoria(s)"]&[#"Unidade(s)"]),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Personalização Adicionada3", {"Número do Pedido"}, #"Status do Fornecedores", {"Número do Pedido"}, "Status do Fornecedores", JoinKind.LeftOuter),
+				    #"Status do Fornecedores Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Status do Fornecedores", {"Unidade"}, {"Unidade"}),
+				    #"Início do Mês Inserido" = Table.AddColumn(#"Status do Fornecedores Expandido", "Início do Mês", each Date.StartOfMonth([Competência]), type date),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Início do Mês Inserido", "Chave de Número de Pedido", each [Número do Pedido]&Date.ToText([Início do Mês])),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada4", each ([Competência] <> #date(2024, 7, 1) and [Competência] <> #date(2024, 7, 2)) and ([Status] <> "Próxima Entrega")),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Linhas Filtradas",null,"-",Replacer.ReplaceValue,{"Número do Pedido"}),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Valor Substituído1", "Personalizar", each if [Unidade] = null then [#"Unidade(s)"] else [Unidade]),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Coluna Condicional Adicionada1",{"Unidade"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"Personalizar", "Unidade"}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Colunas Renomeadas", each ([Status] <> "Próxima Entrega Recusado"))
+				in
+				    #"Linhas Filtradas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

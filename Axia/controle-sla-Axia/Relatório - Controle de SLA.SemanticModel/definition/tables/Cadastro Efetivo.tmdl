@@ -1,0 +1,80 @@
+table 'Cadastro Efetivo'
+	lineageTag: 39b44af6-3ceb-4be1-bb03-241df78d456e
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: ab242364-87e3-493f-98a8-e684b946da7a
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Colaborador
+		dataType: string
+		lineageTag: 64dbc67a-79fb-496c-8f7c-c66338f8c74f
+		summarizeBy: none
+		sourceColumn: Id_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro do Efetivo'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 73204dea-70cb-4792-8174-4bd16da5aa00
+		summarizeBy: none
+		sourceColumn: Data de Cadastro do Efetivo
+
+		variation Variation
+			isDefault
+			relationship: 6d565aa6-05eb-4b75-96f5-365c7ecf197d
+			defaultHierarchy: LocalDateTable_b65d09d4-737e-4f39-b46d-89f55a27da4a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Contrato_Colaborador
+		dataType: string
+		lineageTag: 9122fc05-64bd-4548-bd00-bc817c624f2c
+		summarizeBy: none
+		sourceColumn: Contrato_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 04a2ef29-006f-47d8-b114-02cd500e0c28
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contro_Nome
+		dataType: string
+		lineageTag: 3bd2e731-a8bd-46ad-b3fc-77af4c09b339
+		summarizeBy: none
+		sourceColumn: Contro_Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Cadastro Efetivo' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Eletrobras\03 - SLA's\sql\Consolidado_Final_Com_Analise.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Cabeçalhos Promovidos",{"Data de cadastro do contrato", "Data de início da vigência", "Data de Regularização", "Expectativa do Início da Prestação de Serviço", "1ª Mobilização", "Data da 1ª Tabela Mobilização", "Qtd Documentos Agendados", "Qtd Documentos Aprovados", "Última Data de Análise", "Data do Primeiro Envio", "Data do Último Envio"}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Colunas Removidas", "Contrato_Colaborador", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"Data de Cadastro do Efetivo", type date}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Tipo Alterado", {"Contrato_Colaborador"}, Consolidado, {"Chave CPF"}, "SLA - Relatório Fornecedores", JoinKind.LeftOuter),
+				    #"SLA - Relatório Fornecedores Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "SLA - Relatório Fornecedores", {"Nome"}, {"Nome"}),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"SLA - Relatório Fornecedores Expandido", "Contro_Nome", each Text.Combine({[Id_Contrato], [Nome]}, ""), type text),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Coluna Mesclada Inserida1", {"Contro_Nome"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

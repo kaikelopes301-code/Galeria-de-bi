@@ -1,0 +1,31 @@
+table Bridge_ContratoGestor
+	lineageTag: 50cc78e7-1644-44c1-a877-09de68841209
+
+	column 'Id do Contrato'
+		lineageTag: 107051a3-8dc6-49c0-95fa-e9db02f4e7a3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Contratos[Id do Contrato]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gestor
+		lineageTag: 9d8bac9f-0d6f-47a3-9c2c-cb82bcbc9897
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Contratos[Gestor]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Bridge_ContratoGestor = calculated
+		mode: import
+		source =
+				
+				SUMMARIZE(
+				    Contratos,
+				    Contratos[Id do Contrato],
+				    Contratos[Gestor]
+				)
+
+	annotation PBI_Id = 6eacb419d83e423c90a7a5641e9ce710
+

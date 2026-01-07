@@ -1,0 +1,35 @@
+table Filtro_fornecedores
+	lineageTag: e06d0511-916a-4e7e-8a4e-e84f86b3d090
+
+	measure ColunaFornecedores =
+			
+			VAR sel = SELECTEDVALUE ( Filtro_fornecedores[Filtros_Fornecedores] )
+			RETURN
+			SWITCH (
+			    sel,
+			    "Fornecedor",('Relatório de Fornecedores'[Fornecedor]),
+			    BLANK()
+			)
+		lineageTag: 5ca46743-60f1-4612-b523-b9b7b8d5ed11
+
+	column Filtros_Fornecedores
+		dataType: string
+		lineageTag: 3394f317-3d8f-422d-8d83-cf7553355a7b
+		summarizeBy: none
+		sourceColumn: Filtros_Fornecedores
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Filtro_fornecedores = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WcssvyktNTk3JL1KK1YlWCs3LTElMSQWz3VOLS6DCYQFKsbEA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Filtros_Fornecedores = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Filtros_Fornecedores", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

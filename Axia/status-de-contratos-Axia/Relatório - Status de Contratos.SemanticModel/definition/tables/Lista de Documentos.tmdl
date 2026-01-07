@@ -1,0 +1,31 @@
+table 'Lista de Documentos'
+	lineageTag: 2f9613a8-b8e0-4437-bb1a-45aabffcea77
+
+	column Documento
+		dataType: string
+		lineageTag: af8b28c1-1bf2-408d-8803-77bf5794bdd3
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: b8a5dd23-dd6f-421a-9b3e-2875b0f29a24
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Lista de Documentos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = 'e9654655-6595-4748-991d-6b50831c6ca5';#(lf) #(lf)SELECT#(lf)#(tab)DISTINCT#(lf)    [d].[Name] AS [Documento],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)#(tab)#(tab)ELSE '--'#(lf)#(tab)END AS 'Tipo do documento'#(lf) #(lf)#(tab)FROM#(lf)#(tab)[Document] AS [d] WITH (NOLOCK)#(lf)INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON#(lf)#(tab)[d].[OrganizationId] = [o].[Id]#(lf) #(lf)#(tab)WHERE#(lf)#(tab)[d].[Removed] = CAST(0 AS bit)#(lf)#(tab)AND [d].[Archived] = CAST(0 AS bit)#(lf)#(tab)AND [d].[OrganizationId] = @organizationId"])
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

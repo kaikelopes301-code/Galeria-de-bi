@@ -1,0 +1,79 @@
+table TabelaCronograma
+	lineageTag: 167e1c4a-e384-48b5-bcd9-d9231d2a4d32
+
+	column Grupo
+		lineageTag: 5349a58f-b26f-4a85-b4f0-b82ba9dde469
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Grupo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês envio doctos'
+		dataType: int64
+		formatString: 0
+		lineageTag: 676a4a37-1857-4001-b251-5895baa44414
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Mês envio doctos]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês auditoria'
+		dataType: int64
+		formatString: 0
+		lineageTag: be1e5827-5bfb-45b7-83f5-e0053063a083
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Mês auditoria]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome mês envio' =
+			
+			VAR Ano = YEAR(TODAY())  -- pode ser qualquer ano
+			VAR MesNum = TabelaCronograma[Mês envio doctos] -- número 1–12
+			RETURN
+			FORMAT(DATE(Ano, MesNum, 1), "mmmm")
+		lineageTag: 0488e81c-8950-4662-9bc8-c4aed7ab2cc2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome mês auditoria' =
+			
+			VAR Ano = YEAR(TODAY())  -- pode ser qualquer ano
+			VAR MesNum = TabelaCronograma[Mês auditoria] -- número 1–12
+			RETURN
+			FORMAT(DATE(Ano, MesNum, 1), "mmmm")
+		lineageTag: b9f9846b-a255-4b41-bb7e-4646da09fff1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TabelaCronograma = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Grupo", STRING,
+				    "Mês envio doctos", STRING,
+				    "Mês auditoria", STRING,
+				    {
+				        {"Grupo 1", "1", "2"},
+				        {"Grupo 1", "5", "6"},
+				        {"Grupo 1", "9", "10"},
+				        {"Grupo 2", "2", "3"},
+				        {"Grupo 2", "6", "7"},
+				        {"Grupo 2", "10", "11"},
+				        {"Grupo 3", "3", "4"},
+				        {"Grupo 3", "7", "8"},
+				        {"Grupo 3", "11", "12"},
+				        {"Grupo 4", "12", "1"},
+				        {"Grupo 4", "4", "5"},
+				        {"Grupo 4", "8", "9"}
+				    }
+				)
+
+	annotation PBI_Id = 16ebdc849e8d40f7893cb6366b3dfbde
+
