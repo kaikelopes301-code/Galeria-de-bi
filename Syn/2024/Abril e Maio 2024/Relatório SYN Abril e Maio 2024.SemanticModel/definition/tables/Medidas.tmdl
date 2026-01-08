@@ -1,0 +1,196 @@
+table Medidas
+	lineageTag: 7b78c0f7-4eb5-4656-971c-e8b800e1a8da
+
+	measure 'Total de documentos' =
+			
+			CALCULATE(
+			    COUNTROWS(
+			        'Entrega de documentos')
+			        )
+		formatString: 0
+		lineageTag: 46d8088e-4db1-478e-9891-f4eb2bdef242
+
+	measure 'Documentos entregues' = ```
+			
+			        CALCULATE(
+			            COUNT('Entrega de documentos'[Status]),
+			            'Entrega de documentos'[Status] = "OK" || 'Entrega de documentos'[Status] = "*"
+			)
+			```
+		formatString: 0
+		lineageTag: 39cefd31-b1c0-4f52-a2fd-7b43d2bb9b5a
+
+	measure '% Entrega' =
+			
+			DIVIDE(
+			    [Documentos entregues],
+			    [Total de documentos]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bc1ebb85-e44f-4d01-b3f0-e441f44a219a
+
+	measure 'Número de contratos' = ```
+			
+			DISTINCTCOUNT('Entrega de documentos'[Coluna Concatenada])
+			
+			```
+		formatString: 0
+		lineageTag: 36bc78f8-7723-4acc-a281-dcbe1af6b064
+
+	measure 'CND Pendente' = CALCULATE( COUNT(CND[CND]), CND[CND] = "Documento Pendente")
+		formatString: 0
+		lineageTag: eefdda55-9978-4d68-9388-b3f2ab8e074f
+
+	measure 'CND Negativa' = CALCULATE( COUNT(CND[CND]), CND[CND] = "Negativa")
+		formatString: 0
+		lineageTag: 52844562-8ce8-49cd-8cb0-cae99d64796f
+
+	measure 'CND Positiva com efeitos de negativa' = CALCULATE( COUNT(CND[CND]), CND[CND] = "Positiva com efeitos de negativa")
+		formatString: 0
+		lineageTag: 6622efdc-0707-43dd-8f5d-cbdd041caa00
+
+	measure 'Nº Fornecedores' = DISTINCTCOUNT('Entrega de documentos'[Fornecedor])
+		formatString: 0
+		lineageTag: 479f5d8f-2f16-4ab4-92a6-aa1919fe05ee
+
+	measure 'Nº de Categorias' = DISTINCTCOUNT('Entrega de documentos'[Categoria(s)])
+		formatString: 0
+		lineageTag: ec414c30-fe82-4142-9702-5b0f25f1317f
+
+	measure 'Formatação condicional Documentos Entregues' = ```
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual de Entrega] = 0, "#FFC7CE",
+			    [Percentual de Entrega] < 0.3, "#FFC7CE",
+			    [Percentual de Entrega] < 0.7, "#FFEB9C",
+			    "#C6EFCE"
+			)
+			
+			```
+		lineageTag: dbea37d2-c4e8-48a4-8813-b7813357dcf4
+
+	measure 'Total de documentos SEFIP' =
+			
+			CALCULATE(
+			    COUNT(
+			        'Entrega SEFIP'[Mês de competência])
+			        )
+		formatString: 0
+		lineageTag: 4059c8f3-14ce-44fb-bf90-3d6a4324303b
+
+	measure 'Documentos SEFIP entregues' = ```
+			
+			   CALCULATE(
+			            COUNTROWS('Entrega SEFIP'),
+			            'Entrega SEFIP'[Situação] = "OK" || 'Entrega SEFIP'[Situação] = "*"
+			)
+			```
+		formatString: 0
+		lineageTag: b468e67f-ec2f-4580-9b82-d325249b5b01
+
+	measure '% Entrega SEFIP' =
+			
+			DIVIDE(
+			    [Documentos SEFIP entregues],
+			    [Total de documentos SEFIP], 0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d42d6c4b-aeaa-46e4-ba43-504033d12ead
+
+	measure 'Formatação condicional SEFIP' =
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual Entrega SEFIP] = 0, "#FFC7CE",
+			    [Percentual Entrega SEFIP] < 0.3, "#FFC7CE",
+			    [Percentual Entrega SEFIP] < 0.7, "#FFEB9C",
+			    "#C6EFCE"
+			)
+		lineageTag: 8b6c896a-0087-4b8b-bf6b-07b6b45b3891
+
+	measure 'Risco Fornecedor' =
+			
+			CALCULATE(SWITCH (
+			    TRUE (),
+			    [% Entrega] < 0.3, "Alto",
+			    AND ( [% Entrega] >= 0.3, [% Entrega] < 0.7 ), "Médio",
+			   [% Entrega] >= 0.7, "Baixo"
+			), REMOVEFILTERS('Entrega de documentos'[Mês de Competência])
+			)
+		lineageTag: 516339b4-88e5-464e-84bf-8530d0a18ec6
+
+	measure 'Total Documentos Entregues Ano' = ```
+			
+			CALCULATE (
+			    [Documentos entregues],
+			    ALLSELECTED ( 'Entrega de Documentos'[Mês de Competência] )
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 4bd18292-757e-4c76-b439-4d495f1da172
+
+	measure 'Nº documentos entregues' = SUM('Entrega de documentos'[Contagem Documentos Entregues])
+		formatString: 0
+		lineageTag: 2bb76473-91c9-4fde-a2c5-b4c12b2204e2
+
+	measure 'Percentual de Entrega' = ```
+			DIVIDE(
+			    [Nº documentos entregues], 
+			    [Total de documentos],"0"
+			)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c32e6cb0-8808-4af3-8821-0e578a130c94
+
+	measure 'Nº SEFIP entregues' = SUM('Entrega SEFIP'[Contagem SEFIP Entregues])
+		formatString: 0
+		lineageTag: e616ad3d-b160-46cb-aa4c-3cdf6f8558f3
+
+	measure 'Percentual Entrega SEFIP' = ```
+			DIVIDE(
+			    [Nº SEFIP entregues], 
+			    [Total de documentos SEFIP], 
+			    "0")
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c51b3ccf-9f4f-4bb2-9794-d933ce2e1aa5
+
+	measure 'Formatação condicional letras Documentos Entregues' = ```
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual de Entrega] = 0, "#9C0006",
+			    [Percentual de Entrega] < 0.3, "#9C0006",
+			    [Percentual de Entrega] < 0.7, "#9C5700",
+			    "#006100"
+			)
+			
+			```
+		lineageTag: f94c8fc9-8cc1-49f1-8e5c-3e1322fdc094
+
+	measure 'Formatação condicional letras SEFIP' =
+			
+			SWITCH(
+			    TRUE(),
+			   [Percentual Entrega SEFIP] = 0, "#9C0006",
+			    [Percentual Entrega SEFIP] < 0.3, "#9C0006",
+			    [Percentual Entrega SEFIP] < 0.7, "#9C5700",
+			    "#006100"
+			)
+		lineageTag: a98ef526-0ee6-46fc-98d5-071fd07949c7
+
+	partition Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+

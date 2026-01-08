@@ -1,0 +1,566 @@
+table 'Análises Úteis'
+	lineageTag: 04add5a4-97a8-4d49-8d6a-d87ebf54eda8
+
+	measure '(Média) Horas Análises' = CALCULATE(AVERAGE('Análises Úteis'[SLA]))
+		lineageTag: 6ffd3391-a08c-4479-9648-3fb318bfe908
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Quantidade Analisados) Documentos' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: adc7b048-3eb8-4983-8168-4a4b5250f371
+
+	measure '(Média Gráfico) Horas Análises' = CALCULATE(AVERAGE('Análises Úteis'[SLA]))
+		lineageTag: 113e9e7c-ac74-47b7-bb7c-cbe6b279db2a
+
+		formatStringDefinition =
+				VAR MED = FORMAT([(Média) Horas Análises],"0.0")
+				
+				VAR QUANT = FORMAT([(Quantidade Analisados) Documentos],"#,###")
+				
+				RETURN """" & MED
+
+	column Id_Fornecedor
+		dataType: string
+		lineageTag: f1a4d735-4347-40fa-8e50-8f12c8f65057
+		summarizeBy: none
+		sourceColumn: Id_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: b502540c-d93f-4a76-b378-20d4532ab3a9
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionario
+		dataType: string
+		lineageTag: e38c2677-b500-4475-a8bf-61e3fb3a80e7
+		summarizeBy: none
+		sourceColumn: Funcionario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: 58447c45-6270-40a2-b4ea-8769659789f6
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Documento
+		dataType: string
+		lineageTag: e053b44e-07d3-48ce-b97a-99219eced0d1
+		summarizeBy: none
+		sourceColumn: Nome_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: f3cb1fa6-ce87-463e-8942-5e16d4659a52
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Pedido
+		dataType: string
+		lineageTag: c47dbbc8-173d-4778-a8c6-f6a1bd58ecbc
+		summarizeBy: none
+		sourceColumn: Id_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Numero_Pedido
+		dataType: string
+		lineageTag: 79e98bec-4a50-4af1-9449-e02a56d888bb
+		summarizeBy: none
+		sourceColumn: Numero_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Cadastro_Pedido
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1587486b-07ae-4925-b0d8-b4e0d2286f1e
+		summarizeBy: none
+		sourceColumn: Data_Cadastro_Pedido
+
+		variation Variation
+			isDefault
+			relationship: df236ecc-cf76-45f8-81f5-1b4ca14de610
+			defaultHierarchy: LocalDateTable_72a3c5bf-779b-45f9-8359-74337bef1044.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: c601e0fe-00f8-44b4-b306-cdc839128cf1
+		summarizeBy: none
+		sourceColumn: Hora_Cadastro_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Prazo_Envio
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8b280c16-0532-4576-9d66-09addc70ddbf
+		summarizeBy: none
+		sourceColumn: Prazo_Envio
+
+		variation Variation
+			isDefault
+			relationship: d45e1bdb-3203-414f-ab93-ab9e1c3d6e65
+			defaultHierarchy: LocalDateTable_7a380d7a-c977-4e8a-8108-b17217a9d32a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7c27fc75-2d84-4f3c-a20f-3d97e9a1dd6f
+		summarizeBy: none
+		sourceColumn: Data_Envio
+
+		variation Variation
+			isDefault
+			relationship: ac4e4e05-7a6e-4dba-9a19-f2020ce690aa
+			defaultHierarchy: LocalDateTable_c3d4dccb-6340-4aa1-8f1e-142a2c848534.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 1a501e33-4a00-4518-87a8-27b6489dcd8f
+		summarizeBy: none
+		sourceColumn: Hora_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Analise
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4ff13602-ec97-473f-b14e-8f8aefd49244
+		summarizeBy: none
+		sourceColumn: Data_Analise
+
+		variation Variation
+			isDefault
+			relationship: 328a54b5-25f4-4d4f-b066-e7f6f39bfb16
+			defaultHierarchy: LocalDateTable_0a94c8db-4aae-411c-8c5a-18d23eb32df7.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Analise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 43cb1855-1d89-455a-9d85-c3d605a30344
+		summarizeBy: none
+		sourceColumn: Hora_Analise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Foi_Aprovado
+		dataType: string
+		lineageTag: 7aacccac-c679-4581-b447-5cb19cbe50cf
+		summarizeBy: none
+		sourceColumn: Foi_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Analista
+		dataType: string
+		lineageTag: a2ce8a39-ea51-4e6c-b7df-e0ef5888fe16
+		summarizeBy: none
+		sourceColumn: Id_Analista
+
+		annotation SummarizationSetBy = Automatic
+
+	column Analisado_Por
+		dataType: string
+		lineageTag: 47e74e99-7e97-4a1f-8891-0ec9e4076b99
+		summarizeBy: none
+		sourceColumn: Analisado_Por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: 97cfe55f-d07d-4e92-91f2-776f2b1e6a1b
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias Corridos de SLA'
+		type: calculated
+		lineageTag: d6eea429-3e9a-4fe9-8de9-abe5146f624b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Restante2 =
+			
+			VAR DataEnvio = 'Análises Úteis'[Ajuste Envio FDS]
+			VAR DataAnalise = 'Análises Úteis'[Ajuste de Análise]
+			VAR HoraAnalise = 'Análises Úteis'[Hora de Análise]
+			VAR DiasUteis = NETWORKDAYS(DataEnvio, DataAnalise)
+			RETURN
+			IF (
+			    DATEDIFF(DataEnvio, DataAnalise, DAY) <= 1,
+			    0,
+			    (DiasUteis - 2) * (10 / 24) + HoraAnalise - TIME(8, 0, 0)
+			)
+		lineageTag: 3184254a-18b4-4c81-90c2-659c6af99b70
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hh2 =
+			
+			VAR h1 = 'Análises Úteis'[Hora de Análise]
+			VAR h2 = 'Análises Úteis'[Hora de Envio]
+			RETURN
+			IF (
+			    ISBLANK(h1) || ISBLANK(h2),
+			    BLANK(),
+			    ABS((h1 - h2) * 24)
+			)
+		dataType: double
+		lineageTag: 4ade01ba-aead-49ff-be2a-9cdc8134599c
+		summarizeBy: sum
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Horas Total2' = 'Análises Úteis'[Restante2]+'Análises Úteis'[hh2]
+		lineageTag: 53af277e-df01-44cf-b5b5-7bc02a454171
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Id_Cliente
+		dataType: string
+		lineageTag: 376986ca-758a-4878-bb2f-cd4ba720cd23
+		summarizeBy: none
+		sourceColumn: Id_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: 9419b81d-1eea-4384-8b21-58630aa5cabd
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Perfil
+		dataType: string
+		lineageTag: e7c78c39-34ff-43f4-a5ab-661376ab0733
+		summarizeBy: none
+		sourceColumn: Perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Cliente
+		dataType: string
+		lineageTag: d3f0a07f-84b0-477f-8e58-7412583e41e1
+		summarizeBy: none
+		sourceColumn: Observacao_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Fornecedor
+		dataType: string
+		lineageTag: 69568176-5fe6-40ae-9f90-99996556ed89
+		summarizeBy: none
+		sourceColumn: Observacao_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Análise
+		dataType: string
+		lineageTag: 5471685a-ea76-46cc-b59d-8ffdd879713c
+		summarizeBy: none
+		sourceColumn: FDS_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Envio
+		dataType: string
+		lineageTag: e383cbe6-d180-4a20-af44-1de527fc1048
+		summarizeBy: none
+		sourceColumn: FDS_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 1ed79e38-4706-4bb4-8544-df83195c1ccd
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Hora_Corrigida_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 409fffcf-9281-43fe-a124-1bb846619e7e
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b916056d-674f-4e21-8362-7a7d2b310b99
+		summarizeBy: none
+		sourceColumn: Data_Corrigida_Análise
+
+		variation Variation
+			isDefault
+			relationship: 195a95d8-0649-4a2b-8e13-3e501ba08253
+			defaultHierarchy: LocalDateTable_3fa7e33e-25b5-4103-950a-5368cf846915.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data_Corrigida _Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0811bc8a-976b-4703-8383-f949d953447a
+		summarizeBy: none
+		sourceColumn: Data_Corrigida _Envio
+
+		variation Variation
+			isDefault
+			relationship: b4339bc4-cb91-4095-8967-17878987e7fa
+			defaultHierarchy: LocalDateTable_50849140-b190-4b3f-a447-28b95d5a3d75.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column SLA
+		dataType: double
+		lineageTag: 296a0fea-9ec5-4719-aa0e-d416a6b412e5
+		summarizeBy: sum
+		sourceColumn: SLA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Final de semana'
+		dataType: string
+		lineageTag: 8a1c3dc9-a9dd-4cd2-bba0-920e4d2d4de8
+		summarizeBy: none
+		sourceColumn: Final de semana
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Análises Úteis' = m
+		mode: import
+		source = ```
+				let
+				Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao", [Query="Select * from DocumentValidationSla where Cliente = 'ATVOS' and Tipo in ('Mobilização','Treinamento') and Funcionario is not null"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Data_Envio", type date}, {"Data_Analise", type date}, {"Hora_Envio", type time}, {"Hora_Analise", type time}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "FDS_Análise", each if Date.DayOfWeek([Data_Analise]) = 0 or Date.DayOfWeek([Data_Analise]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "FDS_Envio", each if Date.DayOfWeek([Data_Envio]) = 0 or Date.DayOfWeek([Data_Envio]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "Hora_Corrigida_Análise", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Analise],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA = "FDS" and FDSE <> "FDS" then
+				            HoraLimiteSuperior
+				        else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Personalização Adicionada2", "Hora_Corrigida_Envio", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Envio],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA <> "FDS" and FDSE = "FDS" then
+				            HoraLimiteInferior
+				           else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada3",{{"Hora_Corrigida_Análise", type time}, {"Hora_Corrigida_Envio", type time}}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Tipo Alterado1", "Data_Corrigida_Análise", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Analise]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				   DiaSemana = Date.DayOfWeek(DataBase, Day.Monday),  // segunda = 0 ... domingo = 6
+				    DiasParaSubtrair = if DiaSemana >= 4 then DiaSemana - 4 else DiaSemana + 3,
+				    SextaAnterior = Date.AddDays(DataBase, -DiasParaSubtrair),
+				
+				    Resultado =
+				        if FDSE <> "FDS" and FDSA = "FDS" then
+				            SextaAnterior
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Personalização Adicionada4", "Data_Corrigida _Envio", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Envio]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				    DiaSemanaSex = Date.DayOfWeek(DataBase, Day.Monday),
+				    DiasAteSexta = if DiaSemanaSex <= 4 then 4 - DiaSemanaSex else 11 - DiaSemanaSex,
+				    SextaMaisProxima = Date.AddDays(DataBase, DiasAteSexta),
+				
+				    Resultado =
+				        if FDSE = "FDS" and FDSA <> "FDS" then
+				            ProximaSegunda
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada5",{{"Data_Corrigida_Análise", type date}, {"Data_Corrigida _Envio", type date}}),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Tipo Alterado2", "SLA", each let
+				    // Colunas de fim de semana
+				    FDS_Envio = [FDS_Envio],
+				    FDS_Analise = [FDS_Análise],
+				
+				    // Verificação inicial de fim de semana
+				    HorasSLA = if FDS_Envio = "FDS" or FDS_Analise = "FDS" then
+				        0
+				    else
+				        let
+				            // Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				            // Constantes do expediente
+				            HoraInicio = #time(9, 0, 0),
+				            HoraFim = #time(18, 0, 0),
+				            Jornada = 9, // 9 horas por dia útil
+				
+				            DataHoraAnaliseDia = (HoraAnalise - 9),
+				            DataHoraEnvioDia = (18 - HoraEnvio),
+				
+				            // Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0)),
+				
+				            // Caso 1: Mesmo dia
+				            HorasMesmoDia = if DataEnvio = DataAnalise then
+				                (HoraAnalise - HoraEnvio)
+				            else
+				                null,
+				
+				            // Cálculo do SLA com desconto de fins de semana
+				            DiasUteisEntre = Duration.Days(DataAnalise - DataEnvio) - DiasFinaisSemana - 1,
+				            ResultadoFinal = if DataEnvio = DataAnalise then
+				                HorasMesmoDia
+				            else
+				                DiasUteisEntre * Jornada +(DataHoraAnaliseDia + DataHoraEnvioDia)
+				        in
+				            ResultadoFinal
+				in
+				    HorasSLA),
+				    #"Personalização Adicionada7" = Table.AddColumn(#"Personalização Adicionada6", "Final de semana", each let 
+				
+				// Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				
+				
+				// Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0))
+				
+				in
+				if DataAnalise = null and DataEnvio = null then null
+				
+				else DiasFinaisSemana*9),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada7", each [Data_Envio] >= #date(2025, 2, 1)),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Linhas Filtradas",{{"SLA", type number}}),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Tipo Alterado3",{{"Id_Pedido", Text.Upper, type text}})
+				in
+				    #"Texto em Maiúscula"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

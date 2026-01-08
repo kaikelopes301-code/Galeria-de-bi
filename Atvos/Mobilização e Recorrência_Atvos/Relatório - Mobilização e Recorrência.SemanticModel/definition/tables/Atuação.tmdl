@@ -1,0 +1,58 @@
+table Atuação
+	lineageTag: 066030cc-03a8-4499-9175-fee06ce87473
+
+	column 'Grupo de Atuação'
+		dataType: string
+		lineageTag: 7f17255e-2e9f-4775-98c3-d65e59c4e6b7
+		summarizeBy: none
+		sourceColumn: Grupo de Atuação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Área de Atuação'
+		dataType: string
+		lineageTag: e496b346-d32e-4f48-9240-30a47eee50ad
+		summarizeBy: none
+		sourceColumn: Área de Atuação
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Atuação = m
+		mode: import
+		source =
+				let
+				    // 1) Conecta no site do SharePoint (não no arquivo direto)
+				    FonteSharePoint =
+				        SharePoint.Files(
+				            "https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro",
+				            [ApiVersion = 15]
+				        ),
+				
+				    // 2) Filtra o arquivo desejado pela pasta + nome
+				    ArquivoFiltrado =
+				        Table.SelectRows(
+				            FonteSharePoint,
+				            each
+				                Text.Contains(
+				                    [Folder Path],
+				                    "/Documentos Compartilhados/Relatórios/Dados/02. Externo/01. AFM Gestão/Atvos/00 - Setup/"
+				                )
+				                and [Name] = "Atvos - Grupo Atuacao x Area Atuacao.xlsx"
+				        ),
+				
+				    // 3) Pega o binário do arquivo
+				    Binario = ArquivoFiltrado{0}[Content],
+				
+				    Fonte = Excel.Workbook(Binario, null, true),
+				
+				    #"GrupoAtuacao-AreaAtuacao_Sheet" = Fonte{[Item="GrupoAtuacao-AreaAtuacao", Kind="Sheet"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"GrupoAtuacao-AreaAtuacao_Sheet", {{"Column1", type text}, {"Column2", type text}}),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Tipo Alterado", [PromoteAllScalars = true]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos", {{"Grupo de Atuação", type text}, {"Área de Atuação", type text}})
+				in
+				    #"Tipo Alterado1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

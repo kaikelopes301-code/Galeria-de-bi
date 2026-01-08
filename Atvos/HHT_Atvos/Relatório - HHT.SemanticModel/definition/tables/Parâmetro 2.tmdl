@@ -1,0 +1,49 @@
+table 'Parâmetro 2'
+	lineageTag: 8c8f9e18-948c-47df-8aa6-ca0537ab5028
+
+	column Parâmetro
+		lineageTag: 07ef7f1a-bc5e-4e4d-af1e-18fe4265642f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 5173808e-b528-4932-86d5-d374d6b76f27
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 7b7f328e-40a7-41d6-8431-5ac4f306b7f2
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Parâmetro 2' = calculated
+		mode: import
+		source =
+				{
+				    ("Área", NAMEOF(Base[Área]), 0),
+				    ("Unidade", NAMEOF('Base'[Unidade]), 1),
+				    ("Razão Social", NAMEOF('Base'[Razão Social]), 2)
+				}
+
+	annotation PBI_Id = 2f6684099c21489a9c3604b7cbe66057
+

@@ -1,0 +1,709 @@
+table Sheet1
+	lineageTag: a0cc1ca2-a582-4bb3-80da-f024bf988642
+
+	measure _SLA_Efetivo-1_Dias = ```
+			
+			VAR PrimDoc = MAX(Sheet1[Data do Primeiro Envio]) // Data de Cadastro do Efetivo
+			 
+			VAR CadastroContrato = MAX(Sheet1[Data de Cadastro]) // Data de Cadastro do Contrato
+			
+			RETURN
+			IF(PrimDoc < CadastroContrato && PrimDoc <> BLANK(),
+			    0,
+			    IF(
+			    ISBLANK(PrimDoc),
+			   BLANK(),
+			    DATEDIFF(CadastroContrato,PrimDoc, DAY))
+			)
+			```
+		formatString: 0
+		lineageTag: 1426918e-16ae-48de-89ac-d826f3389b04
+
+	measure _SLA_Efetivo_Envio_Ultimo_ =
+			
+			VAR Cadastro = MIN(Sheet1[Data de Cadastro]) // Data de Cadastro do Efetivo
+			
+			VAR PrimeiraMob = MAX(Sheet1[1ª Mobilização]) // Data Primeira Mobilização Sem contabilizar casos de sem agendamento
+			
+			VAR DataEnvioCorreta = MAX(Sheet1[Data do Último Envio])
+			
+			RETURN
+			IF(Cadastro > DataEnvioCorreta && DataEnvioCorreta <> BLANK(),
+			    0,
+			    IF(
+			    ISBLANK(DataEnvioCorreta),
+			   BLANK(),
+			    DATEDIFF(Cadastro, DataEnvioCorreta, DAY))
+			)
+		formatString: 0
+		lineageTag: 4d6ca1d9-33ee-42c9-b8aa-8c8e36e558e2
+
+	measure _SLA_Mobilização_ = ```
+			
+			VAR UltiDocumento = MAX(Sheet1[Última Data de Análise])
+			VAR DataMobili = MAX(Sheet1[Data da 1ª Tabela Mobilização])
+			VAR Cadastro = MAX(Sheet1[Data de Cadastro])
+			    
+			RETURN
+			IF(
+			    DataMobili < UltiDocumento && DataMobili <> BLANK()
+			    
+			    ,0,IF(
+			    ISBLANK(DataMobili) || ISBLANK(UltiDocumento),
+			    BLANK(), IF(Cadastro > UltiDocumento ,0,
+			    DATEDIFF(UltiDocumento, DataMobili, DAY)
+			)))
+			
+			```
+		formatString: 0
+		lineageTag: 73d110bf-4942-406a-9a00-b318146812a7
+
+	measure _SLA_TOTAL_Dias_Corridos_ = ```
+			
+			VAR SLA_Envio =[_SLA_Efetivo-1_Dias]
+			VAR SLA_Doc = [_SLA_-1_Dias_Ultimo]
+			VAR SLA_ATLAS = [_SLA_Ultima_data_análise_mobilização]
+			VAR SLA_Mobiliza = [_SLA_Mobilização_]
+			RETURN
+			    IF (
+			        NOT ISBLANK(SLA_Envio) &&
+			        NOT ISBLANK(SLA_Doc) && 
+			        NOT ISBLANK(SLA_ATLAS) &&
+			        NOT ISBLANK(SLA_Mobiliza),
+			        SLA_Envio +SLA_Doc + SLA_ATLAS +SLA_Mobiliza ,
+			        "---"
+			    )
+			```
+		formatString: 0
+		lineageTag: 6d37f7b2-01e5-4183-8a45-1c3b20956945
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure _Colaboradores_Quantidade = CALCULATE(DISTINCTCOUNT(Sheet1[Chave]))
+		formatString: #,0
+		lineageTag: 26b51640-6082-4fca-aba3-06050b109983
+
+	measure _Media_SLA_Total_ = [_MÉDIA_SLA_CADASTRP-1PRi]+[_MÉDIA_SLA_1PRi-Ultimo]+[_MÉDIA_SLA_Analise_atlas]+[_MÉDIA_SLA_Integracao]
+		lineageTag: abf3c235-192c-49e8-80ec-52606b311b84
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _MÉDIA_SLA_CADASTRP-ULTIMO = CALCULATE(AVERAGEX(VALUES(Sheet1[Chave]),[_SLA_Efetivo_Envio_Ultimo_]))
+		lineageTag: de70754e-82b2-4ced-821b-18e46052797d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _MÉDIA_SLA_Integracao = CALCULATE(AVERAGEX(VALUES(Sheet1[Chave]),[_SLA_Mobilização_]))
+		lineageTag: 07dd5a91-51ee-4f1e-ba9e-ddf651b9815a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _MÉDIA_SLA_CADASTRP-1PRi = CALCULATE(AVERAGEX(VALUES(Sheet1[Chave]),[_SLA_Efetivo-1_Dias]))
+		lineageTag: b86a79a3-e9bf-49cc-9a01-e9ffbfdb2e75
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _SLA_-1_Dias_Ultimo = ```
+			
+			VAR PrimDoc = MAX(Sheet1[Data do Primeiro Envio]) // Data de Cadastro do Efetivo
+			 
+			VAR Ultimo = MAX(Sheet1[Data do Último Envio]) // Data de Cadastro do Contrato
+			
+			VAR Cadastro = MAX(Sheet1[Data de Cadastro])
+			
+			RETURN
+			
+			IF(
+			    ISBLANK(PrimDoc),
+			   BLANK(),IF((Cadastro > PrimDoc)  ,0,
+			    DATEDIFF(PrimDoc,Ultimo ,DAY)))
+			```
+		formatString: 0
+		lineageTag: c600642d-a678-4f28-bc10-4dcda69bad74
+
+	measure _MÉDIA_SLA_1PRi-Ultimo = CALCULATE(AVERAGEX(VALUES(Sheet1[Chave]),[_SLA_-1_Dias_Ultimo]))
+		lineageTag: af5bc952-3112-4239-828a-61268d0ff4c7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Distintos_Colaborado_Contrato = CALCULATE(DISTINCTCOUNT(Sheet1[Chave]))
+		formatString: #,0
+		lineageTag: c5504ac3-979a-4553-ad68-500ddd6ad977
+
+	measure '_Taxa de Aprovação_Sheet' =
+			
+			
+			VAR Aprovados = CALCULATE(SUM(Sheet1[Qtd Documentos Aprovados]))
+			
+			VAR Agendados = CALCULATE(SUM(Sheet1[Qtd Documentos Agendados]))
+			
+			RETURN IF((Aprovados = BLANK() || Aprovados = 0) && Agendados> 0, 0,Aprovados/Agendados)
+		lineageTag: 7913197f-0306-4f5a-a44e-d64f7016c02f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _SLA_consolidado_inicio = ```
+			
+			VAR PrimDoc = MAX(Sheet1[Data de Cadastro]) // Data de Cadastro do Efetivo
+			 
+			VAR Ultimo = MAX(Sheet1[Data consolidada]) // Data de Cadastro do Contrato
+			
+			RETURN
+			IF(
+			    ISBLANK(PrimDoc),
+			   BLANK(),
+			    DATEDIFF(PrimDoc,Ultimo ,DAY))
+			```
+		formatString: 0
+		lineageTag: 2a45f141-b47d-47a6-b8e8-4cae48724174
+
+	measure _Contratos_ = CALCULATE(DISTINCTCOUNT(Sheet1[Id_Contrato]))
+		formatString: #,0
+		lineageTag: 4b6eafcb-cc93-4851-a2da-01a08edc75aa
+
+	measure _Média_Cadastro_Contrato = CALCULATE(AVERAGEX(VALUES(Sheet1[Id_Contrato]),AVERAGE(Sheet1[SLA CadastroContrc-Inicio.Vigencia])))
+		lineageTag: 14da8c17-7df3-440d-bc67-20261206fdbe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Reaproveitamento_ =
+			
+			CALCULATE([_Colaboradores_Quantidade], Sheet1[Reaproveitamento] < 0)
+		formatString: #,0
+		lineageTag: 5988ca37-6432-4eab-8a33-24736db41449
+
+	measure _%Reaproveitamento_ =
+			
+			
+			var Rea = [_Reaproveitamento_]
+			
+			var colab = [_Colaboradores_Quantidade]
+			
+			RETURN IF(Rea = BLANK() && colab > 0, 0, Rea/colab)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 88e07132-2d1d-41b0-876c-362c17fc05ee
+
+	measure _SLA_Ultima_data_análise_mobilização = ```
+			
+			VAR ultimaanalise = MAX(Sheet1[Última Data de Análise]) // Data de Cadastro do Efetivo
+			 
+			VAR Ultimo = MAX(Sheet1[Data do Último Envio]) // Data de Cadastro do Contrato
+			
+			VAR Cadastro = MAX(Sheet1[Data de Cadastro])
+			
+			RETURN
+			
+			IF(
+			    ISBLANK(Ultimo),
+			   BLANK(),IF((Cadastro > ultimaanalise)  ,0,
+			    DATEDIFF(Ultimo,ultimaanalise ,DAY)))
+			```
+		formatString: 0
+		lineageTag: e73a3dff-353f-43de-aef2-324b1e1b5999
+
+	measure _MÉDIA_SLA_Analise_atlas = CALCULATE(AVERAGEX(VALUES(Sheet1[Chave]),[_SLA_Ultima_data_análise_mobilização]))
+		lineageTag: b2c003b9-9e59-4caa-9bc0-95c4dc9dc0b0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Colaboradores_AntesExpectativa =
+			
+			CALCULATE([_Colaboradores_Quantidade], Sheet1[Dias para data de expectativa] >=0)
+		formatString: 0
+		lineageTag: bc6cbda0-6823-4b5b-ab78-86600921b340
+
+	measure _Distintos_Colaboradores_Quantidade = CALCULATE(DISTINCTCOUNT(Sheet1[Id_Colaborador]))
+		formatString: #,0
+		lineageTag: d2db468a-1ceb-4464-b1cd-d5c948a1c5fd
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: d1c10d83-7a70-4dfc-b67f-551fd2675a94
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Colaborador
+		dataType: string
+		lineageTag: a75081df-6bc1-462d-a400-8b96ed41ed48
+		summarizeBy: none
+		sourceColumn: Id_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1ª Mobilização'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1d127990-a8ef-4bdd-8f12-2138ed81b83c
+		summarizeBy: none
+		sourceColumn: 1ª Mobilização
+
+		variation Variation
+			isDefault
+			relationship: ace56d65-ee38-4cc9-96ef-863de7f1dfc6
+			defaultHierarchy: LocalDateTable_a6c8e420-8b6c-4926-9456-a24b9b9dbcc8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Documentos Agendados'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e2d3d61-bf70-4d5e-b390-7bfdadca0fcf
+		summarizeBy: sum
+		sourceColumn: Qtd Documentos Agendados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Última Data de Análise'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 8d0a07d8-1d85-4292-b916-c053fee279f0
+		summarizeBy: none
+		sourceColumn: Última Data de Análise
+
+		variation Variation
+			isDefault
+			relationship: 5046b57d-54d4-4eb6-bcc4-cdd73f1be62d
+			defaultHierarchy: LocalDateTable_31111141-dd5b-46fa-a065-784f25f1dee3.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data do Primeiro Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: bc338e55-bed8-439e-b591-d03a54633249
+		summarizeBy: none
+		sourceColumn: Data do Primeiro Envio
+
+		variation Variation
+			isDefault
+			relationship: 85c3668e-520a-48cf-ac64-c88a7384d122
+			defaultHierarchy: LocalDateTable_75b8e7a3-355f-4e7e-a56b-0502537639f1.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data do Último Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 0d3c316d-8d4e-4cb1-8908-415b9bcfd09c
+		summarizeBy: none
+		sourceColumn: Data do Último Envio
+
+		variation Variation
+			isDefault
+			relationship: 14362797-5121-4972-9c5f-78f9f415b699
+			defaultHierarchy: LocalDateTable_a4b78148-8ecb-47a1-959c-d61f3a75a68f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data da 1ª Tabela Mobilização'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: e4504fb6-df7e-4853-b38f-51a2f41a0560
+		summarizeBy: none
+		sourceColumn: Data da 1ª Tabela Mobilização
+
+		variation Variation
+			isDefault
+			relationship: 7a645660-44c0-45d0-991c-1de0a9c93179
+			defaultHierarchy: LocalDateTable_ae121fb7-b8d2-4a65-ab06-d991f9dd3ddc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: 19adbebc-be6e-4d76-b473-fdace69febd5
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: c3de0126-e213-4a3a-b525-0d86b365f548
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: 8ad2fa4b-29d0-4b8e-a35a-2038e15df358
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 793a9c70-ca0e-41e2-8472-5bf77ab02faa
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: 068f3254-9ea4-4dc6-a9d9-bd83460736cd
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 10cb4923-cf13-4730-b627-4c185fbc74ec
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: 68cd65ce-7703-480f-b613-20aa64d715b6
+			defaultHierarchy: LocalDateTable_4704f356-3b56-47e3-b964-8b22f5790822.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CPF
+		dataType: string
+		lineageTag: 3cec2c40-7786-4257-a8e6-1cf811f5b275
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: b8b32aed-5df5-46f3-94d8-40ddb35e62a3
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 49522ea2-0f42-4c94-a7a8-8a6beb7fbf47
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Vigência'
+		dataType: string
+		lineageTag: 4b66920e-91b0-49cf-8ed3-85947a65f74f
+		summarizeBy: none
+		sourceColumn: Status de Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column '%Taxa de Aprovação' = IFERROR(DIVIDE(Sheet1[Qtd Documentos Aprovados],Sheet1[Qtd Documentos Agendados]),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9357e6d2-8bd8-451d-81aa-ecc7aea29524
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Faixa =
+			
+			IF(Sheet1[%Taxa de Aprovação] = BLANK(), "N/A",
+			    IF(Sheet1[%Taxa de Aprovação] >=0.95, "OK",
+			        IF(Sheet1[%Taxa de Aprovação]<0.95 && Sheet1[%Taxa de Aprovação]>0.80, "Alerta", "Crítico")))
+		lineageTag: ed50bc41-df07-4c3a-a4c7-75e4b02cd5c2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: c8e6b3d5-5f49-43c8-9395-00c34baa602f
+		summarizeBy: none
+		sourceColumn: Data de Cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 584b762d-e391-46e3-93ca-ffc4c32d8f3c
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		variation Variation
+			isDefault
+			relationship: c54ee1c0-ad86-4409-bdbe-5788a0a06d5e
+			defaultHierarchy: LocalDateTable_c7f86b40-4135-45c4-b610-33a4fe9bec06.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Atividades'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d23a5708-7f6b-4189-890b-864ea0e25d17
+		summarizeBy: none
+		sourceColumn: Início Atividades
+
+		variation Variation
+			isDefault
+			relationship: d98501e8-aace-4477-a6b3-d30906e2f380
+			defaultHierarchy: LocalDateTable_e65fa5cb-dec2-4ae5-8049-d0819a78d4de.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd Documentos Aprovados'
+		dataType: int64
+		formatString: 0
+		lineageTag: cfe1c23a-2c85-46d8-8de4-6dc9960149ef
+		summarizeBy: sum
+		sourceColumn: Qtd Documentos Aprovados
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data consolidada' = ```
+			
+			VAR Cadastrado = Sheet1[Data de cadastro do contrato]
+			
+			VAR Inicio = Sheet1[Data de início da vigência]
+			
+			var Atividades = Sheet1[Início Atividades]
+			
+			var recente = 
+			 IF(Cadastrado > Inicio, Cadastrado, Inicio)
+			
+			RETURN IF(Atividades = BLANK(), recente,Atividades)
+			```
+		formatString: General Date
+		lineageTag: 51c1ee93-0b0e-4f6a-9bcb-e08d1fc25ab4
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: ca9ac9ab-f4ef-4588-8cc7-207798f84620
+			defaultHierarchy: LocalDateTable_552d7b2d-15e0-48b4-9f70-1ecdf069f0f2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SLA CadastroContrc-Inicio.Vigencia' = ```
+			
+			    DATEDIFF(Sheet1[Data de cadastro do contrato],Sheet1[Expectativa do Início da Prestação de Serviço] ,DAY)
+			```
+		formatString: 0
+		lineageTag: 7d595140-0f0d-4e7a-8c22-a241688f72fd
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Inicio Atividades' = ```
+			
+			
+			var consolidado = Sheet1[SLA CadastroContrc-Inicio.Vigencia]
+			
+			RETURN 
+			IF (Sheet1[Expectativa do Início da Prestação de Serviço] = BLANK(), "Sem Data de Expectativa",
+			IF(consolidado > 5, "Cadastrado com Antecedência",
+			                IF(consolidado <= 5 && consolidado >=0, "Contratos Críticos","Contratos Atrasados")))
+			```
+		lineageTag: a7b427ef-932f-4805-b50d-dc607f1f385b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 94b71719-f023-4998-aeb7-a93c934d231c
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: 82ba276e-2bcc-4178-843b-a3d323f559f3
+			defaultHierarchy: LocalDateTable_adc74a8b-7f4a-4ccf-836a-59e28510de2d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Cadastro do 1º Colaborador' =
+			
+			CALCULATE(
+			    MIN(Sheet1[Data de Cadastro]),
+			    ALLEXCEPT(Sheet1, Sheet1[Id_Contrato])
+			)
+		formatString: Short Date
+		lineageTag: cad6090f-89d2-406e-a2a3-765c53711c94
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 84a67646-b01b-4648-bf47-6688eed495dc
+			defaultHierarchy: LocalDateTable_d2c511c4-fc45-4f2f-977a-ae4571463fca.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias para o Cadastro do Efetivo' = ```
+			
+			VAR PrimDoc = Sheet1[Data de cadastro do contrato] // Data de Cadastro do Efetivo
+			 
+			VAR Ultimo = Sheet1[Data de Cadastro do 1º Colaborador] // Data de Cadastro do Contrato
+			
+			RETURN
+			IF(
+			    ISBLANK(PrimDoc),
+			   BLANK(),
+			    DATEDIFF(PrimDoc,Ultimo ,DAY))
+			```
+		formatString: 0
+		lineageTag: 215df72d-5446-4313-adfd-a7793e32725c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mobilizado = IF(Sheet1[1ª Mobilização] = BLANK(), "Não Mobilizado","Mobilizado")
+		lineageTag: f6c7ce8c-c610-4503-8bb2-17fbc29b5758
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesAno = FORMAT(Sheet1[Data de Cadastro], "MM/yyyy")
+		lineageTag: ee3b3bc1-6560-4dde-a8e3-31fdb6ed1940
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Expectativa do Início da Prestação de Serviço'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: d5c1cd32-9920-4c1b-a59d-15454746a573
+		summarizeBy: none
+		sourceColumn: Expectativa do Início da Prestação de Serviço
+
+		variation Variation
+			isDefault
+			relationship: 02be9c78-23f4-4043-9d40-d5d8648a5611
+			defaultHierarchy: LocalDateTable_f64d2f8c-7d32-4d4d-869c-7bd0a9e32c0e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Dias para data de expectativa' = ```
+			
+			VAR PrimDoc = Sheet1[Data de Cadastro] // Data de Cadastro do Efetivo
+			 
+			VAR Ultimo = Sheet1[Expectativa do Início da Prestação de Serviço] // Data de Cadastro do Contrato
+			
+			RETURN
+			IF(
+			    ISBLANK(PrimDoc),
+			   BLANK(),
+			    DATEDIFF(PrimDoc,Ultimo ,DAY))
+			```
+		formatString: 0
+		lineageTag: a2029463-9af7-4602-8e9c-724a607e8fba
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias para Mobilização' =
+			
+			
+			VAR  Expec = Sheet1[Dias para data de expectativa]
+			
+			VAR Expectativa = Sheet1[Expectativa do Início da Prestação de Serviço]
+			
+			VAR Mob = Sheet1[Data da 1ª Tabela Mobilização]
+			
+			RETURN IF( Expec >= 0, DATEDIFF(Mob,Expectativa,day),BLANK())
+		formatString: 0
+		lineageTag: e7defab3-4180-4c26-9ed0-cf15f0513cec
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Mobilização' = ```
+			
+			
+			IF(Sheet1[Data da 1ª Tabela Mobilização] = BLANK(), 
+			    IF(Sheet1[Expectativa do Início da Prestação de Serviço] <> BLANK(), IF(Sheet1[Mobilização Aberto ou Não] >=0,"Mobilização Em Aberto","Mobilização em Atraso"), "Sem Data de Expectativa"),
+			    IF(Sheet1[Expectativa do Início da Prestação de Serviço] = BLANK(),"Sem Data de Expectativa",
+			        IF(Sheet1[Dias para data de expectativa] >=0 , "Mobilizado no Prazo","Mobilizado Atrasado"))
+			)
+			```
+		lineageTag: 67795749-b0cb-497b-988f-1b1178a0d1e5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reaproveitamento =
+			
+			IF(Sheet1[Data do Primeiro Envio] = BLANK(), BLANK(),
+			DATEDIFF(Sheet1[Data de Cadastro],Sheet1[Data do Primeiro Envio],DAY))
+		formatString: 0
+		lineageTag: 669a3dc2-1140-4a2f-8ba1-61e0f0c37695
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_analise = CONCATENATE(Sheet1[Id_Contrato],Sheet1[Nome])
+		lineageTag: 25d21359-a330-49aa-a8a3-47b7243713ca
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mobilização Aberto ou Não' = IF(Sheet1[Expectativa do Início da Prestação de Serviço] <> BLANK() && Sheet1[Data da 1ª Tabela Mobilização] = BLANK(),DATEDIFF(TODAY(),Sheet1[Expectativa do Início da Prestação de Serviço],DAY))
+		formatString: 0
+		lineageTag: 7957d022-fad7-4e4f-b296-b611964ebd71
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sheet1 = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Atvos\02 - Power BI\01 - SLA's\sql\Consolidado_Final_Com_Analise.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Cabeçalhos Promovidos",{{"Data de Cadastro do Efetivo", "Data de Cadastro"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Id_Contrato", type text}, {"Id_Colaborador", type text}, {"Data de Cadastro", type datetime}, {"1ª Mobilização", type datetime}, {"Qtd Documentos Agendados", Int64.Type}, {"Última Data de Análise", type datetime}, {"Data do Primeiro Envio", type datetime}, {"Data do Último Envio", type datetime}, {"Data da 1ª Tabela Mobilização", type datetime}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas em Branco Removidas", "Chave", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"Chave"}, Consolidado, {"Chave CPF"}, "Consolidado", JoinKind.LeftOuter),
+				    #"Consolidado Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Consolidado", {"Número Contrato", "Fornecedor", "Razão Social", "Unidade",  "Data de fim da vigência", "CPF", "Nome", "Situação"}, {"Número Contrato", "Nome Fantasia Fornecedor", "Razão Social Fornecedor - Contrato", "Nome Fantasia Unidade", "Data de fim da vigência", "CPF", "Nome", "Situação"}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Consolidado Expandido"),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Duplicatas Removidas",{{"Data de fim da vigência", type date}, {"Data de início da vigência", type date}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado1", "Status de Vigência", each if [Data de fim da vigência] < Date.From(DateTime.LocalNow()) then
+				    "Contrato Finalizado"
+				else if [Data de início da vigência] > Date.From(DateTime.LocalNow()) then
+				    "Contrato Futuro"
+				else
+				    "Contrato Vigente"),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Data de cadastro do contrato", type datetime}, {"Início Atividades", type datetime}}),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado2", {{"Status de Vigência", null}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Erros Substituídos", "Personalizar", each if [Data de início da vigência] < #date(2024, 11, 1) 
+				then #date(2024, 11, 1) 
+				else [Data de início da vigência]),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Personalização Adicionada1",{"Data de início da vigência"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Colunas Removidas",{{"Personalizar", "Data de início da vigência"}}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Colunas Renomeadas1",{{"Data de início da vigência", type date}, {"Expectativa do Início da Prestação de Serviço", type date}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado3", "Personalizar", each if [Expectativa do Início da Prestação de Serviço] = null then null
+				else if Date.From([Expectativa do Início da Prestação de Serviço]) < #date(2024, 11, 1) 
+				    then #date(2024, 11, 1) 
+				    else Date.From([Expectativa do Início da Prestação de Serviço])),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Personalização Adicionada2",{"Expectativa do Início da Prestação de Serviço"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Colunas Removidas1",{{"Personalizar", "Expectativa do Início da Prestação de Serviço"}}),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Colunas Renomeadas2",{{"Expectativa do Início da Prestação de Serviço", type date}})
+				in
+				    #"Tipo Alterado4"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

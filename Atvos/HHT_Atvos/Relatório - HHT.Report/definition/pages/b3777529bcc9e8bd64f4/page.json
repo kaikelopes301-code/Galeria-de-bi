@@ -1,0 +1,92 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "b3777529bcc9e8bd64f4",
+  "displayName": "Resumo Informações",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "679603d200b0560d9d41",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Status de Efetivos"
+              }
+            },
+            "Property": "Data de cadastro"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "653181e8f08ae6cffe06",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Parâmetro"
+              }
+            },
+            "Property": "Parâmetro"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "a834cbf75b1516582bf0",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "039dcda46bc377ce7d70",
+        "boundFilter": "653181e8f08ae6cffe06",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Parâmetro"
+              }
+            },
+            "Property": "Parâmetro"
+          }
+        }
+      }
+    ]
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "311L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

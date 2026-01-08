@@ -1,0 +1,14 @@
+expression ListaCNPJs =
+		let
+		    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro/Documentos%20Compartilhados/Consultoria/1.1.%20AFM%20CLIENTES/13.%20CNDs/2025/CNDs%20-%20Lista%20CNPJs.xlsx"), null, true),
+		    Dados_Sheet = Fonte{[Item="Dados",Kind="Sheet"]}[Data],
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Dados_Sheet, [PromoteAllScalars=true]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"CNPJ", type text}, {"Vigência", type text}, {"Fim Vigência", type date}, {"Fim Vigência (Data)", type date}, {"Vigente?", type text}, {"CNPJ Matriz", type text}, {"CNPJ Raiz", type text}})
+		in
+		    #"Tipo Alterado"
+	lineageTag: cef66653-14d3-4eda-9d4e-510d80f89835
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

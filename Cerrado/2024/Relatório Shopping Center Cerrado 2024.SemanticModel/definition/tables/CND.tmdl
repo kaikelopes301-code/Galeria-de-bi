@@ -1,0 +1,183 @@
+table CND
+	lineageTag: 2973e16d-7005-421b-b50c-82b7bf77e29c
+
+	column Unidade
+		dataType: string
+		lineageTag: 64a151a2-32e3-4e79-b040-4dc584758d2a
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 99934d7c-3ddb-482d-b7d5-931b9a37044c
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: bbcf7a8b-fb45-4c4c-aa0a-bc4e5ef00364
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Envio CND'
+		dataType: string
+		lineageTag: 7d9ae2df-e05d-42b2-ae1e-22e8c99a3426
+		summarizeBy: none
+		sourceColumn: Envio CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column CND
+		dataType: string
+		lineageTag: 9e1d0a45-1f7e-42d3-9e01-78beedc8a27b
+		summarizeBy: none
+		sourceColumn: CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de entrega CND'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 6daf9a5c-25ae-4f12-b13f-fbfe4763e2b1
+		summarizeBy: none
+		sourceColumn: Prazo de entrega CND
+
+		variation Variation
+			isDefault
+			relationship: 871fd4b3-aaac-4880-8a72-f2c37ce2a5c7
+			defaultHierarchy: LocalDateTable_0a029e59-5752-4fcd-8ecd-75a775124124.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data entrega CND'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 539b28c4-efc2-4839-8752-b96623d158b4
+		summarizeBy: none
+		sourceColumn: Data entrega CND
+
+		variation Variation
+			isDefault
+			relationship: 4bdac37c-36fa-49fd-9ac8-034f635f3115
+			defaultHierarchy: LocalDateTable_4fbb4bc4-2c9c-4198-8fe8-ebec2884c284.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status CND'
+		dataType: string
+		lineageTag: 6e968e3b-42f6-4761-8965-e1dd6c0aa9af
+		summarizeBy: none
+		sourceColumn: Status CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Validade CND'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e78a14dd-72c8-4e16-9443-3d33af080efb
+		summarizeBy: none
+		sourceColumn: Validade CND
+
+		variation Variation
+			isDefault
+			relationship: 932117a8-9204-4777-83fe-e6f589fe2897
+			defaultHierarchy: LocalDateTable_a498240d-d54d-43cb-b7b3-ea4356afcaa2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Próxima Entrega CND'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 50d98bd8-f067-4f4f-9f54-7a0b9fc7ebe1
+		summarizeBy: none
+		sourceColumn: Próxima Entrega CND
+
+		variation Variation
+			isDefault
+			relationship: 2ea54006-6595-46a4-a89c-5d59102adf7d
+			defaultHierarchy: LocalDateTable_106894e8-d11e-4d22-aa23-e89c64c10b6d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Fornecedor-Categoria-Unidade
+		dataType: string
+		lineageTag: 80b509bf-6844-46bd-badd-1057fade1370
+		summarizeBy: none
+		sourceColumn: Fornecedor-Categoria-Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigência
+		dataType: string
+		lineageTag: ba95193a-acae-450c-867a-4b5c191020ee
+		summarizeBy: none
+		sourceColumn: Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e318e2aa-5754-4ce6-9b73-4a8dd63b099a
+		summarizeBy: none
+		sourceColumn: Início vigência
+
+		variation Variation
+			isDefault
+			relationship: 7fa0b212-f955-4cfb-bff6-768e3a6b7f4d
+			defaultHierarchy: LocalDateTable_90801d58-0a68-45fc-8278-fa97238f0c24.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ac63cbd9-d120-4eef-bcb1-a8d153bb06d1
+		summarizeBy: none
+		sourceColumn: Fim vigência
+
+		variation Variation
+			isDefault
+			relationship: 2a09278e-1915-4fd5-accb-0678d9694912
+			defaultHierarchy: LocalDateTable_f2445a1d-fd2d-4e84-bdc2-673ddc19c04b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition CND = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoanaMalheiros\Diretório Padrão\Atlas Inovações - Documentos\Consultoria\1.1. AFM CLIENTES\Shopping Cerrado\4. Relatório AFM Gestão\12. Dezembro\Entrega CND_31_01_2025.xlsx"), null, true),
+				    CND_Sheet = Fonte{[Item="CND",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(CND_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Início vigência", type text}, {"Fim vigência", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Envio CND", type text}, {"CND", type text}, {"Prazo de entrega CND", type date}, {"Data entrega CND", type date}, {"Status CND", type text}, {"Validade CND", type date}, {"Próxima Entrega CND", type date}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Vigência"}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Colunas Removidas", "Fornecedor-Categoria-Unidade", each Text.Combine({[Fornecedor], [Categoria], [Unidade]}, " - "), type text),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"Fim vigência", type date}, {"Início vigência", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado2", "Vigência", each if [Fim vigência] > #date(2024, 11, 1) then "Vigente" else "Não vigente"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Condicional Adicionada", each ([Vigência] = "Vigente") and ([Unidade] <> "TORRE D" and [Unidade] <> "TORRE E"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

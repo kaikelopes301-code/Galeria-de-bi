@@ -1,0 +1,49 @@
+table Parâmetro
+	lineageTag: 214cd493-9430-4a86-b826-cf8793df1266
+
+	column Parâmetro
+		lineageTag: 7cacb4dc-8f73-4902-b7b6-1c44e6ecdca0
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 318478b5-72d4-4d98-88e8-ee8bc5bc675c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: b157db30-c18f-4051-a75d-dfae742aeea8
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parâmetro = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Documentos em Análise'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Documentos em Análise'[Unidade(s)]), 1),
+				    ("Gestor do Contrato", NAMEOF('Tabela Chave'[Gestor do Contrato]), 2)
+				}
+
+	annotation PBI_Id = 30bb30d8ff0a4f39af52cf42c22243fa
+

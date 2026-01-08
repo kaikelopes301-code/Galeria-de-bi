@@ -1,0 +1,82 @@
+table CND
+	lineageTag: 2973e16d-7005-421b-b50c-82b7bf77e29c
+
+	column 'Nome da Empresa'
+		dataType: string
+		lineageTag: e38821cd-e550-4f20-ad91-b60cb600147a
+		summarizeBy: none
+		sourceColumn: Nome da Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 26521b14-aba9-4223-9bb6-adf03ac789e4
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Emissão
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 609ce998-654d-46d6-a1b3-0d8da73985b8
+		summarizeBy: none
+		sourceColumn: Emissão
+
+		variation Variation
+			isDefault
+			relationship: 0579cdde-9d65-4d74-b56c-f2a34f5e7b6c
+			defaultHierarchy: LocalDateTable_018313ec-8357-46cc-b19e-1e8cca892fb6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Validade
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 31b52167-047c-40bb-b867-a19678d9de13
+		summarizeBy: none
+		sourceColumn: Validade
+
+		variation Variation
+			isDefault
+			relationship: dee16727-2921-4153-a5c8-a2e16cf18c47
+			defaultHierarchy: LocalDateTable_ac6757b3-e333-4263-9a47-1a8b65f4bd0d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status Certidão'
+		dataType: string
+		lineageTag: 98d84836-c442-4cbc-b056-638fa7c2c9ea
+		summarizeBy: none
+		sourceColumn: Status Certidão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Validade'
+		dataType: string
+		lineageTag: aa3997f2-7334-4be1-b6b1-ecaa4f9cc7d9
+		summarizeBy: none
+		sourceColumn: Status Validade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CND = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro/Documentos%20Compartilhados/Consultoria/1.1.%20AFM%20CLIENTES/Shopping%20Cerrado/4.%20Relat%C3%B3rio%20AFM%20Gest%C3%A3o/2025/certidoes.xlsx"), null, true),
+				    CND_Sheet = Fonte{[Item="Certidoes",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(CND_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Emissão", type date}, {"Validade", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

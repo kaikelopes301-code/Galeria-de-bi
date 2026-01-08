@@ -1,0 +1,225 @@
+table 'Entrega SEFIP'
+	lineageTag: 1f2cc662-8e7b-408c-9d10-89dad4875b2a
+
+	column Unidade
+		dataType: string
+		lineageTag: 76b78e9b-fe52-4168-9cb1-adc62f8c0f07
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: d6116599-5a93-479b-bccd-d4dc45f0b7ea
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 6f1e0cde-ad7f-4bd8-8515-49b8c9344c85
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 69e9e09f-ea11-4738-a894-c3b2a4dd605b
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês de competência'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 517432db-1a27-4cef-8420-c464bd41893b
+		summarizeBy: none
+		sourceColumn: Mês de competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DataOrder = ```
+			RANKX(ALL('Entrega SEFIP'[Mês de competência]), 'Entrega SEFIP'[Mês de competência], , DESC, DENSE)
+			
+			```
+		formatString: 0
+		lineageTag: f6e10c6a-3f09-4b58-8587-175085f3aa81
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor - Categoria - Unidade'
+		dataType: string
+		lineageTag: d3018aca-5fce-40ad-ba78-d637aaaa70f5
+		summarizeBy: none
+		sourceColumn: Fornecedor - Categoria - Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contagem SEFIP Entregues' = ```
+			SWITCH(TRUE(), 
+			'Entrega SEFIP'[Situação] = "Ok", 1, 
+			'Entrega SEFIP'[Situação] = "*", 1, 
+			0
+			)
+			```
+		formatString: 0
+		lineageTag: bcd27c71-6648-4256-9f5d-c2729b1ef45f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: e4fb64a1-adb0-4add-b779-9cfdff7856a4
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: cbbf5ecd-54a3-40c0-a4f2-1fc9671cd921
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do Pedido'
+		dataType: string
+		lineageTag: 5ce66d68-4a79-4dd8-8ea7-bf91be0298d1
+		summarizeBy: none
+		sourceColumn: Nº do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de documento'
+		dataType: string
+		lineageTag: 5b0a0412-edc7-4c03-aed8-80f9b875feaf
+		summarizeBy: none
+		sourceColumn: Tipo de documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contratos.Início Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0754ddec-d0f6-4e6c-bcbb-be6535b0f60f
+		summarizeBy: none
+		sourceColumn: Contratos.Início Vigência
+
+		variation Variation
+			isDefault
+			relationship: 847230f0-9394-41f6-85dd-b2cd9a0c956e
+			defaultHierarchy: LocalDateTable_6f258128-dba3-42bd-a630-066a4eba1c64.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Contratos.Fim Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 834748c8-8c20-40b8-8074-68e4a2bfa534
+		summarizeBy: none
+		sourceColumn: Contratos.Fim Vigência
+
+		variation Variation
+			isDefault
+			relationship: 5c17980e-4ad1-48bf-90b3-f13d483088e3
+			defaultHierarchy: LocalDateTable_d234e479-3fc0-4ca0-885f-877aecfbf540.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Entrega SEFIP' = m
+		mode: import
+		source =
+				let
+				    // Carregar o arquivo Excel e a planilha específica
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoanaMalheiros\Diretório Padrão\Atlas Inovações - Documentos\Consultoria\1.1. AFM CLIENTES\SYN\Shoppings\3. Apresentações\0. Status SYN\Relatório AFM Gestão\12. Dezembro\afm_gestao_report_documentos_14_24_30_01_2025.xlsx"), null, true),
+				    #"Entrega de documentos_Sheet" = Fonte{[Item="Entrega de documentos",Kind="Sheet"]}[Data],
+				
+				    // Promover a linha de cabeçalhos e alterar o tipo das colunas
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Entrega de documentos_Sheet", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Column1", type any}, {"Relatório - Entrega de documentos", type text} /* restante das colunas */}),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Tipo Alterado", 9),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				
+				    // Remover a primeira coluna
+				    #"Primeira Coluna Removida" = Table.RemoveColumns(#"Cabeçalhos Promovidos1",{"Column1", "Column46", "Column47", "Column48"}),
+				
+				    // Obter a primeira linha como lista de valores
+				    PrimeiraLinha = Table.FirstN(#"Primeira Coluna Removida", 1){0},
+				    PrimeiraLinhaLista = Record.ToList(PrimeiraLinha),
+				
+				    // Remover a primeira linha dos dados
+				    DadosSemPrimeiraLinha = Table.Skip(#"Primeira Coluna Removida", 1),
+				
+				    // Obter os nomes das colunas restantes
+				    Colunas = Table.ColumnNames(DadosSemPrimeiraLinha),
+				
+				    // Criar novos nomes para as colunas com verificação de duplicatas
+				    NovosNomesColunas = List.Accumulate(
+				        Colunas,
+				        {},
+				        (state, current) =>
+				            let
+				                Indice = List.PositionOf(Colunas, current),
+				                NovoNome = if Indice < 5 then
+				                    // Para as 5 primeiras colunas, usar diretamente os valores da primeira linha
+				                    if Indice < List.Count(PrimeiraLinhaLista) then
+				                        PrimeiraLinhaLista{Indice}
+				                    else
+				                        current
+				                else
+				                    // Para as demais colunas, combinar o prefixo da coluna e o valor da primeira linha
+				                    let
+				                        Prefixo = Text.Start(current, 6),
+				                        Sufixo = if Indice < List.Count(PrimeiraLinhaLista) then PrimeiraLinhaLista{Indice} else "",
+				                        NovoNomeBase = Text.Combine({Prefixo, " - ", Sufixo}, " ")
+				                    in
+				                        // Verificar se o novo nome já existe e adicionar um contador se necessário
+				                        if List.Contains(state, NovoNomeBase) then
+				                            let
+				                                // Encontrar o próximo sufixo numérico
+				                                Contador = List.Count(List.Select(state, each Text.StartsWith(_, NovoNomeBase))),
+				                                NovoNomeFinal = NovoNomeBase & " (" & Text.From(Contador + 1) & ")"
+				                            in
+				                                NovoNomeFinal
+				                        else
+				                            NovoNomeBase
+				            in
+				                state & {NovoNome}
+				    ),
+				
+				    // Renomear as colunas
+				    ColunasRenomeadas = Table.RenameColumns(DadosSemPrimeiraLinha, List.Zip({Colunas, NovosNomesColunas})),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(ColunasRenomeadas, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Linhas em Branco Removidas", {"Regional", "Unidade", "Fornecedor", "Categoria", "Nº do Pedido"}, "Atributo", "Situação"),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Colunas Não Dinâmicas", "Atributo", Splitter.SplitTextByDelimiter(" - ", QuoteStyle.Csv), {"Mês de competência", "Tipo de documento"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Mês de competência", type date}, {"Tipo de documento", type text}}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado1", each ([Situação] <> "---")),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas Filtradas", "Fornecedor - Categoria - Unidade", each Text.Combine({[Fornecedor], [Categoria], [Unidade]}, " - "), type text),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"Fornecedor - Categoria - Unidade"}, Contratos, {"Fornecedor-Categoria-Unidade"}, "Contratos", JoinKind.LeftOuter),
+				    #"Contratos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Contratos", {"Início Vigência", "Fim Vigência", "Status Contrato"}, {"Contratos.Início Vigência", "Contratos.Fim Vigência", "Status Contrato"}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Contratos Expandido", each ([Status Contrato] = "Vigente")),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Linhas Filtradas1"," RE","RT - Relatório de Trabalhador",Replacer.ReplaceText,{"Tipo de documento"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído"," Boleto","GFD - Boleto",Replacer.ReplaceText,{"Tipo de documento"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1"," C. Pgto","Comporovante de Pagamento",Replacer.ReplaceText,{"Tipo de documento"}),
+				    #"Linhas Filtradas2" = Table.SelectRows(#"Valor Substituído2", each true),
+				    #"Linhas Classificadas" = Table.Sort(#"Linhas Filtradas2",{{"Mês de competência", Order.Ascending}})
+				in
+				    #"Linhas Classificadas" // Retorna a tabela renomeada
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

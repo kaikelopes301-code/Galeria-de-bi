@@ -1,0 +1,66 @@
+table CND
+	lineageTag: 2973e16d-7005-421b-b50c-82b7bf77e29c
+
+	column 'Nome da Empresa'
+		dataType: string
+		lineageTag: 6de11754-1d52-4beb-a347-76cf40219a9a
+		summarizeBy: none
+		sourceColumn: Nome da Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 9eb5f08b-9f28-4568-9a1b-526d369db020
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Emissão
+		dataType: string
+		lineageTag: 41bf4a28-a720-4777-97eb-78b148f40e6d
+		summarizeBy: none
+		sourceColumn: Emissão
+
+		annotation SummarizationSetBy = Automatic
+
+	column Validade
+		dataType: string
+		lineageTag: f18e3dc7-fb29-4e48-be8d-a0a72da8b699
+		summarizeBy: none
+		sourceColumn: Validade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Certidão'
+		dataType: string
+		lineageTag: 60b900c6-618c-4254-b707-71559e8d5ed3
+		summarizeBy: none
+		sourceColumn: Status Certidão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Validade'
+		dataType: string
+		lineageTag: ed35bdbc-d816-428f-8c9c-75f85f4175d9
+		summarizeBy: none
+		sourceColumn: Status Validade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CND = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro/Documentos%20Compartilhados/Consultoria/1.1.%20AFM%20CLIENTES/13.%20CNDs/2025/CNDs.xlsx"), null, true),
+				    CND_Sheet = Fonte{[Item="Certidoes",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(CND_Sheet, [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+				in
+				    #"Linhas em Branco Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

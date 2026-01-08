@@ -1,0 +1,36 @@
+table DataHoje
+	lineageTag: ef085859-f40e-48d8-bb16-12182e0b1445
+
+	measure 'Data de Atualização' =
+			
+			VAR HOJE = FORMAT(MAX(DataHoje[DataHoje]),"DD/MM/yyyy")
+			
+			RETURN "Data da Atualização: " & HOJE
+		lineageTag: 2d4e91b6-9d63-4071-94ad-3877fdb0f26d
+
+	column DataHoje
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7f6b4754-953b-4c61-892c-ceb93d1a700b
+		summarizeBy: none
+		sourceColumn: DataHoje
+
+		variation Variation
+			isDefault
+			relationship: 2721bcef-6f24-47bb-9403-2544774fd7ef
+			defaultHierarchy: LocalDateTable_e7c73bc4-6a9b-4a8e-add0-9c11cdaa3b66.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DataHoje = m
+		mode: import
+		source =
+				let
+				    DataHoraAtual = DateTime.LocalNow()
+				in
+				    DataHoraAtual
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = DateTime
+

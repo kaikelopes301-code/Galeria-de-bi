@@ -1,0 +1,33 @@
+table Área
+	lineageTag: 2444647e-9b74-466d-a41d-3b2047f8d0be
+
+	column 'Área de Atuação'
+		dataType: string
+		lineageTag: 686edc57-a2c2-4e8b-a3d9-f5938913aebc
+		summarizeBy: none
+		sourceColumn: Área de Atuação
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 176471ac-97b6-4802-82be-c85f211fd4a8
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Área = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)ISNULL(cfi2.[Name],'--')[Área de Atuação],#(lf)    dbo.FormatCNPJ([bc].[Document]) AS [CNPJ]#(lf) #(tab)#(lf)#(lf)from [Contract] c with(nolock)#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)outer apply #(lf)#(tab)#(tab)(#(lf)    select cfi1.[Name] from CustomFieldValue cfv1 with(nolock)#(lf)#(tab)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)inner join CustomFieldItem cfi1 with(nolock) on cfv1.CustomFieldItemId = cfi1.Id#(lf)    where cfv1.EntityId = c.Id#(lf)#(tab)#(tab)and cfv1.[Value] is null#(lf)#(tab)#(tab)and cfv1.Removed = 0#(lf)#(tab)#(tab)and cfi1.Removed = 0#(lf)#(tab)#(tab)AND cfv1.CustomFieldId = '50C9DCD2-53AA-4A87-AC62-5D881C55CFB4' -- Área de atuação#(lf)#(tab)) as [cfi2]#(lf)where b.OrganizationId = '78091bc0-2575-4f7e-8d04-dbb9f68815b8'#(lf)#(tab)  and c.Removed = 0#(lf)#(tab)  #(lf)#(tab)  --Select * from CustomField Where OrganizationId = '78091bc0-2575-4f7e-8d04-dbb9f68815b8'#(lf)#(lf)#(tab)"]),
+				    #"Linhas Classificadas" = Table.Buffer( Table.Sort(Fonte,{{"CNPJ", Order.Ascending}, {"Área de Atuação", Order.Descending}})),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Classificadas", {"CNPJ"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

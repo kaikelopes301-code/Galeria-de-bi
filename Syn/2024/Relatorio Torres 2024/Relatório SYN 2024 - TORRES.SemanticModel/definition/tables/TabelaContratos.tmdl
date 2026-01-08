@@ -1,0 +1,48 @@
+table TabelaContratos
+	isHidden
+	lineageTag: e5ebfd20-7230-4a97-83ed-9cca01ff55f6
+
+	column Fornecedor
+		isHidden
+		lineageTag: 2ba738d1-94fe-419f-ac3c-70d1f94026dd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Entrega de documentos[Fornecedor]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		isHidden
+		lineageTag: 333f9d85-be9c-45c4-a97d-7662c948396b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Entrega de documentos[Categoria(s)]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº de contratos'
+		isHidden
+		formatString: 0
+		lineageTag: cf743697-254f-49ed-89fc-cf730d942f9e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Nº de contratos]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TabelaContratos = calculated
+		mode: import
+		source = ```
+				
+				SUMMARIZE(
+				    'Entrega de documentos',
+				    'Entrega de documentos'[Fornecedor],
+				    'Entrega de documentos'[Categoria(s)],
+				    "Nº de contratos", DISTINCTCOUNT('Entrega de documentos'[Unidade(s)])
+				)
+				
+				
+				```
+
+	annotation PBI_Id = 2437efbcf34847faa90eac660ca5f2ef
+

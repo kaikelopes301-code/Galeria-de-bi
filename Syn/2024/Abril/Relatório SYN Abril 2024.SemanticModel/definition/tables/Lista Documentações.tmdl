@@ -1,0 +1,31 @@
+table 'Lista Documentações'
+	lineageTag: b203896c-62fc-4e03-8c6e-4af559888c7b
+
+	column Documento
+		dataType: string
+		lineageTag: 1fc233b8-5bd2-4e18-95da-2718fa9359e0
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descrição
+		dataType: string
+		lineageTag: 9e4814d5-1632-4ca1-a0e6-1cea31f1ce54
+		summarizeBy: none
+		sourceColumn: Descrição
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Lista Documentações' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("dVM9b9swEP0rB00J4DTdOruyZQRoHUEy0MH1cKLONguJdEnKQ39N0w5FBk9Bl47VH8uRkj/UpItNisf33r13XC6jfJrcpbcz/oHParCJRlGslTO6IigRDG2aCo0sseS9hmS2yCGs7uZ5DtFqtIwSXW0R+HyHG6xJOQ2MMtGi6TYlWWGkk3vdIdaNIoPtr/anBq6wWPnLAvlw3SghtWofjAzFVO8MWex4YjTO3+HiVL9g2aHh+9IKrOS3Hr1EC1+0UegXfM0ZLLDa6tf5OhLNlHqPytGwJd6w0lBpIbh0LixQiV4zwdeG4KzckNejG1BsEToEoY0h/teX2Ax5BvdM1NiBONupy6hC1z71TJP2sZCOzybxIvk0fd/JUmyC7Xz6+73sS3jFLftgZdFIduc3WWCFe1kSs3gOtii0/G8Vx+dkZyGCIyNImqOeWZrDDcwaiaeR4FYnaNaQ4iYkNIbJOEugfQTf53kmANkHH0If1eVEZSRkEYqmrIU2CFfMdO3h7tnR4yH1h5ZY/QDeZyD6gPpAggqqeQ597loG+9/0oZPhz17GnPF4UsM4n/29iueT64vMGS67fBhJGDvwiRz2Hn/sMUYnCarsJClPsW0f4BgLBKddH7HS0P6o/QGsqeQ3Uo2AzceyCeD8bqSQO6yC5g+LeLwYvIDQp+Jx47HjsDjH8pjhuj1YKdCOoJC6ap82fgN+VttDHdasEJma+rk/vZTAlcYf8/sBF4Ovtam9sfPs5u27jtx5tfzJYvuHQbh6h36E/QvXrw50mmbj23SWvWykxxr28R+V0Wr1DA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Descrição = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Descrição", type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado","SEFIP/GFIP #(lf)SEFIP/GFIP #(lf)","SEFIP/GFIP",Replacer.ReplaceText,{"Documento"})
+				in
+				    #"Valor Substituído"
+
+	annotation PBI_ResultType = Table
+

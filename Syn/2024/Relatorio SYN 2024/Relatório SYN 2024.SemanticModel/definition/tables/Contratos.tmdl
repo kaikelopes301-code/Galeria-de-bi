@@ -1,0 +1,115 @@
+table Contratos
+	lineageTag: 087190bb-78e2-480f-b2b5-a7545f8dad88
+
+	column CNPJ
+		dataType: string
+		lineageTag: 7df61d5d-9edd-4487-bc47-ed9045090a3f
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: string
+		lineageTag: c128ef9c-0b4e-49a0-be5a-f5527458e2b3
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5d3cdf95-8231-46b0-aa97-5cc7aaa7fd0d
+		summarizeBy: none
+		sourceColumn: Início Vigência
+
+		variation Variation
+			isDefault
+			relationship: a020eb9c-ae35-4a1a-a48c-577d3dc6ba0e
+			defaultHierarchy: LocalDateTable_6f7c3d1a-c4b0-4a62-a5d8-f7a83be4883c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 37a05a3c-fe47-430a-99de-6e33f45fb145
+		summarizeBy: none
+		sourceColumn: Fim Vigência
+
+		variation Variation
+			isDefault
+			relationship: c88a2474-018d-4ce5-85d8-df60151de58a
+			defaultHierarchy: LocalDateTable_73cbebba-0c00-4a1b-8549-afb0fc619c4f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: 2c5af1c5-99bf-4015-8aec-52dc18378359
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: e7b59119-be1a-42c7-91ee-ed8d145015a1
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0b5d41c1-2820-495f-a36d-05320b16a151
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: d829377f-3b17-4dbb-ac78-73902c885c92
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor-Categoria-Unidade
+		dataType: string
+		lineageTag: 294920e8-1ad0-4be7-a9b1-2fa77d454b1d
+		summarizeBy: none
+		sourceColumn: Fornecedor-Categoria-Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoanaMalheiros\Diretório Padrão\Atlas Inovações - Documentos\Consultoria\1.1. AFM CLIENTES\SYN\3. Apresentações\0. Status SYN\Relatório AFM Gestão\8. Agosto\Relatorio - Lista de contratos - 2410181117.xlsx"), null, true),
+				    Contratos_Sheet = Fonte{[Item="Contratos",Kind="Sheet"]}[Data],
+				    #"Linhas Superiores Removidas" = Table.Skip(Contratos_Sheet,6),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Outras Colunas Removidas" = Table.SelectColumns(#"Cabeçalhos Promovidos1",{"CNPJ", "Cadastro no sistema", "Vigência", "Unidade", "Categoria", "Fornecedor"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Outras Colunas Removidas", "Vigência", Splitter.SplitTextByDelimiter(" a ", QuoteStyle.Csv), {"Início Vigência", "Fim Vigência"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Início Vigência", type date}, {"Fim Vigência", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado2", "Status Contrato", each if [Fim Vigência] > #date(2024, 8, 1) then "Vigente" else if [Início Vigência] > #date(2024, 8, 1) then "Não Vigente" else "Não Vigente"),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Coluna Condicional Adicionada", "Fornecedor-Categoria-Unidade", each Text.Combine({[Fornecedor], [Categoria], [Unidade]}, " - "), type text),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Mesclada Inserida", each ([Status Contrato] = "Vigente")),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Filtradas", {"Fornecedor-Categoria-Unidade"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,167 @@
+table 'Contratos  (Contratos)'
+	lineageTag: bdecbffc-38e8-4d06-949c-cddd30512e72
+
+	column CNPJ
+		dataType: string
+		lineageTag: 65994f1c-1309-4271-9c4c-93185ed16c4c
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: bc407221-7dbd-40f7-961c-3551f27b2744
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigência
+		dataType: string
+		lineageTag: f130636e-604c-47a3-8368-bec344e2003e
+		summarizeBy: none
+		sourceColumn: Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 53081f9d-d1e2-4406-8587-034ad3136bf7
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: c50d06ce-ccc3-49da-a07d-927cdfd16292
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0f764b8d-400c-4472-bd12-c836342c13ed
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 2bf91b04-e4c0-4766-9a9c-e22c0f4421f2
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: a488dcbd-4308-4b57-a95d-3d5cdc460abd
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 1e13713a-8d4f-49c1-811f-d44206777d88
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 78f95930-e4f0-4123-bb66-23885395a6f5
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: 90b48856-d191-42af-b7d6-43fb2a072eb6
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: 3920ad55-e452-416c-a15b-f9d02ac86e9a
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 4f1e42ff-d168-45fe-b1f7-050e3d032fa6
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: string
+		lineageTag: 6ab59b36-eab8-447a-9675-665750e5b0e5
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: string
+		lineageTag: 00c5273b-2d87-4dba-af5d-259364c5a3f2
+		summarizeBy: none
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: 72abae3e-960c-45b0-b01a-531de688238b
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Gestor'
+		dataType: string
+		lineageTag: 822e3529-4383-41fc-8282-05438ab9b672
+		summarizeBy: none
+		sourceColumn: Email do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: b164f9ca-9dc8-4e44-92b4-4132f5a6cabf
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Contratos  (Contratos)' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\Atvos\Relatório - Status de Funcionários\Relatório de Contratos - Atvos.xlsx")),
+				    Contratos_sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    #"Linhas Superiores Removidas" = Table.Skip(Contratos_sheet, each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Outras Colunas Removidas" = Table.SelectColumns(#"Linhas Superiores Removidas", List.Select(Table.ColumnNames(#"Linhas Superiores Removidas"), each try not List.IsEmpty(FilterNullAndWhitespace(Table.Column(#"Linhas Superiores Removidas", _))) otherwise true)),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Outras Colunas Removidas", each not List.IsEmpty(FilterNullAndWhitespace(Record.FieldValues(_)))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"N° do pedido", type text}, {"Razão Social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Status", type text}, {"Vigência", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Tipo Alterado", {"Id_Contrato"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

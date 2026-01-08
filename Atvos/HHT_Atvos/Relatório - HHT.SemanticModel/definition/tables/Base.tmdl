@@ -1,0 +1,545 @@
+table Base
+	lineageTag: f1c1d5ff-61df-40e0-8b64-7de60d1040a0
+
+	measure _Quantidade_colaboradores = CALCULATE(DISTINCTCOUNT(Base[CPF]))
+		formatString: #,0
+		lineageTag: 9d34d399-d60b-495e-a949-835394cf3391
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure _Quantidade_Unidades = DISTINCTCOUNT(Base[Unidade])
+		formatString: 0
+		lineageTag: aef4226f-d09d-41a9-a42b-0fd2be965bf4
+
+	measure _Quantidade_categorias = DISTINCTCOUNT(Base[Categoria])
+		formatString: 0
+		lineageTag: 76cabf7b-d446-4b65-b8aa-272e6bd6d713
+
+	measure _QtdFornecedor = DISTINCTCOUNT(Base[Fornecedor])
+		formatString: 0
+		lineageTag: 68f38dbd-5b86-4bf7-b5cf-355b0949ad1c
+
+	measure _Qtd_CPF = DISTINCTCOUNT(Base[CPF])
+		formatString: 0
+		lineageTag: 223adc3e-4613-4902-bc09-25975cf419d2
+
+	measure _MédiaHorasJornada = AVERAGE(Base[Horas de Jornada])
+		lineageTag: 771520dd-de38-4a0e-a491-bc0573674419
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _MédiaHorasSemanais =
+			
+			AVERAGEX(
+			    FILTER(Base, NOT ISBLANK(Base[Horas de Jornada])),
+			    VAR DiasSemana =
+			        SWITCH(
+			            TRUE(),
+			            Base[Escala] = "5x2", 5,
+			            Base[Escala] = "5x1", 6,
+			            Base[Escala] = "6x1", 6,
+			            Base[Escala] = "12x36", 3,
+			            Base[Escala] = "6x2", 6,
+			            Base[Escala] = "4x2", 4,
+			            Base[Escala] = "14x14", 7,
+			            Base[Escala] = "2x1", 5,
+			            Base[Escala] = "4x4", 3.5,
+			            Base[Escala] = "12x36 (36hrs)", 3,
+			            BLANK()
+			        )
+			    VAR H = Base[Horas de Jornada]
+			    RETURN IF( ISBLANK(DiasSemana) || ISBLANK(H), BLANK(), H * DiasSemana )
+			)
+		lineageTag: 7a542f3a-dbf8-49be-8169-569e8613b5bb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _MédiaMês = ```
+			
+			AVERAGEX(
+			    FILTER(Base, NOT ISBLANK(Base[Escala])),
+			    VAR H =
+			        // aceita "12h" ou 12
+			        VAR v = Base[Horas de Jornada]
+			        RETURN IF(ISTEXT(v), VALUE(SUBSTITUTE(v, "h", "")), v)
+			    VAR DiasMes =
+			        SWITCH(
+			            TRUE(),
+			            Base[Escala] = "5x2", 21,
+			            Base[Escala] = "5x1", 25,
+			            Base[Escala] = "6x1", 26,
+			            Base[Escala] = "12x36", 15,
+			            Base[Escala] = "6x2", 22,
+			            Base[Escala] = "4x2", 20,
+			            Base[Escala] = "14x14", 14,
+			            Base[Escala] = "2x1", 20,
+			            Base[Escala] = "4x4", 15,
+			            Base[Escala] = "12x36 (36hrs)", 15,
+			            BLANK()
+			        )
+			    RETURN IF( ISBLANK(H) || ISBLANK(DiasMes), BLANK(), H * DiasMes )
+			)
+			
+			```
+		lineageTag: 2b23fd0e-253f-44c6-8cbf-ae0628f589a7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _TotalHHT = CALCULATE([_Quantidade_colaboradores]*[_MédiaMês])
+		formatString: #,0
+		lineageTag: 4c62f8d1-f0f3-4f9c-b67c-5402c8aa8114
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure _MédiaHHT =
+			CALCULATE(
+			    ([_TotalHHT]/DISTINCTCOUNT(Base[CNPJ])))
+		lineageTag: 2e4594ce-3245-4675-9bed-f890bc4898cf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Data Atualização' =
+			
+			VAR HOJE = FORMAT(MAX(DataHoje[DataHoje]),"DD/MM/yyyy")
+			
+			RETURN "Data da Atualização: " & HOJE
+		lineageTag: 8f81ac62-2b80-4048-8bad-f2d4611864f2
+
+	column Nome
+		dataType: string
+		lineageTag: 39b117c4-8d6f-4a45-bcfc-3d047e3bd1c7
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número de matrícula'
+		dataType: string
+		lineageTag: acc1f2fe-ae58-4853-b73c-f2de10479c64
+		summarizeBy: none
+		sourceColumn: Número de matrícula
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 77f37579-320e-4e97-ae58-7df3d9a24f31
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: b782b240-4892-441c-9c13-130d608adecb
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 1b36e452-4eab-436d-98d3-6d5c90bcb7cb
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 93e0ac32-45ea-4e02-bde9-8c2cb73f6f9b
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: e710cbf9-9a70-44ea-96bd-04453d5f357c
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: e09f095e-bcec-4392-a7d9-aa36e51e86a6
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 05149fef-b11f-409f-b9bd-8e6b3fd17ff4
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: e7252c8d-fe58-40d3-bf89-2904e840a030
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social do Contrato'
+		dataType: string
+		lineageTag: 8ddf9d2f-fae7-47c4-bb88-29212ce8c7ba
+		summarizeBy: none
+		sourceColumn: Razão Social do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Contrato'
+		dataType: string
+		lineageTag: cc927352-0a29-494b-84ad-dfb403145c3b
+		summarizeBy: none
+		sourceColumn: CNPJ do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: 652f6327-0d2f-4821-8f0b-8904f856067c
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia do Subcontrato'
+		dataType: string
+		lineageTag: 98d10728-1c32-4316-922b-565c3a35f885
+		summarizeBy: none
+		sourceColumn: Nome Fantasia do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início do Contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d88d5bab-bed3-4063-9840-00284c8de26c
+		summarizeBy: none
+		sourceColumn: Início do Contrato
+
+		variation Variation
+			isDefault
+			relationship: f2488bee-4f18-4491-a47e-5b4d26499acb
+			defaultHierarchy: LocalDateTable_22df0f47-509d-4ae7-be0c-4a88380061d8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim do Contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ecdb5941-94df-4bf2-a1b1-d2eb47ae39b9
+		summarizeBy: none
+		sourceColumn: Fim do Contrato
+
+		variation Variation
+			isDefault
+			relationship: b81991d6-9318-4a22-a1e2-da948b985a83
+			defaultHierarchy: LocalDateTable_0e7bd6bf-c609-4a34-b4f8-052db5e5357c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Modalidade de Contratação'
+		dataType: string
+		lineageTag: 0e7595de-2243-40d6-bb4d-e0d090634280
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de moradia'
+		dataType: string
+		lineageTag: 99c60fbd-11af-443f-871f-1e7f5f9186e5
+		summarizeBy: none
+		sourceColumn: Tipo de moradia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: d788c154-dd11-4465-98eb-d725017c0352
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 5032bada-054d-4b9d-9767-0b1d8affb1f8
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escala
+		dataType: string
+		lineageTag: 21645acc-e477-44a6-b1e1-2b8823e6ebd6
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada'
+		dataType: string
+		lineageTag: 47a35cfb-868a-4262-b23c-74ed4bd01c76
+		summarizeBy: none
+		sourceColumn: Início da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Término da jornada'
+		dataType: string
+		lineageTag: b2fa64c0-cdd9-4ef0-8185-41d210d571c4
+		summarizeBy: none
+		sourceColumn: Término da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas de Jornada'
+		dataType: double
+		lineageTag: 3fd8640a-9f4b-4615-a529-5b321ab146de
+		summarizeBy: sum
+		sourceColumn: Horas de Jornada
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Total de Docs'
+		dataType: string
+		lineageTag: 6cb68bbb-28b9-4fa1-815a-3623d79cf4f9
+		summarizeBy: none
+		sourceColumn: Total de Docs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total de válidos'
+		dataType: string
+		lineageTag: 704ca847-51d4-4f91-b4ee-665185403ddf
+		summarizeBy: none
+		sourceColumn: Total de válidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs válidos'
+		dataType: string
+		lineageTag: 85ccafc5-945a-4126-ba5a-0018f6cc474c
+		summarizeBy: none
+		sourceColumn: % docs válidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total em análise'
+		dataType: string
+		lineageTag: d951b8b2-8701-4cf5-a7da-f254389ad964
+		summarizeBy: none
+		sourceColumn: Total em análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs em análise'
+		dataType: string
+		lineageTag: b8605ce0-0875-4da8-9666-bfe8976458ab
+		summarizeBy: none
+		sourceColumn: % docs em análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total pendentes'
+		dataType: string
+		lineageTag: fca29162-90d7-45f3-b3ae-d59e1f849faf
+		summarizeBy: none
+		sourceColumn: Total pendentes
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs entregues'
+		dataType: string
+		lineageTag: 571540a1-277e-4dfa-9ea3-f83ede4bdcf9
+		summarizeBy: none
+		sourceColumn: % docs entregues
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mobilizado até'
+		dataType: string
+		lineageTag: afe36b54-da7f-468f-8135-1807c2dde2a2
+		summarizeBy: none
+		sourceColumn: Mobilizado até
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Próximo documento a vencer'
+		dataType: string
+		lineageTag: f63d1e81-8821-46f4-8d92-e93543fce577
+		summarizeBy: none
+		sourceColumn: Próximo documento a vencer
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Restrição de acesso'
+		dataType: string
+		lineageTag: 17d956c6-9309-4ad1-aaf2-d6e8cb8492f5
+		summarizeBy: none
+		sourceColumn: Status Restrição de acesso
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documentos pendentes (Não entregues ou Recusados)'
+		dataType: string
+		lineageTag: 5daca669-0607-46e5-b43f-f558e2aa2714
+		summarizeBy: none
+		sourceColumn: Documentos pendentes (Não entregues ou Recusados)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sexo
+		dataType: string
+		lineageTag: 8127cac5-ba16-47a5-8745-4a87cedd5615
+		summarizeBy: none
+		sourceColumn: Sexo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Área
+		dataType: string
+		lineageTag: bd2bb1fb-0f4b-44e0-9a5b-5b6c6ed748c4
+		summarizeBy: none
+		sourceColumn: Área
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1fec515c-9fb0-49fc-9658-50eddbd879de
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 93d4dcf9-4350-44ab-aaba-fab2c1bf0d68
+			defaultHierarchy: LocalDateTable_fcb78a4b-9c71-4dd0-acb9-4a6e14212734.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Coluna1
+		dataType: string
+		lineageTag: 8e323659-09a8-4139-96b1-df8f97df4630
+		summarizeBy: none
+		sourceColumn: Coluna1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna2
+		dataType: string
+		lineageTag: 1f4caca7-27b6-48f5-a6a4-0636b4ebf4a1
+		summarizeBy: none
+		sourceColumn: Coluna2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna3
+		dataType: string
+		lineageTag: c1dc8eac-6268-49f8-a229-a301ba5c4ec0
+		summarizeBy: none
+		sourceColumn: Coluna3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna4
+		dataType: string
+		lineageTag: 3542d75c-b95c-4da9-a47c-2bb8b6144822
+		summarizeBy: none
+		sourceColumn: Coluna4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna5
+		dataType: string
+		lineageTag: 5449888b-ec37-4adc-bf89-60cd63d8df88
+		summarizeBy: none
+		sourceColumn: Coluna5
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Base = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Atvos\03 - Excel\02 - Histórico Funcionários\Mobilizados - Histórico.xlsx"), null, true),
+				    Base_Sheet = Fonte{[Item="Ativos",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Base_Sheet, [PromoteAllScalars=true]),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Cabeçalhos Promovidos", "Vigência do Contrato", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"Vigência do Contrato.1", "Vigência do Contrato.2"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência do Contrato.1", type date}, {"Vigência do Contrato.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado2",{{"Vigência do Contrato.1", "Início do Contrato"}, {"Vigência do Contrato.2", "Fim do Contrato"}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Colunas Renomeadas", {"CPF"}, Gênero, {"CPF Colaborador"}, "Genêro Colaborador", JoinKind.LeftOuter),
+				    #"Genêro Colaborador Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Genêro Colaborador", {"Gênero do Colaborador"}, {"Sexo"}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Genêro Colaborador Expandido",null,"--",Replacer.ReplaceValue,{"Sexo"}),
+				    #"Consultas Mescladas1" = Table.NestedJoin(#"Valor Substituído", {"CNPJ"}, Área, {"CNPJ"}, "Área", JoinKind.LeftOuter),
+				    #"Área Atuação Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas1", "Área", {"Área de Atuação"}, {"Área"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Área Atuação Expandido",null,"--",Replacer.ReplaceValue,{"Área"}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Valor Substituído1", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Linhas em Branco Removidas" ,"","--",Replacer.ReplaceValue,{"Sexo"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Valor Substituído3",{{"Nome", Order.Ascending}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Linhas Classificadas", "Horas de Jornada", each // Adicione uma Coluna Personalizada com este código:
+				let
+				    inicio   = [#"Início da jornada"],
+				    termino  = [#"Término da jornada"],
+				
+				    // Converte para DateTime, aceitando tanto time quanto datetime
+				    dtInicio = try (if Value.Is(inicio,  type time) then DateTime.From(#date(1899,12,30) & inicio)  else DateTime.From(inicio))  otherwise null,
+				    dtTermino= try (if Value.Is(termino, type time) then DateTime.From(#date(1899,12,30) & termino) else DateTime.From(termino)) otherwise null,
+				
+				    // Calcula horas dentro de um dia (equivalente a MOD(diff;1)*24 do Excel)
+				    horasDentroDoDia =
+				        if dtInicio = null or dtTermino = null then null
+				        else
+				            let
+				                diffHoras = Duration.TotalHours(dtTermino - dtInicio),
+				                // MOD sempre positivo, mesmo se diff for negativo
+				                modHoras  = Number.Mod(Number.Mod(diffHoras, 24) + 24, 24)
+				            in
+				                modHoras,
+				
+				    // Regras da sua fórmula:
+				    valorNumerico =
+				        if horasDentroDoDia = null or horasDentroDoDia = 0 then null
+				        else if horasDentroDoDia < 7 then horasDentroDoDia
+				        else horasDentroDoDia - 1,
+				
+				    // Saída no mesmo padrão do Excel: número ou "---"
+				    resultado =
+				        if valorNumerico = null then Null.Type
+				        else Number.Round(valorNumerico, 2),
+				
+				    // Garante tipo texto quando for preciso
+				    resultadoTexto = if resultado is number then Text.From(resultado, "pt-BR") else resultado
+				in
+				    resultadoTexto),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Horas de Jornada", type number}}),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado3", {{"Horas de Jornada", null}}),
+				    #"Valor Substituído4" = Table.ReplaceValue(#"Erros Substituídos","N.A.","---",Replacer.ReplaceText,{"Área"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído4","P&Q","ADMINISTRATIVO",Replacer.ReplaceText,{"Área"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Valor Substituído2", each ([Status Restrição de acesso] = "Mobilizado"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,1064 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "A_SLA",
+  "name": "8bafdd50c5a3702a20e5",
+  "options": {
+    "targetVisualNames": [
+      "96efe850606e3e2b0e7b"
+    ],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "4d9d4565a93a0b34939d",
+    "filters": {
+      "byExpr": [
+        {
+          "name": "a8ecda3f7491bbc02076",
+          "type": "Advanced",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Relatório de Fornecedores"
+                }
+              },
+              "Property": "Competência"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "e727084ac777c0d038d5",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Status de funcionários"
+                }
+              },
+              "Property": "Status Restrição de acesso"
+            }
+          },
+          "howCreated": 1
+        }
+      ]
+    },
+    "sections": {
+      "4d9d4565a93a0b34939d": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "8705d6c4ce24db766031",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "a",
+                    "Entity": "Análises Úteis",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Not": {
+                        "Expression": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "a"
+                                    }
+                                  },
+                                  "Property": "Time"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'Sistema'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Análises Úteis"
+                    }
+                  },
+                  "Property": "Time"
+                }
+              },
+              "howCreated": 1
+            },
+            {
+              "name": "68c8080fc6d0c861133b",
+              "type": "Advanced",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "s",
+                    "Entity": "SLA Ticket",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Comparison": {
+                        "ComparisonKind": 2,
+                        "Left": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "s"
+                              }
+                            },
+                            "Property": "SLA's de Envio de Documento"
+                          }
+                        },
+                        "Right": {
+                          "Literal": {
+                            "Value": "0L"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SLA Ticket"
+                    }
+                  },
+                  "Property": "SLA's de Envio de Documento"
+                }
+              },
+              "howCreated": 1
+            }
+          ]
+        },
+        "visualContainers": {
+          "9ef6c324ec8ad659d0c9": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "56c0899975b08b3c23bd": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "e509fab565246970057e": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "b0b40c30dc0d80987674",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "b223f452bca34814d269",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Quantidade) Reanalise"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "39e54a90c018eb30d2d8": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "e52740d0b46b70916e11",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "0a84ef97a2364c156a09": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "Filter201d8cd2574f387a8d2f",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "d",
+                        "Entity": "Relatório de Fornecedores",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "d"
+                                  }
+                                },
+                                "Property": "Documentos Total"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório de Fornecedores"
+                        }
+                      },
+                      "Property": "Documentos Total"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "d85d410db35062823783",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório de Fornecedores"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "8659dc863a88c44942e7",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "2b581da685d6e87d93e0": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "d982d1c68ce0190aa230",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "textFilter25A4896A83E0487089E2B90C9AE57C8A",
+              "objects": {}
+            }
+          },
+          "c38ab307ab0cc0c9b009": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "b7bc191e37e5b7d50550": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "2959008feba3d053a617",
+                  "type": "TopN",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "subquery",
+                        "Expression": {
+                          "Subquery": {
+                            "Query": {
+                              "Version": 2,
+                              "From": [
+                                {
+                                  "Name": "a",
+                                  "Entity": "Análises Úteis",
+                                  "Type": 0
+                                }
+                              ],
+                              "Select": [
+                                {
+                                  "Column": {
+                                    "Expression": {
+                                      "SourceRef": {
+                                        "Source": "a"
+                                      }
+                                    },
+                                    "Property": "Nome_Documento"
+                                  },
+                                  "Name": "field"
+                                }
+                              ],
+                              "OrderBy": [
+                                {
+                                  "Direction": 2,
+                                  "Expression": {
+                                    "Measure": {
+                                      "Expression": {
+                                        "SourceRef": {
+                                          "Source": "a"
+                                        }
+                                      },
+                                      "Property": "(Quantidade Analisados) Documentos"
+                                    }
+                                  }
+                                }
+                              ],
+                              "Top": 10
+                            }
+                          }
+                        },
+                        "Type": 2
+                      },
+                      {
+                        "Name": "a",
+                        "Entity": "Análises Úteis",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "a"
+                                    }
+                                  },
+                                  "Property": "Nome_Documento"
+                                }
+                              }
+                            ],
+                            "Table": {
+                              "SourceRef": {
+                                "Source": "subquery"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análises Úteis"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "7c912855852ede8d8509",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "7125f09217d15aba6000",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "barChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "0fffcdb04cc854130e30": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "262d651abc42be6263a8",
+                  "type": "TopN",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "subquery",
+                        "Expression": {
+                          "Subquery": {
+                            "Query": {
+                              "Version": 2,
+                              "From": [
+                                {
+                                  "Name": "a",
+                                  "Entity": "Análises Úteis",
+                                  "Type": 0
+                                }
+                              ],
+                              "Select": [
+                                {
+                                  "Column": {
+                                    "Expression": {
+                                      "SourceRef": {
+                                        "Source": "a"
+                                      }
+                                    },
+                                    "Property": "Nome_Documento"
+                                  },
+                                  "Name": "field"
+                                }
+                              ],
+                              "OrderBy": [
+                                {
+                                  "Direction": 2,
+                                  "Expression": {
+                                    "Measure": {
+                                      "Expression": {
+                                        "SourceRef": {
+                                          "Source": "a"
+                                        }
+                                      },
+                                      "Property": "(Quantidade Analisados) Documentos"
+                                    }
+                                  }
+                                }
+                              ],
+                              "Top": 10
+                            }
+                          }
+                        },
+                        "Type": 2
+                      },
+                      {
+                        "Name": "a",
+                        "Entity": "Análises Úteis",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "a"
+                                    }
+                                  },
+                                  "Property": "Nome_Documento"
+                                }
+                              }
+                            ],
+                            "Table": {
+                              "SourceRef": {
+                                "Source": "subquery"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análises Úteis"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "bd2ec5620d36bc6a5bb0",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "e490b04ab70b8b850088",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "barChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "(Média) Horas Úteis Fornecedor"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "2a5111270be72c2eb480": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "96efe850606e3e2b0e7b": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "33197199e04a1b08382e": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "ca570d10689c06339394",
+                  "type": "Categorical",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "r",
+                        "Entity": "Reprovações",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "r"
+                                    }
+                                  },
+                                  "Property": "Status_Documentacao"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'Reprovado'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Reprovações"
+                        }
+                      },
+                      "Property": "Status_Documentacao"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "ba46cb657030c8d63bb8",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "9a76452831a0eb752640",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "44d34635e0e54c572ab7",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Tipo"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "15802d2e708bd0cc2635",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Envio"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "98c4794060d4068a02c6",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Análise"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "df82bdefdc75846d79d6",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Prazo_Envio"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "2d7bdc3c029ee13062c0",
+                  "type": "Advanced",
+                  "expression": {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "SLA Fornecedor"
+                            }
+                          },
+                          "Property": "Numero_Pedido"
+                        }
+                      },
+                      "Function": 0
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "6a1fd431e6029d71b39e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "SLA Fornecedor"
+                            }
+                          },
+                          "Property": "Horas de Envio do Fornecedor"
+                        }
+                      },
+                      "Function": 0
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "10e7673596082bd6c9d1",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Data_Cadastro_Pedido"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "212d97df7c7cdac38651",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Hora_Cadastro_Pedido"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "67a3c286469a058bd501",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Id_Documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Fornecedor"
+                        }
+                      },
+                      "Property": "Id_Documento"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "cb94944189190b1ba794": {
+            "isHidden": false
+          },
+          "1168cb91b94dcbaac383": {
+            "isHidden": false
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

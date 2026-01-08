@@ -1,0 +1,87 @@
+relationship 07622fd2-32a6-4abc-a7b9-1be9fff8e3af
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de funcionários'.'Vigência Inicial'
+	toColumn: LocalDateTable_95136300-4a26-4e7d-bc13-08bc8bcf0b74.Date
+
+relationship 99019884-053d-4c2e-bf44-1c13ac1109be
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de funcionários'.'Vigência Final'
+	toColumn: LocalDateTable_215dd20f-1d63-4e59-9600-01fe0bbc3a75.Date
+
+relationship b6118b9f-17b5-4365-b86a-94681a560edc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Prazo de Envio'
+	toColumn: LocalDateTable_601600e6-bb4d-43b9-b6d2-852c3b8420b6.Date
+
+relationship 257cc4ae-217e-4562-ae1c-7c3f9bf0342e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.Competência
+	toColumn: LocalDateTable_2674469f-8151-4ced-a3f9-428f04b5d73d.Date
+
+relationship 87e1aefe-e109-4c6b-8056-0ad2f5ea175b
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários'.'Chave de Gestores'
+	toColumn: 'Tabela Chave'.'Chave Status'
+
+relationship a1401330-8a9a-4a7f-a25f-488f6bb29375
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Documentos em Análise'.'Chave Fornecedores'
+	toColumn: 'Tabela Chave'.'Chave Status'
+
+relationship 515ab017-743f-4100-8d65-73039018fb84
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Data da Análise'
+	toColumn: LocalDateTable_603f7703-c633-4ffb-ae71-f9ca9efeb99f.Date
+
+relationship 6d7102e4-a403-497a-9aea-c77fba464dfd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Data_Cadastro_Pedido
+	toColumn: LocalDateTable_2c0a6bd9-aadd-4cd5-8a0a-55010da09d9e.Date
+
+relationship 129c332c-7780-4f3c-9ecb-c2ce16b2d0dc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Hora_Cadastro_Pedido
+	toColumn: LocalDateTable_227a5313-2f39-46b2-9322-eb52bf813e4d.Date
+
+relationship 27172cf6-5368-48c2-9bd7-d1ae7cbc1f90
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Prazo_Envio
+	toColumn: LocalDateTable_72710a42-eb6c-4b00-b33f-42bd14b02fb7.Date
+
+relationship 0476d6fa-f188-4c7e-a004-cd5a9100e86c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Data_Envio
+	toColumn: LocalDateTable_3c4f4dfa-c2fc-41f2-9f02-5618f4626e04.Date
+
+relationship 8e15cf76-d734-4891-8fee-62e034c0947d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Hora_Envio
+	toColumn: LocalDateTable_1561ea25-b887-43fa-8bdb-1e994438e263.Date
+
+relationship 46168aea-a305-4ddd-873d-07649cace46b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Data_Analise
+	toColumn: LocalDateTable_606cbd81-684e-4d5b-949c-3b76961c6908.Date
+
+relationship 606f8f82-09fc-4e7f-9046-0c1866cec5ff
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Hora_Analise
+	toColumn: LocalDateTable_14e57956-b501-43c9-9be2-e1a5203f6b11.Date
+
+relationship ca2457d0-97db-4ae0-878d-1181e0efdaf5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_d2108552-b145-47e1-a9e8-415bbcbd5440.Date
+
+relationship AutoDetected_44d61ffc-1ef4-44a0-827a-ae797d170de0
+	fromColumn: 'Documentos em Análise'.Id_Contrato
+	toColumn: 'Contratos  (Contratos)'.Id_Contrato
+
+relationship a6f35d62-bb14-1ae0-554d-ecd2227ef5a7
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: DocumentValidationSla.Id_Documento
+	toColumn: 'Documentos em Análise'.DocumentScheduleId
+

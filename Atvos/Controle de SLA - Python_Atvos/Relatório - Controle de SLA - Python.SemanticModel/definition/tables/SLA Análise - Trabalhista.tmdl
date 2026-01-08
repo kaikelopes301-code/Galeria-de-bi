@@ -1,0 +1,202 @@
+table 'SLA Análise - Trabalhista'
+	lineageTag: 966dd945-6450-437f-8c94-1b55dacfca66
+
+	measure _SLA_Analise_Trabalhista = CALCULATE(AVERAGE('SLA Análise - Trabalhista'[Diferenca_Dias]))
+		formatString: 0.00
+		lineageTag: 971ec82e-b896-4176-beff-ee55d42ca8ad
+
+	measure _SLA_Média_Trabalhista_Contrato = CALCULATE(AVERAGEX(VALUES(Contratos[Id do Contrato]),CALCULATE(AVERAGE('SLA Análise - Trabalhista'[Diferenca_Dias]))))
+		lineageTag: 664f6031-064f-4ec8-bdb7-e3a65b78c781
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _%_SLA_trabalhista_fora =
+			
+			
+			VAR DENTRO = CALCULATE([_Contratos_Trabalhistas_],
+			'SLA Análise - Trabalhista'[Diferenca_Dias]> 30)
+			
+			VAR QUANT = [_Contratos_Trabalhistas_]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: ce9e067b-ed3b-410a-8a61-d782a96a96a4
+
+	measure _Quantidade_Analises_trabalhista = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 21b042e3-02dd-4fe9-847a-50e980027472
+
+	measure _Contratos_Trabalhistas_ = CALCULATE([_Quantidade_Analises_trabalhista])
+		formatString: 0
+		lineageTag: 5328d105-8aa9-407e-8f87-52e614e37e5e
+
+	measure _%_SLA_trabalhista_Dentro_ =
+			
+			
+			VAR DENTRO = CALCULATE([_Contratos_Trabalhistas_],
+			'SLA Análise - Trabalhista'[Diferenca_Dias]<= 30)
+			
+			VAR QUANT = [_Contratos_Trabalhistas_]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d916be09-5398-48aa-80de-a32ed140e44a
+
+	measure _Recusas_Analises_Trabalhista = CALCULATE([_Quantidade_Analises_trabalhista], 'SLA Análise - Trabalhista'[Status_Documentacao] = "Reprovado")
+		formatString: #,0
+		lineageTag: e49bf082-a2b7-4a60-8198-a380efea8f1c
+
+	measure _%_Historico_Recusa_Trabalhista =
+			
+			
+			VAR Recusa = [_Recusas_Analises_Trabalhista]
+			
+			VAR Total = [_Quantidade_Analises_trabalhista]
+			
+			RETURN IF(Recusa > BLANK() && Total = 0,0,Recusa/Total)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3bcf884f-a394-46b1-9f47-c20da19433f5
+
+	measure _%_Cartão_Historico_Recusa_Trabalhista =
+			
+			
+			VAR Recusa = [_Recusas_Analises_Trabalhista]
+			
+			VAR Total = [_Quantidade_Analises_trabalhista]
+			
+			RETURN IF(Recusa > BLANK() && Total = 0,0,Recusa/Total)
+		lineageTag: 2945eee8-5423-4ab3-9d1a-09199f7759fc
+
+		formatStringDefinition =
+				
+				
+				VAR TAXA = FORMAT([_%_Cartão_Historico_Recusa_Trabalhista],"0.0%")
+				
+				VAR VALIDA = FORMAT([_Recusas_Analises_Trabalhista], "#,###")
+				
+				RETURN """" & TAXA & " (" & VALIDA & ")"
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 1732a95b-c3a9-45ab-a08c-f59419f2ca41
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: 81a635ee-96a6-481c-b2a1-7379f193ff48
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Documento
+		dataType: string
+		lineageTag: 84b64892-d5bd-4595-b0b5-d4bcfe10ac64
+		summarizeBy: none
+		sourceColumn: Nome_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 51d1a6e0-f2ab-4dac-9630-a18118a92a92
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Numero_Pedido
+		dataType: string
+		lineageTag: 5a765939-ba7e-4f35-af22-96ba95a9b85d
+		summarizeBy: none
+		sourceColumn: Numero_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Prazo_Envio
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 48511071-d959-4f06-8ac4-9b398ff6dcfa
+		summarizeBy: none
+		sourceColumn: Prazo_Envio
+
+		variation Variation
+			isDefault
+			relationship: 980fc22c-35f1-4d0f-99f9-5606f204321f
+			defaultHierarchy: LocalDateTable_114e7e7e-f690-4d9e-b2e0-87c26e07824a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data-Hora Envio'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dbfbb41a-4904-4c51-a1dd-bc91b0bd3891
+		summarizeBy: none
+		sourceColumn: Data-Hora Envio
+
+		variation Variation
+			isDefault
+			relationship: c7918ede-22cb-4e3b-83c8-5ba0960128a0
+			defaultHierarchy: LocalDateTable_3d2ce87a-d810-4660-9a31-669dceebedad.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data-Hora Analise'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 80785cd5-64c5-4c3a-8374-13d7da31b65a
+		summarizeBy: none
+		sourceColumn: Data-Hora Analise
+
+		variation Variation
+			isDefault
+			relationship: c8f14650-9957-424e-8596-a8bea225686a
+			defaultHierarchy: LocalDateTable_738bbba3-c045-4b37-8d56-75b671e5e04c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Diferenca_Dias
+		dataType: int64
+		formatString: 0
+		lineageTag: a2312cd1-0164-4f40-a820-0dae02054e0e
+		summarizeBy: sum
+		sourceColumn: Diferenca_Dias
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: 434e603d-9c07-4481-a3b9-8e9b23b2c93d
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Perfil
+		dataType: string
+		lineageTag: f45bd269-3be3-4f7e-865f-c557e35a3271
+		summarizeBy: none
+		sourceColumn: Perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SLA Análise - Trabalhista' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao", [Query="SELECT#(lf)    [Fornecedor],#(lf)    [Id_Documento],#(lf)    [Nome_Documento],#(lf)    [Id_Pedido] AS 'Id_Contrato',#(lf)    [Numero_Pedido],#(lf)    [Prazo_Envio],#(lf)    #(lf)    CAST(CONVERT(varchar, [Data_Envio], 23) + ' ' + CONVERT(varchar, Hora_Envio, 114) AS datetime2) AS [Data-Hora Envio],#(lf)    CAST(CONVERT(varchar, [Data_Analise], 23) + ' ' + CONVERT(varchar, Hora_Analise, 114) AS datetime2) AS [Data-Hora Analise],#(lf)#(lf)    -- Diferenca_Dias com garantia de >= 0#(lf)    CASE#(lf)        WHEN [Prazo_Envio] > [Data_Envio] THEN #(lf)            CASE #(lf)                WHEN DATEDIFF(#(lf)                        DAY,#(lf)                        CAST(CONVERT(varchar, [Prazo_Envio], 23) AS datetime2),#(lf)                        CAST(CONVERT(varchar, [Data_Analise], 23) + ' ' + CONVERT(varchar, Hora_Analise, 114) AS datetime2)#(lf)                     ) < 0 #(lf)                THEN 0#(lf)                ELSE DATEDIFF(#(lf)                        DAY,#(lf)                        CAST(CONVERT(varchar, [Prazo_Envio], 23) AS datetime2),#(lf)                        CAST(CONVERT(varchar, [Data_Analise], 23) + ' ' + CONVERT(varchar, Hora_Analise, 114) AS datetime2)#(lf)                     )#(lf)            END#(lf)        ELSE #(lf)            CASE #(lf)                WHEN DATEDIFF(#(lf)                        DAY,#(lf)                        CAST(CONVERT(varchar, [Data_Envio], 23) + ' ' + CONVERT(varchar, Hora_Envio, 114) AS datetime2),#(lf)                        CAST(CONVERT(varchar, [Data_Analise], 23) + ' ' + CONVERT(varchar, Hora_Analise, 114) AS datetime2)#(lf)                     ) < 0 #(lf)                THEN 0#(lf)                ELSE DATEDIFF(#(lf)                        DAY,#(lf)                        CAST(CONVERT(varchar, [Data_Envio], 23) + ' ' + CONVERT(varchar, Hora_Envio, 114) AS datetime2),#(lf)                        CAST(CONVERT(varchar, [Data_Analise], 23) + ' ' + CONVERT(varchar, Hora_Analise, 114) AS datetime2)#(lf)                     )#(lf)            END#(lf)    END AS [Diferenca_Dias],#(lf)#(lf)    [Status_Documentacao],#(lf)    [Perfil]#(lf)#(lf)FROM DocumentValidationSla #(lf)WHERE #(lf)    Tipo = 'Recorrente' #(lf)    AND Cliente = 'ATVOS'#(lf)ORDER BY [Diferenca_Dias] DESC;"]),
+				    #"Linhas Filtradas" = Table.SelectRows(Fonte, each [Prazo_Envio] >= #datetime(2024, 11, 1, 0, 0, 0))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

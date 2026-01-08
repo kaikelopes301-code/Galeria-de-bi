@@ -1,0 +1,183 @@
+table CND
+	lineageTag: 2973e16d-7005-421b-b50c-82b7bf77e29c
+
+	column Unidade
+		dataType: string
+		lineageTag: 64a151a2-32e3-4e79-b040-4dc584758d2a
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 99934d7c-3ddb-482d-b7d5-931b9a37044c
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: bbcf7a8b-fb45-4c4c-aa0a-bc4e5ef00364
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor-Categoria-Unidade
+		dataType: string
+		lineageTag: 80b509bf-6844-46bd-badd-1057fade1370
+		summarizeBy: none
+		sourceColumn: Fornecedor-Categoria-Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigência
+		dataType: string
+		lineageTag: ba95193a-acae-450c-867a-4b5c191020ee
+		summarizeBy: none
+		sourceColumn: Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5231e170-bf52-4a6d-8436-593d199d3d3c
+		summarizeBy: none
+		sourceColumn: Fim vigência
+
+		variation Variation
+			isDefault
+			relationship: 33fc6e93-2b4f-48c3-90f8-f20560185678
+			defaultHierarchy: LocalDateTable_14671e4b-e1fe-45e4-8bb9-129d7831bbce.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Envio CND'
+		dataType: string
+		lineageTag: 264b577d-a125-4a90-982e-753c25a4f6ef
+		summarizeBy: none
+		sourceColumn: Envio CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column CND
+		dataType: string
+		lineageTag: 6560411c-e9e3-494a-b5ba-fd58ac753c31
+		summarizeBy: none
+		sourceColumn: CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de entrega CND'
+		dataType: string
+		lineageTag: ea52e3bf-be5a-41e2-bc62-453637476feb
+		summarizeBy: none
+		sourceColumn: Prazo de entrega CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data entrega CND'
+		dataType: string
+		lineageTag: 5fcadae2-b1fd-46d1-8745-3c74a9836e89
+		summarizeBy: none
+		sourceColumn: Data entrega CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status CND'
+		dataType: string
+		lineageTag: f6398f53-1889-4f65-9303-526ac046a002
+		summarizeBy: none
+		sourceColumn: Status CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Validade CND'
+		dataType: string
+		lineageTag: f3196ced-4381-4146-903f-f51797ebeb0b
+		summarizeBy: none
+		sourceColumn: Validade CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Próxima Entrega CND'
+		dataType: string
+		lineageTag: e0865108-cf0f-4d70-a932-08069deae3ca
+		summarizeBy: none
+		sourceColumn: Próxima Entrega CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início vigência '
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2c068d9d-fb8f-45e5-92c9-c34a5ad2da36
+		summarizeBy: none
+		sourceColumn: "Início vigência "
+
+		variation Variation
+			isDefault
+			relationship: dd8b3164-4c35-4476-9ce4-c6205483930d
+			defaultHierarchy: LocalDateTable_49e051f1-1b19-4ece-a0df-d0c617cfca53.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo CND'
+		dataType: string
+		lineageTag: f8f4c4d6-f7dc-4410-a909-e670525b582e
+		summarizeBy: none
+		sourceColumn: Tipo CND
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CND anterior'
+		dataType: string
+		lineageTag: d7053907-b23e-4b14-a2cc-18eec130ba04
+		summarizeBy: none
+		sourceColumn: CND anterior
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Entrega Anterior'
+		dataType: string
+		lineageTag: 36ef582e-63c1-48e5-92d1-cb55f8f4e029
+		summarizeBy: none
+		sourceColumn: Prazo de Entrega Anterior
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data entrega anterior'
+		dataType: string
+		lineageTag: 6c5cfac2-c0a7-4fec-9a29-4d9704eff806
+		summarizeBy: none
+		sourceColumn: Data entrega anterior
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CND = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoanaMalheiros\Diretório Padrão\Atlas Inovações - Documentos\Consultoria\1.1. AFM CLIENTES\Shopping Vitoria\STATUS SHOPPING VITÓRIA\2024\12. Dezembro\Entrega CND_Shopping Vitória_29.01.xlsx"), null, true),
+				    CND_Sheet = Fonte{[Item="CND",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(CND_Sheet, [PromoteAllScalars=true]),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Cabeçalhos Promovidos",{"Razão social", "CNPJ"}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Colunas Removidas", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas em Branco Removidas", "Fornecedor-Categoria-Unidade", each Text.Combine({[Fornecedor], [Categoria], [Unidade]}, " - "), type text),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"Início vigência ", type date}, {"Fim vigência", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado1", "Vigência", each if [Fim vigência] >= #date(2024, 9, 1) then "Vigente" else "Não vigente"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Condicional Adicionada", each ([Vigência] = "Vigente"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,65 @@
+table CND
+	lineageTag: 2973e16d-7005-421b-b50c-82b7bf77e29c
+
+	column 'Nome da Empresa'
+		dataType: string
+		lineageTag: 90c1cb98-41d5-4466-9b7a-35f59dfa8aee
+		summarizeBy: none
+		sourceColumn: Nome da Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: b3082a6e-bea6-4a22-934c-5e70f9d9ccdd
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Emissão
+		dataType: string
+		lineageTag: 0d40d0c0-715e-489f-aef0-259f22967f73
+		summarizeBy: none
+		sourceColumn: Emissão
+
+		annotation SummarizationSetBy = Automatic
+
+	column Validade
+		dataType: string
+		lineageTag: 1883ba14-1351-49af-9ca9-9f2a76217107
+		summarizeBy: none
+		sourceColumn: Validade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Certidão'
+		dataType: string
+		lineageTag: fa06371c-441c-4879-a409-efd0811191bd
+		summarizeBy: none
+		sourceColumn: Status Certidão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Validade'
+		dataType: string
+		lineageTag: d16a09e9-2117-4c5a-bfa7-4111cf7a40d7
+		summarizeBy: none
+		sourceColumn: Status Validade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CND = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro/Documentos%20Compartilhados/Consultoria/1.1.%20AFM%20CLIENTES/Shopping%20Cerrado/4.%20Relat%C3%B3rio%20AFM%20Gest%C3%A3o/2025/certidoes.xlsx"), null, true),
+				    CND_Sheet = Fonte{[Item="Certidoes",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(CND_Sheet, [PromoteAllScalars=true])
+				in
+				    #"Cabeçalhos Promovidos"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

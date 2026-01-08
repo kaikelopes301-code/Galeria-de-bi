@@ -1,0 +1,50 @@
+expression ListaCNPJs =
+		let
+		    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/sites/DiretrioPadro/Documentos%20Compartilhados/Consultoria/1.1.%20AFM%20CLIENTES/Shopping%20Cerrado/4.%20Relat%C3%B3rio%20AFM%20Gest%C3%A3o/2025/CNDs%20-%20Lista%20CNPJs.xlsx"), null, true),
+		    Dados_Sheet = Fonte{[Item="Dados",Kind="Sheet"]}[Data],
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Dados_Sheet, [PromoteAllScalars=true]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"CNPJ", type text}, {"Vigência", type text}, {"Fim Vigência", type date}, {"Fim Vigência (Data)", type date}, {"Vigente?", type text}, {"CNPJ Matriz", type text}, {"CNPJ Raiz", type text}})
+		in
+		    #"Tipo Alterado"
+	lineageTag: 798e2a87-9979-421f-b9c2-4172ce322681
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+
+expression Consulta1 = ```
+		let
+		    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = GETDATE();#(lf)DECLARE @organizationId uniqueidentifier = 'B6D6CD6F-8777-491F-A831-FBD16FEF1887';#(lf)DECLARE @initialDate datetime2 = '2022-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = GETDATE();#(lf)#(lf)WITH DocumentScheduleBuildings AS (#(lf)    SELECT#(lf)        [dsb].[DocumentScheduleId],#(lf)        STRING_AGG([b].[TradeName], ', ') AS [Buildings]#(lf)    FROM#(lf)#(lf)        [DocumentScheduleBuilding] AS [dsb]#(lf)        INNER JOIN [Building] AS [b] ON [dsb].[BuildingId] = [b].[Id]#(lf)    WHERE#(lf)        [dsb].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsb].[DocumentScheduleId]#(lf)),#(lf)DocumentScheduleCategories AS (#(lf)    SELECT#(lf)        [dsc].[DocumentScheduleId],#(lf)        STRING_AGG([c].[Name], ', ') AS [Categories]#(lf)    FROM#(lf)        [DocumentScheduleCategory] AS [dsc]#(lf)        INNER JOIN [Category] AS [c] ON [dsc].[CategoryId] = [c].[Id]#(lf)    WHERE#(lf)        [dsc].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsc].[DocumentScheduleId]#(lf))#(lf)SELECT#(lf)    DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)#(tab)CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS 'Tipo do documento',#(lf)    [ds].Id AS [DocumentScheduleId],#(lf)    CASE#(lf)        WHEN [c].[OrderNumber] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [c].[OrderNumber]#(lf)    END AS [Número do Pedido],#(lf)#(tab)c.Id [Id.Contrato],#(lf)    CASE#(lf)        WHEN [c].[Type] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        CASE#(lf)            WHEN [c].[Type] & 1 = 1 THEN 'Contínuo'#(lf)            WHEN [c].[Type] & 2 = 2 THEN 'Grandes Paradas'#(lf)            WHEN [c].[Type] & 4 = 4 THEN 'Eventual'#(lf)            WHEN [c].[Type] & 8 = 8 THEN 'Temporário'#(lf)            WHEN [c].[Type] & 16 = 16 THEN 'Visitante técnico'#(lf)            WHEN [c].[Type] & 32 = 32 THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)            WHEN [c].[Type] & 64 = 64 THEN 'Prestação de serviço eventual fora da área operacional'#(lf)            WHEN [c].[Type] & 128 = 128 THEN 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)            WHEN [c].[Type] & 256 = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)            ELSE 'Nenhum'#(lf)        END#(lf)    END AS [Tipo de Contrato],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    [bc].[Document] AS [CNPJ],#(lf)    CASE#(lf)        WHEN [er].[Name] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [er].[Name]#(lf)    END AS [Funcionário],#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(tab)FORMAT([ds].[UploadedAt], 'dd/MM/yyyy') AS [Data de Envio],#(lf)#(tab)FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)    CASE#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Atrasado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Próxima Entrega'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Atrasado Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Próxima Entrega Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL#(lf)        THEN#(lf)            'Em Análise'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 0#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[IsValidated] IS NOT NULL AND [ds].[IsValidated] = 1#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)ELSE#(lf)            '--'#(lf)    END AS [Status],#(lf)    b.tradename AS [Unidade(s)],#(lf)    cat.Name AS [Categoria(s)]#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)    INNER JOIN [DocumentScheduleContractBI] as dscBI on [dscBI].DocumentScheduleId = [ds].Id#(lf)    INNER JOIN [Contract] as c on c.id = dscBI.ContractId#(lf)    INNER JOIN Building as b on b.id = c.BuildingId#(lf)    INNER JOIN Category as cat on cat.id = c.CategoryId#(lf)WHERE#(lf)    [ds].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Archived] = CAST(0 AS bit)#(lf)    AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] < @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)-- ORDER BY #(lf)--     [p].[TradeName], [d].[Kind], [d].[Name], [ds].[ExpectedUploadAt], [er].[Name];"]),
+		    
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Prazo de Envio", type date}, {"Data de Envio", type date}, {"Data da Análise", type date}}),
+		
+		    // Cria coluna Competência = Prazo de Envio - 1 mês
+		    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Competência", each Date.AddMonths([Prazo de Envio], -1)),
+		    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}}),
+		
+		    // ======== FILTRO DE COMPETÊNCIA (12 meses) ========
+		    UltimaData = Date.EndOfMonth(List.Max(#"Tipo Alterado1"[Competência])),
+		    DataInicial = Date.StartOfMonth(Date.AddMonths(UltimaData, -12)),
+		
+		    #"Competencia Filtrada" =
+		        Table.SelectRows(
+		            #"Tipo Alterado1",
+		            each [Competência] >= DataInicial and [Competência] <= UltimaData
+		        ),
+		    // ==================================================
+		
+		    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Competencia Filtrada", "Fornecedor-Categoria-Unidade", each Text.Combine({[Fornecedor], [#"Categoria(s)"], [#"Unidade(s)"]}, " - "), type text),
+		
+		    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"Fornecedor-Categoria-Unidade"}, Contratos, {"Fornecedor-Categoria-Unidade"}, "Contratos", JoinKind.LeftOuter),
+		    #"Contratos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Contratos", {"Cadastro no sistema", "Início Vigência", "Fim Vigência", "Status Contrato"}, {"Cadastro no sistema", "Início Vigência", "Fim Vigência", "Status Contrato"}),
+		
+		    #"Linhas Filtradas" = Table.SelectRows(#"Contratos Expandido", each ([Status Contrato] = "Vigente"))
+		in
+		    #"Linhas Filtradas"
+		```
+	lineageTag: 86c4805f-f11a-41cd-860d-636a3cfbc088
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,79 @@
+table dCalendário
+	lineageTag: deefdb87-1b73-4596-ba7a-295ae91f816d
+
+	column Date
+		formatString: Short Date
+		lineageTag: b3568cac-232b-463c-9633-d649178a538e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: de9abe7b-99cf-462e-83ae-ee50df0d335a
+			defaultHierarchy: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano = YEAR('dCalendário'[Date])
+		formatString: 0
+		lineageTag: f5bd8bbf-5433-41c6-aa29-f6182b5c6fc2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês = FORMAT(MONTH('dCalendário'[Date]),"Mmmm")
+		lineageTag: 6ed8af47-e337-4eca-8e8b-c9db160a82d5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Dia' = FORMAT('dCalendário'[Date], "dddd")
+		lineageTag: d53b4cc2-0d5e-48b1-9dfb-84cc969fb78c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da Semana?' = ```
+			IF(
+			    'dCalendário'[Nome do Dia] = "sábado" ||
+			    'dCalendário'[Nome do Dia] = "domingo", 
+			        0, 
+			        1 )
+			```
+		formatString: 0
+		lineageTag: 8c4d1700-df25-4456-8c3e-c3929ce01f57
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hora de Entrada' =
+			IF('dCalendário'[Dia da Semana?] = 1,
+			                    "8:00",BLANK())
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 06e91b02-a735-45dc-be1c-0a32466ce21d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column 'Hora de Saída' =
+			IF('dCalendário'[Dia da Semana?] = 1,
+			                    "18:00",BLANK())
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 3aef8ae7-f0ab-489f-b5df-9e360c01b214
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	partition dCalendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2024,04,01),LASTDATE('Relatório de Fornecedores'[Competência]))
+
+	annotation PBI_Id = 47228ca7a2ec489686807956ed4015c1
+

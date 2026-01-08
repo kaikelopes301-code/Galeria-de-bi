@@ -1,0 +1,16 @@
+expression 'Área Recente' =
+		let
+		    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Atvos\03 - Excel\02 - Histórico Funcionários\Mobilizados - Histórico.xlsx"), null, true),
+		    Área.Recente_Sheet = Fonte{[Item="Ativos",Kind="Sheet"]}[Data],
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Área.Recente_Sheet, [PromoteAllScalars=true]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{ {"Razão Social", type text}, {"CNPJ", type text}, {"Número do Pedido", type any}, {"Id_Contrato", type text}, {"Tipo da contratação", type text}, {"Tipo do contrato", type text}, {"Sla", type text}, {"Status", type text}, {"Cadastro no sistema", type date}, {"Vigência", type text}, {"Unidade", type text}, {"Regional", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Valor do contrato", Int64.Type}, {"Nome do Gestor", type text}, {"Email do Gestor", type text}, {"Telefone do Gestor", type any}, {"Área de Atuação", type text}, {"Expectativa do Início da Prestação de Serviço", type any}, {"Expectativa da Quantidade de Efetivos", type any}, {"Área Consolidada", type text}}),
+		    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Nº do pedido", "Número do Pedido", "Id_Contrato", "Tipo da contratação", "Tipo do contrato", "Sla", "Status", "Cadastro no sistema", "Vigência", "Unidade", "Regional", "Categoria", "Fornecedor", "Valor do contrato", "Nome do Gestor", "Email do Gestor", "Telefone do Gestor", "Expectativa do Início da Prestação de Serviço", "Expectativa da Quantidade de Efetivos"}),
+		    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Removidas","Outro","---",Replacer.ReplaceText,{"Área Consolidada"})
+		in
+		    #"Valor Substituído"
+	lineageTag: 428421a9-fe25-4f2d-8f15-f97b99f55eca
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

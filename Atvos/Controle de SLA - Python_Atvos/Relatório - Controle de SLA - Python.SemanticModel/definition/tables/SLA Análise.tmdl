@@ -1,0 +1,809 @@
+table 'SLA Análise'
+	lineageTag: 1eff2f1e-d806-4e1d-a9fd-44027cf93afe
+
+	measure _Analises_Quantidade = CALCULATE(SUM(Id_Documento[Quantidade de Análises]))
+		formatString: #,0
+		lineageTag: 31080779-3bb2-4851-9ff4-f2265cb228c5
+
+	measure _%_SLA_dentro =
+			
+			
+			VAR DENTRO = CALCULATE([_Análises_Quantidade],
+			'SLA Análise'[SLA]/9 <= 5)
+			
+			VAR QUANT = [_Análises_Quantidade]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: 0%;-0%;0%
+		lineageTag: 70dc557c-c01a-46be-9da7-83d56285a50a
+
+	measure _SLA_Media = CALCULATE(AVERAGE('SLA Análise'[SLA]))
+		lineageTag: 230ee8da-cf84-4a95-b2a9-06f0e1141fe9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Quantidade_Documentação_ = CALCULATE(DISTINCTCOUNT('SLA Análise'[Id_Documento]))
+		formatString: #,0
+		lineageTag: 75c98cab-e6a5-430b-b999-d0bbf480d5f5
+
+	measure _Reprovação_Quantidade =
+			CALCULATE(COUNTROWS(),
+			'SLA Análise'[Status_Documentacao] = "Reprovado")
+		lineageTag: bbdd542c-1869-46a6-bd36-1995c2a3e25c
+
+		formatStringDefinition =
+				VAR REPRO = FORMAT([_Reprovação_Quantidade],"#,###")
+				
+				VAR TOTAL = FORMAT([_Quantidade_Documentação_],"#,###")
+				
+				RETURN """" & REPRO & " (" & TOTAL & ")"
+
+	measure _Quantidade_Análises = CALCULATE(SUM(Id_Documento[Quantidade de Análises]))
+		formatString: #,0
+		lineageTag: 9069dc99-3d34-4125-b057-c8b9a8a1a41c
+
+	measure _%_Frequência_Reprovação = ```
+			
+			
+			VAR REANALISE = [_Reprovação_Quantidade]
+			
+			VAR ENVIADOS = [_Quantidade_Documentação_]
+			
+			RETURN IF   ( REANALISE = 0 && ENVIADOS >0, 
+			                0,
+			                REANALISE/ENVIADOS)
+			
+			```
+		lineageTag: 544bbac3-111b-43a8-bdd3-46a4cc096299
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Taxa_Reanalise =
+			
+			
+			VAR Documentos = [_Quantidade_Documentação_]
+			
+			VAR Analises = [_Analises_Quantidade]
+			
+			RETURN (Analises-Documentos)/Documentos
+		formatString: 0%;-0%;0%
+		lineageTag: 28a32ff0-29a8-4226-a4f6-a3779e6166db
+
+	measure _Taxa_Recusa = DIVIDE([_Reprovação_Quantidade],[_Quantidade_Documentação_])
+		formatString: 0%;-0%;0%
+		lineageTag: c6772aa2-5c99-4aa2-9829-dda81be59a0b
+
+	measure _SLA_Dias_úteis = CALCULATE(AVERAGE('SLA Análise'[SLA]))/9
+		lineageTag: f4ae3736-154a-40d9-a290-55427d363f44
+
+		formatStringDefinition =
+				VAR DIAS = FORMAT('SLA Análise'[_SLA_Dias_úteis],"0.0")
+				
+				VAR HORAS = FORMAT(AVERAGE('SLA Análise'[SLA]),"0.0")
+				
+				
+				RETURN """" & DIAS & " dias" & " | " & HORAS & " horas"
+
+	measure 'SLA DENTRO' =
+			
+			
+			VAR ANALISE= [_Analises_Quantidade]
+			
+			VAR DENTRO = CALCULATE([_Quantidade_Análises],
+			FILTER('SLA Análise',
+			        'SLA Análise'[_SLA_Dias_úteis] <6))
+			
+			RETURN DENTRO/ANALISE
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: b8ef3e01-aa25-42db-b0b8-ff587b704814
+
+	measure _%_SLA_Fora =
+			
+			
+			VAR DENTRO = CALCULATE([_Análises_Quantidade],
+			'SLA Análise'[SLA]/9 > 5)
+			
+			VAR QUANT = [_Análises_Quantidade]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: 0%;-0%;0%
+		lineageTag: c3eefa9a-b24e-49a6-b4ed-3940bf39cc45
+
+	measure _NOMES_Distintos = CALCULATE(DISTINCTCOUNT('SLA Análise'[chave_id_funcionario]))
+		formatString: 0
+		lineageTag: 58cff8e6-983b-4023-831c-a36ca63c49df
+
+	measure _Nomes_Reanálise_ =
+			CALCULATE([_NOMES_Distintos],
+			Id_Documento[Faixa] <> "Sem Reanálise")
+		formatString: 0
+		lineageTag: 1d41a5b0-e8d3-464a-87db-fa55de4039ea
+
+	measure _%Reanálise_Nomes =
+			
+			
+			VAR NOMES = [_Colaboradores_Quantidade]
+			
+			VAR REANALISE = [_Nomes_Reanálise_]
+			
+			RETURN REANALISE/NOMES
+		formatString: 0%;-0%;0%
+		lineageTag: 9b82c297-2fb3-4426-87de-2f07d2736910
+
+	measure _Análises_Quantidade = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: d9240421-86ff-4fc1-8101-c3054a4f2c8d
+
+	measure _2_SLA_Dias_úteis_ =
+			CALCULATE(AVERAGE('SLA Análise'[SLA]),
+			'SLA Análise'[Indice_Analise] >1,
+			'SLA Análise'[Data_Envio] > DATE(2025,07,07))/9
+		lineageTag: 51dc62d5-266a-4228-815f-1390da8b7213
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '_Fora_CPF''s' =
+			
+			
+			VAR FORA = CALCULATE([_NOMES_Distintos],
+			'SLA Análise'[SLA] >30)
+			
+			VAR NOMES = [_NOMES_Distintos]
+			
+			RETURN IF(FORA = 0 && NOMES >0, 0,
+			FORA/NOMES)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9fba1be6-5bee-48d2-94dd-98b1f5220368
+
+	measure '_Fora_Depois dia 7_CPF''s_' =
+			
+			
+			VAR FORA = CALCULATE([_NOMES_Distintos],
+			'SLA Análise'[SLA] >9,
+			'SLA Análise'[Indice_Analise]>1,
+			'SLA Análise'[Data_Envio] > DATE(2025,07,07))
+			
+			VAR NOMES = CALCULATE([_NOMES_Distintos],
+			'SLA Análise'[Data_Envio] > DATE(2025,07,07),
+			'SLA Análise'[Indice_Analise]>1)
+			
+			RETURN IF(FORA = 0 && NOMES >0, 0,
+			FORA/NOMES)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 305df39f-8f0e-4ca4-bc02-156077534bff
+
+	measure FORA = ```
+			CALCULATE([_NOMES_Distintos],
+			'SLA Análise'[SLA] >30)
+			
+			```
+		formatString: 0
+		lineageTag: 630b9b8d-5416-41ba-8805-0b7f66a71a1d
+
+	measure _SLA_Dias_úteis_2reanalise =
+			CALCULATE(AVERAGE('SLA Análise'[SLA]),
+			'SLA Análise'[Indice_Analise] >1,
+			'SLA Análise'[Data_Envio]<=DATE(2025,07,07))/9
+		formatString: 0.0
+		lineageTag: d54e8f71-2705-493f-98ad-014ebb420e98
+
+	measure _CPF_Fora_SLA_Afetados =
+			
+			
+			VAR DENTRO = CALCULATE(DISTINCTCOUNT('SLA Análise'[Funcionario]),
+			'SLA Análise'[SLA]/9 <= 5)
+			
+			VAR QUANT = [_Análises_Quantidade]
+			
+			RETURN IF (DENTRO = BLANK(),
+			                0,
+			                DENTRO)
+		formatString: 0
+		lineageTag: ff2e2907-524f-44c5-a960-6b00d7a5b797
+
+	measure _SLA_Media_ = CALCULATE(AVERAGE('SLA Análise'[SLA]))
+		lineageTag: a27e4f6f-773b-4b1c-ba65-fa6d60696fe6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Recusas_Analises_ = CALCULATE([_Análises_Quantidade], 'SLA Análise'[Status_Documentacao] = "Reprovado")
+		formatString: #,0
+		lineageTag: a84e6a87-6f97-4540-9cae-1df920a3a49f
+
+	measure _%_Historico_Recusa =
+			
+			
+			VAR Recusa = [_Recusas_Analises_]
+			
+			VAR Total = [_Análises_Quantidade]
+			
+			RETURN IF(Recusa > BLANK() && Total = 0,0,Recusa/Total)
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: 382e9c1b-aac0-4f55-9a31-04836f4cfd90
+
+	measure _Colaboradores_Quantidade_cadastrados =
+			CALCULATE(DISTINCTCOUNT(Sheet1[Id_Colaborador]), USERELATIONSHIP(Sheet1[chave_analise],'SLA Análise'[chave_id_funcionario])
+			)
+		formatString: 0
+		lineageTag: 1aa76366-5e7c-4bfd-adee-5d9182ed73bf
+
+	measure _%_Cartão_Historico_Recusa_ =
+			
+			
+			VAR Recusa = [_Recusas_Analises_]
+			
+			VAR Total = [_Análises_Quantidade]
+			
+			RETURN IF(Recusa > BLANK() && Total = 0,0,Recusa/Total)
+		lineageTag: a7a143fe-2eda-4b9b-b71b-3ee7c79bfca4
+
+		formatStringDefinition =
+				
+				
+				VAR TAXA = FORMAT([_%_Historico_Recusa],"0.0%")
+				
+				VAR VALIDA = FORMAT([_Recusas_Analises_], "#,###")
+				
+				RETURN """" & TAXA & " (" & VALIDA & ")"
+
+	column Id_Cliente
+		dataType: string
+		lineageTag: 089cd530-6c2e-4f6e-af55-977cab4b194b
+		summarizeBy: none
+		sourceColumn: Id_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: c96ee4e2-864d-421d-bd8a-33874c0246a3
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Fornecedor
+		dataType: string
+		lineageTag: c1f32269-a81b-44ef-acb7-41b94606d8fb
+		summarizeBy: none
+		sourceColumn: Id_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 390fbeaa-3b79-45f0-8f53-d4f406c8397e
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionario
+		dataType: string
+		lineageTag: 3444552a-a2b5-46e6-90a2-af4ab93bedbf
+		summarizeBy: none
+		sourceColumn: Funcionario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: 55ee757c-6ff4-4213-a068-67f8c0f078cd
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Documento
+		dataType: string
+		lineageTag: b1c9a092-b257-409d-949f-72cf93216c56
+		summarizeBy: none
+		sourceColumn: Nome_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: 2bbbdd76-0c15-4c60-b39e-fd8d0bcf81f9
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Pedido
+		dataType: string
+		lineageTag: 49536444-8b38-48fd-95b0-81eb370c1c07
+		summarizeBy: none
+		sourceColumn: Id_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Numero_Pedido
+		dataType: string
+		lineageTag: d39affc0-bc66-4043-adec-1b3625de1fa6
+		summarizeBy: none
+		sourceColumn: Numero_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: aa8ddbfa-56dd-4fd0-8a6f-c155fb050005
+		summarizeBy: none
+		sourceColumn: Data_Cadastro_Pedido
+
+		variation Variation
+			isDefault
+			relationship: ffece9fc-4ffd-4790-a9df-f55521c94814
+			defaultHierarchy: LocalDateTable_d43956b3-b342-47d9-ada4-16ab9edfd9b4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: c016c112-0529-4255-9897-f0d1bf5ab627
+		summarizeBy: none
+		sourceColumn: Hora_Cadastro_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Prazo_Envio
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: e293e96c-a592-4759-9e6b-8b89f0dcfbc8
+		summarizeBy: none
+		sourceColumn: Prazo_Envio
+
+		variation Variation
+			isDefault
+			relationship: d2352f6a-4a12-4121-9853-641b9d935c39
+			defaultHierarchy: LocalDateTable_b7499420-9ecd-4bd4-98db-0766aad60ec6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Envio
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 4bfb93b6-3bd4-462a-ab02-7189246f6122
+		summarizeBy: none
+		sourceColumn: Data_Envio
+
+		variation Variation
+			isDefault
+			relationship: ab011ce7-dbc4-4c17-9dcf-e161c2609533
+			defaultHierarchy: LocalDateTable_f450b5f3-cdde-453a-a57f-35264a1d523a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 277f2040-5912-4c6f-b32d-5fdc02053189
+		summarizeBy: none
+		sourceColumn: Hora_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Analise
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: ec41c109-27c7-4b13-8ff3-bd63ff0ea04a
+		summarizeBy: none
+		sourceColumn: Data_Analise
+
+		variation Variation
+			isDefault
+			relationship: 4e9fb5ea-a24c-47f1-b4e7-58872822194e
+			defaultHierarchy: LocalDateTable_530c7449-d91d-4270-b7db-5ce7b56f7b9d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Analise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: bd578c4d-d709-48d4-8224-27047babbfbe
+		summarizeBy: none
+		sourceColumn: Hora_Analise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Foi_Aprovado
+		dataType: string
+		lineageTag: 47186dda-398b-4884-b23d-37f00892a79b
+		summarizeBy: none
+		sourceColumn: Foi_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Analista
+		dataType: string
+		lineageTag: eecf6d60-03ec-4e81-8c6b-1a9689488fd7
+		summarizeBy: none
+		sourceColumn: Id_Analista
+
+		annotation SummarizationSetBy = Automatic
+
+	column Analisado_Por
+		dataType: string
+		lineageTag: 0ec0465d-037f-423e-89cd-7a5acc3f9dfa
+		summarizeBy: none
+		sourceColumn: Analisado_Por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: 1b55f130-f723-475a-b0b3-94447cafe4a4
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Perfil
+		dataType: string
+		lineageTag: 7ae88456-319a-4656-956b-119d850005e0
+		summarizeBy: none
+		sourceColumn: Perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Cliente
+		dataType: string
+		lineageTag: fa0f3084-f74d-47e4-bf48-7b1226f9af39
+		summarizeBy: none
+		sourceColumn: Observacao_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Fornecedor
+		dataType: string
+		lineageTag: c774e1e9-628e-4890-883d-96268ab7d97c
+		summarizeBy: none
+		sourceColumn: Observacao_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Análise
+		dataType: string
+		lineageTag: 50cb2a77-2efd-4310-861d-c9baf5e45322
+		summarizeBy: none
+		sourceColumn: FDS_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Envio
+		dataType: string
+		lineageTag: f3894865-c807-422b-a41e-ce64bf03a9ed
+		summarizeBy: none
+		sourceColumn: FDS_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 33d2ab11-dbf5-4630-a168-16dbc4314717
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Hora_Corrigida_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: e8411719-e9f5-4422-af03-b004fcb4ab38
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Corrigida_Análise
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 626d6360-2663-4aba-84e1-5eb1abc13998
+		summarizeBy: none
+		sourceColumn: Data_Corrigida_Análise
+
+		variation Variation
+			isDefault
+			relationship: 4c17b8b6-9361-4db4-8d9f-86ec3e8646b9
+			defaultHierarchy: LocalDateTable_2372e8c7-fe7c-4e60-818f-1b63ee061cdc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data_Corrigida _Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 6184563d-f805-48e0-aafd-9c1e9105b92d
+		summarizeBy: none
+		sourceColumn: Data_Corrigida _Envio
+
+		variation Variation
+			isDefault
+			relationship: e7831bf3-305f-402b-8bfb-b9407db1e380
+			defaultHierarchy: LocalDateTable_b1eebcd5-0418-4983-87bc-6f62eac61d93.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column SLA
+		dataType: double
+		formatString: 0
+		lineageTag: 027f2bff-7dc4-4594-9f31-a98d0eafb0e6
+		summarizeBy: sum
+		sourceColumn: SLA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column 'Final de semana'
+		dataType: string
+		lineageTag: 7aa60178-364c-497f-8757-1a428ac42c30
+		summarizeBy: none
+		sourceColumn: Final de semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Indice_Analise =
+			
+			RANKX(
+			    FILTER('SLA Análise', 'SLA Análise'[Id_Documento] = EARLIER('SLA Análise'[Id_Documento])),
+			    'SLA Análise'[Data_Analise],
+			    ,
+			    ASC
+			)
+		formatString: 0
+		lineageTag: c75de162-c9b0-4fee-a8fe-18c263f0d244
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave = CONCATENATE('SLA Análise'[Id_Documento],'SLA Análise'[Id_Pedido])
+		lineageTag: c22aebef-6eba-491b-94e0-69c5544764be
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data mobilização' = LOOKUPVALUE('SLA - Relatório Fornecedores'[Data de 1ª Tabela Mobilização],'SLA - Relatório Fornecedores'[chave_analise],'SLA Análise'[chave])
+		formatString: General Date
+		lineageTag: 099e7300-c95a-46ee-942e-9e9d2d5dc701
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 7c8c36dc-01d0-4cb7-a2a3-752ed2121b13
+			defaultHierarchy: LocalDateTable_f4d0f38b-41cb-4c86-a8f5-ea7471b2b143.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'data de mobilizção maior' = IF('SLA Análise'[Data mobilização] = BLANK() ,IF('SLA Análise'[chave2] = BLANK(), BLANK(),"Ñ Tem Mob"),IF('SLA Análise'[Data mobilização] >= 'SLA Análise'[Data_Envio],"1ªmob","Ñ é 1ªmob"))
+		lineageTag: 9a471f6a-edcb-4172-96de-2d4af4585eec
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave2 = ```
+			
+			LOOKUPVALUE(Sheet1[chave_analise],Sheet1[chave_analise],'SLA Análise'[chave_id_funcionario])
+			
+			```
+		lineageTag: c0005c23-d79b-4ab6-bbc8-1e857425a45a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_id_funcionario = CONCATENATE('SLA Análise'[Id_Pedido],'SLA Análise'[Funcionario])
+		lineageTag: fe79e91e-e3d1-42a9-9492-d0f25a14db6f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro' =
+			
+			if (LOOKUPVALUE('SLA - Relatório Fornecedores'[Data de Cadastro],'SLA - Relatório Fornecedores'[chave_analise],'SLA Análise'[chave]) = BLANK(),
+			LOOKUPVALUE(Sheet1[Data de Cadastro],Sheet1[chave_analise],'SLA Análise'[chave_id_funcionario]),
+			LOOKUPVALUE('SLA - Relatório Fornecedores'[Data de Cadastro],'SLA - Relatório Fornecedores'[chave_analise],'SLA Análise'[chave]))
+		formatString: General Date
+		lineageTag: 7c677bf4-35b5-48cb-894b-1e3e89c531d8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SLA Análise' = m
+		mode: import
+		source = ```
+				let
+				Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao", [Query="Select * from DocumentValidationSla where Cliente = 'ATVOS' and Tipo = 'Mobilização' and Funcionario is not null"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Data_Envio", type date}, {"Data_Analise", type date}, {"Hora_Envio", type time}, {"Hora_Analise", type time}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "FDS_Análise", each if Date.DayOfWeek([Data_Analise]) = 0 or Date.DayOfWeek([Data_Analise]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "FDS_Envio", each if Date.DayOfWeek([Data_Envio]) = 0 or Date.DayOfWeek([Data_Envio]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "Hora_Corrigida_Análise", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Analise],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA = "FDS" and FDSE <> "FDS" then
+				            HoraLimiteSuperior
+				        else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Personalização Adicionada2", "Hora_Corrigida_Envio", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Envio],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA <> "FDS" and FDSE = "FDS" then
+				            HoraLimiteInferior
+				           else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada3",{{"Hora_Corrigida_Análise", type time}, {"Hora_Corrigida_Envio", type time}}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Tipo Alterado1", "Data_Corrigida_Análise", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Analise]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				   DiaSemana = Date.DayOfWeek(DataBase, Day.Monday),  // segunda = 0 ... domingo = 6
+				    DiasParaSubtrair = if DiaSemana >= 4 then DiaSemana - 4 else DiaSemana + 3,
+				    SextaAnterior = Date.AddDays(DataBase, -DiasParaSubtrair),
+				
+				    Resultado =
+				        if FDSE <> "FDS" and FDSA = "FDS" then
+				            SextaAnterior
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Personalização Adicionada4", "Data_Corrigida _Envio", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Envio]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				    DiaSemanaSex = Date.DayOfWeek(DataBase, Day.Monday),
+				    DiasAteSexta = if DiaSemanaSex <= 4 then 4 - DiaSemanaSex else 11 - DiaSemanaSex,
+				    SextaMaisProxima = Date.AddDays(DataBase, DiasAteSexta),
+				
+				    Resultado =
+				        if FDSE = "FDS" and FDSA <> "FDS" then
+				            ProximaSegunda
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada5",{{"Data_Corrigida_Análise", type date}, {"Data_Corrigida _Envio", type date}}),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Tipo Alterado2", "SLA", each let
+				    // Colunas de fim de semana
+				    FDS_Envio = [FDS_Envio],
+				    FDS_Analise = [FDS_Análise],
+				
+				    // Verificação inicial de fim de semana
+				    HorasSLA = if FDS_Envio = "FDS" or FDS_Analise = "FDS" then
+				        0
+				    else
+				        let
+				            // Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				            // Constantes do expediente
+				            HoraInicio = #time(9, 0, 0),
+				            HoraFim = #time(18, 0, 0),
+				            Jornada = 9, // 9 horas por dia útil
+				
+				            DataHoraAnaliseDia = (HoraAnalise - 9),
+				            DataHoraEnvioDia = (18 - HoraEnvio),
+				
+				            // Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0)),
+				
+				            // Caso 1: Mesmo dia
+				            HorasMesmoDia = if DataEnvio = DataAnalise then
+				                (HoraAnalise - HoraEnvio)
+				            else
+				                null,
+				
+				            // Cálculo do SLA com desconto de fins de semana
+				            DiasUteisEntre = Duration.Days(DataAnalise - DataEnvio) - DiasFinaisSemana - 1,
+				            ResultadoFinal = if DataEnvio = DataAnalise then
+				                HorasMesmoDia
+				            else
+				                DiasUteisEntre * Jornada +(DataHoraAnaliseDia + DataHoraEnvioDia)
+				        in
+				            ResultadoFinal
+				in
+				    HorasSLA),
+				    #"Personalização Adicionada7" = Table.AddColumn(#"Personalização Adicionada6", "Final de semana", each let 
+				
+				// Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				
+				
+				// Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0))
+				
+				in
+				if DataAnalise = null and DataEnvio = null then null
+				
+				else DiasFinaisSemana*9),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada7", each [Data_Envio] >= #date(2025, 2, 1)),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Linhas Filtradas",{{"SLA", type number}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Tipo Alterado3", each ([Tipo] = "Mobilização") and ([Funcionario] <> null)),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Linhas Filtradas1",{{"Id_Pedido", Text.Upper, type text}})
+				in
+				    #"Texto em Maiúscula"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

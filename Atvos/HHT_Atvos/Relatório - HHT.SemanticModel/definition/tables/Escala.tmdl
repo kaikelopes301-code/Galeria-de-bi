@@ -1,0 +1,59 @@
+table Escala
+	lineageTag: 455d5feb-525e-4b31-bb86-883915fea95b
+
+	column Escala
+		dataType: string
+		lineageTag: fca6298b-a599-47a9-b1c4-691332c49a98
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias de Trabalho'
+		dataType: string
+		lineageTag: c060542d-01a2-4040-b12d-a892d647902e
+		summarizeBy: none
+		sourceColumn: Dias de Trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias de Folga'
+		dataType: string
+		lineageTag: 3c278c2f-bca3-4c16-943f-737e17b84149
+		summarizeBy: none
+		sourceColumn: Dias de Folga
+
+		annotation SummarizationSetBy = Automatic
+
+	column dias/semana
+		dataType: double
+		lineageTag: af2c0d37-b4ff-4867-b6fa-a0b8a6da5075
+		summarizeBy: sum
+		sourceColumn: dias/semana
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ' dias/mês'
+		dataType: int64
+		formatString: 0
+		lineageTag: 079f0bca-3a73-4f23-877a-a14e1fd38f99
+		summarizeBy: sum
+		sourceColumn: " dias/mês"
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Escala = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("fY49DoAwCIWv0nTSpIOlUA9jHFy0g4mJLhzfgv3ZHODB+wJ5y2KJwTpLuZp6uzoBvhiiUQApiFyNBqICDxzUhpR7iMns13lsMotbr6FeVQUFqAALUJ2+t8he1t7mbxAIGgZKGOpXyFjeSAVHPYLmNEMOeD/jb971BQ==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Escala = _t, #"Dias de Trabalho" = _t, #"Dias de Folga" = _t, #"dias/semana" = _t, #" dias/mês" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Escala", type text}, {"Dias de Trabalho", type text}, {"Dias de Folga", type text}, {"dias/semana", type number}, {" dias/mês", Int64.Type}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

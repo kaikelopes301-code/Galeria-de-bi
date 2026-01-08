@@ -1,0 +1,323 @@
+table 'Entrega de documentos'
+	lineageTag: 18726dd2-0358-401c-b783-f8d17fe34ef9
+
+	column Documento
+		dataType: string
+		lineageTag: 84789241-903d-4479-b777-04edd248b424
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 94e7a67f-ab71-4841-a774-85966a16ff09
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: dde9dfc5-8d84-4169-b5ad-2bc5d2c9efb1
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: b3b28e4f-5898-4f98-b3ae-2458f7d06bca
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 519453b2-17bf-4644-aa1d-e483d02d6a3e
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Coluna Concatenada' = ```
+			
+			'Entrega de documentos'[Fornecedor] & " - " & 'Entrega de documentos'[Categoria(s)] & " - " & 'Entrega de documentos'[Unidade(s)]
+			
+			```
+		lineageTag: e7ad6d80-e72c-4614-9c49-47fa8034d71e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contrato' = "Mão de obra alocada"
+		lineageTag: 5d27ab02-3b14-42af-b61f-11ee80755aa9
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contagem Documentos Entregues' = ```
+			SWITCH(TRUE(), 
+			'Entrega de documentos'[Status] = "Ok", 1, 
+			'Entrega de documentos'[Status] = "*", 1, 
+			0
+			)
+			```
+		formatString: 0
+		lineageTag: ee21a71e-55b5-468f-940a-9a200066b724
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 16ff6080-b7ab-4765-b0bf-ae7154a09d08
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: 511b4d77-f7ff-4b3a-84dc-c29cdd255d01
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: 5291e30a-732f-43b3-ba32-92541435764c
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Id.Contrato'
+		dataType: string
+		lineageTag: 320d74dc-c7dc-44e7-b411-783dbdcf878a
+		summarizeBy: none
+		sourceColumn: Id.Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da Contratação'
+		dataType: string
+		lineageTag: 74536c6c-2fee-454d-a9fa-70650807351e
+		summarizeBy: none
+		sourceColumn: Tipo da Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: d57f1b54-7c12-4b7d-8d6e-31eca404fa6e
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 6c5e86a1-a70b-4a3a-a4ef-4ba26a0bc613
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c7e8a513-cb3f-462e-8e16-5fb79c9f281b
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: eff49b95-4483-4c05-8638-b77763813871
+			defaultHierarchy: LocalDateTable_0e49e142-1f41-4cc6-855f-ed96a07352bc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 492f5b3f-2586-46fb-8ef1-11c43e53b041
+		summarizeBy: none
+		sourceColumn: Data de Envio
+
+		variation Variation
+			isDefault
+			relationship: 25dd7e50-6544-468c-a4a7-214477917add
+			defaultHierarchy: LocalDateTable_3a3e4fd4-2fc5-47cb-97d0-8244a2726415.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data da Análise'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8b95a94f-233f-4c9c-9a07-280afdcdba4a
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		variation Variation
+			isDefault
+			relationship: 495a05a1-7a50-45f7-bc7c-7b74ed970f5f
+			defaultHierarchy: LocalDateTable_a1a60eb5-eb7d-4c11-a479-b09068b4943e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Competência
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: aa00d625-1b59-40ac-9876-0251921e56d1
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CNPJ-Categoria-Unidade
+		dataType: string
+		lineageTag: c0d98fcb-aabe-446a-a6ea-e5407e133718
+		summarizeBy: none
+		sourceColumn: CNPJ-Categoria-Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contratos.Início Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c9b2039e-c482-4535-beb3-208b938316b2
+		summarizeBy: none
+		sourceColumn: Contratos.Início Vigência
+
+		variation Variation
+			isDefault
+			relationship: aa2db3aa-e034-4031-bfe0-8d775e2681f8
+			defaultHierarchy: LocalDateTable_dcd578a1-8459-4d87-944d-61f0bb63b7bc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Contratos.Fim Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 52e5cb05-5c86-4bfa-ad4a-7dd8e5dc24ed
+		summarizeBy: none
+		sourceColumn: Contratos.Fim Vigência
+
+		variation Variation
+			isDefault
+			relationship: befacbea-5c7f-4b98-bed3-05f406257dc5
+			defaultHierarchy: LocalDateTable_325436cb-acac-4a21-8331-9eb9874aa4e7.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Contratos.Status Contrato'
+		dataType: string
+		lineageTag: 979d3fa7-5364-43d8-a6a6-16ec06c78158
+		summarizeBy: none
+		sourceColumn: Contratos.Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação Documentos' =
+			
+			IF('Entrega de documentos'[Documento] = "FGTS - Comprovante de pagamento", "Comprovante de Pagamento",
+			    IF('Entrega de documentos'[Documento] = "FGTS - RE - Relação de Empregados/Trabalhadores", "RT - Relatório de Trabalhador",
+			        IF('Entrega de documentos'[Documento] = "FGTS - Guia de Recolhimento (boleto)", "GFD - Boleto","Outros"
+			        )))
+		lineageTag: 8b4bca4b-786c-42cb-a15e-ce9ba7fe000c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contagem Entregue' =
+			
+			IF(
+			    'Entrega de documentos'[Status] <> "Atrasado" &&
+			    'Entrega de documentos'[Status] <> "Atrasado Recusado",
+			    1,
+			    0
+			)
+		formatString: 0
+		lineageTag: 47e8c92f-19c0-4c14-84c2-189f1839e07f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Entrega de documentos' = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = GETDATE();#(lf)DECLARE @organizationId uniqueidentifier = '11739F3B-431A-4554-B354-68E1BC62C1F1';#(lf)DECLARE @initialDate datetime2 = '2022-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = GETDATE();#(lf)#(lf)WITH DocumentScheduleBuildings AS (#(lf)    SELECT#(lf)        [dsb].[DocumentScheduleId],#(lf)        STRING_AGG([b].[TradeName], ', ') AS [Buildings]#(lf)    FROM#(lf)#(lf)        [DocumentScheduleBuilding] AS [dsb]#(lf)        INNER JOIN [Building] AS [b] ON [dsb].[BuildingId] = [b].[Id]#(lf)    WHERE#(lf)        [dsb].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsb].[DocumentScheduleId]#(lf)),#(lf)DocumentScheduleCategories AS (#(lf)    SELECT#(lf)        [dsc].[DocumentScheduleId],#(lf)        STRING_AGG([c].[Name], ', ') AS [Categories]#(lf)    FROM#(lf)        [DocumentScheduleCategory] AS [dsc]#(lf)        INNER JOIN [Category] AS [c] ON [dsc].[CategoryId] = [c].[Id]#(lf)    WHERE#(lf)        [dsc].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsc].[DocumentScheduleId]#(lf))#(lf)SELECT#(lf)    DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)#(tab)CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS 'Tipo do documento',#(lf)    [ds].Id AS [DocumentScheduleId],#(lf)    CASE#(lf)        WHEN [c].[OrderNumber] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [c].[OrderNumber]#(lf)    END AS [Número do Pedido],#(lf)#(tab)c.Id [Id.Contrato],#(lf)    CASE#(lf)        WHEN [c].[Type] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        CASE#(lf)            WHEN [c].[Type] & 1 = 1 THEN 'Contínuo'#(lf)            WHEN [c].[Type] & 2 = 2 THEN 'Grandes Paradas'#(lf)            WHEN [c].[Type] & 4 = 4 THEN 'Eventual'#(lf)            WHEN [c].[Type] & 8 = 8 THEN 'Temporário'#(lf)            WHEN [c].[Type] & 16 = 16 THEN 'Visitante técnico'#(lf)            WHEN [c].[Type] & 32 = 32 THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)            WHEN [c].[Type] & 64 = 64 THEN 'Prestação de serviço eventual fora da área operacional'#(lf)            WHEN [c].[Type] & 128 = 128 THEN 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)            WHEN [c].[Type] & 256 = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)            ELSE 'Nenhum'#(lf)        END#(lf)    END AS [Tipo de Contrato],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    [bc].[Document] AS [CNPJ],#(lf)    CASE#(lf)        WHEN [er].[Name] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [er].[Name]#(lf)    END AS [Funcionário],#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(tab)FORMAT([ds].[UploadedAt], 'dd/MM/yyyy') AS [Data de Envio],#(lf)#(tab)FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)    CASE#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Atrasado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Próxima Entrega'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Atrasado Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Próxima Entrega Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL#(lf)        THEN#(lf)            'Em Análise'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 0#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[IsValidated] IS NOT NULL AND [ds].[IsValidated] = 1#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)ELSE#(lf)            '--'#(lf)    END AS [Status],#(lf)    b.tradename AS [Unidade(s)],#(lf)    cat.Name AS [Categoria(s)]#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)    INNER JOIN [DocumentScheduleContractBI] as dscBI on [dscBI].DocumentScheduleId = [ds].Id#(lf)    INNER JOIN [Contract] as c on c.id = dscBI.ContractId#(lf)    INNER JOIN Building as b on b.id = c.BuildingId#(lf)    INNER JOIN Category as cat on cat.id = c.CategoryId#(lf)WHERE#(lf)    [ds].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Archived] = CAST(0 AS bit)#(lf)    AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] < @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)-- ORDER BY #(lf)--     [p].[TradeName], [d].[Kind], [d].[Name], [ds].[ExpectedUploadAt], [er].[Name];"]),
+				    
+				    
+				     #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Prazo de Envio", type date}, {"Data de Envio", type date}, {"Data da Análise", type date}}),
+				
+				    // Cria coluna Competência = Prazo de Envio - 1 mês
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Competência", each Date.StartOfMonth(Date.AddMonths([Prazo de Envio], -1))),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}}),
+				
+				    // ======== FILTRO DE COMPETÊNCIA (12 meses) ========
+				    // 1. Última competência da tabela
+				UltimaCompetencia = Date.EndOfMonth(List.Max(#"Tipo Alterado1"[Competência])),
+				
+				// 2. Mês de competência padrão = 2 meses atrás
+				DataAtual = Date.From(DateTime.LocalNow()),
+				CompetenciaAlvo = Date.StartOfMonth(Date.AddMonths(DataAtual, -2)),
+				
+				// 3. Determinar UltimaData de filtragem
+				UltimaData =
+				    if UltimaCompetencia > CompetenciaAlvo then
+				        CompetenciaAlvo
+				    else
+				        UltimaCompetencia,
+				
+				// 4. Determinar DataInicial = 12 meses antes de UltimaData
+				DataInicial = Date.AddMonths(UltimaData, -12),
+				
+				// 5. Filtrar tabela pelo intervalo
+				#"Competencia Filtrada" =
+				    Table.SelectRows(
+				        #"Tipo Alterado1",
+				        each [Competência] >= DataInicial and [Competência] <= UltimaData
+				    ),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Competencia Filtrada", each not Text.Contains([#"Unidade(s)"], "Edifício ") and not Text.Contains([#"Unidade(s)"], "TORRE ") and not Text.Contains([#"Unidade(s)"], "EDIFÍCIO ") and not Text.Contains([#"Unidade(s)"], "Torre ") and not Text.Contains([#"Unidade(s)"], "Cerrado")),
+				    #"CNPJ Formatado" = Table.TransformColumns(
+				        #"Linhas Filtradas",
+				        {{"CNPJ", each 
+				            Text.Start(_, 2) & "." &
+				            Text.Middle(_, 2, 3) & "." &
+				            Text.Middle(_, 5, 3) & "/" &
+				            Text.Middle(_, 8, 4) & "-" &
+				            Text.End(_, 2)
+				        , type text}}
+				    ),
+				    // ==================================================
+				
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"CNPJ Formatado", "CNPJ-Categoria-Unidade", each Text.Combine({[CNPJ], [#"Categoria(s)"], [#"Unidade(s)"]}, " - "), type text),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"CNPJ-Categoria-Unidade"}, Contratos, {"CNPJ-Categoria-Unidade"}, "Contratos", JoinKind.LeftOuter),
+				    #"Contratos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Contratos", {"Início Vigência", "Fim Vigência", "Status Contrato"}, {"Contratos.Início Vigência", "Contratos.Fim Vigência", "Contratos.Status Contrato"}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Contratos Expandido", each ([Contratos.Status Contrato] = "Vigente")),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Linhas Filtradas1",{{"Tipo de Contrato", "Tipo da Contratação"}})
+				in
+				    #"Colunas Renomeadas"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

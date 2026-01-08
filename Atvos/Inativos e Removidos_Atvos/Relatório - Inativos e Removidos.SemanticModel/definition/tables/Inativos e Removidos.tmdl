@@ -1,0 +1,159 @@
+table 'Inativos e Removidos'
+	lineageTag: 3248744f-c18a-4e5c-b71d-e3e831dafdea
+
+	measure (_Qtd_Colaboradores_Inativos) = ```
+			CALCULATE( 
+			    DISTINCTCOUNT('Inativos e Removidos'[CPF]),
+			    'Inativos e Removidos'[Situação] = "Inativo")
+			```
+		formatString: #,0
+		lineageTag: 897f7d8a-f3ff-4c6b-b441-54f84b6420b7
+
+	measure (_Qtd_Colaboradores_Removido) = ```
+			CALCULATE( 
+			    DISTINCTCOUNT('Inativos e Removidos'[CPF]),
+			    'Inativos e Removidos'[Situação] = "Removido")
+			```
+		formatString: #,0
+		lineageTag: 96ca2bd2-da4f-4db9-a511-81683b2da802
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 664e821e-1aae-4323-bdcf-582cdc80ffee
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 33afdc9f-a776-4af7-aedd-622056232dd8
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: a0377855-d6f0-4e63-85f4-7bd44335bd06
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 73b2c6a8-70e5-453d-9b46-d01e1c0ae97e
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 68031d3a-4653-4c4e-b19d-1c68b4f4818e
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Área de Atuação'
+		dataType: string
+		lineageTag: cb5223e0-ce5e-4ab9-9ef1-281a0e626087
+		summarizeBy: none
+		sourceColumn: Área de Atuação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 5a3e91ff-c557-413d-93f4-21e417585361
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: 2bc873d8-9d5f-480b-8bcd-6a9e2b850d0d
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: string
+		lineageTag: a82c67da-fed7-4767-9949-78043be9a640
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de início da vigência'
+		dataType: string
+		lineageTag: 8ff9ccbd-358b-4ed4-8a27-b1e051b81c56
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de fim da vigência'
+		dataType: string
+		lineageTag: 6587a546-6167-4cbc-8300-9bdd9aa57e77
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 1ada0390-931d-4908-85dc-f9ab9ab2dd3a
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 00800792-35f6-452a-8e89-4ef20d9c07e6
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: c4959d62-56ea-4e42-85c5-d4916dff7355
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 866a6586-754f-4e11-8170-49f2d26c74e6
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: string
+		lineageTag: 3591189c-99a7-4133-bc34-d7b8405d1fc1
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Inativos e Removidos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = '78091bc0-2575-4f7e-8d04-dbb9f68815b8'#(lf)#(lf)Select #(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN c.OrderNumber is null THEN '-----'#(lf)#(tab)#(tab)ELSE c.OrderNumber#(lf)#(tab)END As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(lf)#(tab)p.TradeName As 'Fornecedor',#(lf)#(tab)bc.CompanyName As 'Razão Social',#(lf)#(tab)b.TradeName As 'Unidade',#(lf)#(tab)ca.Name As 'Categoria',#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN cfi2.[Name] IS NOT NULL THEN cfi2.[Name]#(lf)#(tab)#(tab)ELSE '---'#(lf)#(tab)END AS 'Área de Atuação',#(lf)#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then 'Contínuo'#(lf)#(tab)#(tab)#(tab)When c.Type = 2 Then 'Grandes Paradas'#(lf)#(tab)#(tab)#(tab)When c.Type = 4 Then 'Eventual'#(lf)#(tab)#(tab)#(tab)When c.Type = 8 Then 'Temporário'#(lf)#(tab)#(tab)#(tab)When c.Type = 16 Then 'Visitante técnico'#(lf)#(tab)#(tab)#(tab)When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)#(tab)#(tab)#(tab)When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)#(tab)#(tab)#(tab)When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)#(tab)#(tab)#(tab)When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)#(tab)#(tab)#(tab)Else 'Tipo de contrato desconhecido'#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo do Contrato',#(lf)#(tab)Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)#(tab)Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)#(tab)Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(tab)(Select dbo.FNCPFMask(e.PisNumber)) As 'PIS',#(lf)#(tab)(Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)#(tab)e.Name As 'Nome',#(lf)#(tab)CASE #(lf)        WHEN (e.Removed = 1) THEN 'Removido' #(lf)       when E.Situation = 1 THEN 'Inativo' #(lf)    END AS 'Situação',#(lf)#(tab)Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro'#(lf)#(tab)#(lf)From #(lf)#(tab)Effective As e#(lf)#(tab)Inner Join [Contract] As c On c.Id = e.ContractId#(lf)#(tab)Inner Join Building As b On b.Id = c.BuildingId#(lf)#(tab)Inner Join [Provider] As p On p.Id = c.ProviderId#(lf)#(tab)Inner Join BranchCompany As bc On bc.Id = c.BranchCompanyId#(lf)#(tab)Inner Join Category As ca On ca.Id = c.CategoryId#(lf)#(tab)outer apply #(lf)#(tab)#(tab)(#(lf)    select cfi1.[Name] from CustomFieldValue cfv1 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi1 with(nolock) on cfv1.CustomFieldItemId = cfi1.Id#(lf)    where cfv1.EntityId = c.Id#(lf)#(tab)#(tab)and cfv1.[Value] is null#(lf)#(tab)#(tab)and cfv1.Removed = 0#(lf)#(tab)#(tab)and cfi1.Removed = 0#(lf)#(tab)#(tab)AND cfv1.CustomFieldId = '50C9DCD2-53AA-4A87-AC62-5D881C55CFB4' -- Área de atuação#(lf)#(tab)) as [cfi2]#(lf)Where#(lf)#(tab)b.OrganizationId = @OrganizationId#(lf)#(tab)And (e.Removed = 1#(lf)#(tab)#(tab)or e.Situation = 1)#(lf)"])
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

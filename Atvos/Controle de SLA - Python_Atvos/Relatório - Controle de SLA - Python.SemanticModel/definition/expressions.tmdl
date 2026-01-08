@@ -1,0 +1,210 @@
+expression 'Relatório de Efetivos' = ```
+		let
+		    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = '78091bc0-2575-4f7e-8d04-dbb9f68815b8'#(lf)Declare @Date DateTime = GETDATE ()#(lf)#(lf)Select #(lf)#(tab)c.OrderNumber As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)p.TradeName As 'Nome Fantasia Fornecedor',#(lf)#(tab)bc.CompanyName As 'Razão Social Fornecedor - Contrato',#(lf)#(tab)(Select dbo.FNCNPJMask(bc.Document)) As 'CNPJ Fornecedor - Contrato',#(lf)#(tab)b.TradeName As 'Nome Fantasia Unidade',#(lf)#(tab)ca.Name As 'Categoria',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then 'Contínuo'#(lf)#(tab)#(tab)#(tab)When c.Type = 2 Then 'Grandes Paradas'#(lf)#(tab)#(tab)#(tab)When c.Type = 4 Then 'Eventual'#(lf)#(tab)#(tab)#(tab)When c.Type = 8 Then 'Temporário'#(lf)#(tab)#(tab)#(tab)When c.Type = 16 Then 'Visitante técnico'#(lf)#(tab)#(tab)#(tab)When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)#(tab)#(tab)#(tab)When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)#(tab)#(tab)#(tab)When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)#(tab)#(tab)#(tab)When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)#(tab)#(tab)#(tab)Else 'Tipo de contrato desconhecido'#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo do Contrato',#(lf)#(tab)Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)#(tab)Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)#(tab)Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(tab)(Select dbo.FNPISMask(e.PisNumber)) As 'PIS',#(lf)#(tab)(Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)#(tab)e.Name As 'Nome',#(lf)#(tab)e.EmployeeRegisterId as 'Id_Colaborador',#(lf)#(tab)CASE #(lf)        WHEN (E.Situation = 0 AND E.Removed = 0) THEN 'Ativo' #(lf)        WHEN (E.Situation = 1 OR E.Removed = 1) THEN 'Inativo' #(lf)        WHEN E.Situation = 2 THEN 'Folguista' #(lf)    END AS 'Situação',#(lf)#(tab)Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro',#(lf)#(tab)CASE #(lf)        WHEN (ercm.IsMobilized = 1 AND ercm.Removed = 0) THEN 'Mobilizado' #(lf)        ELSE 'Não mobilizado'#(lf)    END AS 'Status Atual',#(lf)#(tab)ercm.MobilizedAt AS 'Mobilização atual',#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN (mh.IsMobilized = 1 AND mh.Removed = 0) THEN 'Mobilizado' #(lf)#(tab)#(tab)ELSE 'Não mobilizado'#(lf)    END AS 'Status Histórico',#(lf)#(tab)FORMAT(mh.MobilizedAt, 'dd/MM/yy') AS 'Historico Mobilizado',#(lf)#(tab)FORMAT(mh.CreatedAt, 'dd/MM/yy') AS 'Criação do Histórico'#(lf)#(tab)#(lf)FROM Effective AS e WITH(NOLOCK)#(lf)INNER JOIN [Contract] AS c WITH(NOLOCK) ON c.Id = e.ContractId AND c.Removed = 0#(lf)INNER JOIN Building AS b WITH(NOLOCK) ON b.Id = c.BuildingId AND b.Removed = 0#(lf)INNER JOIN Provider AS p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)INNER JOIN BranchCompany AS bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)INNER JOIN Category AS ca WITH(NOLOCK) ON ca.Id = c.CategoryId#(lf)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)LEFT JOIN EmployeeRegisterContractMobilization AS ercm WITH(NOLOCK) ON ercm.EmployeeRegisterContractId = erc.Id#(lf)LEFT JOIN EmployeeRegisterContractMobilizationHistory AS mh WITH(NOLOCK) ON mh.EmployeeRegisterContractMobilizationId = ercm.Id#(lf)#(lf)Where#(lf)#(tab)b.OrganizationId = @OrganizationId#(lf)#(tab)And c.Removed = 0#(lf)#(tab)And e.Removed = 0#(lf)#(tab)And e.CreatedAt < @Date#(lf)    And c.[Status] = 0#(lf)"]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{ {"Número Contrato", type any}, {"Id_Contrato", type text}, {"Nome Fantasia Fornecedor", type text}, {"Razão Social Fornecedor - Contrato", type text}, {"CNPJ Fornecedor - Contrato", type text}, {"Nome Fantasia Unidade", type text}, {"Categoria", type text}, {"Tipo do Contrato", type text}, {"Data de cadastro do contrato", type date}, {"Data de início da vigência", type date}, {"Data de fim da vigência", type date}, {"PIS", type text}, {"CPF", type text}, {"Nome", type text}, {"Situação", type text}, {"Data de cadastro", type date}, {"Status Atual", type text}, {"Mobilização atual", type text}, {"Status Histórico", type text}, {"Historico Mobilizado", type text}, {"Criação do Histórico", type datetime}}),
+		    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado","NULL","",Replacer.ReplaceText,{"Historico Mobilizado"}),
+		    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Valor Substituído",{{"Historico Mobilizado", type date}, {"Criação do Histórico", type date}}),
+		    #"Texto em Maiúscula" = Table.TransformColumns(#"Tipo Alterado1",{{"Id_Contrato", Text.Upper, type text}, {"Nome", Text.Upper, type text}}),
+		    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Texto em Maiúscula", "Chave_CPF", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text),
+		    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"Chave_CPF"}, #"Documentos em Análise", {"Chave_CPF"}, "Documentos em Análise", JoinKind.LeftOuter),
+		    #"Documentos em Análise Expandido1" = Table.ExpandTableColumn(#"Consultas Mescladas", "Documentos em Análise", {"Data de Envio", "Data da Análise"}, {"Documentos em Análise.Data de Envio", "Documentos em Análise.Data da Análise"}),
+		    #"Dividir Coluna por Delimitador" = Table.SplitColumn(Table.TransformColumnTypes(#"Documentos em Análise Expandido1", {{"Documentos em Análise.Data de Envio", type text}}, "pt-BR"), "Documentos em Análise.Data de Envio", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Documentos em Análise.Data de Envio.1", "Documentos em Análise.Data de Envio.2"}),
+		    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Documentos em Análise.Data de Envio.1", type date}, {"Documentos em Análise.Data de Envio.2", type time}}),
+		    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado2",{{"Documentos em Análise.Data da Análise", "Data_Analise"}, {"Documentos em Análise.Data de Envio.1", "Data_Envio"}, {"Documentos em Análise.Data de Envio.2", "Hora_Envio"}}),
+		    #"Dividir Coluna por Delimitador1" = Table.SplitColumn(Table.TransformColumnTypes(#"Colunas Renomeadas", {{"Data_Analise", type text}}, "pt-BR"), "Data_Analise", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Data_Analise.1", "Data_Analise.2"}),
+		    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador1",{{"Data_Analise.1", type date}, {"Data_Analise.2", type time}}),
+		    #"Colunas Renomeadas1" = Table.RenameColumns(#"Tipo Alterado3",{{"Data_Analise.1", "Data_Analise"}, {"Data_Analise.2", "Hora_Analise"}}),
+		 #"Personalização Adicionada" = Table.AddColumn(#"Colunas Renomeadas1", "FDS_Análise", each if Date.DayOfWeek([Data_Analise]) = 0 or Date.DayOfWeek([Data_Analise]) = 6 then "FDS"
+		 
+		else  "DDS"),
+		    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "FDS_Envio", each if Date.DayOfWeek([Data_Envio]) = 0 or Date.DayOfWeek([Data_Envio]) = 6 then "FDS"
+		 
+		else  "DDS"),
+		    #"Personalização Adicionada4" = Table.AddColumn(#"Personalização Adicionada1", "Data_Corrigida_Análise", each let
+		    FDSE = [FDS_Envio],
+		    FDSA = [FDS_Análise],
+		    DataBase = Date.From([Data_Analise]),
+		    DataEnvio = Date.From([Data_Envio]),
+		    Duration = Duration.Days(DataBase-DataEnvio),
+		
+		    // Cálculo da próxima segunda-feira
+		    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+		    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+		
+		    // Cálculo da próxima sexta-feira
+		   DiaSemana = Date.DayOfWeek(DataBase, Day.Monday),  // segunda = 0 ... domingo = 6
+		    DiasParaSubtrair = if DiaSemana >= 4 then DiaSemana - 4 else DiaSemana + 3,
+		    SextaAnterior = Date.AddDays(DataBase, -DiasParaSubtrair),
+		
+		    Resultado =
+		        if FDSE <> "FDS" and FDSA = "FDS" then
+		            SextaAnterior
+		        else if FDSE = "FDS" and FDSA = "FDS" then 
+		             if Duration >2 then 
+		             SextaAnterior
+		        
+		        else null
+		        else
+		            DataBase
+		in
+		    Resultado),
+		    #"Personalização Adicionada5" = Table.AddColumn(#"Personalização Adicionada4", "Data_Corrigida _Envio", each let
+		    FDSE = [FDS_Envio],
+		    FDSA = [FDS_Análise],
+		    DataBase = Date.From([Data_Envio]),
+		    DataAnalise = Date.From([Data_Analise]),
+		    Duration = Duration.Days(DataAnalise-DataBase),
+		
+		    // Cálculo da próxima segunda-feira
+		    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+		    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+		
+		    // Cálculo da próxima sexta-feira
+		    DiaSemanaSex = Date.DayOfWeek(DataBase, Day.Monday),
+		    DiasAteSexta = if DiaSemanaSex <= 4 then 4 - DiaSemanaSex else 11 - DiaSemanaSex,
+		    SextaMaisProxima = Date.AddDays(DataBase, DiasAteSexta),
+		
+		    Resultado =
+		        if FDSE = "FDS" and FDSA <> "FDS" then
+		            ProximaSegunda
+		        else if FDSE = "FDS" and FDSA = "FDS" then if 
+		        Duration > 2 then ProximaSegunda
+		        else null
+		        else
+		            DataBase
+		in
+		    Resultado),
+		    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada5", "Hora_Corrigida_Análise", each let
+		    HoraLimiteInferior = #time(9, 0, 0),
+		    HoraLimiteSuperior = #time(18, 0, 0),
+		    Hora = [Hora_Analise],
+		    FDSE = [FDS_Envio],
+		    FDSA = [FDS_Análise],
+		    DataEnvio = [Data_Corrigida_Envio],
+		    DataAnalise = [Data_Corrigida_Análise],
+		    Duration = Duration.Days(Date.From([Data_Analise])-Date.From([Data_Envio])),
+		
+		    Resultado =
+		        if FDSE = null and FDSA = null then
+		            null
+		        else
+		            let
+		                // Ajuste de hora entre 09:00 e 18:00
+		                HoraCorrigida =
+		                    if Hora < HoraLimiteInferior then HoraLimiteInferior
+		                    else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+		                    else Hora
+		
+		              // Cálculo da diferença em dias
+		            in
+		                if FDSA = "FDS" and FDSE <> "FDS" then
+		                    HoraLimiteSuperior
+		                else if FDSA = "FDS" and FDSE = "FDS" then 
+		                    if Duration > 2 then
+		                        HoraLimiteSuperior
+		                    else
+		                        null
+		                else
+		                    HoraCorrigida
+		in
+		    Resultado),
+		    #"Personalização Adicionada3" = Table.AddColumn(#"Personalização Adicionada2", "Hora_Corrigida_Envio", each let
+		    HoraLimiteInferior = #time(9, 0, 0),
+		    HoraLimiteSuperior = #time(18, 0, 0),
+		    Hora = [Hora_Envio],
+		    FDSE = [FDS_Envio],
+		    FDSA = [FDS_Análise],
+		    DataEnvio = [Data_Envio],
+		    DataAnalise = [Data_Analise],
+		    Duration = Duration.Days(Date.From([Data_Analise])-Date.From([Data_Envio])),
+		
+		    // Ajuste de hora entre 09:00 e 18:00
+		    HoraCorrigida =
+		        if Hora < HoraLimiteInferior then HoraLimiteInferior
+		        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+		        else Hora,
+		
+		    // Cálculo de semana e ano para verificar se são do mesmo fim de semana
+		    SemanaEnvio = Date.WeekOfYear(Date.From(DataEnvio)),
+		    SemanaAnalise = Date.WeekOfYear(Date.From(DataAnalise)),
+		    AnoEnvio = Date.Year(Date.From(DataEnvio)),
+		    AnoAnalise = Date.Year(Date.From(DataAnalise)),
+		
+		    Resultado =
+		        if FDSA <> "FDS" and FDSE = "FDS" then
+		            HoraLimiteInferior
+		        else if FDSA = "FDS" and FDSE = "FDS" then
+		            if Duration <=2 then
+		                null
+		            else
+		                HoraLimiteInferior
+		        else
+		            HoraCorrigida
+		in
+		    Resultado),
+		    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Personalização Adicionada3",{{"Hora_Corrigida_Análise", type time}, {"Hora_Corrigida_Envio", type time}}),
+		    #"Tipo Alterado5" = Table.TransformColumnTypes(#"Tipo Alterado4",{{"Data_Corrigida_Análise", type date}, {"Data_Corrigida _Envio", type date}}),
+		    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado5", {{"Hora_Corrigida_Análise", null}}),
+		    #"Personalização Adicionada6" = Table.AddColumn(#"Erros Substituídos", "SLA", each let
+		    // Colunas de fim de semana
+		    FDS_Envio = [FDS_Envio],
+		    FDS_Analise = [FDS_Análise],
+		    DurationDias = Duration.Days(Date.From([Data_Analise]) - Date.From([Data_Envio])),
+		
+		    // Quebra em data e hora
+		    DataEnvio = [Data_Corrigida _Envio],
+		    HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+		    DataAnalise = [Data_Corrigida_Análise],
+		    HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+		
+		    // Constantes do expediente
+		    HoraInicio = #time(9, 0, 0),
+		    HoraFim = #time(18, 0, 0),
+		    Jornada = 9, // 9 horas por dia útil
+		    DataHoraAnaliseDia = HoraAnalise - 9,
+		    DataHoraEnvioDia = 18 - HoraEnvio,
+		
+		    // Função para contar dias úteis
+		    DiasUteisEntre = List.Count(
+		        List.Select(
+		            List.Dates(Date.AddDays(DataEnvio, 1), Duration.Days(DataAnalise - DataEnvio) - 1, #duration(1, 0, 0, 0)),
+		            each Date.DayOfWeek(_, Day.Monday) < 5 // Segunda (0) a Sexta (4)
+		        )
+		    ),
+		
+		    // Caso 1: Mesmo dia
+		    HorasMesmoDia = if Date.From(DataEnvio) = Date.From(DataAnalise) then
+		        HoraAnalise - HoraEnvio
+		    else
+		        null,
+		
+		    // Cálculo final do SLA
+		    ResultadoFinal = if Date.From(DataEnvio) = Date.From(DataAnalise) then
+		        HorasMesmoDia
+		    else
+		        DiasUteisEntre * Jornada + (DataHoraAnaliseDia + DataHoraEnvioDia),
+		
+		    // Aplicação da regra FDS com duração
+		    HorasSLA =
+		        if FDS_Envio = "FDS" or FDS_Analise = "FDS" then
+		            if DurationDias > 2 then
+		                ResultadoFinal
+		            else
+		                0
+		        else
+		            ResultadoFinal
+		in
+		    HorasSLA / 8),
+		    #"Erros Substituídos1" = Table.ReplaceErrorValues(#"Personalização Adicionada6", {{"SLA", null}}),
+		    #"Erros Substituídos2" = Table.ReplaceErrorValues(#"Erros Substituídos1", {{"Hora_Corrigida_Envio", null}}),
+		    #"Tipo Alterado6" = Table.TransformColumnTypes(#"Erros Substituídos2",{{"SLA", type number}}),
+		    #"Colunas Renomeadas2" = Table.RenameColumns(#"Tipo Alterado6",{{"SLA", "SLA (Dias)"}})
+		in
+		    #"Colunas Renomeadas2"
+		```
+	lineageTag: 1ed337a4-0765-4551-9be0-84b701fd9b39
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,47 @@
+table 'Calendário SEFIP'
+	lineageTag: 5702c5a5-bb0d-4df5-b861-7985dcdee135
+
+	column Data
+		formatString: Short Date
+		lineageTag: 56abb822-ba0b-4ab5-bb2d-7d2b79447748
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 103b5bbc-4a2e-45b8-be73-56a3cdcdaecb
+			defaultHierarchy: LocalDateTable_c12ece53-836d-461d-9f48-bb41807e4b07.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrdemData = ```
+			RANKX(ALL('Calendário SEFIP'), 'Calendário SEFIP'[Data], , DESC, DENSE)
+			
+			```
+		formatString: 0
+		lineageTag: 31f2644b-d68c-42b6-b79d-9c4e9748c481
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência = 'Calendário SEFIP'[Data]
+		formatString: mmmm" de "yyyy
+		lineageTag: 489d7754-0c13-44d2-b048-382a52636270
+		summarizeBy: none
+		sortByColumn: OrdemData
+
+		variation Variation
+			isDefault
+			relationship: 252751b0-1fee-490c-a30d-aa4e7da1b1d1
+			defaultHierarchy: LocalDateTable_4d3e5d92-2976-4ed6-b366-4afe83bd1ab6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	partition 'Calendário SEFIP' = calculated
+		mode: import
+		source = CALENDAR( MIN('Entrega SEFIP'[Mês de competência]), MAX('Entrega SEFIP'[Mês de competência]))
+
+	annotation PBI_Id = e7e56db2b9614564ad7bc0af643c2f5d
+

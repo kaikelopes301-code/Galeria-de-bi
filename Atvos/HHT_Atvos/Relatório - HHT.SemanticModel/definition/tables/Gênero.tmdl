@@ -1,0 +1,44 @@
+table Gênero
+	lineageTag: e102e938-e893-4e48-8781-5e9d5639b0d1
+
+	column 'Nome do Colaborador'
+		dataType: string
+		lineageTag: e712d901-a7db-4653-a821-510e687297a8
+		summarizeBy: none
+		sourceColumn: Nome do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CPF Colaborador'
+		dataType: string
+		lineageTag: fecb546a-6d01-4b7d-91c6-2f185a410fd8
+		summarizeBy: none
+		sourceColumn: CPF Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gênero do Colaborador'
+		dataType: string
+		lineageTag: b697b585-4313-41fa-8c70-e872650ca439
+		summarizeBy: none
+		sourceColumn: Gênero do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Gênero = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Select distinct#(lf)#(tab)er.Name AS 'Nome do Colaborador',#(lf)#(tab)CASE WHEN e.CpfNumber IS NULL THEN '' ELSE dbo.FNCPFMask(e.CpfNumber) END AS 'CPF Colaborador',#(lf)#(tab)CASE#(lf)        WHEN er.Gender = 0 THEN 'Não Declarado'#(lf)        WHEN er.Gender = 1 THEN 'Masculino'#(lf)        WHEN er.Gender = 2 THEN 'Feminino'#(lf)        ELSE '--'#(lf)    END AS 'Gênero do Colaborador'#(lf)From Contract AS c WITH(NOLOCK)#(lf)#(tab)INNER JOIN#(lf)#(tab)#(tab)Effective AS e WITH(NOLOCK) ON e.ContractId = c.Id  #(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)EmployeeRegister AS er WITH(NOLOCK) ON e.EmployeeRegisterId = er.Id#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)Provider AS p WITH(NOLOCK) ON c.ProviderId = p.Id #(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)BranchCompany AS bc WITH(NOLOCK) ON c.BranchCompanyId = bc.Id#(lf)#(tab)INNER JOIN#(lf)#(tab)#(tab)Organization AS o WITH(NOLOCK) ON c.OrganizationId = o.Id#(lf)#(lf)Where #(lf)    o.Id = '78091bc0-2575-4f7e-8d04-dbb9f68815b8' #(lf)Order By#(lf)#(tab)er.Name#(lf)#(lf)#(lf)#(lf)"]),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(Fonte, "CPF Colaborador", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"CPF Colaborador.1", "CPF Colaborador.2", "CPF Colaborador.3", "CPF Colaborador.4", "CPF Colaborador.5"}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"CPF Colaborador.1", type text}, {"CPF Colaborador.2", type text}, {"CPF Colaborador.3", type text}, {"CPF Colaborador.4", type text}, {"CPF Colaborador.5", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"CPF Colaborador.2", "CPF Colaborador.3", "CPF Colaborador.4", "CPF Colaborador.5"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"CPF Colaborador.1", "CPF Colaborador"}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Colunas Renomeadas", {"CPF Colaborador"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,47 @@
+table 'Tabela Chave'
+	lineageTag: bc4b0647-6782-476e-9076-d1c39ae6e173
+
+	column Chave
+		lineageTag: e0c1a20e-4b72-4011-a44a-57b063778231
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Gestores de Contrato[Chave]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor = LOOKUPVALUE('Gestores de Contrato'[Fornecedor],'Gestores de Contrato'[Chave],'Tabela Chave'[Chave])
+		lineageTag: bcb231c3-dac1-4dba-aeda-23211fcf0b5d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria = LOOKUPVALUE('Gestores de Contrato'[Categoria],'Gestores de Contrato'[Chave],'Tabela Chave'[Chave])
+		lineageTag: 1d358f3f-0030-40cf-8a96-7e9fc6888261
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gestor do Contrato' = LOOKUPVALUE('Gestores de Contrato'[Gestor do Contrato],'Gestores de Contrato'[Chave],'Tabela Chave'[Chave])
+		lineageTag: 7def543c-de68-4637-be98-c2e92c06f822
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column E-mail = LOOKUPVALUE('Gestores de Contrato'[E-mail],'Gestores de Contrato'[Chave],'Tabela Chave'[Chave])
+		lineageTag: 0990c5ec-3284-4184-98dc-261d1d9a0f0e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Status' = 'Tabela Chave'[Fornecedor]&'Tabela Chave'[Categoria]
+		lineageTag: f001fa67-3d83-48bc-be2e-24585246475e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tabela Chave' = calculated
+		mode: import
+		source = DISTINCT('Gestores de Contrato'[Chave])
+
+	annotation PBI_Id = c7ab0351c1f44cfd965d8e1cb697b0b7
+

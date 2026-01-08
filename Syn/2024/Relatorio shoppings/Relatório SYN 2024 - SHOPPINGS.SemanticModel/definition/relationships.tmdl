@@ -1,0 +1,116 @@
+relationship AutoDetected_8c317f0a-ff9e-4b7c-987f-c4c07df5c860
+	fromColumn: 'Entrega de documentos'.'Tipo de documento'
+	toColumn: 'Lista Documentações'.Documento
+
+relationship 916e6dd5-cb82-5173-3cbc-8e4b9f6cd71a
+	fromColumn: 'Entrega de documentos'.Fornecedor
+	toColumn: TabelaCategorias.Fornecedor
+
+relationship a020eb9c-ae35-4a1a-a48c-577d3dc6ba0e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Início Vigência'
+	toColumn: LocalDateTable_6f7c3d1a-c4b0-4a62-a5d8-f7a83be4883c.Date
+
+relationship c88a2474-018d-4ce5-85d8-df60151de58a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Fim Vigência'
+	toColumn: LocalDateTable_73cbebba-0c00-4a1b-8549-afb0fc619c4f.Date
+
+relationship 7504d227-adc5-43ef-8c2b-159eaa190ba9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Entrega de documentos'.'Início Vigência'
+	toColumn: LocalDateTable_153caa65-b5a4-4303-8ed1-a2a5f82670a8.Date
+
+relationship 795031cd-f8a4-4702-bddc-976a64039daf
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Entrega de documentos'.'Fim Vigência'
+	toColumn: LocalDateTable_376411a9-b894-4ea0-9ef1-ac3a76aafae9.Date
+
+relationship 871fd4b3-aaac-4880-8a72-f2c37ce2a5c7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Prazo de entrega CND'
+	toColumn: LocalDateTable_0a029e59-5752-4fcd-8ecd-75a775124124.Date
+
+relationship 4bdac37c-36fa-49fd-9ac8-034f635f3115
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Data entrega CND'
+	toColumn: LocalDateTable_4fbb4bc4-2c9c-4198-8fe8-ebec2884c284.Date
+
+relationship 932117a8-9204-4777-83fe-e6f589fe2897
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Validade CND'
+	toColumn: LocalDateTable_a498240d-d54d-43cb-b7b3-ea4356afcaa2.Date
+
+relationship 2ea54006-6595-46a4-a89c-5d59102adf7d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Próxima Entrega CND'
+	toColumn: LocalDateTable_106894e8-d11e-4d22-aa23-e89c64c10b6d.Date
+
+relationship AutoDetected_592232be-5b9e-4315-83ac-0086e624d6a0
+	fromColumn: 'Entrega de documentos'.Fornecedor-Categoria-Unidade
+	toColumn: CND.Fornecedor-Categoria-Unidade
+
+relationship AutoDetected_424eede6-460b-442e-beed-6b048a3571a9
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Contratos.Fornecedor-Categoria-Unidade
+	toColumn: CND.Fornecedor-Categoria-Unidade
+
+relationship b80381de-e502-48e3-a2ee-9bcd5e240922
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Entrega de documentos'.'Mês de Envio'
+	toColumn: LocalDateTable_0d08bab6-2f82-44e1-b534-2a1890ed7e29.Date
+
+relationship 252751b0-1fee-490c-a30d-aa4e7da1b1d1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Calendário SEFIP'.Competência
+	toColumn: LocalDateTable_4d3e5d92-2976-4ed6-b366-4afe83bd1ab6.Date
+
+relationship 198ff448-309d-f122-0cf5-2d5fb7b77e07
+	fromColumn: 'Entrega SEFIP'.'Mês de competência'
+	toColumn: 'Calendário SEFIP'.Competência
+
+relationship 69d167ba-b0a5-4ee4-ac42-e3d2c4cb98da
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Calendario Entrega de Documentos'.Data
+	toColumn: LocalDateTable_7a42b239-002e-48b6-8f90-d27ba3ad1763.Date
+
+relationship 103b5bbc-4a2e-45b8-be73-56a3cdcdaecb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Calendário SEFIP'.Data
+	toColumn: LocalDateTable_c12ece53-836d-461d-9f48-bb41807e4b07.Date
+
+relationship 01577f43-45d5-422f-a3b9-bff6d9b7b887
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Calendario Entrega de Documentos'.Competência
+	toColumn: LocalDateTable_60cc31f7-29b7-4170-9b7b-88f612f0df83.Date
+
+relationship 37424ab9-d1de-59db-90b3-342633634d37
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Entrega de documentos'.'Mês de Competência'
+	toColumn: 'Calendario Entrega de Documentos'.Competência
+
+relationship AutoDetected_56d46009-9de8-4dc8-b0cb-5fd6f95f5b22
+	fromColumn: 'Entrega SEFIP'.'Fornecedor - Categoria - Unidade'
+	toColumn: CND.Fornecedor-Categoria-Unidade
+
+relationship 7fa0b212-f955-4cfb-bff6-768e3a6b7f4d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Início vigência'
+	toColumn: LocalDateTable_90801d58-0a68-45fc-8278-fa97238f0c24.Date
+
+relationship 2a09278e-1915-4fd5-accb-0678d9694912
+	joinOnDateBehavior: datePartOnly
+	fromColumn: CND.'Fim vigência'
+	toColumn: LocalDateTable_f2445a1d-fd2d-4e84-bdc2-673ddc19c04b.Date
+
+relationship 847230f0-9394-41f6-85dd-b2cd9a0c956e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Entrega SEFIP'.'Contratos.Início Vigência'
+	toColumn: LocalDateTable_6f258128-dba3-42bd-a630-066a4eba1c64.Date
+
+relationship 5c17980e-4ad1-48bf-90b3-f13d483088e3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Entrega SEFIP'.'Contratos.Fim Vigência'
+	toColumn: LocalDateTable_d234e479-3fc0-4ca0-885f-877aecfbf540.Date
+

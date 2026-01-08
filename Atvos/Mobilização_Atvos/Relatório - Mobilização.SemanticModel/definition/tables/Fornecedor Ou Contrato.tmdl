@@ -1,0 +1,48 @@
+table 'Fornecedor Ou Contrato'
+	lineageTag: 7533c8a7-cb37-450b-971d-c7058c770439
+
+	column 'Fornecedor Ou Contrato'
+		lineageTag: 1b231574-9206-4f74-9c6f-4e53d87b0076
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Fornecedor Ou Contrato Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Fornecedor Ou Contrato Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor Ou Contrato Campos'
+		isHidden
+		lineageTag: dd955203-0beb-4a79-ba36-bfa9788ca80c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Fornecedor Ou Contrato Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor Ou Contrato Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 626e8c96-5983-449e-a403-6cfa5378e7a6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Fornecedor Ou Contrato' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Status de funcionários'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Status de funcionários'[Unidade]), 1)
+				}
+
+	annotation PBI_Id = 780ff7dc6a904f6abd5693e5c0f1cc04
+
