@@ -1,0 +1,117 @@
+relationship AutoDetected_7cd88b2b-02ed-4e31-a3b6-cb1f3345b0ec
+	fromColumn: 'Documentos em Análise'.Documento
+	toColumn: 'Classificação Docs'.Documento
+
+relationship e16a380d-86d3-d02b-d877-63d41b3300a7
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de Efetivos'.'Chave.1'
+	toColumn: 'Status de funcionários'.Chave
+
+relationship a86bac78-8320-3d20-86bc-e1f98cfd4370
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Análise de Colaboradores'.Chave
+	toColumn: 'Status de Efetivos'.'Chave.1'
+
+relationship 2bf0fec5-3e3b-4d7c-a1f6-15f8a9a536cf
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Análise de Colaboradores'.Hoje
+	toColumn: LocalDateTable_1db90668-1c62-4ea3-8595-bf1822bba0e7.Date
+
+relationship c5093eb7-1261-b632-a73b-6566490c3aa4
+	fromColumn: 'Documentos em Análise'.Id_Contrato
+	toColumn: Contratos.Id_Contrato
+
+relationship 55bc5e5d-9b2d-449f-ae39-4c9dd2c11df0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Cadastro no sistema'
+	toColumn: LocalDateTable_a7b9e7f6-2aa4-488c-9922-f48e5fe8351f.Date
+
+relationship 8e7d0a73-1d38-6120-e933-4607566ab370
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários'.'Número do Pedido'
+	toColumn: Contratos.'N° do pedido'
+
+relationship 8a74a6e0-8791-35bb-4bf9-c871f8b2b3ee
+	isActive: false
+	fromColumn: 'Status de Efetivos'.Id_Contrato
+	toColumn: Contratos.Id_Contrato
+
+relationship 6a293be1-62a8-a959-ccaa-10fa9e91fcf5
+	isActive: false
+	fromColumn: 'Análise de Colaboradores'.Id_Contrato
+	toColumn: Contratos.Id_Contrato
+
+relationship 4aaa7a74-f57e-4586-82a0-b7bec397574d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Inicial'
+	toColumn: LocalDateTable_51874fb3-5fd3-4891-a812-4c0db99dbf19.Date
+
+relationship 6c2a54cb-427e-4f1d-9aea-9fa5d4deb8b1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Final'
+	toColumn: LocalDateTable_1a21d044-6588-49c4-bb6e-dc53d3084a62.Date
+
+relationship 3686a906-c8c2-4884-a5eb-142cd9af78e8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Final - Contínuo'
+	toColumn: LocalDateTable_37147c69-1e53-461b-baed-417bc9dde185.Date
+
+relationship 06fe6741-1c69-4805-b060-0f6ae5877fe7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Data da Análise'
+	toColumn: LocalDateTable_a800a1f3-bb34-4433-8cef-69f6eefe1b6d.Date
+
+relationship 41b5f6bd-78a7-d481-eb7d-9ceb2ccaab15
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de Efetivos'.Id_Contrato
+	toColumn: 'Documentos em Análise'.Id_Contrato
+
+relationship 84bce3cf-c88d-887b-7949-2b4652c194c4
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.Id_Contrato
+	toColumn: 'Número de Pedido'.Id_Contrato
+
+relationship 7fd2184a-a9c1-ffc7-7855-304402a64d84
+	isActive: false
+	fromColumn: 'Status de Efetivos'.Id_Contrato
+	toColumn: 'Número de Pedido'.Id_Contrato
+
+relationship 93514860-e859-49d0-890b-e63721a3db00
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.Date
+
+relationship 7c6d58bd-6607-b97d-3b78-946a1875669d
+	fromColumn: 'Documentos em Análise'.Competência
+	toColumn: dCalendário.Date
+
+relationship 63d9d7c9-b0af-5cbf-c628-9324eef3cf4f
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Análise de Colaboradores'.Competência
+	toColumn: dCalendário.Date
+
+relationship 12a46699-7924-76ab-d22a-a33bbad0acd2
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status de Efetivos'.'Data de cadastro'
+	toColumn: dCalendário.Date
+
+relationship e9cfeb44-443a-dae8-fe06-a080eb5eb817
+	isActive: false
+	fromColumn: 'Status de funcionários'.'Data de Referência'
+	toColumn: dCalendário.Date
+
+relationship 7b48d120-e329-fd3b-1e22-ed6d9bf7ed1a
+	isActive: false
+	fromColumn: 'Documentos em Análise'.'Data de Envio'
+	toColumn: dCalendário.Date
+
+relationship 39ce105b-ce4b-6e8c-778b-b8b6e42ac79a
+	isActive: false
+	fromColumn: 'Documentos em Análise'.'Prazo de Envio'
+	toColumn: dCalendário.Date
+

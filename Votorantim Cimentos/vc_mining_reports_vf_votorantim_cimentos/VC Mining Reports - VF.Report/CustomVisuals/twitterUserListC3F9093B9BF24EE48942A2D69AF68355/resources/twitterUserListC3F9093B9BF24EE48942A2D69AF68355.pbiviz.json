@@ -1,0 +1,228 @@
+{
+  "visual": {
+    "name": "twitterUserList",
+    "displayName": "User List by CloudScope",
+    "guid": "twitterUserListC3F9093B9BF24EE48942A2D69AF68355",
+    "visualClassName": "TwitterUserList",
+    "version": "1.1.0",
+    "description": "A visualization that displays a list of users or other data in a clean, Twitter-inspired style",
+    "supportUrl": "https://www.cloudscope.io/support/custom-visualizations/user-list",
+    "gitHubUrl": "https://github.com/chriswill/PbiUserList"
+  },
+  "apiVersion": "2.1.0",
+  "author": {
+    "name": "CloudScope, LLC",
+    "email": "support@cloudscope.io"
+  },
+  "assets": {
+    "icon": "assets/icon.png"
+  },
+  "externalJS": [
+    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js"
+  ],
+  "style": "style/visual.less",
+  "capabilities": {
+    "dataRoles": [
+      {
+        "displayName": "Account fields",
+        "displayNameKey": "dataAccountFields",
+        "name": "account",
+        "kind": "GroupingOrMeasure"
+      }
+    ],
+    "objects": {
+      "columnOptions": {
+        "displayName": "Column mapping",
+        "displayNameKey": "optionsColumnMapping",
+        "properties": {
+          "fieldType": {
+            "displayName": "Field mapping",
+            "displayNameKey": "objectsFieldMapping",
+            "type": {
+              "enumeration": [
+                {
+                  "value": "notMapped",
+                  "displayName": "Not mapped",
+                  "displayNameKey": "columnNotMapped"
+                },
+                {
+                  "value": "name",
+                  "displayName": "Name",
+                  "displayNameKey": "columnName"
+                },
+                {
+                  "value": "screenName",
+                  "displayName": "Screen name",
+                  "displayNameKey": "columnScreenName"
+                },
+                {
+                  "value": "description",
+                  "displayName": "Description",
+                  "displayNameKey": "columnDescription"
+                },
+                {
+                  "value": "verified",
+                  "displayName": "Verified",
+                  "displayNameKey": "columnVerified"
+                },
+                {
+                  "value": "profilePicture",
+                  "displayName": "Profile picture",
+                  "displayNameKey": "columnProfilePicture"
+                },
+                {
+                  "value": "backgroundPicture",
+                  "displayName": "Background picture",
+                  "displayNameKey": "columnBackgroundPicture"
+                },
+                {
+                  "value": "data",
+                  "displayName": "Data",
+                  "displayNameKey": "columnData"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "userOptions": {
+        "displayName": "Display",
+        "displayNameKey": "optionsDisplay",
+        "properties": {
+          "compact": {
+            "displayName": "Compact",
+            "displayNameKey": "optionsCompact",
+            "type": {
+              "bool": true
+            }
+          },
+          "linksAsIcon": {
+            "displayName": "Show links as icon",
+            "displayNameKey": "optionsLinksAsIcon",
+            "type": {
+              "bool": true
+            }
+          },
+          "showVersion": {
+            "displayName": "Show version",
+            "displayNameKey": "optionsShowVersion",
+            "description": "Temporarily displays version information",
+            "descriptionKey": "descShowVersion",
+            "type": {
+              "bool": true
+            }
+          }
+        }
+      },
+      "formatting": {
+        "displayName": "Formatting",
+        "displayNameKey": "optionsFormatting",
+        "properties": {
+          "nameFontSize": {
+            "displayName": "Name font size",
+            "displayNameKey": "optionsNameFontSize",
+            "type": {
+              "integer": true
+            }
+          },
+          "screenNameFontSize": {
+            "displayName": "Screen name font size",
+            "displayNameKey": "optionsScreenNameFontSize",
+            "type": {
+              "integer": true
+            }
+          },
+          "descriptionFontSize": {
+            "displayName": "Description font size",
+            "displayNameKey": "optionsDescriptionFontSize",
+            "type": {
+              "integer": true
+            }
+          },
+          "dataLabelFontSize": {
+            "displayName": "Data label font size",
+            "displayNameKey": "optionsDataLabelFontSize",
+            "type": {
+              "integer": true
+            }
+          },
+          "dataFontSize": {
+            "displayName": "Data font size",
+            "displayNameKey": "optionsDataFontSize",
+            "type": {
+              "integer": true
+            }
+          },
+          "dataTextColor": {
+            "displayName": "Data text color",
+            "displayNameKey": "optionsDataTextColor",
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dataViewMappings": [
+      {
+        "conditions": [
+          {
+            "account": {
+              "min": 0
+            }
+          }
+        ],
+        "table": {
+          "rows": {
+            "for": {
+              "in": "account"
+            },
+            "dataReductionAlgorithm": {
+              "top": {
+                "count": 1000
+              }
+            }
+          }
+        }
+      }
+    ],
+    "sorting": {
+      "default": {}
+    }
+  },
+  "stringResources": {
+    "en-US": {
+      "dataTweetFields": "Tweet fields",
+      "columnNotMapped": "Not mapped",
+      "columnAuthorName": "Author name",
+      "columnAuthorScreenName": "Author screen name",
+      "columnAuthorProfilePicture": "Author profile picture",
+      "columnTweetDate": "Tweet date",
+      "columnTweetText": "Tweet text",
+      "columnTweetJson": "Tweet Json",
+      "columnLikes": "Likes",
+      "columnRetweets": "Retweets",
+      "columnSentiment": "Sentiment",
+      "optionsDisplay": "Display",
+      "optionsMedia": "Media",
+      "optionsQuotedTweets": "Quoted tweets",
+      "optionsMapping": "Column mapping",
+      "objectsFieldMapping": "Field mapping",
+      "optionsFormatting": "Formatting",
+      "optionsFontSize": "Font size",
+      "optionsCompact": "Compact",
+      "optionsLinksAsIcon": "Show links as icon",
+      "optionsShowVersion": "Show version",
+      "descShowVersion": "Temporarily displays version information"
+    }
+  },
+  "content": {
+    "js": "var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){function t(e,t,n){void 0===e&&(e=[]);var a=e;return i(a),t&&(a.identityFields=t),n&&(a.source=n),a}function i(e,t){e.grouped=t?function(){return t}:function(){return n(e)}}function n(e){for(var t,i=[],n=0,a=e.length;a>n;n++){var r=e[n];if(!t||t.identity!==r.identity){if(t={values:[]},r.identity){t.identity=r.identity;var o=r.source;void 0!==o.groupName?t.name=o.groupName:o.displayName&&(t.name=o.displayName)}i.push(t)}t.values.push(r)}return i}e.createValueColumns=t,e.setGrouped=i,e.groupValues=n}(t=e.DataViewTransform||(e.DataViewTransform={}))}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){function t(e,t){if(!e||!e.length)return-1;var i=e[0];if(i.values&&i.values.length>0)for(var a=0,r=i.values.length;r>a;++a){var o=i.values[a];if(o&&o.source&&n(o.source,t))return a}return-1}function i(e,t){if(e&&e.length)for(var i=0,a=e.length;a>i;i++)if(n(e[i].source,t))return i;return-1}function n(e,t){var i=e.roles;return i&&i[t]}function a(e,t){return null!=e&&null!=e.metadata&&e.metadata.columns&&e.metadata.columns.some(function(e){return e.roles&&void 0!==e.roles[t]})}function r(e,t){return e&&e.source&&e.source.roles&&e.source.roles[t]===!0}e.getMeasureIndexOfRole=t,e.getCategoryIndexOfRole=i,e.hasRole=n,e.hasRoleInDataView=a,e.hasRoleInValueColumn=r}(t=e.DataRoleHelper||(e.DataRoleHelper={}))}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){function t(e,t,i){if(!e)return i;var n=e[t];return void 0===n?i:n}function i(e,i,n){var a=t(e,i);return a&&a.solid?a.solid.color:n}e.getValue=t,e.getFillColorByPropertyName=i}(t=e.DataViewObject||(e.DataViewObject={}))}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t;!function(t){function i(t,i,n){return t?e.DataViewObject.getValue(t[i.objectName],i.propertyName,n):n}function n(e,t,i){return e&&e[t]?e[t]:i}function a(e,t,n){var a=i(e,t);return a&&a.solid?a.solid.color:n}function r(e,t,n){var a=i(e,t,n);return a&&a.solid?a.solid.color:void 0===a||null===a||\"object\"==typeof a&&!a.solid?n:a}t.getValue=i,t.getObject=n,t.getFillColor=a,t.getCommonValue=r}(t=e.DataViewObjects||(e.DataViewObjects={}))}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(t){var i;!function(t){var i;!function(t){var i,n=e.extensibility.utils.dataview.DataRoleHelper;!function(e){function t(e,t,i){if(e.categories&&e.categories.length>0){var a=e.categories[0];return a.source&&n.hasRole(a.source,t)&&n.hasRole(a.source,i)}return!1}function i(e){return void 0!==e.groupName?e.groupName:e.queryName}function a(e){var t=o(e);return null!=t&&t.imageUrl===!0}function r(e){var t=o(e);return null!=t&&t.webUrl===!0}function o(e){return e&&e.type&&e.type.misc}function s(e){return e&&e.metadata&&e.metadata.columns&&e.metadata.columns.length?e.metadata.columns.some(function(e){return a(e)===!0}):!1}e.categoryIsAlsoSeriesRole=t,e.getSeriesName=i,e.isImageUrlColumn=a,e.isWebUrlColumn=r,e.getMiscellaneousTypeDescriptor=o,e.hasImageUrlColumn=s}(i=t.converterHelper||(t.converterHelper={}))}(i=t.dataview||(t.dataview={}))}(i=t.utils||(t.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){function t(e){return/^https?:\\/\\/.+\\.(gif|jpg|png|svg)$/i.test(e)||/^data:image\\/(gif|jpeg|png|svg\\+xml);base64,/i.test(e)}function i(e,t){var i=new XMLHttpRequest;i.onreadystatechange=function(){if(i.readyState===this.HEADERS_RECEIVED){var e=i.getResponseHeader(\"Content-Type\"),n=[\"image/png\",\"image/jpeg\",\"image/gif\",\"image/svg+xml\"];return n.indexOf(e)>-1?t(!0,e):t(!1,e)}},i.open(\"HEAD\",e,!0),i.send()}e.isImageUrlAllowed=t,e.isFileImage=i}(t=e.validationHelper||(e.validationHelper={}))}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(e){var t;!function(e){var t;!function(e){var t=function(){function t(){}return t.getDefault=function(){return new this},t.createPropertyIdentifier=function(e,t){return{objectName:e,propertyName:t}},t.parse=function(t){var i,n=this.getDefault();if(!t||!t.metadata||!t.metadata.objects)return n;i=n.getProperties();for(var a in i)for(var r in i[a]){var o=n[a][r];n[a][r]=e.DataViewObjects.getCommonValue(t.metadata.objects,i[a][r],o)}return n},t.isPropertyEnumerable=function(e){return!t.InnumerablePropertyPrefix.test(e)},t.enumerateObjectInstances=function(e,t){var i=e&&e[t.objectName];if(!i)return[];var n={objectName:t.objectName,selector:null,properties:{}};for(var a in i)i.hasOwnProperty(a)&&(n.properties[a]=i[a]);return{instances:[n]}},t.prototype.getProperties=function(){var e=this,i={},n=Object.keys(this);return n.forEach(function(n){if(t.isPropertyEnumerable(n)){var a=Object.keys(e[n]);i[n]={},a.forEach(function(e){t.isPropertyEnumerable(n)&&(i[n][e]=t.createPropertyIdentifier(n,e))})}}),i},t}();t.InnumerablePropertyPrefix=/^_/,e.DataViewObjectsParser=t}(t=e.dataview||(e.dataview={}))}(t=e.utils||(e.utils={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(t){var i;!function(t){var i;!function(t){\"use strict\";var i=e.extensibility.utils.dataview.DataViewObject,n=function(){function e(){}return e}(),a=function(){function e(){this.data=[]}return e}(),r=function(){function e(){}return e}(),o=function(){function e(e){var t=this;this.target=e.element,this.host=e.host,this.selectionManager=e.host.createSelectionManager(),this.target.style.overflowY=\"auto\",this.currentSelected=[],this.users=[],this.selectionManager.registerOnSelectCallback(function(e){t.currentSelected=e;for(var i=0;i<t.users.length;i++){var n=t.users[i];n.selected=t.isSelectionIdInArray(e,n.selectionId)}t.settings.displayOptions.compact?t.createCompactView():t.createExpandedView()})}return e.prototype.update=function(e){this.selectionIds=this.getSelectionIds(e.dataViews[0],this.host);var t=this.dataView=e.dataViews[0];if(null!=t&&null!=t.table){var i={displayOptions:{compact:!0,linksAsIcon:!0,showVersion:!1},formatOptions:{nameFontSize:12,screenNameFontSize:11,descriptionFontSize:11,dataLabelFontSize:10,dataFontSize:12,dataTextColor:\"#1da1f2\"}},n=e.dataViews[0].metadata.objects,a={displayOptions:{compact:this.getValue(n,\"userOptions\",\"compact\",i.displayOptions.compact),linksAsIcon:this.getValue(n,\"userOptions\",\"linksAsIcon\",i.displayOptions.linksAsIcon),showVersion:this.getValue(n,\"userOptions\",\"showVersion\",i.displayOptions.showVersion)},formatOptions:{nameFontSize:this.getValue(n,\"formatting\",\"nameFontSize\",i.formatOptions.nameFontSize),screenNameFontSize:this.getValue(n,\"formatting\",\"screenNameFontSize\",i.formatOptions.screenNameFontSize),descriptionFontSize:this.getValue(n,\"formatting\",\"descriptionFontSize\",i.formatOptions.descriptionFontSize),dataLabelFontSize:this.getValue(n,\"formatting\",\"dataLabelFontSize\",i.formatOptions.dataLabelFontSize),dataFontSize:this.getValue(n,\"formatting\",\"dataFontSize\",i.formatOptions.dataFontSize),dataTextColor:this.getFillColorByPropertyName(n,\"formatting\",\"dataTextColor\",i.formatOptions.dataTextColor)}};this.settings=a,this.loadData(),this.settings.displayOptions.compact?this.createCompactView():this.createExpandedView()}},e.prototype.destroy=function(){},e.prototype.getSelectionIds=function(e,t){if(void 0===e.table.identity)return[];var i=e.table.columns[0].queryName;return e.table.identity.map(function(e){var n={source:{queryName:i,displayName:null},values:null,identity:[e]};return t.createSelectionIdBuilder().withCategory(n,0).withMeasure(i).createSelectionId()})},e.prototype.getValue=function(e,t,i,n){if(e){var a=e[t];if(a){var r=a[i];if(void 0!==r)return r}}return n},e.prototype.getValueFromObject=function(e,t,i,n){var a=e[i];return void 0!==a?a:n},e.prototype.getFillColorByPropertyName=function(e,t,n,a){if(e){var r=e[t],o=i.getFillColorByPropertyName(r,n);if(null!=o)return o}return a},e.prototype.getColumnIndex=function(e,t){if(e)for(var i=0;i<e.length;i++){var n=e[i];if(n.objects){var a=n.objects.columnOptions;if(a){var r=a.fieldType.toString();if(r===t)return i}}}return null},e.prototype.getDataColumnIndexes=function(e,t){if(e){for(var i=[],n=0;n<e.length;n++){var a=e[n];if(a.objects){var r=a.objects.columnOptions;if(r){var o=r.fieldType.toString();o===t&&i.push(n)}}}return i}return null},e.prototype.isSelectionIdInArray=function(e,t){return e&&t?e.some(function(e){return e.includes(t)}):!1},e.prototype.loadData=function(){var e=this.dataView.table,t=e.columns,i=e.rows,o=this.getColumnIndex(t,\"backgroundPicture\"),s=this.getColumnIndex(t,\"profilePicture\"),l=this.getColumnIndex(t,\"screenName\"),c=this.getColumnIndex(t,\"name\"),d=this.getColumnIndex(t,\"description\"),u=this.getColumnIndex(t,\"verified\"),p=this.getDataColumnIndexes(t,\"data\"),m=new n;m.backgroundImageUrlColumn=null!=o,m.profileImageUrlColumn=null!=s,m.nameColumn=null!=c,m.screenNameColumn=null!=l,m.descriptionColumn=null!=d,m.verifiedColumn=null!=u,m.dataColumn=null!=p&&p.length>0,this.columnSettings=m,this.users=[];for(var f=0;f<i.length;f++)try{var g=i[f],v=new a;if(v.selectionId=this.selectionIds[f],this.isSelectionIdInArray(this.currentSelected,v.selectionId)&&(v.selected=!0),null!=o){var h=g[o];null!=h&&(v.backgroundImageUrl=h.toString())}if(null!=s){var h=g[s];null!=h&&(v.profileImageUrl=h.toString())}if(null!=l){var h=g[l];null!=h&&(v.screenName=h.toString())}if(null!=c){var h=g[c];null!=h&&(v.name=h.toString())}if(null!=d){var h=g[d];null!=h&&(v.description=h.toString())}if(null!=u){var h=g[u];null!=h&&(v.verified=g[u])}for(var b=0;b<p.length;b++){var y=p[b],C=t[y],w=new r;w.name=C.displayName,void 0!=C.type&&void 0!=C.type.misc&&(C.type.misc.imageUrl||C.type.misc.webUrl)&&(w.isUrl=!0);var h=g[y];if(w.value=h,null!==h){if(C.type.text===!0){var S=g[y].toString(),x=S;w.isUrl&&-1!==S.indexOf(\"//\")?(x=S.substring(S.indexOf(\"//\")+2),x.lastIndexOf(\"/\")===x.length-1&&(x=x.substring(0,x.length-1)),w.formattedValue=x):w.formattedValue=S}else C.type.numeric===!0?w.formattedValue=this.formatNumber(g[y]):C.type.dateTime===!0?w.formattedValue=this.formatDate(g[y]):C.type.bool===!0&&(w.formattedValue=this.formatBoolean(g[y]));v.data.push(w)}}this.users.push(v)}catch(F){console.error(F)}},e.prototype.createCompactView=function(){for(var e=this;this.target.firstChild;)this.target.removeChild(this.target.firstChild);if(this.settings.displayOptions.showVersion){var t=document.createElement(\"div\");t.setAttribute(\"class\",\"version\"),t.appendChild(document.createTextNode(\"User List by CloudScope, version 1.1.0\")),this.target.appendChild(t)}var i=document.createElement(\"div\");i.setAttribute(\"class\",\"compact\");var n=document.createElement(\"table\");n.classList.add(\"table-container\");for(var a,r=function(){try{var t=o.users[s],r=document.createElement(\"tr\");if(r.classList.add(\"userRow\"),t.selected||0==o.currentSelected.length?r.classList.remove(\"dim\"):o.currentSelected.length>0&&r.classList.add(\"dim\"),r.onclick=function(i){e.selectionManager.select(t.selectionId).then(function(a){var o=n.querySelectorAll(\"tr\");if(null!=a&&a.length>0){for(var s=0;s<o.length;s++)o[s].classList.add(\"dim\");r.classList.remove(\"dim\"),e.currentSelected=[t.selectionId]}else for(var l=0;l<o.length;l++)o[l].classList.remove(\"dim\");i.stopPropagation()})},o.columnSettings.profileImageUrlColumn){var l=document.createElement(\"td\");if(l.classList.add(\"profile-image\"),null!=t.profileImageUrl){var c=document.createElement(\"img\");c.setAttribute(\"src\",t.profileImageUrl),c.classList.add(\"profile-avatarImage\"),l.appendChild(c)}r.appendChild(l)}if(o.columnSettings.nameColumn||o.columnSettings.screenNameColumn){var d=document.createElement(\"td\");d.classList.add(\"profile-content\");var u=document.createElement(\"div\");if(u.classList.add(\"profile-name\"),u.setAttribute(\"style\",\"font-size: \"+o.settings.formatOptions.nameFontSize+\"px\"),t.name&&u.appendChild(document.createTextNode(t.name)),t.verified){var p=document.createElement(\"div\");p.classList.add(\"verified\"),p.setAttribute(\"style\",\"width: \"+o.settings.formatOptions.nameFontSize+\"px;height: \"+(o.settings.formatOptions.nameFontSize+3)+\"px;\"),u.appendChild(p)}d.appendChild(u);var m=document.createElement(\"div\");m.classList.add(\"screen-name\"),m.setAttribute(\"style\",\"font-size: \"+o.settings.formatOptions.screenNameFontSize+\"px\"),t.screenName&&m.appendChild(document.createTextNode(t.screenName)),d.appendChild(m),r.appendChild(d)}if(o.columnSettings.dataColumn)for(var f=function(){a=document.createElement(\"td\"),a.classList.add(\"profile-badge\");var i=t.data[g],n=document.createElement(\"div\");n.classList.add(\"badge-label\");var s=o.settings.formatOptions.dataLabelFontSize,l=s+2;n.setAttribute(\"style\",\"font-size: \"+s+\"px; line-height: \"+l+\"px;\"),n.appendChild(document.createTextNode(i.name));var c=document.createElement(\"div\");c.classList.add(\"badge-content\"),o.settings.displayOptions.linksAsIcon&&i.isUrl?(c.setAttribute(\"style\",\"background-size: \"+o.settings.formatOptions.dataFontSize+\"px \"+o.settings.formatOptions.dataFontSize+\"px; height: \"+(o.settings.formatOptions.dataFontSize+2)+\"px;\"),c.classList.add(\"link\"),c.appendChild(document.createTextNode(\"   \"))):(c.setAttribute(\"style\",\"font-size: \"+o.settings.formatOptions.dataFontSize+\"px; color: \"+o.settings.formatOptions.dataTextColor),c.appendChild(document.createTextNode(i.formattedValue))),i.isUrl&&(a.onclick=function(t){t.stopImmediatePropagation(),e.host.launchUrl(i.value.toString())}),a.appendChild(n),a.appendChild(c),r.appendChild(a)},g=0;g<t.data.length;g++)f();n.appendChild(r)}catch(v){console.error(v)}i.appendChild(n),o.target.appendChild(i)},o=this,s=0;s<this.users.length;s++)r()},e.prototype.createExpandedView=function(){for(var e=this;this.target.firstChild;)this.target.removeChild(this.target.firstChild);var t=document.createElement(\"div\");if(this.settings.displayOptions.showVersion){var i=document.createElement(\"div\");i.setAttribute(\"class\",\"version\"),i.appendChild(document.createTextNode(\"User List by CloudScope, version 1.1.0\")),this.target.appendChild(i)}for(var n=function(){var i=a.users[r],n=document.createElement(\"div\");if(n.classList.add(\"profile-container\"),i.selected||0==a.currentSelected.length?n.classList.remove(\"dim\"):a.currentSelected.length>0&&n.classList.add(\"dim\"),n.onclick=function(t){e.selectionManager.select(i.selectionId).then(function(t){var a=document.querySelectorAll(\"div.profile-container\");if(null!=t&&t.length>0){for(var r=0;r<a.length;r++)a[r].classList.add(\"dim\");n.classList.remove(\"dim\"),e.currentSelected=[i.selectionId]}else for(var r=0;r<a.length;r++)a[r].classList.remove(\"dim\")}),t.stopPropagation()},a.columnSettings.backgroundImageUrlColumn&&a.columnSettings.profileImageUrlColumn?(n.classList.add(\"profile-container\"),n.classList.add(\"overlay\")):n.classList.add(\"profile-container\"),a.columnSettings.backgroundImageUrlColumn){var o=document.createElement(\"div\");o.classList.add(\"profile-bg\"),null!=i.backgroundImageUrl?i.backgroundImageUrl.indexOf(\"pbs.twimg.com/profile_banners/\")>0?o.setAttribute(\"style\",\"background-image: url('\"+i.backgroundImageUrl+\"/600x200')\"):o.setAttribute(\"style\",\"background-image: url('\"+i.backgroundImageUrl+\"')\"):o.setAttribute(\"style\",\"background-color: \"+a.settings.formatOptions.dataTextColor),n.appendChild(o)}if(null!=i.profileImageUrl){var s=document.createElement(\"div\");s.classList.add(\"profile-image\");var l=document.createElement(\"img\");l.setAttribute(\"src\",i.profileImageUrl),l.classList.add(\"profile-avatarImage\"),s.appendChild(l),n.appendChild(s)}var c=document.createElement(\"div\");c.classList.add(\"profile-content\");var d=document.createElement(\"div\");d.classList.add(\"name-container\");var u=document.createElement(\"div\");if(u.classList.add(\"profile-name\"),u.setAttribute(\"style\",\"font-size: \"+a.settings.formatOptions.nameFontSize+\"px\"),i.name&&u.appendChild(document.createTextNode(i.name)),i.verified){var p=document.createElement(\"span\");p.classList.add(\"verified\"),p.setAttribute(\"style\",\"width: \"+a.settings.formatOptions.nameFontSize+\"px;height: \"+(a.settings.formatOptions.nameFontSize+3)+\"px;\"),u.appendChild(p)}d.appendChild(u);var m=document.createElement(\"div\");m.classList.add(\"screen-name\"),m.setAttribute(\"style\",\"font-size: \"+a.settings.formatOptions.screenNameFontSize+\"px\"),i.screenName&&m.appendChild(document.createTextNode(i.screenName)),d.appendChild(m),c.appendChild(d);var f=document.createElement(\"div\");f.classList.add(\"profile-background\"),f.setAttribute(\"style\",\"font-size: \"+a.settings.formatOptions.descriptionFontSize+\"px\"),i.description&&f.appendChild(document.createTextNode(i.description)),c.appendChild(f);var g=document.createElement(\"div\");g.classList.add(\"profile-badges\");for(var v=function(t){var n=i.data[t],r=document.createElement(\"div\");r.classList.add(\"profile-badge\");var o=document.createElement(\"div\");o.classList.add(\"badge-label\");var s=a.settings.formatOptions.dataLabelFontSize,l=s+2;o.setAttribute(\"style\",\"font-size: \"+s+\"px; line-height: \"+l+\"px;\"),o.appendChild(document.createTextNode(n.name));var c=document.createElement(\"div\");c.classList.add(\"badge-content\"),a.settings.displayOptions.linksAsIcon&&n.isUrl?(c.setAttribute(\"style\",\"background-size: \"+a.settings.formatOptions.dataFontSize+\"px \"+a.settings.formatOptions.dataFontSize+\"px; height: \"+(a.settings.formatOptions.dataFontSize+2)+\"px;\"),c.classList.add(\"link\"),c.appendChild(document.createTextNode(\"   \"))):(c.setAttribute(\"style\",\"font-size: \"+a.settings.formatOptions.dataFontSize+\"px; color: \"+a.settings.formatOptions.dataTextColor),c.appendChild(document.createTextNode(n.formattedValue))),n.isUrl&&(r.onclick=function(t){t.stopImmediatePropagation(),e.host.launchUrl(n.value.toString())}),r.appendChild(o),r.appendChild(c),g.appendChild(r)},h=0;h<i.data.length;h++)v(h);c.appendChild(g),n.appendChild(c),t.appendChild(n),a.target.appendChild(t)},a=this,r=0;r<this.users.length;r++)n()},e.prototype.formatBoolean=function(e){return e===!0?\"true\":\"false\"},e.prototype.formatDate=function(e){var t=[\"Jan\",\"Feb\",\"Mar\",\"Apr\",\"May\",\"Jun\",\"Jul\",\"Aug\",\"Sep\",\"Oct\",\"Nov\",\"Dec\"],i=t[e.getMonth()]+\" \"+e.getDate();return e.getFullYear()!==(new Date).getFullYear()&&(i+=\" \"+e.getFullYear()),i},e.prototype.formatNumber=function(e){if(1e4>e)return e.toLocaleString();if(1e6>e){var t=(e/1e3).toFixed(1);return\"0\"===t.charAt(t.length-1)?(e/1e3).toFixed(0)+\"K\":t+\"K\"}if(1e9>e){var t=(e/1e6).toFixed(1);return\"0\"===t.charAt(t.length-1)?(e/1e6).toFixed(0)+\"M\":t+\"M\"}var t=(e/1e9).toFixed(1);return\"0\"===t.charAt(t.length-1)?(e/1e9).toFixed(0)+\"B\":t+\"B\"},e.prototype.enumerateObjectInstances=function(e){var t=e.objectName,i=[],n=this.dataView.table.columns;switch(t){case\"userOptions\":i.push({objectName:t,properties:{compact:this.settings.displayOptions.compact,linksAsIcon:this.settings.displayOptions.linksAsIcon,showVersion:this.settings.displayOptions.showVersion},selector:null});break;case\"columnOptions\":for(var a=0;a<n.length;a++){var r=n[a];i.push({objectName:t,displayName:r.displayName,properties:{fieldType:this.getValue(r.objects,t,\"fieldType\",\"notMapped\")},selector:{metadata:r.queryName}})}break;case\"formatting\":i.push({objectName:t,properties:{nameFontSize:this.settings.formatOptions.nameFontSize,screenNameFontSize:this.settings.formatOptions.screenNameFontSize,descriptionFontSize:this.settings.formatOptions.descriptionFontSize,dataLabelFontSize:this.settings.formatOptions.dataLabelFontSize,dataFontSize:this.settings.formatOptions.dataFontSize,dataTextColor:this.settings.formatOptions.dataTextColor},validValues:{nameFontSize:{numberRange:{min:6,max:24}},screenNameFontSize:{numberRange:{min:6,max:24}},descriptionFontSize:{numberRange:{min:6,max:24}},dataLabelFontSize:{numberRange:{min:6,max:24}},dataFontSize:{numberRange:{min:6,max:24}}},selector:null})}return i},e}();t.TwitterUserList=o}(i=t.twitterUserListC3F9093B9BF24EE48942A2D69AF68355||(t.twitterUserListC3F9093B9BF24EE48942A2D69AF68355={}))}(i=t.visual||(t.visual={}))}(t=e.extensibility||(e.extensibility={}))}(powerbi||(powerbi={}));var powerbi;!function(e){var t;!function(t){var i;!function(t){t.twitterUserListC3F9093B9BF24EE48942A2D69AF68355={name:\"twitterUserListC3F9093B9BF24EE48942A2D69AF68355\",displayName:\"User List by CloudScope\",\"class\":\"TwitterUserList\",version:\"1.1.0\",apiVersion:\"2.1.0\",create:function(t){return new e.extensibility.visual.twitterUserListC3F9093B9BF24EE48942A2D69AF68355.TwitterUserList(t)},custom:!0}}(i=t.plugins||(t.plugins={}))}(t=e.visuals||(e.visuals={}))}(powerbi||(powerbi={}));",
+    "css": ".visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 body{font-family:'Segoe UI',wf_segoe-ui_normal,helvetica,arial,sans-serif;line-height:20px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-container{width:100%;margin-bottom:20px;padding-left:10px;padding-right:10px;border-bottom:1px solid #e6ecf0}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .table-container{width:100%;padding-left:10px;padding-right:10px;display:table}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .name-container{margin-top:10px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .overlay .name-container{margin-top:0}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .overlay .profile-content{margin-top:-20px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-bg{background-position:0 50%;background-size:100%;background-repeat:no-repeat;height:90px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-name{font-weight:bold}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .screen-name{color:grey}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-background{margin-top:6px;margin-bottom:10px;padding-right:10px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .overlay .profile-image{top:-35px;left:20px;position:relative}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .compact .profile-avatarImage{height:36px;width:36px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-avatarImage{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;display:block;height:72px;border:2px solid #fff;width:72px;border-radius:50%}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .dim{opacity:.5}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .userRow>.profile-image{display:table-cell;padding:5px 0;vertical-align:top;width:50px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .userRow>.profile-content{display:table-cell;padding:5px 0 5px 5px;vertical-align:top}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .userRow .profile-badge{display:table-cell;padding:5px;vertical-align:top}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-badges{display:flex;flex-wrap:wrap;margin-top:0;margin-bottom:15px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .profile-badge{position:relative;flex-grow:1}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .badge-label{color:grey}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .badge-content{font-weight:bold}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .compact .badge-label{display:block}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .compact .badge-content{display:block}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 table{width:100%}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 td{text-align:top}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 tr{margin-top:5px;margin-bottom:5px;height:35px}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .verified{background-image:url('data:image/png;base64,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');background-repeat:no-repeat;background-position:right bottom;background-size:contain;margin-left:4px;display:inline-block}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .banner{font-size:12px;color:#2595ff;text-align:center}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .userRow{display:table-row}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .link{background:no-repeat left bottom url('data:image/svg+xml;charset=UTF-8,<svg fill=\"#808080\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path d=\"M314.222 197.78c51.091 51.091 54.377 132.287 9.75 187.16-6.242 7.73-2.784 3.865-84.94 86.02-54.696 54.696-143.266 54.745-197.99 0-54.711-54.69-54.734-143.255 0-197.99 32.773-32.773 51.835-51.899 63.409-63.457 7.463-7.452 20.331-2.354 20.486 8.192a173.31 173.31 0 0 0 4.746 37.828c.966 4.029-.272 8.269-3.202 11.198L80.632 312.57c-32.755 32.775-32.887 85.892 0 118.8 32.775 32.755 85.892 32.887 118.8 0l75.19-75.2c32.718-32.725 32.777-86.013 0-118.79a83.722 83.722 0 0 0-22.814-16.229c-4.623-2.233-7.182-7.25-6.561-12.346 1.356-11.122 6.296-21.885 14.815-30.405l4.375-4.375c3.625-3.626 9.177-4.594 13.76-2.294 12.999 6.524 25.187 15.211 36.025 26.049zM470.958 41.04c-54.724-54.745-143.294-54.696-197.99 0-82.156 82.156-78.698 78.29-84.94 86.02-44.627 54.873-41.341 136.069 9.75 187.16 10.838 10.838 23.026 19.525 36.025 26.049 4.582 2.3 10.134 1.331 13.76-2.294l4.375-4.375c8.52-8.519 13.459-19.283 14.815-30.405.621-5.096-1.938-10.113-6.561-12.346a83.706 83.706 0 0 1-22.814-16.229c-32.777-32.777-32.718-86.065 0-118.79l75.19-75.2c32.908-32.887 86.025-32.755 118.8 0 32.887 32.908 32.755 86.025 0 118.8l-45.848 45.84c-2.93 2.929-4.168 7.169-3.202 11.198a173.31 173.31 0 0 1 4.746 37.828c.155 10.546 13.023 15.644 20.486 8.192 11.574-11.558 30.636-30.684 63.409-63.457 54.733-54.735 54.71-143.3-.001-197.991z\"/></svg>')}.visual-twitterUserListC3F9093B9BF24EE48942A2D69AF68355 .version{text-align:center;font-size:14px;color:#657786}",
+    "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxMzggNzkuMTU5ODI0LCAyMDE2LzA5LzE0LTAxOjA5OjAxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+IEmuOgAAAOFJREFUOI3N0ztqQkEYhuEnEkQJpkitpEkVMZWVjdlJuuAesozgAoSAdTYgLiCd4AbMCnIBG0OK/AckjAPncAQ/GBj+d+adCzOces6gN/tIsQssMcRn1Dp4wz2+/0/YPFxqZBZ7Clkh6kR/GCyZnLCdYQdzSDjAY53CFZ7rFMJP3cJKyQnXVVhO+IJFor4IVkrYyPAcSxavMMEOowQfBZvE2KxwjHdMgzUTwmawaYwdp4Q3mGOm3A9px5x5OJwHeMVtCdF+rqPdoV/ssFtRtp8uR3jYxZG//N3HtqKnFY768wuoph59BxMSNAAAAABJRU5ErkJggg=="
+  }
+}

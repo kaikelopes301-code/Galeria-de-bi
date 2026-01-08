@@ -1,0 +1,167 @@
+table Recusas
+	lineageTag: 81cf8ae3-21ea-4d4e-b027-bbce8f80bc50
+
+	measure Motivo =
+			
+			CALCULATE(
+			    CONCATENATEX(
+			            VALUES(Recusas[Motivo da Recusa])
+			        ,
+			        Recusas[Motivo da Recusa],
+			        "; "
+			    )
+			)
+		lineageTag: 3173be76-661e-4b32-a7b6-daac83143bfb
+
+	column Documento
+		dataType: string
+		lineageTag: edd5b7b5-c01c-4bb0-8fca-197ccd8a70a5
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do funcionário'
+		dataType: string
+		lineageTag: 08b727df-79a1-403a-be00-6e90cb83833e
+		summarizeBy: none
+		sourceColumn: Nome do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: da4d6efc-e82a-4c66-8baf-af593a2630db
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 9f72edb6-6293-4ad9-b8dd-e8909921d230
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de documento'
+		dataType: string
+		lineageTag: 1b0d53f8-71ae-415d-9e18-56c31170c256
+		summarizeBy: none
+		sourceColumn: Tipo de documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 916cd98a-c0f3-4fef-9b1a-f2d3c7db17e1
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: 5fea75a9-e760-4a15-a776-89150cd275f6
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: 2aca3bc2-0d3c-4ce4-b733-c86a45ad7a19
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do(s) pedido(s)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 835c0324-c478-4562-8d02-4131840777c0
+		summarizeBy: sum
+		sourceColumn: Nº do(s) pedido(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: 8ea4bfa0-d157-4534-9a68-fe95583b17a8
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Reprovado em'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7308b011-9491-473c-8377-790c8b67001e
+		summarizeBy: none
+		sourceColumn: Reprovado em
+
+		variation Variation
+			isDefault
+			relationship: 0a2c70a0-a5b8-499f-b449-63baea946375
+			defaultHierarchy: LocalDateTable_c7badbb4-1f67-4a4d-971a-ac2fe5df915f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Prazo de envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5ee79752-a132-47a6-92d6-3b8a4a03a91a
+		summarizeBy: none
+		sourceColumn: Prazo de envio
+
+		variation Variation
+			isDefault
+			relationship: 8bc1e9a4-af80-4f75-8b62-7382b4326511
+			defaultHierarchy: LocalDateTable_c484bdc3-73df-4e34-b82e-9ac2b0361823.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Motivo da Recusa'
+		dataType: string
+		lineageTag: d6b75a43-c46f-46d1-a993-65d5c2166442
+		summarizeBy: none
+		sourceColumn: Motivo da Recusa
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: e354a4e2-dd52-46e6-9ccd-bc3b54be0f31
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Documento'
+		dataType: string
+		lineageTag: d5e88b4a-9437-4c26-875f-61a4f46266cd
+		summarizeBy: none
+		sourceColumn: Tipo do Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Recusas = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\EDF\Relatório - Motivos de Recusa.xlsx"), null, true),
+				    Recusas_Sheet = Fonte{[Item="Recusas",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Recusas_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Documento", type text}, {"Nome do funcionário", type text}, {"CPF", type text}, {"PIS", type text}, {"Tipo de documento", type text}, {"Status", type text}, {"Cliente", type text}, {"Unidade(s)", type text}, {"Nº do(s) pedido(s)", Int64.Type}, {"Categoria(s)", type text}, {"Reprovado em", type date}, {"Prazo de envio", type date}, {"Motivo da Recusa", type text}, {"Fornecedor", type text}, {"Tipo do Documento", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

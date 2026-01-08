@@ -1,0 +1,288 @@
+table 'Controle Jornada'
+	lineageTag: 7df4f7fd-5cf3-4eed-8297-38f863828e4c
+
+	measure '(Colaboradores Jornada) Quantidade' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 63bacded-2b17-4806-8d60-38b7fc014552
+
+	measure '(Colaboradores) Afetados' =
+			CALCULATE([Quantidade],
+			'Controle Jornada'[Interjornada] >0)
+		formatString: 0
+		lineageTag: 2fc1e86d-45b9-4439-94d4-1e31895b1a27
+
+	measure '(Ocorrências) Interjornada' = CALCULATE(SUM('Controle Jornada'[Interjornada]))
+		formatString: 0
+		lineageTag: 8f71ff92-bebb-481a-a87a-4ac5ec273895
+
+	measure '(Colaboradores) Hora Extra' =
+			CALCULATE(COUNTROWS(),
+			'Controle Jornada'[HE 70%] <> BLANK())
+		lineageTag: 3513cb1c-2e33-4729-a8c6-c46adc8b0359
+
+		formatStringDefinition =
+				VAR HEXTRA = [(Colaboradores) Hora Extra]
+				
+				VAR TOTAL = [(Colaboradores Jornada) Quantidade]
+				
+				VAR PORC = FORMAT(HEXTRA/TOTAL,"#%")
+				
+				RETURN """" & HEXTRA & " | " &  PORC
+
+	measure '(Extra) Hora' = CALCULATE([(HE 100) Hora] + [(HE 70) Hora])
+		lineageTag: 1e639b6a-c3c9-4874-9191-0e61ba529b64
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure (Porcentagem) = [(Colaboradores) Hora Extra]/[(Colaboradores) Quantidade]
+		lineageTag: 868226ba-799b-459f-804e-b9287bebf305
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(HE 70) Hora' = CALCULATE(SUM('Controle Jornada'[Hora HE 70%]))
+		lineageTag: 79de875d-6dce-4045-a532-be30f56c6525
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(HE 100) Hora' = CALCULATE(SUM('Controle Jornada'[Hora HE 100%]))
+		lineageTag: f5adc1db-94d8-4740-8577-f71fa910ad40
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Total) Custo' = CALCULATE(SUM('Controle Jornada'[Valor Pago HE70%]) + SUM('Controle Jornada'[Valor Pago HE100%]))
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: bb1ae23d-c75c-4ec1-886e-3e51dff650fd
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	measure '(Média) Custo HE por Colaborador' = CALCULATE([(Total) Custo]/[(Colaboradores) Hora Extra])
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 429d8fa8-5053-4835-a9eb-ef95fe31868d
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	column Nome*
+		dataType: string
+		lineageTag: 32e4f6b0-f341-44e9-8cb9-410d5c1d6078
+		summarizeBy: none
+		sourceColumn: Nome*
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modalidade de Contratação*'
+		dataType: string
+		lineageTag: a0d9dc23-ffe0-4f2c-ba79-ef4149035a59
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação*
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF**
+		dataType: string
+		lineageTag: 564065b4-9fb4-4f0c-b342-1097a9a8a60c
+		summarizeBy: none
+		sourceColumn: CPF**
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIS ***'
+		dataType: string
+		lineageTag: 47ec4425-425c-4b5d-8b82-d5988d3ca23b
+		summarizeBy: none
+		sourceColumn: PIS ***
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função*
+		dataType: string
+		lineageTag: 57026c28-2e06-4f5a-b863-cc17af0512e9
+		summarizeBy: none
+		sourceColumn: Função*
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atividades****
+		dataType: string
+		lineageTag: d1c4ef97-c307-4f59-b188-e9a37955b95b
+		summarizeBy: none
+		sourceColumn: Atividades****
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início atividades'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 275905dc-911e-4e22-9dc9-dedd6fee2f59
+		summarizeBy: none
+		sourceColumn: Início atividades
+
+		variation Variation
+			isDefault
+			relationship: e0df5354-fcbd-4b33-bed7-5d1403a2e46d
+			defaultHierarchy: LocalDateTable_5c10d831-c47f-4a52-8d65-27b60b00f8be.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim atividades'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4362a8f1-ac53-4e5c-b661-13c962648c68
+		summarizeBy: none
+		sourceColumn: Fim atividades
+
+		variation Variation
+			isDefault
+			relationship: 2b59d1dc-a6d9-468f-aca0-3cf62a613bd8
+			defaultHierarchy: LocalDateTable_3b8f7b2d-3294-4f2b-818d-8e3935029759.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Salário*
+		dataType: double
+		lineageTag: 93e75fb7-b721-4a5f-a13a-60282af1f3c4
+		summarizeBy: sum
+		sourceColumn: Salário*
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Escala*
+		dataType: string
+		lineageTag: d4dbabe2-d67f-4cbc-ac12-a8ea104eddba
+		summarizeBy: none
+		sourceColumn: Escala*
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada*'
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 9cfeff30-80ce-424e-b51d-d2d83f55df35
+		summarizeBy: none
+		sourceColumn: Início da jornada*
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column 'Término da jornada*'
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: bb742ea5-c42b-49b1-a2bf-462e64508a1f
+		summarizeBy: none
+		sourceColumn: Término da jornada*
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column 'HE 70%'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 64e00075-16dc-4965-a684-feeb01e0ed4a
+		summarizeBy: none
+		sourceColumn: HE 70%
+
+		variation Variation
+			isDefault
+			relationship: 79c7021f-874e-4d5b-8689-3496c388f140
+			defaultHierarchy: LocalDateTable_9bbfbdbf-516f-4b7b-b5c0-6dfd1f66a627.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor Pago HE70%'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: caaa1571-cf08-4da7-adab-0cb5c686421b
+		summarizeBy: sum
+		sourceColumn: Valor Pago HE70%
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	column 'HE 100%'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e1d91144-1d44-4cc0-8950-d9ddfc3fce1f
+		summarizeBy: none
+		sourceColumn: HE 100%
+
+		variation Variation
+			isDefault
+			relationship: 4630a352-f7dc-45a4-87c9-ea29efd94b82
+			defaultHierarchy: LocalDateTable_cc93521a-ed4d-4dc4-8e1c-054705b11000.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor Pago HE100%'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 722b3c16-56d9-4ff5-8213-71c054492d6c
+		summarizeBy: sum
+		sourceColumn: Valor Pago HE100%
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	column Interjornada
+		dataType: int64
+		formatString: 0
+		lineageTag: d8a3649f-75e8-4f81-adf5-aa7dd5312d8b
+		summarizeBy: sum
+		sourceColumn: Interjornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hora HE 70%'
+		dataType: double
+		lineageTag: 5ce5591c-09e1-4ff3-94eb-3e9bfdf104ca
+		summarizeBy: sum
+		sourceColumn: Hora HE 70%
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Hora HE 100%'
+		dataType: double
+		lineageTag: eeefa344-ea66-48d6-85aa-7917cfb91ac0
+		summarizeBy: sum
+		sourceColumn: Hora HE 100%
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Controle Jornada' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Rumo\Controle de Jornada- RUMO.xlsx"), null, true),
+				    Colaboradores_Sheet = Fonte{[Item="Colaboradores",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Colaboradores_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Nome*", type text}, {"Modalidade de Contratação*", type text}, {"CPF**", type text}, {"PIS ***", type text}, {"Função*", type text}, {"Atividades****", type text}, {"Início atividades", type date}, {"Fim atividades", type date}, {"Salário*", type number}, {"Escala*", type text}, {"Início da jornada*", type time}, {"Término da jornada*", type time}, {"HE 70%", type any}, {"Valor Pago HE70%", type any}, {"HE 100%", type any}, {"Valor Pago HE100%", type any}, {"Interjornada", Int64.Type}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"HE 70%", type datetime}}),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado1", {{"HE 70%", null}}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Erros Substituídos",{{"HE 100%", type datetime}}),
+				    #"Erros Substituídos1" = Table.ReplaceErrorValues(#"Tipo Alterado2", {{"HE 100%", null}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Erros Substituídos1", "Hora HE 70%", each Duration.TotalHours([#"HE 70%"] -  #datetime(1899, 12, 31, 0, 0, 0))),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Hora HE 70%", type number}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Tipo Alterado3", "Hora HE 100%", each Duration.TotalHours ([#"HE 100%"] -  #datetime(1899, 12, 31, 0, 0, 0))),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Hora HE 100%", type number}, {"Valor Pago HE70%", type number}, {"Valor Pago HE100%", type number}}),
+				    #"Erros Substituídos2" = Table.ReplaceErrorValues(#"Tipo Alterado4", {{"Valor Pago HE70%", null}}),
+				    #"Erros Substituídos3" = Table.ReplaceErrorValues(#"Erros Substituídos2", {{"Valor Pago HE100%", null}})
+				in
+				    #"Erros Substituídos3"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

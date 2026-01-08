@@ -1,0 +1,406 @@
+table Ocorrências
+	lineageTag: b4549807-28ba-4f6a-aafc-846794201a2c
+
+	measure '(Rescições) Quantidade' =
+			CALCULATE(DISTINCTCOUNT('Ocorrências'[(Rescisão) Contagem]),
+			'Ocorrências'[Rescisão] = "Sim",
+			USERELATIONSHIP('dCalendário'[Date],'Ocorrências'[Data da ocorrência]),
+			USERELATIONSHIP('Status de funcionários'[Razão Social],'Ocorrências'[Razão Social]),
+			USERELATIONSHIP(Contratos[Id_Contrato],'Ocorrências'[Contract_Id]))
+		formatString: #,0
+		lineageTag: d73b0873-1b91-4497-ab87-3681db0796a4
+
+	measure '(Absenteísmo) Quantidade' =
+			CALCULATE(DISTINCTCOUNT('Ocorrências'[(Rescisão) Contagem]),
+			'Ocorrências'[(Absenteísmo) Ocorrência] = "Sim",
+			USERELATIONSHIP('dCalendário'[Date],'Ocorrências'[Data da ocorrência]))
+		formatString: #,0
+		lineageTag: c867df3d-09c2-4da8-b3b1-f7cd33dfd5e2
+
+	measure (%Turnover) =
+			
+			
+			VAR TURN = CALCULATE([(Rescições) Quantidade]/[(Relação) Quantidade Efetivos Ativos],
+			USERELATIONSHIP('dCalendário'[Date],'Status de funcionários'[(Rescisões) Data de Turnover]))
+			
+			VAR EFET = [(Relação) Quantidade Efetivos Ativos]
+			
+			RETURN IF(EFET = 0, BLANK(),TURN)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c4dd97f7-8441-4c08-9cf4-89f7877d2a06
+
+	measure '(Dias) Perdidas' = ```
+			CALCULATE( 
+			SUMX(
+			    DISTINCT('Ocorrências'[(Rescisão) Contagem]),
+			    CALCULATE(MIN('Ocorrências'[(Absenteísmo) Dias de Ocorrência]))
+			),
+			USERELATIONSHIP('dCalendário'[Date],'Ocorrências'[Data da ocorrência]),
+			USERELATIONSHIP('Status de funcionários'[Razão Social],'Ocorrências'[Razão Social]))
+			```
+		formatString: 0
+		lineageTag: 10d8bdf5-d5e0-4191-bf37-29beae006e5f
+
+	measure '(HC Perdidos) Total' = CALCULATE([(Dias) Perdidas]/30)
+		formatString: 0.0
+		lineageTag: 2607d2c3-6d55-414c-b6bd-469c2dff1239
+
+	measure '(HC Perdido) Média' = ```
+			
+			 VAR PERDIDO = [(HC Perdidos) Total]
+			
+			RETURN
+			IF(PERDIDO = 0,
+			BLANK(), PERDIDO)
+			```
+		formatString: #,0
+		lineageTag: f5016001-8ad4-46d2-b6dd-3d762da7ece6
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure '(Média) HC Perdido Total' = AVERAGEX(VALUES('dCalendário'[Date]),[(HC Perdidos) Total])
+		formatString: 0
+		lineageTag: ffa7eb10-3ad6-4201-b662-741249b8b44a
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure (%Absenteísmo) = ```
+			
+			 VAR ABSEN =CALCULATE(([(HC Perdido) Média]/[(Relação) Quantidade Efetivos Ativos]),
+			USERELATIONSHIP('dCalendário'[Date],'Status de funcionários'[Data de Referência]),
+			USERELATIONSHIP('Status de funcionários'[Razão Social],'Ocorrências'[Razão Social]))
+			
+			VAR EFET= [(Relação) Quantidade Efetivos Ativos]
+			
+			RETURN IF(EFET = 0, BLANK(),ABSEN)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9ed175d2-a432-418a-904c-0f56d1ecaca0
+
+	column 'Nome do funcionário'
+		dataType: string
+		lineageTag: 5f341016-cb6c-44b4-a1fb-0fcebe6db18c
+		summarizeBy: none
+		sourceColumn: Nome do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: b038083a-ea13-4c1f-acd1-f52c5dd1f1f7
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor'
+		dataType: string
+		lineageTag: 60831a01-b698-4fd2-b080-9cd83bb0898a
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Distribuidora
+		dataType: string
+		lineageTag: 7fd8b5ac-9835-43ce-a736-8836b30303f6
+		summarizeBy: none
+		sourceColumn: Distribuidora
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do pedido'
+		dataType: string
+		lineageTag: e3f9aae7-d860-4b16-9da4-d45e6c25cde0
+		summarizeBy: none
+		sourceColumn: Número do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de admissão'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5e552a8e-1dc9-48b1-ae8e-13577e9c0330
+		summarizeBy: none
+		sourceColumn: Data de admissão
+
+		variation Variation
+			isDefault
+			relationship: f641f931-cf79-4686-b54f-9fdf2c37ef34
+			defaultHierarchy: LocalDateTable_a67f6874-4b6b-4b37-9579-93affdc06616.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data da ocorrência'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: de3f9d0a-9d5b-41d3-a14a-eab6752b05a4
+		summarizeBy: none
+		sourceColumn: Data da ocorrência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de retorno'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7166a28e-b3d4-4c95-b7ae-ae48a7fd7a53
+		summarizeBy: none
+		sourceColumn: Data de retorno
+
+		variation Variation
+			isDefault
+			relationship: ebb350a2-47a0-493c-96d5-6e8fa2eeeaa9
+			defaultHierarchy: LocalDateTable_7a996b9f-2ea1-4a97-a3cd-c9a8b74d7ba3.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Observação da ocorrência'
+		dataType: string
+		lineageTag: 4df9abde-efb9-4406-a80a-f4eeb3555b2d
+		summarizeBy: none
+		sourceColumn: Observação da ocorrência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rescisão
+		dataType: string
+		lineageTag: 632c37fe-a1c2-4e2b-a86c-c6d5f1d370f2
+		summarizeBy: none
+		sourceColumn: Rescisão
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Rescisão) Dias em Atividade'
+		dataType: int64
+		formatString: 0
+		lineageTag: e4fff758-24cf-4a40-8e14-47728ddfc654
+		summarizeBy: sum
+		sourceColumn: (Rescisão) Dias em Atividade
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Meses em Atividade'
+		dataType: string
+		lineageTag: 8a344a20-d480-4fe3-b47b-845343b591db
+		summarizeBy: none
+		sourceColumn: Meses em Atividade
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Rescisão) Faixa de Atividade'
+		dataType: string
+		lineageTag: 64190800-6913-41f0-93ae-9da8b1cf2164
+		summarizeBy: none
+		sourceColumn: (Rescisão) Faixa de Atividade
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Rescisão) Motivo'
+		dataType: string
+		lineageTag: c7b6fce4-7db8-4c4c-bb50-3c00a8299c11
+		summarizeBy: none
+		sourceColumn: (Rescisão) Motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Absenteísmo) Ocorrência'
+		dataType: string
+		lineageTag: 00c10e61-fef9-45ea-9df9-32b58f7dbb99
+		summarizeBy: none
+		sourceColumn: (Absenteísmo) Ocorrência
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Absenteísmo) Dias de Ocorrência'
+		dataType: int64
+		formatString: #,0
+		lineageTag: a51bd459-0784-4282-be00-a48b35795d04
+		summarizeBy: sum
+		sourceColumn: (Absenteísmo) Dias de Ocorrência
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Movimentações'
+		dataType: string
+		lineageTag: 86601eda-b2f8-4c68-8482-684b87b4f253
+		summarizeBy: none
+		sourceColumn: Chave Movimentações
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Rescisão) Contagem'
+		dataType: string
+		lineageTag: 88eedb8f-5672-4410-b9c9-ae111137a610
+		summarizeBy: none
+		sourceColumn: (Rescisão) Contagem
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 4c6cdf24-d42c-4492-92f9-d3e458a5c5b1
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Motivo'
+		dataType: string
+		lineageTag: 83b06fd5-dc59-47bf-9342-4f25d9d6052c
+		summarizeBy: none
+		sourceColumn: Chave Motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Status'
+		dataType: string
+		lineageTag: 1f7ac5ff-6275-4511-869f-4ea230844f5b
+		summarizeBy: none
+		sourceColumn: Chave Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Equatorial.Status'
+		dataType: string
+		lineageTag: 3714365e-e991-441d-95d2-4df014005c9a
+		summarizeBy: none
+		sourceColumn: Status Equatorial.Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo  ocorrência'
+		dataType: string
+		lineageTag: ea78e0e6-669e-41b3-8ff1-46edb66a8e44
+		summarizeBy: none
+		sourceColumn: Tipo  ocorrência
+
+		annotation SummarizationSetBy = Automatic
+
+	column OccurrenceId
+		dataType: string
+		lineageTag: 5a9b56ff-772e-4210-83bc-f64c6de063b5
+		summarizeBy: none
+		sourceColumn: OccurrenceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contract_Id
+		dataType: string
+		lineageTag: e12981bd-3fa9-4e8e-8dde-6be52daf9e5a
+		summarizeBy: none
+		sourceColumn: Contract_Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 09ec7e25-c295-4356-990a-388ef53248fc
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 7e2fb088-431c-443c-9549-4652a55cdc0a
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de ocorrência'
+		dataType: string
+		lineageTag: 460848cd-b200-476c-a696-85aac65af38e
+		summarizeBy: none
+		sourceColumn: Tipo de ocorrência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: b65155f0-958f-45e5-b7bc-6b840706f679
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Ocorrências = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @__organization_Id_0 uniqueIdentifier = '41cacafc-2823-4a1a-a0db-381a24eb9014';#(lf)DECLARE @currentDate datetime2 = '2025-11-25 23:59:59'#(lf)SELECT#(lf)    [e].[Id] AS [OccurrenceId],#(lf)    [e0].[Name] AS [Nome do funcionário],#(lf)    dbo.FNCPFMask([e0].[CpfNumber]) AS [CPF],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    [b].[CompanyName] AS [Razão Social],#(lf)    dbo.FNCNPJMask([b].[Document]) AS [CNPJ Fornecedor],#(lf)    [b0].[TradeName] AS [Unidade],#(lf)    [c].[OrderNumber] AS [Número do pedido],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)#(tab)#(tab)WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)#(tab)#(tab)ELSE 'Vigente'#(lf)#(tab)END AS 'Vigência de Contrato',#(lf)    CASE [e].[OccurrenceKind]#(lf)#(tab)#(tab)WHEN 1 THEN 'Rescisão sem justa causa'#(lf)#(tab)#(tab)WHEN 2 THEN 'Adoecimento'#(lf)#(tab)#(tab)WHEN 3 THEN 'Falecimento'#(lf)#(tab)#(tab)WHEN 4 THEN 'Acidente de trabalho'#(lf)#(tab)#(tab)WHEN 5 THEN 'Férias'#(lf)#(tab)#(tab)WHEN 6 THEN 'Licença Maternidade'#(lf)#(tab)#(tab)WHEN 7 THEN 'Licença Paternidade'#(lf)#(tab)#(tab)WHEN 8 THEN 'Casamento'#(lf)#(tab)#(tab)WHEN 9 THEN 'Transferência'#(lf)#(tab)#(tab)WHEN 10 THEN 'Mudança de regime estatutário'#(lf)#(tab)#(tab)WHEN 11 THEN 'Serviço militar'#(lf)#(tab)#(tab)WHEN 12 THEN 'Aposentadoria'#(lf)#(tab)#(tab)WHEN 13 THEN 'Novos Colaboradores'#(lf)#(tab)#(tab)WHEN 14 THEN 'Funcionário Estrangeiro'#(lf)#(tab)#(tab)WHEN 15 THEN 'Encerramento do contrato'#(lf)#(tab)#(tab)WHEN 16 THEN 'Recisão por justa causa'#(lf)#(tab)#(tab)WHEN 17 THEN 'Recisão por iniciativa do empregado'#(lf)#(tab)#(tab)WHEN 18 THEN 'Afastamento (Justificado)'#(lf)#(tab)#(tab)WHEN 19 THEN 'Afastamento (Injustificado)'#(lf)#(tab)#(tab)WHEN 20 THEN 'Licença Remunerada'#(lf)#(tab)#(tab)WHEN 21 THEN 'Reclusão'#(lf)#(tab)#(tab)WHEN 22 THEN 'Mandato Eleitoral'#(lf)#(tab)#(tab)WHEN 23 THEN 'Licença Não Remunerada'#(lf)#(tab)#(tab)WHEN 24 THEN 'Situações Legais ou Específicas'#(lf)#(tab)#(tab)WHEN 25 THEN 'Afastamento'#(lf)#(tab)#(tab)WHEN 26 THEN 'Suspensões e Impedimentos'#(lf)#(tab)#(tab)WHEN 27 THEN 'Trabalhador Avulso'#(lf)#(tab)#(tab)WHEN 28 THEN 'Rescisão Jovem Aprendiz'#(lf)#(tab)#(tab)WHEN 29 THEN 'Reintegração'#(lf)#(tab)#(tab)WHEN 30 THEN 'Qualificação'#(lf)#(tab)#(tab)ELSE 'Desconhecido'#(lf)#(tab)END AS [Tipo de ocorrência],#(lf)    FORMAT([e].[AdmissionDate], 'dd/MM/yy') AS [Data de admissão],#(lf)    FORMAT([e].[OccurrenceDate], 'dd/MM/yy') AS [Data da ocorrência],#(lf)    FORMAT([e].[ExpectedReturnAt], 'dd/MM/yy') AS [Data de retorno] ,#(lf)    [e].[OccurrenceObservation] AS [Observação da ocorrência],#(lf)    [c].Id AS [Contract_Id]#(lf)#(tab)#(lf)FROM#(lf)    [EmployeeRegisterOccurrence] AS [e] WITH (NOLOCK)#(lf)    INNER JOIN [Contract] AS [c] WITH (NOLOCK) ON [e].[ContractId] = [c].[Id]#(lf)    INNER JOIN [EmployeeRegister] AS [e0] WITH (NOLOCK) ON [e].[EmployeeRegisterId] = [e0].[Id]#(lf)    LEFT JOIN [Provider] AS [p] WITH (NOLOCK) ON [c].[ProviderId] = [p].[Id]#(lf)    INNER JOIN [BranchCompany] AS [b] WITH (NOLOCK) ON [c].[BranchCompanyId] = [b].[Id]#(lf)    INNER JOIN [Building] AS [b0] WITH (NOLOCK) ON [c].[BuildingId] = [b0].[Id]#(lf)WHERE#(lf)    [e].[Removed] = 0#(lf)    AND [e].[Removed] = 0#(lf)    AND [c].[OrganizationId] = @__organization_Id_0#(lf)    AND [c].[IsMedia] = 0#(lf)    and [e].CreatedAt <= @currentDate #(lf)#(tab)and [e].[OccurrenceDate] <= @currentDate#(lf)#(lf)#(lf)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Nome do funcionário", type text}, {"CPF", type text}, {"Fornecedor", type text}, {"CNPJ Fornecedor", type text}, {"Unidade", type text}, {"Número do pedido", type text}, {"Tipo de ocorrência", type text}, {"Data de admissão", type date}, {"Data da ocorrência", type date}, {"Data de retorno", type text}, {"Observação da ocorrência", type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado1","---","",Replacer.ReplaceText,{"Data de retorno"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Valor Substituído",{{"Data de retorno", type date}}),
+				    #"Valor Substituído4" = Table.ReplaceValue(#"Tipo Alterado2","NULL","",Replacer.ReplaceText,{"Observação da ocorrência"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Valor Substituído4", "CPF", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"CPF.1", "CPF.2", "CPF.3", "CPF.4", "CPF.5"}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Dividir Coluna por Delimitador",{"CPF.2", "CPF.3", "CPF.4", "CPF.5"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Colunas Removidas",{{"CPF.1", "CPF"}}),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Colunas Renomeadas2", "Índice", 1, 1, Int64.Type),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Índice Adicionado", "Rescisão", each if Text.Contains([Tipo de ocorrência], "Recisão") then "Sim" else if Text.Contains([Tipo de ocorrência], "Rescisão") then "Sim" else "Não"),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Coluna Condicional Adicionada", "(Rescisão) Dias em Atividade", each if [Rescisão] = "Sim" then Duration.Days([Data da ocorrência] - [Data de admissão]) else null),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "Meses em Atividade", each if [Rescisão] = "Sim" then
+				    (Date.Year([Data da ocorrência]) - Date.Year([Data de admissão])) * 12 +
+				    (Date.Month([Data da ocorrência]) - Date.Month([Data de admissão]))
+				else null),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "(Rescisão) Faixa de Atividade", each if [Rescisão] = "Sim" then
+				
+				if [Meses em Atividade] < 1 then "Menos de 1 mês" 
+				else if [Meses em Atividade] <= 2 then "1-2 meses" 
+				else if [Meses em Atividade] <= 4 then "2-4 meses" 
+				else if [Meses em Atividade] <= 8 then "4-8 meses" 
+				else if [Meses em Atividade] <= 12 then "8-12 meses" 
+				else if [Meses em Atividade] <= 24 then "1-2 anos" 
+				else if [Meses em Atividade] <= 36 then "2-3 anos" 
+				else if [Meses em Atividade] <= 60 then "3-5 anos"  
+				else "Mais 5 Anos"
+				
+				else null),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Personalização Adicionada2", "(Rescisão) Motivo", each if Text.Contains([Tipo de ocorrência], "por iniciativa do empregado") then "Iniciativo do Empregado" else if Text.Contains([Tipo de ocorrência], "sem justa causa") then "Sem Justa Causa" else if Text.Contains([Tipo de ocorrência], "por justa causa") then "Com Justa Causa" else if Text.Contains([Tipo de ocorrência], "Jovem Aprendiz") then "Jovem Aprendiz" else if Text.Contains([Tipo de ocorrência], "Rescisão por término do contrato a termo") then "Término do Contrato" else if Text.Contains([Tipo de ocorrência], "acordo") then "Acordo" else if Text.Contains([Tipo de ocorrência], "Recisão") then "R/S" else if Text.Contains([Tipo de ocorrência], "Rescisão") then "R/S" else null),
+				    #"Coluna Condicional Adicionada2" = Table.AddColumn(#"Coluna Condicional Adicionada1", "(Absenteísmo) Ocorrência", each if Text.Contains([Tipo de ocorrência], "Acidente") then "Sim" else if Text.Contains([Tipo de ocorrência], "Adoecimento") then "Sim" else if Text.Contains([Tipo de ocorrência], "Maternidade") then "Sim" else if Text.Contains([Tipo de ocorrência], "Reclusão") then "Sim" else null),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Coluna Condicional Adicionada2", "(Absenteísmo) Dias de Ocorrência", each if [#"(Absenteísmo) Ocorrência"] = "Sim" then
+				    if [Data de retorno] <> null then
+				        if [Data de retorno] >= [Data da ocorrência] then
+				            Duration.Days([Data de retorno] - [Data da ocorrência])
+				        else
+				            Duration.Days([Data da ocorrência] - [Data de retorno])
+				    else
+				        Duration.Days(Date.From(DateTime.LocalNow()) - [Data da ocorrência])
+				else
+				    null),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Personalização Adicionada3", "Chave Movimentações", each Text.Combine({[Fornecedor], [Unidade], [Nome do funcionário]}, ""), type text),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Coluna Mesclada Inserida", "(Rescisão) Contagem", each Text.Combine({[Nome do funcionário], Text.From([Data da ocorrência], "pt-BR"), Text.From([Data de admissão], "pt-BR"), [Tipo de ocorrência]}, ""), type text),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Mesclada Inserida1", each [Data da ocorrência] >= #date(2024, 12, 1)),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Linhas Filtradas","/","",Replacer.ReplaceText,{"CNPJ Fornecedor"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1",".","",Replacer.ReplaceText,{"CNPJ Fornecedor"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","-","",Replacer.ReplaceText,{"CNPJ Fornecedor"}),
+				    #"Coluna Mesclada Inserida2" = Table.AddColumn(#"Valor Substituído3", "Chave Motivo", each Text.Combine({[CNPJ Fornecedor], [Unidade], [CPF]}, ""), type text),
+				    #"Coluna Mesclada Inserida3" = Table.AddColumn(#"Coluna Mesclada Inserida2", "Chave Status", each Text.Combine({[CPF], [CNPJ Fornecedor]}, ""), type text),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Coluna Mesclada Inserida3",{{"Unidade", "Distribuidora"}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Colunas Renomeadas", {"Tipo de ocorrência"}, #"Status Equatorial", {"Motivo"}, "Status Equatorial", JoinKind.LeftOuter),
+				    #"Status Equatorial Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Status Equatorial", {"Status"}, {"Status Equatorial.Status"}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Status Equatorial Expandido", "Tipo ", each if [Status Equatorial.Status] = null then  [Tipo de ocorrência] else [Status Equatorial.Status]),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Personalização Adicionada4",{{"Tipo ", "Tipo  ocorrência"}}),
+				    #"Colunas Reordenadas" = Table.ReorderColumns(#"Colunas Renomeadas1",{"OccurrenceId", "Nome do funcionário", "CPF", "Fornecedor", "Razão Social", "CNPJ Fornecedor", "Distribuidora", "Número do pedido", "Data de admissão", "Data da ocorrência", "Data de retorno", "Observação da ocorrência", "Contract_Id",  "Tipo de ocorrência", "Rescisão", "(Rescisão) Dias em Atividade", "Meses em Atividade", "(Rescisão) Faixa de Atividade", "(Rescisão) Motivo", "(Absenteísmo) Ocorrência", "(Absenteísmo) Dias de Ocorrência", "Chave Movimentações", "(Rescisão) Contagem", "Chave Motivo", "Chave Status", "Status Equatorial.Status", "Tipo  ocorrência", "Índice"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Colunas Reordenadas",{{"Índice", Order.Ascending}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Classificadas", {"Índice"})
+				in
+				    #"Duplicatas Removidas"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

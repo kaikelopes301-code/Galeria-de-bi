@@ -1,0 +1,69 @@
+table Referência
+	lineageTag: ab8f6438-c286-4ca3-b444-36581927c57a
+
+	column Column1
+		dataType: string
+		lineageTag: 015bbeb1-ebf9-460d-a03d-6b7a661d14f2
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: 9389e998-570f-4003-ad29-af108f53cba4
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: 3da08f15-3d8f-4cf2-999f-7ae12d303c95
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: 4d0c847b-edd4-44d6-9da0-6ed712c4bbed
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atributo
+		dataType: string
+		lineageTag: 126b6fa8-c929-4e19-ac50-0154295d54ad
+		summarizeBy: none
+		sourceColumn: Atributo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: string
+		lineageTag: 53ba51dd-e11d-45a1-be81-1c262aec1dc2
+		summarizeBy: none
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Referência = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\EDF\afm_gestao_report_documentos_16_21_03_05_2024.xlsx"), null, true),
+				    #"Entrega de documentos_Sheet" = Fonte{[Item="Entrega de documentos",Kind="Sheet"]}[Data],
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Entrega de documentos_Sheet",{"Column1"}),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Colunas Removidas",13),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Cabeçalhos Promovidos1", {"Column1", "Column2", "Column3", "Column4"}, "Atributo", "Valor"),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Colunas Não Dinâmicas", each ([Valor] = "Boleto" or [Valor] = "C. Pgto" or [Valor] = "RE"))
+				in
+				    #"Linhas Filtradas1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

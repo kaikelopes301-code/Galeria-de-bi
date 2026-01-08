@@ -1,0 +1,19 @@
+expression 'Valor de Contrato' =
+		let
+		     Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Equatorial\03 - Risco\03. Valores de Contratos\Valor Contrato Atlas.xlsx"), null, true),
+		    Ocorrências_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Ocorrências_Sheet, [PromoteAllScalars=true]),
+		    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+		    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Linhas em Branco Removidas", {{"R$ - MÉDIA REAL", 0}}),
+		    #"Linhas Classificadas" = Table.Sort(#"Erros Substituídos",{{"N° do pedido", Order.Ascending}}),
+		    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas Classificadas", "Mesclado", each Text.Combine({[Fornecedor], [Unidade]}, ""), type text),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"N° do pedido", type text}}),
+		    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Personalizar", each Text.PadStart(Text.From([#"N° do pedido"]), 5, "0"))
+		in
+		    #"Personalização Adicionada"
+	lineageTag: f1e32360-e8b9-431e-ac51-59dd5ec08b4f
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

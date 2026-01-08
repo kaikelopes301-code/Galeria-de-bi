@@ -1,0 +1,296 @@
+table Export
+	lineageTag: ef90d7db-3623-4051-9152-f3d8d1446103
+
+	measure 'Risco Total' = SUM('Export'[Risco FGTS]) + SUM('Export'[Risco INSS]) + SUM('Export'[Risco Salários])
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 517ccf04-d0a7-4329-87a8-e0d195dfaa91
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column Fornecedor
+		dataType: string
+		lineageTag: cbb8967b-15b9-4421-a47e-317b32f6c4e2
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 422d46af-0bcf-4def-8b35-ef6a143d7be7
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 2e38bf41-053b-486c-b7b1-1189c4a9583d
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: 8b9df180-a14c-412a-a21a-3e7521584c67
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 33948c89-2816-49d9-8281-7bfee6ffdb8d
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 07c2337b-9dec-40c5-9f3e-b0ada59c3293
+			defaultHierarchy: LocalDateTable_78eb2d78-a32c-43a6-9d93-d35b67915e36.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 9470fa0c-3f75-43df-8d88-9965c9501972
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: c01828de-1ac5-4d1a-9111-a420aeb3a430
+			defaultHierarchy: LocalDateTable_24213d07-0032-4124-af28-f0eb66fb1b3f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Competência
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: affbfe81-5f5d-446f-a7a2-bb9f6d15e05b
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 434a3468-76cd-4202-a801-5cd83e460f09
+			defaultHierarchy: LocalDateTable_cde6dd4d-55d8-40ed-8bb0-a9799a57d283.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Risco FGTS'
+		dataType: decimal
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: eb2066c3-e726-4d73-ac91-768134ebf169
+		summarizeBy: sum
+		sourceColumn: Risco FGTS
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Risco INSS'
+		dataType: decimal
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: 9dfc6bab-3c2c-4d3c-a6ba-13359f8f611e
+		summarizeBy: sum
+		sourceColumn: Risco INSS
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Risco Salários'
+		dataType: decimal
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: b72778ae-76a3-4a5c-9fe9-5d00ce468ff2
+		summarizeBy: sum
+		sourceColumn: Risco Salários
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 2784d7f2-2276-4a56-8bc4-afd5e69852a8
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 0c505597-9c68-4394-8cfb-15d4dea146c6
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 2054490f-f5b1-4298-962e-4b77690f7177
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência na Competência'
+		dataType: string
+		lineageTag: 34c08432-393d-41db-926d-768e6c0b3530
+		summarizeBy: none
+		sourceColumn: Vigência na Competência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: 917ee15b-fb8e-46d5-b610-f86f24723cd2
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Efetivos FGTS Digital'
+		dataType: double
+		lineageTag: 07c8c71a-f566-41c1-ad74-25b212986383
+		summarizeBy: sum
+		sourceColumn: Efetivos FGTS Digital
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Efetivos Ativos'
+		dataType: int64
+		formatString: 0
+		lineageTag: fe8421f0-b8af-46b6-a827-60ae39279ce2
+		summarizeBy: sum
+		sourceColumn: Efetivos Ativos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor Contrato'
+		dataType: decimal
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: 2244a9b1-c2c3-41a6-868d-a904981a78f7
+		summarizeBy: sum
+		sourceColumn: Valor Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Valor da Folha'
+		dataType: decimal
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: 6b46e446-63e3-4630-8cf8-542c8fb70e6c
+		summarizeBy: sum
+		sourceColumn: Valor da Folha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'FGTS Agendados'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a2c5db4-a84f-4dd1-ad9f-06fa38e58f81
+		summarizeBy: sum
+		sourceColumn: FGTS Agendados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FGTS Aprovados'
+		dataType: int64
+		formatString: 0
+		lineageTag: 24baf569-ab23-4fac-9b6a-f400fa555729
+		summarizeBy: sum
+		sourceColumn: FGTS Aprovados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INSS Agendados'
+		dataType: int64
+		formatString: 0
+		lineageTag: d17cc917-0ad2-4f7e-be08-4af0b6128fb4
+		summarizeBy: sum
+		sourceColumn: INSS Agendados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INSS Aprovados'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c734850-8dd6-493e-bbf7-004d4d4bc208
+		summarizeBy: sum
+		sourceColumn: INSS Aprovados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Salários Agendados'
+		dataType: int64
+		formatString: 0
+		lineageTag: 03c33c5a-4a23-4f0c-aba9-c854eb1590b0
+		summarizeBy: sum
+		sourceColumn: Salários Agendados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Salários Aprovados'
+		dataType: int64
+		formatString: 0
+		lineageTag: a77ca0c9-12a3-452d-b1cf-54a5c7154ffc
+		summarizeBy: sum
+		sourceColumn: Salários Aprovados
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' Risco Total '
+		dataType: string
+		lineageTag: 46ed7d24-3e4e-4f75-b447-87ca8f2f8b60
+		summarizeBy: none
+		sourceColumn: " Risco Total "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Motivo de Pendência'
+		dataType: string
+		lineageTag: 6bcd7ffd-7575-4faa-83ab-a54facd55020
+		summarizeBy: none
+		sourceColumn: Motivo de Pendência
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Export = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Equatorial\01  - Power BI\2025\12 - Dezembro\2ª Janela\Relatorio de Risco Trabalhista Acumulado - Dezembro Janela 02.xlsx"), null, true),
+				    Export_Sheet = Fonte{[Item="DASHBOARD GERAL DE RISCO",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Export_Sheet, [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas1" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Linhas em Branco Removidas1",4),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos1",{{"Vigência Inicial", type date}, {"Vigência Final", type date}, {"Competência", type date}, {"Efetivos FGTS Digital", type number}, {"Efetivos Ativos", Int64.Type}, {"Valor Contrato", Currency.Type}, {"Valor da Folha", Currency.Type}, {"FGTS Agendados", Int64.Type}, {"FGTS Aprovados", Int64.Type}, {"INSS Agendados", Int64.Type}, {"INSS Aprovados", Int64.Type}, {"Salários Agendados", Int64.Type}, {"Salários Aprovados", Int64.Type}}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Tipo Alterado",{{"Risco INSS", Currency.Type}, {"Risco Salários", Currency.Type}, {"Risco FGTS", Currency.Type}}),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado1", {{"Risco FGTS", null}}),
+				    #"Erros Substituídos1" = Table.ReplaceErrorValues(#"Erros Substituídos", {{"Risco INSS", null}}),
+				    #"Erros Substituídos2" = Table.ReplaceErrorValues(#"Erros Substituídos1", {{"Risco Salários", null}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Erros Substituídos2", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+				in
+				    #"Linhas em Branco Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

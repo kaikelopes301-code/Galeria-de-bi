@@ -1,0 +1,198 @@
+table 'SLA''S e HCAPS'
+	lineageTag: 36f90b1c-cfb8-4635-a451-a09c4a837f3f
+
+	measure 'Quantidade de linhas' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 309e92e3-49ef-46f9-8b81-64d41997a442
+
+	measure SLA = ```
+			
+			    CALCULATE(AVERAGE('SLA''S e HCAPS'[Status]),
+			    'SLA''S e HCAPS'[Tipo] = "SLA")
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e5c11376-de03-4f9e-84e4-da716916bdcf
+
+	measure HCAPS =
+			CALCULATE(MEDIAN('SLA''S e HCAPS'[Status]),
+			'SLA''S e HCAPS'[Tipo] = "HCAPS")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: b8a445fc-b82f-45cf-aeef-957e04cb2d62
+
+	measure Desconto =
+			CALCULATE(
+			SWITCH(TRUE(),
+			'SLA''S e HCAPS'[(SLA)]=BLANK(),0,
+			'SLA''S e HCAPS'[(SLA)]<0.75,1.025,
+			'SLA''S e HCAPS'[(SLA)]<0.80,1.015,
+			'SLA''S e HCAPS'[(SLA)]<0.85,1.005,
+			'SLA''S e HCAPS'[(SLA)]<=1,1.000))
+		lineageTag: 56b18c1f-0fd7-4f0f-8e2a-7272b446fc96
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Multa) Prática' =
+			
+			SUMX(
+			    'SLA''S e HCAPS',
+			    ([Desconto] - 1) * 'SLA''S e HCAPS'[VALOR FIXO]
+			)
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 6730ee10-a8aa-49a0-bd13-cfeef7aff321
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure (SLA) = ```
+			
+			    CALCULATE(AVERAGEX(VALUES('SLA''S e HCAPS'[Chave Compe]),AVERAGE('SLA''S e HCAPS'[Status])),
+			    'SLA''S e HCAPS'[Tipo] = "SLA")
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c40c353b-f8e0-4c7d-a491-c5593d7d2171
+
+	measure '(Multa) Mensal' = ([Desconto]-1)*SUM('HC Mês a Mês'[VALOR FIXO Na Prática])
+		lineageTag: 478a3385-20e4-4048-be74-86dbb5c2be95
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Medida = SUMX(VALUES('SLA''S e HCAPS'[Chave Compe]),SUM('SLA''S e HCAPS'[VALOR FIXO]))
+		lineageTag: 4913b7d1-ad97-4b55-bc6d-d803c24ee940
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(SLA) Calculo' = [(Multa) Prática]/(SUM('SLA''S e HCAPS'[VALOR FIXO]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: ae16e582-f139-400c-a19d-2474128effcb
+
+	measure (Relação) = ```
+			CALCULATE( 
+			SUMX(
+			    'SLA''S e HCAPS',
+			    ([Desconto] - 1) * 'SLA''S e HCAPS'[VALOR FIXO]
+			),
+			USERELATIONSHIP('Chave Tabela'[Fornecedor],'SLA''S e HCAPS'[FORNECEDOR]))
+			```
+		lineageTag: 49754a16-169d-4b81-89d8-e0a38f91009d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UNIDADE
+		dataType: string
+		lineageTag: c6ed9df8-8ef0-459f-9d82-5a24cf0ce86b
+		summarizeBy: none
+		sourceColumn: UNIDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column FORNECEDOR
+		dataType: string
+		lineageTag: 3e2136c3-38cb-4d9a-ae67-bde678dbaa8d
+		summarizeBy: none
+		sourceColumn: FORNECEDOR
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: f778933f-1a5d-46ce-bea3-87fdc2e73e7e
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a05057e5-f2ea-456b-a5c1-4e2f22d15ffa
+		summarizeBy: sum
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Classificação
+		dataType: string
+		lineageTag: 90a044a4-90ff-46c8-9391-0915baa68047
+		summarizeBy: none
+		sourceColumn: Classificação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Compe' = CONCATENATE('SLA''S e HCAPS'[Chave],'SLA''S e HCAPS'[Competência])
+		lineageTag: 8511e6a3-e266-4669-a425-0f5bee241aad
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'VALOR FIXO' =
+			CALCULATE(VALUES('HC Mês a Mês'[VALOR FIXO Na Prática]),
+			USERELATIONSHIP('SLA''S e HCAPS'[Chave Compe],'HC Mês a Mês'[Chave COmpotência]))
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: b71b5aff-1bc0-445e-b7f1-c94b85ec9c5e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dac0a693-fbe0-48af-9be5-6e066a61be92
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Indice
+		dataType: int64
+		formatString: 0
+		lineageTag: 33b1ffcf-e56a-40ad-a5aa-37920016c0fb
+		summarizeBy: sum
+		sourceColumn: Indice
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESTADO
+		dataType: string
+		lineageTag: 525a09b9-b99b-4447-9778-6126235e3032
+		summarizeBy: none
+		sourceColumn: ESTADO
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: 0f713af5-0db5-40f0-9c58-9b7a5a807c37
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SLA''S e HCAPS' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\CLIENTES\REDE D'OR\06. Relatórios\Relatório Power BI\2025\07 - Julho\SLA e HCAPS.xlsx"), null, true),
+				    #"SLA'S e HCAPS_Sheet" = Fonte{[Item="SLA'S e HCAPS",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"SLA'S e HCAPS_Sheet", [PromoteAllScalars=true]),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Cabeçalhos Promovidos",{{"REGIONAL", "ESTADO"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas1",{ {"ESTADO", type text}, {"UNIDADE", type text}, {"FORNECEDOR", type text}, {"Competência", type date}, {"Status", Percentage.Type}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Classificação", each if [Status] = 0 then "N/A" else if [Status] <= 0.5 then "Crítica" else if [Status] < 0.7 then "Aperfeiçoamento" else if [Status] < 0.85 then "Qualidade" else if [Status] <= 1 then "Exelente" else "Sem dados"),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Personalização Adicionada", "Personalizar", each if [Tipo] = "SLA" then 1 else 0),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Coluna Condicional Adicionada",{{"Personalizar", "Indice"}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Renomeadas",null,0,Replacer.ReplaceValue,{"Status"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Valor Substituído",{{"Indice", Int64.Type}, {"Status", Percentage.Type}}),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado1", {{"Classificação", "Nulo"}}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Erros Substituídos", each true),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Linhas Filtradas", each true),
+				    #"Linhas Filtradas2" = Table.SelectRows(#"Linhas Filtradas1", each [Competência] > #date(2023, 12, 31)),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Linhas Filtradas2", "Chave", each [UNIDADE] & " Limpeza " & [FORNECEDOR])
+				in
+				    #"Personalização Adicionada1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

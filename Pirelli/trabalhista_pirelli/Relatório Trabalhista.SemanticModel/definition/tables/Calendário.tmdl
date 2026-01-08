@@ -1,0 +1,23 @@
+table Calendário
+	lineageTag: 7706b24d-f3b6-4f47-ae97-46f4df5a49ff
+
+	column Date
+		formatString: General Date
+		lineageTag: e8ab85e5-3f42-4e63-a162-2abbbbce6a6d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 1539d58e-f974-47c4-a071-22ff359f0f53
+			defaultHierarchy: LocalDateTable_96eecd1d-9679-4109-bf80-38533dc24553.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2022,01,01),EOMONTH(TODAY(),0))
+
+	annotation PBI_Id = a4e706f5d1494929bdff2152b5eade8f
+

@@ -1,0 +1,37 @@
+expression 'Validação de Documentação' =
+		let
+		    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao", [Query="select * from DocumentValidationSla where Cliente like '%PUC%'"]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Id_Cliente", type text}, {"Cliente", type text}, {"Id_Fornecedor", type text}, {"Fornecedor", type text}, {"Funcionario", type text}, {"Id_Documento", type text}, {"Nome_Documento", type text}, {"Tipo", type text}, {"Id_Pedido", type text}, {"Numero_Pedido", type text}, {"Data_Cadastro_Pedido", type date}, {"Hora_Cadastro_Pedido", type datetime}, {"Prazo_Envio", type date}, {"Data_Envio", type date}, {"Hora_Envio", type datetime}, {"Data_Analise", type date}, {"Hora_Analise", type datetime}, {"Foi_Aprovado", type text}, {"Id_Analista", type text}, {"Analisado_Por", type text}, {"Status_Documentacao", type text}, {"Perfil", type text}, {"Observacao_Cliente", type any}, {"Observacao_Fornecedor", type any}}),
+		    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado", each ([Cliente] = "PUC-Rio")),
+		    #"Colunas Removidas" = Table.RemoveColumns(#"Linhas Filtradas",{"Funcionario", "Id_Pedido"}),
+		    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Colunas Removidas",{{"Numero_Pedido", type text}}),
+		    #"Colunas Removidas1" = Table.RemoveColumns(#"Tipo Alterado1",{"Id_Analista"}),
+		    #"Personalização Adicionada" = Table.AddColumn(#"Colunas Removidas1", "Competência", each Date.AddMonths([Prazo_Envio],-1)),
+		    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}}),
+		    #"Linhas Filtradas1" = Table.SelectRows(#"Tipo Alterado2", each true)
+		in
+		    #"Linhas Filtradas1"
+	lineageTag: 44cd3055-8100-481d-a17f-c555a881f53d
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+
+expression Referência =
+		let
+		    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("7Vhda+NGFP0rwhDYgrarmdF8KG9u6t02JPbi2KF0yYOwhRE4UurYUPpzug9LC31q/4H/WEfSnLE00xK3G9Zr1iDIyZnRzL1zz7135Hfver3wqJ678GTyJzN5nC3T9fbPVV4GL4O32WqWFetNmj8G8yzIilm6WpSPhzf2S4jEMT1WPIu8LNLli/zxq/NgUs7TY9TKtMjn6Tx7ccw+vC5XRTbL5uUKbrTSVqf19g/NnB/e3H39uUjX2aJc5ek/RCUir/RDI0qDNGD6H1b9Ex/e9n2dO6bneE2elOt02W5jQTrb3G+WqU6N80Dwr5M4ODu8tR8Visv+8BWlbfB6cOuA6/7YAf1vXHDd/94Bl9OhB64c0H8zcsDNYOKA0dQFw9GtA74d/OiA2h3WBrU7HVC70wG1Ox1Qu9MBtTsOuHJA7U4H1O50QO1OB9TudEDtTgfU7sRtULvTAbU7LeD02p5tWL122e+1amZlQxncb3+vamYfoj+xJ/Z/sxCh/kzQFfUyLbJ8Vc19O714qclKfYPhpD8djzS8zRf5cvtrMaulKFiYxGcuiACYx5BnYj4HEIeEg6Eewz1GeIzqMnEYEY9hHhN7jPSYxGUI9RjW7ZBPy2Dww8XoWv+9yRabVVpsP6TBYJmtV9u/inxWyYEnoar3+QKBjMK4OfUoVHFnqGKIy0jhMdRlROIx3luCeYy/TiMrYV4XJGS8O0czzGMoBPK0NHRfnAwuvqvEsXkoV+ssmGx/m2lZlMHgp03+kN5nxXrvXxt0bsRItn8D+888AffcPnU8D/k87etNOc9+rkB/mVdupdsP2/elK0md3uSsAwiKs07dBtBQMTMUN5mWmBzWxy9Y93U9WRkQcQME1kkABHffYpFheITXsbKIzO67zAcjMVmiBMimj3BsQUMCB43NemVh5hhAQyqNOyTu7qVgBg3jekiSkOJKYLsPRe8z64hdc5fodMr2WWXsMa3T3jEkvIhDjt5H0TqbU/2Pob/K7x+yX9ImZMZsC3goldmXic4ueihmZsgy5vQ4AsQRVoGzsgsqc1Z6qOnLKsJdwg7xUHGcMDeGmZWVsVD3HoE5AmZIrGOqvww5MYwSZlPDJGblqocp6BZvRREYAA5tmwBpv6RhzMraeJiqAChsbnqhtFpSKFESKyuYoXfHQVnlmL2kdy2UYWwvOTCeJh8nBr2UvbYhFxgkJ3F/i3GnarKeEIJCEO8uedxOSmCuRHbBycTmJE6WMoTTDpFugHUUMTmC2wmGGLRIcAUwhUliSAcP9hh1StP5tT0MJysAiM32BOGE8mQCWVhVQZ12SOAtYhVjI/Q81Xwy7g9vBm+m4573sWLLcwsI1GDJ3SGpPCZxGRXtwRCPoc/KMJQKiuRoMfazbMeoLsNQuduMN4fEHpO4DPXmUG8d5s1h3joxPnEYDOPEY9zMbn4TtL8DBoX91H3ekVODMKn8OTQI1robAEToFKa+UlRsCoahelEjo11W0PpY7u7+Bg==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t, #"Coluna 2" = _t, #"Coluna 3" = _t, #"Coluna 4" = _t, #"Coluna 5" = _t, #"Coluna 6" = _t, #"Coluna 7" = _t, #"Coluna 8" = _t, #"Coluna 9" = _t, #"Coluna 10" = _t, #"Coluna 11" = _t, #"Coluna 12" = _t, #"Coluna 13" = _t, #"Coluna 14" = _t, #"Coluna 15" = _t, #"Coluna 16" = _t, #"Coluna 17" = _t, #"Coluna 18" = _t, #"Coluna 19" = _t, #"Coluna 20" = _t, #"Coluna 21" = _t, #"Coluna 22" = _t, #"Coluna 23" = _t, #"Coluna 24" = _t, #"Coluna 25" = _t, #"Coluna 26" = _t, #"Coluna 27" = _t, #"Coluna 28" = _t, #"Coluna 29" = _t, #"Coluna 30" = _t, #"Coluna 31" = _t, #"Coluna 32" = _t, #"Coluna 33" = _t, #"Coluna 34" = _t, #"Coluna 35" = _t, #"Coluna 36" = _t, #"Coluna 37" = _t, #"Coluna 38" = _t, #"Coluna 39" = _t, #"Coluna 40" = _t, #"Coluna 41" = _t, #"Coluna 42" = _t, #"Coluna 43" = _t, #"Coluna 44" = _t, #"Coluna 45" = _t, #"Coluna 46" = _t, #"Coluna 47" = _t, #"Coluna 48" = _t, #"Coluna 49" = _t, #"Coluna 50" = _t, #"Coluna 51" = _t, #"Coluna 52" = _t, #"Coluna 53" = _t, #"Coluna 54" = _t, #"Coluna 55" = _t, #"Coluna 56" = _t, #"Coluna 57" = _t, #"Coluna 58" = _t, #"Coluna 59" = _t]),
+		    #"Colunas Removidas2" = Table.RemoveColumns(Fonte,{"Coluna 1"}),
+		    #"Linhas em Branco Removidas" = Table.SelectRows(#"Colunas Removidas2", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+		    #"Linhas Superiores Removidas" = Table.Skip(#"Cabeçalhos Promovidos",5),
+		    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+		    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Cabeçalhos Promovidos1", {"", "_1", "_2", "_3"}, "Atributo", "Valor"),
+		    #"Linhas Filtradas" = Table.SelectRows(#"Colunas Não Dinâmicas", each ([Valor] = "Acumulado" or [Valor] = "No mês"))
+		in
+		    #"Linhas Filtradas"
+	lineageTag: f81e9c44-2ebe-4f8a-9035-cf6c6867e627
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,42 @@
+table Pesos
+	lineageTag: a92b14f5-82aa-44d0-91d7-ab94ba51d4c9
+
+	column Documento
+		dataType: string
+		lineageTag: 0f781351-4aab-4cc3-b196-7a32edaa12e6
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco
+		dataType: string
+		lineageTag: 2e1e89d9-6cd8-4c20-9e86-2e7d0dce0028
+		summarizeBy: none
+		sourceColumn: Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: double
+		lineageTag: 00d11b0f-a159-4907-951d-5db48304c8c2
+		summarizeBy: sum
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Pesos = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("jVVLjtNAEL1KK6tEBIFYsTXORyBmMLYlFqNZlN2dTElOd9SfiCV34AQjFijrOYJvwkmobju/YWhn58+rz3v1uvrubpSLGivFuGBzabVYAxsvs2Iymo5yNLViqWqExZ2iD2+n70f307vRQjUP4CO2sIaNkFYd0R8lxx1yB03Avwv4XDRg2yeNocys3VdolWGztFx8m3+IVUqFtsjbX5eBpYYKmgc0Fthrlt7OyliOfE6gyxbEZuuZcmVigUnxhc3EBo1BJQOhCMdUUU61A2kFq0DW7WNfKzto5F8KaMIPc32yixTjZZ4vJgPBoG2vWKYGZ5PUSvMT/Sk9yZ2Q7W+fov8KTDnWA09JfIF+Eiomo2+ZGncYLEN2I/dgRycXpkbTj0WxxbIsBsid3Lpq9xrBsFesvlTrSlPSZJU0VoNv11fvuZAr9FU60ykhY3W8CHJbFF6mWUJsaWBRSTKhV9gw6noV3LXW7eMKCUu2pDpC1tj5Z5xl2UAbZZqX7M+Pn6wUeqM6iYOqnQVonJ6jenFaL/snKdmYHOgk1tD5IKl9U528hyQTNmAsOj2+rfl3mgYjxtg+cc9xoPr5ic/F2jWgkQO99AbxItORP75G1wfh5rQlgl2HgAvBhb4Cd+OFwe0AMqmIiNPwxp9lZbAT0g/EGb/DYrGfSz+DqIHSG5I3iljm0f9Ht3x1aOHY3ck7A647hH9yfgun4AwMhPx70XCg/VrTgE/1jzuehNLtnvf7Hitnu8XZjwkNyy7PigluC3eKqKL3wdlV8KwBPyvCw7Wpnu3p893237D7vw==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Risco = _t, Peso = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Risco", type text}, {"Peso", type number}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

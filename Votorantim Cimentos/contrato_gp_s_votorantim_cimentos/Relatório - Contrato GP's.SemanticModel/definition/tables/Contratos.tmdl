@@ -1,0 +1,473 @@
+table Contratos
+	lineageTag: 044b70ef-adf1-4c5a-8e53-c6e64d7fc597
+
+	measure _Contratos_Quantidade = CALCULATE(DISTINCTCOUNT(Contratos[Id do Contrato]))
+		formatString: #,0
+		lineageTag: 08f6bdbd-7901-4024-af11-299cc6120160
+
+	measure _Cor_Classificação_Mobilização = ```
+			
+			VAR Classifica = SELECTEDVALUE(Contratos[Classificação Mobilização])
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    Classifica = "OK",                                  "#4FC3F7",  -- azul
+			    Classifica = "Baixo",                               "#8BC34A",  -- verde
+			    Classifica = "Médio",                               "#FFEB3B",  -- amarelo
+			    Classifica = "Alto",                                "#FF9800",  -- laranja
+			    Classifica = "Crítico",                             "#F44336",  -- vermelho
+			    Classifica = "Mobilização sem Previsão",            "#90A4AE",  -- cinza-azulado
+			    Classifica = "Sem Mobilização e Sem Previsão",      "#BDBDBD",  -- cinza
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 2583031c-66c0-4775-9b42-1e0b236c2b9d
+
+	measure _Pedidos = CALCULATE(DISTINCTCOUNT(Contratos[Nº do pedido]))
+		formatString: #,0
+		lineageTag: 507798ab-0155-47e9-b7ed-3f07d350c6f1
+
+	measure (_Qtd_Efetivos_mobilizados) = ```
+			
+			
+			    CALCULATE(SUM(Contratos[Quantidade de Efetivos Mobilizados]))
+			
+			```
+		formatString: #,0
+		lineageTag: f1c1c546-40c7-4aa9-acf2-385686a9534a
+
+	measure (_Qtd_Efetivos_Previstos_dif) = ```
+			
+			VAR Previsto = 
+			    CALCULATE(SUM(Contratos[Quantidade Efetivos Contratadas]))
+			
+			
+			RETURN IF(Previsto = BLANK(),0,Previsto)
+			```
+		formatString: #,0
+		lineageTag: 086cc765-98b0-4d81-aaa0-696f9129e745
+
+	measure '(_%Mobilizados Previstos_)' = ```
+			
+			
+			VAR MOB = [(_Qtd_Efetivos_mobilizados)]
+			
+			Var PREV = [(_Qtd_Efetivos_Previstos_dif)]
+			
+			
+			RETURN 
+			    IF(MOB = 0 && PREV > 0,
+			                    0,
+			                    IF(MOB >0 && PREV = 0, "Sem Previsão Efetivo",
+			                        IF(MOB = 0 && PREV = 0,"Sem Mobilização e Previstos",MOB/PREV)
+			                    )
+			        )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: afb77920-a658-4536-8d34-37c2f5b1291c
+
+	column 'Id do Contrato'
+		dataType: string
+		lineageTag: bee3e548-8b13-4796-a5bf-b50851ec64e4
+		summarizeBy: none
+		sourceColumn: Id do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: 302dd2c2-4e6b-4237-9a67-67dc255bce3f
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 9bd7ee66-9d98-4470-bc75-7d78946a0e7a
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 3c62af82-6a56-4edc-86b6-d6cec42fc40b
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: addbfe2e-46bf-4f30-8658-181f5a1063eb
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: e7bbd588-9ead-418d-9066-e1fb3a59a933
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f8694ef3-b1c9-497d-92cf-2adade4976a9
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 279ddc36-46ef-4fb1-8a97-540a28dae218
+			defaultHierarchy: LocalDateTable_1c648297-334e-4a6d-ab92-7dce9f06c8bc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d0f2b385-07f7-44f5-ae01-6cbc428cfa79
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: bc132850-9e00-4bb1-bb88-f80d23f52e93
+			defaultHierarchy: LocalDateTable_64d09ce1-e174-4ad1-9c0b-eb42ae25034c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4a2fb913-ae9e-4e93-9427-68eda165b2ee
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: 8bd1cde4-e1aa-4e32-a740-4f74327464ce
+			defaultHierarchy: LocalDateTable_202ec9e1-9ea9-424c-b391-04cda2bd1ead.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: f1d64709-7888-40af-8308-bd78ce603a13
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 6fb0abf8-b34d-4506-b77a-76a9ac2d660a
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 968229f0-df2e-43e7-8376-89e32b0cd42c
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 6c5d76c2-34a8-4853-899e-4fa686e77365
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: double
+		lineageTag: 3d1dde6d-1a29-45cb-b0c0-5d5c5ebd37ea
+		summarizeBy: sum
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: db0f156e-010a-499a-bbe7-dd5077360e09
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Gestor'
+		dataType: string
+		lineageTag: 8d7619f8-b685-4024-a726-fbb786ca7033
+		summarizeBy: none
+		sourceColumn: Email do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: 8e121413-9a50-41a8-9df6-1c089304918f
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: d1f41261-0f7d-4d19-9694-d50d2a6ec804
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Vigência'
+		dataType: string
+		lineageTag: 7a6418a5-6821-4b18-99d7-a326a2b721d7
+		summarizeBy: none
+		sourceColumn: Status Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave_Contratos
+		dataType: string
+		lineageTag: 68831393-4989-47f7-8996-4e53e5623a5a
+		summarizeBy: none
+		sourceColumn: Chave_Contratos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Expectativa do Início da Prestação de Serviço'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d790c442-7fae-4346-a6fd-e3496d379c40
+		summarizeBy: none
+		sourceColumn: Expectativa do Início da Prestação de Serviço
+
+		variation Variation
+			isDefault
+			relationship: 3c4b08e1-e59a-4b5d-b245-bab737c69d04
+			defaultHierarchy: LocalDateTable_1c6e0591-1f49-4d78-9488-62f7fc45a94c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade Efetivos Contratadas'
+		dataType: int64
+		formatString: 0
+		lineageTag: 44c957a9-a87c-4c2d-95fe-7dd0a9295386
+		summarizeBy: sum
+		sourceColumn: Quantidade Efetivos Contratadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: 76f48bee-97a9-42cc-be79-1610ff99733a
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sub2
+		dataType: string
+		lineageTag: e83b1ff9-fb9a-48d2-9ad8-64353451549b
+		summarizeBy: none
+		sourceColumn: Sub2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sub
+		dataType: string
+		lineageTag: 134eba40-c8c3-4ff5-8567-f0db6147d25b
+		summarizeBy: none
+		sourceColumn: Sub
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 763abc23-b3c6-41ef-bf8e-0e36a9761072
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INICIO GP''s'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: c8e4427b-ad4d-4d06-b3e5-f33aa0c881c0
+		summarizeBy: none
+		sourceColumn: INICIO GP's
+
+		variation Variation
+			isDefault
+			relationship: a82740fe-ab48-4402-89dd-c36f3a94c58f
+			defaultHierarchy: LocalDateTable_5b53aa18-1f78-4c7e-bc11-cec7f455368e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Antencipância do Contrato' =
+			
+			
+			VAR INICIO = Contratos[INICIO GP's]
+			
+			VAR CADASTRO = Contratos[Cadastro no sistema]
+			
+			RETURN IF( INICIO = BLANK(), BLANK(), DATEDIFF(CADASTRO,INICIO,DAY))
+		formatString: 0
+		lineageTag: a36fd5c0-b25c-408d-b174-695aa50f9df4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação Antecipância' = ```
+			
+			VAR dias = Contratos[Antencipância do Contrato]  -- dias antes do início
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(dias),                                  "Sem data de Início",
+			
+			    dias >= 20,                                     "Antecipado (20+ dias)",
+			
+			    dias >= 15 && dias <= 19,                       "Pré-Alerta (15–19 dias) – Notificar risco e solicitar cadastro/envio",
+			
+			    dias >= 10 && dias <= 14,                       "Pré-Alerta (10–14 dias) – Reforçar risco; incluir pendências se aplicável",
+			
+			    dias >= 5  && dias <= 9,                        "Ação Imediata (5–9 dias) – Ação VC + Notificação Atlas (penalizações)",
+			
+			    dias >= 0  && dias <= 4,                        "Alerta Final (0–4 dias)",
+			
+			    dias < 0,                                       "Crítico (Atrasado)",
+			
+			    BLANK()
+			)
+			
+			
+			```
+		lineageTag: ff38eb34-f104-410b-88d9-b950b398a968
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade de Efetivos Mobilizados' =
+			
+			VAR MOB = [_Efetivos_Mobilizados]
+			
+			RETURN IF(MOB = BLANK(),0, MOB)
+		formatString: 0
+		lineageTag: fe840104-f96d-4513-afeb-c234ee3b854c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Efetivos' =
+			
+			VAR MOB  = COALESCE(Contratos[Quantidade de Efetivos Mobilizados], 0)
+			VAR PREV = COALESCE(Contratos[Quantidade Efetivos Contratadas], 0)
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    MOB = 0 && PREV > 0, "Sem mobilização (há previsão)",
+			    MOB > 0 && PREV = 0, "Sem previsão de efetivo",
+			    MOB = 0 && PREV = 0, "Sem mobilização e previstos",
+			    MOB > PREV,          "Efetivos mobilizados maior que previstos",
+			    /* caso padrão */    "Normal"
+			)
+		lineageTag: 1eb62e8a-e4fc-405a-aecf-c95593c4d712
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '%Mobilizada Prevista' =
+			
+			VAR MOB = Contratos[Quantidade de Efetivos Mobilizados]
+			
+			VAR PREV = Contratos[Quantidade Efetivos Contratadas]
+			
+			
+			RETURN IF(MOB = 0 && PREV > 0,
+			                    0,
+			                    IF(MOB >0 && PREV = 0,BLANK(),
+			                        IF(MOB = 0 && PREV = 0,BLANK(),(1-MOB/PREV))
+			                    )
+			        )
+		lineageTag: 84a55250-900b-439c-8c1c-162fe346b4c3
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Classificação Mobilização' = ```
+			
+			VAR MOB  = Contratos[Quantidade de Efetivos Mobilizados]
+			VAR PREV = Contratos[Quantidade Efetivos Contratadas]
+			VAR pct  = Contratos[%Mobilizada Prevista]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        MOB > 0 && PREV = 0, "Mobilização sem Previsão",
+			        MOB = 0 && PREV = 0, "Sem Mobilização e Sem Previsão",
+			        ISBLANK(pct), BLANK(),
+			        pct < 0, "Mobilização Maior Previsão",
+			        pct = 0, "OK",
+			        pct > 0 && pct <= 0.04, "Baixo",
+			        pct > 0.04 && pct <= 0.14, "Médio",
+			        pct > 0.14 && pct <= 0.49, "Alto",
+			        pct >= 0.5, "Crítico"
+			    )
+			
+			```
+		lineageTag: 4f2aa8b6-0fe6-45b0-9839-178cc81215bf
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)c.OrderNumber[Nº do pedido],#(lf)#(tab)c.Id[Id do Contrato],#(lf)    bc.CompanyName[Razão social],#(lf)    [bc].[Document] AS [CNPJ],#(lf)#(tab)c.contractedEffectiveQuantity[Quantidade Efetivos Contratadas],#(lf)    case#(lf)#(tab)#(tab)when c.[Type] = 0 then 'Nenhuma'#(lf)        when c.[Type] = 1 then 'Contínuo'#(lf)        when c.[Type] = 2 then 'Grandes Paradas'#(lf)        when c.[Type] = 4 then 'Eventual'#(lf)        when c.[Type] = 8 then 'Temporário'#(lf)        when c.[Type] = 16 then 'Visitante técnico'#(lf)        when c.[Type] = 32 then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        when c.[Type] = 64 then 'Prestação de serviço eventual fora da área operacional'#(lf)        when c.[Type] = 128 then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        when c.[Type] = 256 then 'Compra Direta, Regulariza e Delegada'#(lf)    end as 'Tipo da contratação',#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN c.FatherId IS NULL THEN 'Contratado'#(lf)#(tab)#(tab)ELSE 'Subcontratado'#(lf)#(tab) END 'Tipo de Fornecedor',#(lf)    case#(lf)        when c.Sla = 0 then 'Padrão'#(lf)        when c.Sla = 1 then 'Emergencial'#(lf)    end as 'Sla',#(lf)    case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)#(tab)when c.[Status] = 4 then 'Aguardando aprovação'#(lf)#(tab)when c.[Status] = 5 then 'Recusado'    #(lf)end as 'Status',#(lf)    convert(date, c.CreatedAt)[Cadastro no sistema],#(lf)#(tab)convert(date, cfv2.[Value])[Expectativa do Início da Prestação de Serviço],#(lf)    CONCAT(convert(date, c.ValidityInitial), ' a ',convert(date, c.ValidityFinal))[Vigência], #(lf)    b.TradeName[Unidade],#(lf)#(tab)r.Name AS 'Regional',#(lf)#(tab)ca.[Name][Categoria],#(lf)    p.TradeName[Fornecedor],#(lf)    c.[Value][Valor do contrato],#(lf)#(tab)cm.[Name][Nome do Gestor],#(lf)#(tab)cm.[Email][Email do Gestor],#(lf)#(tab)cm.[Phone][Telefone do Gestor]#(lf)#(lf)from [Contract] c with(nolock)#(lf)#(tab)#(tab)#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)INNER JOIN Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)#(tab)inner join [Provider] p with(nolock) on c.ProviderId = p.Id#(lf)#(tab)#(tab)left join ContractManager cm with(nolock) on cm.ContractId = c.Id and cm.Removed = 0#(lf)#(tab)#(tab)left join CustomFieldValue cfv2 WITH(NOLOCK) ON cfv2.EntityId = c.Id AND cfv2.CustomFieldId = '7BD43E1A-1F6C-40AB-8000-48B5ED0FAC49' -- Expectativa do Início da Prestação de Serviço#(lf)#(tab)#(tab)#(lf)#(tab)#(lf)where b.OrganizationId = 'ed655166-232e-4710-8095-0ae504faa5eb'#(lf)#(tab)  and c.Removed = 0#(lf)#(tab)  order by c.OrderNumber "]),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(Fonte, "Vigência", Splitter.SplitTextByDelimiter("a", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Vigência.1", "Vigência Inicial"}, {"Vigência.2", "Vigência Final"}}),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Colunas Renomeadas", "Status Vigência", each if [Vigência Inicial] = null then "Sem Vigência"
+				else if [Vigência Inicial] > DateTime.Date(DateTime.LocalNow()) then "Vigência Futura" else if [Vigência Final] < DateTime.Date(DateTime.LocalNow()) then "Vigência Finalizada" else "Vigente"),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Coluna Condicional Adicionada1", "Chave_Contratos", each Text.Combine({[Nº do pedido], [Razão social], [Unidade], [Categoria]}, ""), type text),
+				    #"Dividir Coluna por Delimitador1" = Table.SplitColumn(#"Coluna Mesclada Inserida", "Nº do pedido", Splitter.SplitTextByDelimiter("S", QuoteStyle.Csv), {"Nº do pedido.1", "Nº do pedido.2"}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador1",{{"Nº do pedido.1", type text}, {"Nº do pedido.2", type text}}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Tipo Alterado",{{"Nº do pedido.2", "Sub"}, {"Nº do pedido.1", "Nº do pedido"}}),
+				    #"Dividir Coluna por Delimitador2" = Table.SplitColumn(#"Colunas Renomeadas1", "Nº do pedido", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"Nº do pedido.1", "Nº do pedido.2"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador2",{{"Nº do pedido.1", type text}, {"Nº do pedido.2", type text}}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Tipo Alterado2",{{"Nº do pedido.2", "Sub2"}, {"Nº do pedido.1", "Nº do pedido"}}),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Colunas Renomeadas2", "Índice", 0, 1, Int64.Type),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Índice Adicionado",null,"---",Replacer.ReplaceValue,{"Nº do pedido"}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Valor Substituído", {"Nº do pedido"}, #"Base - Acompanhamento de GPs", {"PC"}, "Base - Acompanhamento de GPs", JoinKind.LeftOuter),
+				    #"Base - Acompanhamento de GPs Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Base - Acompanhamento de GPs", {"INICIO"}, {"Base - Acompanhamento de GPs.INICIO"}),
+				    #"Colunas Renomeadas3" = Table.RenameColumns(#"Base - Acompanhamento de GPs Expandido",{{"Base - Acompanhamento de GPs.INICIO", "INICIO GP's"}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Colunas Renomeadas3", {"Índice"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

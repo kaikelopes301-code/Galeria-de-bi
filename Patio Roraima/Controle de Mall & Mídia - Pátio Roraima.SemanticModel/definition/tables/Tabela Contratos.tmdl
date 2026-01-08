@@ -1,0 +1,76 @@
+table 'Tabela Contratos'
+	lineageTag: 46a6fe33-9c0e-4acd-9934-0df8e0eae317
+
+	measure 'Quantidade de Mídias Conforme a Vigência' = CALCULATE(DISTINCTCOUNT('Tabela Contratos'[Mídia]))
+		formatString: 0
+		lineageTag: f3463168-a733-4e06-aef7-adf6937c9280
+
+	column Mídia = LOOKUPVALUE(Contratos[Unidade],Contratos[Chave],'Tabela Contratos'[Chave])
+		lineageTag: 62333f53-ad81-4ef9-b34e-47f5414d89d1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tempo de Contrato (Dias)' = LOOKUPVALUE(Contratos[Dias de Contrato],Contratos[Chave],'Tabela Contratos'[Chave])
+		formatString: 0
+		lineageTag: 12f23cf1-b86f-427b-a071-d37fb8cb8c61
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim de Contrato' = LOOKUPVALUE(Contratos[Fim de Contrato],Contratos[Chave],'Tabela Contratos'[Chave])
+		formatString: Short Date
+		lineageTag: b0bef206-967e-45dc-98ad-9f32ee0122cb
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: b91ae9b7-3856-4339-bc52-70512d641169
+			defaultHierarchy: LocalDateTable_29fc1538-c279-42d1-8671-51e0fab0af31.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status = LOOKUPVALUE(Contratos[Status Atual],Contratos[Chave],'Tabela Contratos'[Chave])
+		lineageTag: 6bd3e633-b65d-4b12-857b-dd6a1b84a4a8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente = LOOKUPVALUE(Contratos[Cliente],Contratos[Chave],'Tabela Contratos'[Chave])
+		lineageTag: 874131b4-7a4f-4dd7-a982-b207427c598b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		lineageTag: 8b01f4fe-aaef-4429-8079-3b599538169d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Contratos[Chave]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Inicio de Contrato' = LOOKUPVALUE(Contratos[Inicio de Contrato],Contratos[Chave],'Tabela Contratos'[Chave])
+		formatString: Short Date
+		lineageTag: ebdbbae1-05a7-476b-9adb-17b1772e0b65
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 2231be08-c8b2-4957-861c-721a4f7597eb
+			defaultHierarchy: LocalDateTable_4dbf8a0f-e9d3-44eb-9ff6-7a66db440f73.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Família = LOOKUPVALUE(Unidades[Regional],Unidades[Mídia],'Tabela Contratos'[Mídia])
+		lineageTag: e1716165-267c-451d-85ab-fa206edffdef
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tabela Contratos' = calculated
+		mode: import
+		source = DISTINCT(Contratos[Chave])
+
+	annotation PBI_Id = b6131b478a8649a4bb29bd1733e732ce
+

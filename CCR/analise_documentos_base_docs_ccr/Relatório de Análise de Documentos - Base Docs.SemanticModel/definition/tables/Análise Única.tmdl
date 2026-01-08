@@ -1,0 +1,37 @@
+table 'Análise Única'
+	lineageTag: ca0053d3-7cbb-4282-bf37-54acb180c9c8
+
+	column 'Contagem de Vezes'
+		dataType: int64
+		formatString: 0
+		lineageTag: ee8f47c3-819f-40d8-8194-714d20362986
+		summarizeBy: none
+		sourceColumn: Contagem de Vezes
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: 1bfa60f5-a6a7-4066-810c-14c888664358
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Análise Única' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = CAST(GETDATE() AS DATETIME);#(lf)DECLARE @organizationId uniqueidentifier = '23691bb8-3910-436a-9467-0df7b443fb38';#(lf)DECLARE @initialDate datetime2 = '2025-08-01 00:00:00';#(lf)DECLARE @finalDate datetime2 ='2025-09-01 00:00:00';#(lf)#(lf)SELECT DISTINCT#(lf)       ds.Name AS [Documento],#(lf)#(tab)   ds.Id AS [DocumentScheduleId],#(lf)#(tab)   o.TradeName AS [Nome Cliente],#(lf)#(lf)#(tab)   CASE d.DeliveryKind#(lf)        WHEN 0 THEN 'Recorrente'#(lf)        WHEN 1 THEN 'Mobilização'#(lf)        WHEN 2 THEN 'Treinamento'#(lf)        WHEN 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS [Tipo Documento],#(lf)#(lf)    CASE d.OrganizationRestrictions#(lf)        WHEN 0 THEN 'Nenhuma'#(lf)        WHEN 1 THEN 'Restrição de acesso'#(lf)        WHEN 2 THEN 'Restrição de pagamento'#(lf)        WHEN 3 THEN 'Restrição de acesso e Restrição de pagamento'#(lf)        ELSE '--'#(lf)    END AS [Restrição de Pagamento],#(lf)#(lf)    p.TradeName AS [Fornecedor],#(lf)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy =  '00000000-0000-0000-0000-000000000000' AND dsv.Responsibleid IS NULL) THEN 'Validado Automaticamente'#(lf)        WHEN dsv.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Validado Automaticamente'#(lf)#(tab)#(tab)WHEN ds.RequiresValidation = 0 THEN 'Não é Necessário Validação'#(lf)        WHEN (ds.ValidatedBy IS NULL AND dsv.Responsibleid IS NULL) THEN 'Pendente de Validação'#(lf)        ELSE ISNULL(u.Name, ISNULL(u2.Name,'---'))#(lf)    END AS [Analisado por],#(lf)#(lf)#(tab)ISNULL(ISNULL (dsv.Responsibleid, ds.ValidatedBy), '00000000-0000-0000-0000-000000000000') AS [Id_Validador],#(lf)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy = '00000000-0000-0000-0000-000000000000' AND dsv.Responsibleid IS NULL) THEN 'Sistema'#(lf)        WHEN dsv.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Sistema'#(lf)#(tab)#(tab)WHEN u.Email LIKE '%Atlas%' THEN 'Atlas'#(lf)        WHEN ds.ValidatedBy IS NULL THEN 'Pendente de Validação'#(lf)        ELSE 'Cliente'#(lf)    END AS [Time],#(lf)#(tab)#(lf)#(tab)u.Name,#(lf)#(tab)u.Email,#(lf)    dsv.Responsibleid,#(lf)#(tab)u2.Name AS [Validador_Nome],#(lf)#(tab)u2.Email AS [Validador_Email],#(lf)#(tab)ds.ValidatedBy,#(lf)    FORMAT(ds.ExpectedUploadAt, 'dd/MM/yyyy') AS [Prazo_Envio],#(lf)    ISNULL(ISNULL(FORMAT(df.CreatedAt, 'dd/MM/yyyy HH:mm:ss'), FORMAT(df.UpdatedAt, 'dd/MM/yyyy HH:mm:ss')), FORMAT(ds.UploadedAt, 'dd/MM/yyyy HH:mm:ss')) AS [Data_Envio],#(lf)#(tab)ISNULL(FORMAT(dsv.CreatedAt, 'dd/MM/yyyy HH:mm:ss'), FORMAT(ds.ValidatedAt, 'dd/MM/yyyy HH:mm:ss')) AS [Data_Analise],#(lf)#(tab)#(lf)#(tab)CASE#(lf)        WHEN ISNULL(dsv.IsValid, ds.IsValidated) = 1 THEN 'Aprovado'#(lf)        WHEN ISNULL(dsv.IsValid, ds.IsValidated) = 0 THEN 'Reprovado'#(lf)        WHEN ds.IsValidated IS NULL THEN 'Aguardando Validação'#(lf)        ELSE 'Pendente'#(lf)    END AS [Status_Documentacao],#(lf)#(lf)    dsv.Id AS [Id_Reanalise],#(lf)    dsv.Message#(lf)#(lf)FROM DocumentSchedule ds WITH (NOLOCK)#(lf)INNER JOIN Document d WITH (NOLOCK) ON ds.DocumentId = d.Id#(lf)INNER JOIN Organization o WITH (NOLOCK) ON ds.OrganizationId = o.Id#(lf)INNER JOIN Provider p WITH (NOLOCK) ON ds.ProviderId = p.Id#(lf)LEFT JOIN DocumentScheduleValidationLog dsv WITH (NOLOCK) ON dsv.DocumentScheduleId = ds.Id#(lf)LEFT JOIN [User] u WITH (NOLOCK) ON u.Id = dsv.Responsibleid#(lf)LEFT JOIN [User] u2 WITH (NOLOCK) ON u2.Id = ds.ValidatedBy #(lf)LEFT JOIN DocumentFile df WITH (NOLOCK) ON df.Id = dsv.DocumentFileId#(lf)WHERE#(lf)    ds.OrganizationId = @organizationId#(lf)    AND COALESCE(dsv.Responsibleid, ds.ValidatedBy) IN (#(lf)        '29A1349B-8E1E-43D3-9160-53669CAEA58A',#(lf)        'E1076560-C1AD-4D8D-BCFA-1BFEE30D266B',#(lf)        'D8370DAB-1B54-42D9-9799-4C4E50C58054',#(lf)        'C5C76937-9602-4BD4-98AD-B2DBFE279412',#(lf)        '800A0EA0-F909-4774-B444-538E05221582',#(lf)        '56908D45-2DF8-4E52-B4FB-2EF825FB3B92',#(lf)        '4B4DFA7D-A74E-4765-9A2A-439C9FFD06A8'#(lf)    )#(lf)ORDER BY ds.Id#(lf)"]),
+				    #"Personalização Adicionada4" = Table.AddColumn(Fonte, "Chave de Análise Única", each [DocumentScheduleId]),
+				    #"Linhas Agrupadas" = Table.Group(#"Personalização Adicionada4", {"DocumentScheduleId"}, {{"Contagem", each Table.RowCount(Table.Distinct(_)), Int64.Type}, {"Analisado", each _, type table [Id_Cliente=nullable text, Cliente=nullable text, Id_Fornecedor=nullable text, Fornecedor=nullable text, Funcionario=nullable text, Id_Documento=nullable text, Nome_Documento=nullable text, Tipo=nullable text, Id_Pedido=nullable text, Numero_Pedido=nullable text, Data_Cadastro_Pedido=nullable date, Hora_Cadastro_Pedido=nullable time, Prazo_Envio=nullable date, Data_Envio=nullable date, Hora_Envio=nullable time, Data_Analise=nullable date, Hora_Analise=nullable time, Foi_Aprovado=nullable text, Id_Analista=nullable text, Analisado_Por=nullable text, Status_Documentacao=nullable text, Perfil=nullable text, Observacao_Cliente=nullable text, Observacao_Fornecedor=any, #"Data-Hora Análise"=datetime, #"Faixa-Periodo-Envio"=number, #"Faixa-hora-documentos-envios"=number, Chave de Análise Única=nullable text]}}),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Linhas Agrupadas",{"Analisado"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Colunas Removidas1",{{"Contagem", "Contagem de Vezes"}}),
+				    #"Linhas Classificadas" = Table.Sort(#"Colunas Renomeadas2",{{"Contagem de Vezes", Order.Descending}})
+				in
+				    #"Linhas Classificadas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

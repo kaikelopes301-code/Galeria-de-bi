@@ -1,0 +1,48 @@
+table 'Família, Mídia'
+	lineageTag: 46739592-3e56-4fab-b637-989f381005ed
+
+	column 'Família, Mídia'
+		lineageTag: cf005944-42a7-4831-aa10-10142b72ebc7
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Família, Mídia Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Família, Mídia Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Família, Mídia Campos'
+		isHidden
+		lineageTag: c3e932a7-4b9f-420c-ac18-2f74e87e7a5c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Família, Mídia Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Família, Mídia Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: d5501a3c-e3ae-4ef9-9b8b-44aff0742a39
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Família, Mídia' = calculated
+		mode: import
+		source =
+				{
+				    ("Família", NAMEOF('Contratos'[Família]), 0),
+				    ("Local de Mídia", NAMEOF('Contratos'[Espaços para Locação]), 1)
+				}
+
+	annotation PBI_Id = d84b63fd73d941e79f6fa524c7bb5cea
+

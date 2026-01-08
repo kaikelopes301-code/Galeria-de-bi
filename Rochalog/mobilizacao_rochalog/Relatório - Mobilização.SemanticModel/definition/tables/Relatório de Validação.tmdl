@@ -1,0 +1,649 @@
+table 'Relatório de Validação'
+	lineageTag: a6495916-a448-4965-9154-42b8837aed1a
+
+	measure '(Enviados) Quantidade de Documentos' = CALCULATE(DISTINCTCOUNT('Relatório de Validação'[Id_Documento]))
+		formatString: #,0
+		lineageTag: 656f6be1-88d4-4964-acdc-69073093a2e8
+
+	measure '(Validados) Quantidade de Documentos' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 65d93094-1b8b-4dd8-ab4d-4b0cb5a205bb
+
+	measure '(Reprovados) Quantidade de Documentos' =
+			CALCULATE(COUNTROWS(),
+			'Relatório de Validação'[Foi_Aprovado] = "Não")
+		formatString: #,0
+		lineageTag: f04947eb-85a8-45db-aafe-ee6570d2c5d8
+
+	measure %Reprovação = [(Reprovados) Quantidade de Documentos]/[(Validados) Quantidade de Documentos] + 0
+		lineageTag: 655826fa-b840-4895-bab6-a0d9ac5a6c86
+
+		formatStringDefinition =
+				VAR TAXA = FORMAT([%Reprovação],"0%")
+				
+				var VAL = 'Relatório de Validação'[(Validados) Quantidade de Documentos]
+				
+				RETURN """" & TAXA & " (" & VAL & ")"
+
+	measure '(Taxa de Reprovação)Quantidade de Vezes Reprovados' =
+			CALCULATE(SUM('Análise Única'[Contagem]),
+			'Relatório de Validação'[Status_Documentacao] = "Reprovado")
+		formatString: #,0
+		lineageTag: 8e721d21-bbc6-4553-82b2-52e8c2129ae7
+
+	measure 'Taxa de Reprovação' =
+			CALCULATE([(Soma) Soma de Validação],
+			'Relatório de Validação'[Status_Documentacao]="Reprovado")/[(Enviados) Quantidade de Documentos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8f8be546-fed6-4325-b5f4-22922df51437
+
+	measure '(Soma) Soma de Validação' = CALCULATE(COUNTROWS())
+		lineageTag: 3a025958-ecc0-41ea-a8db-f6f52807b13d
+
+		formatStringDefinition =
+				VAR TAXA = [(Soma) Soma de Validação]
+				
+				VAR TOTAL = [(Enviados) Quantidade de Documentos]
+				
+				RETURN """" & TAXA & " (" & TOTAL &")"
+
+	measure _%_Reprovação =
+			
+			VAR REPROV = [(Reprovados) Quantidade de Documentos]
+			VAR ANALISE = [(Validados) Quantidade de Documentos]
+			RETURN IF(REPROV =BLANK() && ANALISE >0,0,REPROV/ANALISE)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: cbe16230-15be-494e-9d13-aa4ecae1ce10
+
+	measure _SLA_Dias_úteis = CALCULATE(AVERAGE('Relatório de Validação'[SLA]))/9
+		lineageTag: f104f687-1339-48e7-ba4b-5fb6cba77f97
+
+		formatStringDefinition =
+				VAR DIAS = FORMAT((AVERAGE('Relatório de Validação'[SLA])/9),"0.0")
+				
+				VAR HORAS = FORMAT(AVERAGE('Relatório de Validação'[SLA]),"0.0")
+				
+				
+				RETURN """" & DIAS & " dias" & " | " & HORAS & " horas"
+
+	measure _%_SLA_dentro =
+			
+			
+			VAR DENTRO = CALCULATE([(Validados) Quantidade de Documentos],
+			'Relatório de Validação'[SLA]/15 <= 3)
+			
+			VAR QUANT = [(Validados) Quantidade de Documentos]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: 0%;-0%;0%
+		lineageTag: 258f940b-9e3d-4737-ad4f-57580d7e6c4a
+
+	measure _%_SLA_fora =
+			
+			
+			VAR DENTRO = CALCULATE([(Validados) Quantidade de Documentos],
+			'Relatório de Validação'[SLA]/15 > 3)
+			
+			VAR QUANT = [(Validados) Quantidade de Documentos]
+			
+			RETURN IF (DENTRO = BLANK() && QUANT >0,
+			                0,
+			                DENTRO/QUANT)
+		formatString: 0%;-0%;0%
+		lineageTag: b06e871d-c619-4366-894a-6c318a8ce8ba
+
+	column Id_Cliente
+		dataType: string
+		lineageTag: f3212ff5-ec72-4047-8c5a-b73f58e42302
+		summarizeBy: none
+		sourceColumn: Id_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: f26d282e-d83d-4383-87da-2b7552318a5e
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Fornecedor
+		dataType: string
+		lineageTag: e4b5c2ad-adb0-42a4-8186-c4366e52be3a
+		summarizeBy: none
+		sourceColumn: Id_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 492425dc-7a4f-4490-9156-5b9ce46a874d
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionario
+		dataType: string
+		lineageTag: b68080d7-d64e-4984-8e32-69c0eec0696f
+		summarizeBy: none
+		sourceColumn: Funcionario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: 98070d91-9bcf-4246-9fec-85521496b036
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Documento
+		dataType: string
+		lineageTag: 8bec51f6-20fc-4624-b3b9-76b28ddda9d3
+		summarizeBy: none
+		sourceColumn: Nome_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: c60d8204-749d-4b38-853b-4bc64259ee57
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Pedido
+		dataType: string
+		lineageTag: 09b97dad-b872-456b-a375-056df80e7905
+		summarizeBy: none
+		sourceColumn: Id_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Numero_Pedido
+		dataType: string
+		lineageTag: 8a36184e-0dc2-4204-882b-9226460d3c3a
+		summarizeBy: none
+		sourceColumn: Numero_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 88fe9ac8-ffa9-4016-aebe-b8cbbeee942f
+		summarizeBy: none
+		sourceColumn: Data_Cadastro_Pedido
+
+		variation Variation
+			isDefault
+			relationship: b4f7fd7c-ed10-425c-97a9-a3fafc5b9658
+			defaultHierarchy: LocalDateTable_68e80f9b-0d7c-45b0-9f46-9b8a4dff5209.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 3e1035fd-7c6d-464c-9d78-b66680cc6cef
+		summarizeBy: none
+		sourceColumn: Hora_Cadastro_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Prazo_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 21088d6d-cbe1-4c5b-9b98-755be19e007a
+		summarizeBy: none
+		sourceColumn: Prazo_Envio
+
+		variation Variation
+			isDefault
+			relationship: 9ca4378f-8e78-4a16-852b-350df291e8d5
+			defaultHierarchy: LocalDateTable_aada781f-e596-4255-9c1c-2ca659fcf002.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4a482941-9900-4460-9232-a534c69602d8
+		summarizeBy: none
+		sourceColumn: Data_Envio
+
+		variation Variation
+			isDefault
+			relationship: 75012694-c453-4b25-8663-2a7f8c6f3f56
+			defaultHierarchy: LocalDateTable_8693c379-c20d-4194-96a0-0be09033b8c8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 1714897f-7e90-4ada-9a41-da91a7eb0f9b
+		summarizeBy: none
+		sourceColumn: Hora_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Analise
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 05d5877b-1a24-4c3f-81c9-1d594b87b932
+		summarizeBy: none
+		sourceColumn: Data_Analise
+
+		variation Variation
+			isDefault
+			relationship: eee7f243-61a6-463c-9baa-d19b0c08f71f
+			defaultHierarchy: LocalDateTable_ebe53fde-64bd-4970-a88c-d998dbf6461e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Analise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: d9c7d671-3db8-4d51-a272-4300495eb543
+		summarizeBy: none
+		sourceColumn: Hora_Analise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Foi_Aprovado
+		dataType: string
+		lineageTag: 2d8fd9a9-72bb-4dba-a1f5-5427d9995813
+		summarizeBy: none
+		sourceColumn: Foi_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Analista
+		dataType: string
+		lineageTag: e365f1a8-5cf8-4619-8ca4-b9116f466d26
+		summarizeBy: none
+		sourceColumn: Id_Analista
+
+		annotation SummarizationSetBy = Automatic
+
+	column Analisado_Por
+		dataType: string
+		lineageTag: 34945db6-a392-44c0-91df-ee877be21ad9
+		summarizeBy: none
+		sourceColumn: Analisado_Por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: 2c3d0fe9-6a48-49db-8158-740a59bacac0
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Perfil
+		dataType: string
+		lineageTag: 630cce19-3407-4163-bf16-a9df02cc2a70
+		summarizeBy: none
+		sourceColumn: Perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Cliente
+		dataType: string
+		lineageTag: 760c3085-1a6c-414f-aad1-e1ace4aabea2
+		summarizeBy: none
+		sourceColumn: Observacao_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Fornecedor
+		dataType: string
+		lineageTag: fcda8bbe-203c-4697-bd45-486595ab52a9
+		summarizeBy: none
+		sourceColumn: Observacao_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Faixa =
+			
+			IF('Relatório de Validação'[Aprovado direto] = 1, "1 Vez",
+			    IF('Relatório de Validação'[Aprovado direto] = 2, "2 Vezes",
+			        IF('Relatório de Validação'[Aprovado direto]<=4,"3-4 Vezes",
+			            IF('Relatório de Validação'[Aprovado direto] <=6,"5-6 Vezes",
+			                IF('Relatório de Validação'[Aprovado direto] <=8, "7-8 Vezes",
+			                    IF ('Relatório de Validação'[Aprovado direto] <= 12, "8-12 Vezes",
+			                        IF('Relatório de Validação'[Aprovado direto]<=16,"13-16 Vezes",
+			                            IF('Relatório de Validação'[Aprovado direto] <=20, "17-20 Vezes",
+			                                IF( 'Relatório de Validação'[Aprovado direto] <=24, "21-24 Vezes",
+			                                    IF('Relatório de Validação'[Aprovado direto] >24, "Mais 24 Vezes",
+			                                        "Sem Classificação"
+			                                    )
+			
+			
+			                                )
+			                            )
+			                        )
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: 313e3911-85ed-4fc3-ad71-6e8ad63f23ca
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Aprovado direto' = LOOKUPVALUE('Análise Unica[Quantidade de Analise],'Analise Unica'[Chave de Análise Única],'Relatório de Validação'[Chave de Análise única])
+		lineageTag: d512455f-5efd-4620-bce4-c88042ee7d78
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Análise
+		dataType: string
+		lineageTag: 2599045c-f0a4-4982-836f-e44d1cdf7396
+		summarizeBy: none
+		sourceColumn: FDS_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column FDS_Envio
+		dataType: string
+		lineageTag: 69d0c129-aae6-4c10-909e-bbb832bf4a04
+		summarizeBy: none
+		sourceColumn: FDS_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hora_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: ee5ef715-9d2d-4065-b52e-378ed4eb9627
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Hora_Corrigida_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 5135baa7-8eb1-4cc2-a0c5-a5e5282567e6
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: afc699d4-34e2-4de9-918d-ce329fee236d
+		summarizeBy: none
+		sourceColumn: Data_Corrigida_Análise
+
+		variation Variation
+			isDefault
+			relationship: d80f7dda-d4e7-4142-aafb-cc10398595cb
+			defaultHierarchy: LocalDateTable_2e31ea29-d06d-4eef-9072-df56b20286f2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data_Corrigida _Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 34d35aa9-1966-44d2-b96b-b8f3631496ab
+		summarizeBy: none
+		sourceColumn: Data_Corrigida _Envio
+
+		variation Variation
+			isDefault
+			relationship: cec80e23-2ee1-4eed-9be1-eb0f83ab1565
+			defaultHierarchy: LocalDateTable_3b3355c6-28d6-4e5e-88e7-981cd927d506.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column SLA
+		dataType: double
+		lineageTag: 58fb2be9-27d4-48f5-9c63-f7557ccb952f
+		summarizeBy: sum
+		sourceColumn: SLA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Final de semana'
+		dataType: string
+		lineageTag: 5b99aa24-f061-4c7a-9e37-a07c81ff42da
+		summarizeBy: none
+		sourceColumn: Final de semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Enel = ```
+			
+			VAR f = TRIM('Relatório de Validação'[Fornecedor])
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    f = "ESN MONTAGEM INDUSTRIAL LTDA",          "ENEL BRASIL S.A.",
+			    f = "CONCORDIA LOGISTICA S.A.",              "APIACÁS ENERGIA S/A - REGIONAL MT",
+			    f = "EXPRESSO ITAMARATI S.A.",               "ENEL GREEN POWER DESENVOLVIMENTO LTDA",
+			    f = "AK TRANSPORTES LTDA",                   "ALVORADA ENERGIA S/A - PCH LAJEADO",
+			    f = "AÇO FERRO TUBOS & PERFILADOS",          "ALVORADA ENERGIA S/A - PCH LAJES",
+			    f = "MARIO ROSSI NETO LTDA",                 "ALVORADA ENERGIA S/A - PCH CORUJÃO",
+			    f = "UNIDAS LOCAÇÃO E SERVIÇO S/A.",         "ALVORADA ENERGIA S/A - PCH TAGUATINGA",
+			    f = "EXPRESSO NEPOMUCENO S/A",               "ALVORADA ENERGIA S/A - PCH BAGAGEM",
+			    f = "CAVALCA CALLESCURA E CIA",              "ALVORADA ENERGIA S/A - CGH PONTE ALTA",
+			    f = "LOTS LATIN AMERICA LOGISTICA E TRAN",   "ISAMU IKEDA ENERGIA S/A - UHE ISAMU IKEDA",
+			    f = "BASE FACILITIES",                       "ISAMU IKEDA ENERGIA S/A - PCH ISAMU IKEDA II",
+			    BLANK()
+			)
+			
+			```
+		lineageTag: ce91f8f7-298d-4ad0-b78d-977859bf3cc2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relatório de Validação' = m
+		mode: import
+		source = ```
+				let
+				Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao", [Query="Select * from DocumentValidationSla where Cliente = 'RochaLog' and Tipo = 'Mobilização' and Funcionario is not null"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Data_Envio", type date}, {"Data_Analise", type date}, {"Hora_Envio", type time}, {"Hora_Analise", type time}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "FDS_Análise", each if Date.DayOfWeek([Data_Analise]) = 0 or Date.DayOfWeek([Data_Analise]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "FDS_Envio", each if Date.DayOfWeek([Data_Envio]) = 0 or Date.DayOfWeek([Data_Envio]) = 6 then "FDS"
+				 
+				else  "DDS"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "Hora_Corrigida_Análise", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Analise],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA = "FDS" and FDSE <> "FDS" then
+				            HoraLimiteSuperior
+				        else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Personalização Adicionada2", "Hora_Corrigida_Envio", each let
+				    HoraLimiteInferior = #time(9, 0, 0),
+				    HoraLimiteSuperior = #time(18, 0, 0),
+				    Hora = [Hora_Envio],
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    
+				    // Ajuste de hora entre 09:00 e 18:00
+				    HoraCorrigida =
+				        if Hora < HoraLimiteInferior then HoraLimiteInferior
+				        else if Hora > HoraLimiteSuperior then HoraLimiteSuperior
+				        else Hora,
+				
+				    Resultado =
+				       if FDSA <> "FDS" and FDSE = "FDS" then
+				            HoraLimiteInferior
+				           else if FDSA = "FDS" and FDSE = "FDS" then null
+				        else
+				            HoraCorrigida
+				in
+				    Resultado),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada3",{{"Hora_Corrigida_Análise", type time}, {"Hora_Corrigida_Envio", type time}}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Tipo Alterado1", "Data_Corrigida_Análise", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Analise]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				   DiaSemana = Date.DayOfWeek(DataBase, Day.Monday),  // segunda = 0 ... domingo = 6
+				    DiasParaSubtrair = if DiaSemana >= 4 then DiaSemana - 4 else DiaSemana + 3,
+				    SextaAnterior = Date.AddDays(DataBase, -DiasParaSubtrair),
+				
+				    Resultado =
+				        if FDSE <> "FDS" and FDSA = "FDS" then
+				            SextaAnterior
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Personalização Adicionada4", "Data_Corrigida _Envio", each let
+				    FDSE = [FDS_Envio],
+				    FDSA = [FDS_Análise],
+				    DataBase = Date.From([Data_Envio]),
+				
+				    // Cálculo da próxima segunda-feira
+				    DiaSemanaSeg = Date.DayOfWeek(DataBase, Day.Monday),
+				    ProximaSegunda = Date.AddDays(DataBase, 7 - DiaSemanaSeg),
+				
+				    // Cálculo da próxima sexta-feira
+				    DiaSemanaSex = Date.DayOfWeek(DataBase, Day.Monday),
+				    DiasAteSexta = if DiaSemanaSex <= 4 then 4 - DiaSemanaSex else 11 - DiaSemanaSex,
+				    SextaMaisProxima = Date.AddDays(DataBase, DiasAteSexta),
+				
+				    Resultado =
+				        if FDSE = "FDS" and FDSA <> "FDS" then
+				            ProximaSegunda
+				        else if FDSE = "FDS" and FDSA = "FDS" then null
+				        else
+				            DataBase
+				in
+				    Resultado),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada5",{{"Data_Corrigida_Análise", type date}, {"Data_Corrigida _Envio", type date}}),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Tipo Alterado2", "SLA", each let
+				    // Colunas de fim de semana
+				    FDS_Envio = [FDS_Envio],
+				    FDS_Analise = [FDS_Análise],
+				
+				    // Verificação inicial de fim de semana
+				    HorasSLA = if FDS_Envio = "FDS" or FDS_Analise = "FDS" then
+				        0
+				    else
+				        let
+				            // Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				            // Constantes do expediente
+				            HoraInicio = #time(9, 0, 0),
+				            HoraFim = #time(18, 0, 0),
+				            Jornada = 9, // 9 horas por dia útil
+				
+				            DataHoraAnaliseDia = (HoraAnalise - 9),
+				            DataHoraEnvioDia = (18 - HoraEnvio),
+				
+				            // Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0)),
+				
+				            // Caso 1: Mesmo dia
+				            HorasMesmoDia = if DataEnvio = DataAnalise then
+				                (HoraAnalise - HoraEnvio)
+				            else
+				                null,
+				
+				            // Cálculo do SLA com desconto de fins de semana
+				            DiasUteisEntre = Duration.Days(DataAnalise - DataEnvio) - DiasFinaisSemana - 1,
+				            ResultadoFinal = if DataEnvio = DataAnalise then
+				                HorasMesmoDia
+				            else
+				                DiasUteisEntre * Jornada +(DataHoraAnaliseDia + DataHoraEnvioDia)
+				        in
+				            ResultadoFinal
+				in
+				    HorasSLA),
+				    #"Personalização Adicionada7" = Table.AddColumn(#"Personalização Adicionada6", "Final de semana", each let 
+				
+				// Quebra em data e hora
+				            DataEnvio = [Data_Corrigida _Envio],
+				            HoraEnvio = Duration.TotalHours([Hora_Corrigida_Envio] - #time(0, 0, 0)),
+				            DataAnalise = [Data_Corrigida_Análise],
+				            HoraAnalise = Duration.TotalHours([Hora_Corrigida_Análise] - #time(0, 0, 0)),
+				
+				
+				
+				// Conta os dias entre as datas
+				            DiasTotais = List.Dates(DataEnvio, Duration.Days(DataAnalise - DataEnvio)+1, #duration(1, 0, 0, 0)),
+				            DiasFinaisSemana = List.Count(List.Select(DiasTotais, each Date.DayOfWeek(_, Day.Sunday) = 0 or Date.DayOfWeek(_, Day.Saturday) = 0))
+				
+				in
+				if DataAnalise = null and DataEnvio = null then null
+				
+				else DiasFinaisSemana*9),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada7", each [Data_Envio] >= #date(2025, 2, 1)),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Linhas Filtradas",{{"SLA", type number}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Tipo Alterado3", each ([Tipo] = "Mobilização") and ([Funcionario] <> null)),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Linhas Filtradas1",{{"Id_Pedido", Text.Upper, type text}})
+				in
+				    #"Texto em Maiúscula"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

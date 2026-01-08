@@ -1,0 +1,35 @@
+table Pesos
+	lineageTag: 9038f903-69f3-4c01-9061-576a3fbeecef
+
+	column Documento
+		dataType: string
+		lineageTag: b2ab1966-42e1-49ae-b853-e83477c94a8f
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: int64
+		formatString: 0
+		lineageTag: bb6d2bb9-6880-4832-87da-94b5f35b4117
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Pesos = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\CCR\00.Setup\Documentação - Peso.xlsx"), null, true),
+				    Planilha1_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Documento", type text}, {"Peso", Int64.Type}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,157 @@
+relationship b6118b9f-17b5-4365-b86a-94681a560edc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Prazo de Envio'
+	toColumn: LocalDateTable_601600e6-bb4d-43b9-b6d2-852c3b8420b6.Date
+
+relationship e3235d18-953f-4421-a55e-8ccd744820af
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Data da Análise'
+	toColumn: LocalDateTable_357696e8-dd17-4215-94fe-b3ee76ea8695.Date
+
+relationship 76e0fb8a-df4c-7827-23f4-f4411621f911
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários'.'Número do Pedido'
+	toColumn: 'Documentos em Análise'.'Número do Pedido'
+
+relationship 619a4651-f157-449f-8e3a-4aee345631cd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Reprovações.Data_Envio
+	toColumn: LocalDateTable_101ff77e-4e17-4516-80c4-f64ea4434338.Date
+
+relationship 2bfafea0-2b81-99be-7ed7-043d3e4dcebf
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Reprovações.Fornecedor
+	toColumn: 'Documentos em Análise'.Fornecedor
+
+relationship 981e8b82-c32f-40ce-8008-2c6ea563dd4a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Cadastro no sistema'
+	toColumn: LocalDateTable_0b2a5d4c-cb90-4c9f-a030-6dd6d808f000.Date
+
+relationship AutoDetected_420ebb8b-c7bf-4156-9135-dc44a457378f
+	isActive: false
+	toCardinality: many
+	fromColumn: 'Status de Efetivos'.Id_Contrato
+	toColumn: Contratos.Id_Contrato
+
+relationship 2ef41f9c-91e1-ec46-79e1-784685e7bd32
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Documentos em Análise'.Id_Contrato
+	toColumn: 'Status de Efetivos'.Id_Contrato
+
+relationship 7acde9e4-8a94-68a5-fac6-949964bd5097
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Contratos.Id_Contrato
+	toColumn: 'Documentos em Análise'.Id_Contrato
+
+relationship 978f714e-48f6-4792-90ce-66b1e48b582e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Inicio'
+	toColumn: LocalDateTable_5aa56e4a-452b-422d-83e6-b85516f74827.Date
+
+relationship b5ec7eee-5966-4787-957e-804870a956fd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Fim'
+	toColumn: LocalDateTable_d871c594-bb5c-4e26-8935-6a9283022d28.Date
+
+relationship 81a1887c-7d3a-4fdf-9b33-f61fd46237cc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Data de Envio'
+	toColumn: LocalDateTable_1c348a00-dcb9-41aa-a5e5-8798cb7dfb41.Date
+
+relationship b491e5e1-e840-7a89-197d-b032830dad88
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.'Número do Pedido'
+	toColumn: 'Número de Contrato'.'Número do Pedido'
+
+relationship 5fc7415f-d640-c865-0060-011f835953cc
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status do Fornecedores'.'Número do Pedido'
+	toColumn: 'Número de Contrato'.'Número do Pedido'
+
+relationship be985bb4-7114-1eb6-ea88-d70ce2629eea
+	isActive: false
+	fromColumn: 'Status de Efetivos'.'Número do Pedido'
+	toColumn: 'Número de Contrato'.'Número do Pedido'
+
+relationship 96c70189-90b7-f8ae-ee8f-17767a224c43
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.CNPJ
+	toColumn: 'Tabela de CNPJs'.CNPJ
+
+relationship e69d62c9-bdea-3f93-a500-8d60b148cc69
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Documentos em Análise'.Documento
+	toColumn: 'Documentos Algar'.Documento
+
+relationship b91363b9-f5b8-4db5-9985-8160e10462fa
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.Date
+
+relationship 7c6d58bd-6607-b97d-3b78-946a1875669d
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.Competência
+	toColumn: dCalendário.Date
+
+relationship 12a46699-7924-76ab-d22a-a33bbad0acd2
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status de Efetivos'.'Data de cadastro'
+	toColumn: dCalendário.Date
+
+relationship 052231aa-3299-46e2-b20c-4bd1c328d850
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de Efetivos'.'Cadastro no sistema'
+	toColumn: LocalDateTable_6fbf3cfb-9c3f-4de6-a0d0-6a4a91db2c32.Date
+
+relationship 05c8e875-0716-42dc-8b71-85ef63f68f67
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de Efetivos'.'Vigência Inicial'
+	toColumn: LocalDateTable_e263ab74-25ce-4b84-aae3-fccdadecd6a5.Date
+
+relationship 51e7a50a-de7a-4f5b-82e3-52f9441e497f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de Efetivos'.'Vigência Final'
+	toColumn: LocalDateTable_82070a69-7cb4-4be3-868f-c48af5bdd822.Date
+
+relationship 8c02efeb-d6b9-43ec-818e-67bc22ad2258
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Reprovações.'Prazo de Envio'
+	toColumn: LocalDateTable_db5d89f7-b1d7-4506-87cb-b29373bb43a3.Date
+
+relationship 9899a185-7fc9-4b90-a6c3-ab1981605c54
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Reprovações.Data_Análise
+	toColumn: LocalDateTable_2a099c2c-da9c-4092-95c5-128d6156f034.Date
+
+relationship aaffd829-5ffc-478a-b48e-e5d2c7c55d44
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Inicial'
+	toColumn: LocalDateTable_ee7b9fe3-6b04-4e5c-a387-956ea507fc16.Date
+
+relationship a5cea7d8-ec5b-4ebf-8353-cbce66d9ab93
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Final'
+	toColumn: LocalDateTable_0c0b74f7-10fa-4a7b-ab75-cbcaba50740e.Date
+
+relationship AutoDetected_1aed8ee6-67ec-46ab-b78c-dc733896093a
+	fromColumn: 'Documentos em Análise'.Documento
+	toColumn: 'Classificação Docs'.Documento
+
+relationship AutoDetected_f197e83c-0897-4e5d-b296-6235106dfb34
+	isActive: false
+	fromColumn: Reprovações.Documento
+	toColumn: 'Classificação Docs'.Documento
+
+relationship AutoDetected_90d44fa4-2a1c-4ff2-9c8f-95a54b9e625b
+	isActive: false
+	fromColumn: 'Documentos Algar'.Documento
+	toColumn: 'Classificação Docs'.Documento
+

@@ -1,0 +1,376 @@
+table Base
+	lineageTag: 2c01aae0-c1ef-4a31-bfa8-3ddd50353856
+
+	measure 'Média de Horas de Análise' = CALCULATE(AVERAGE(Base[Horas Conversão]) )
+		lineageTag: 0ed9472b-5b69-48b9-9ff5-5a5c7c7756f4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Id_Fornecedor
+		dataType: string
+		lineageTag: 897d4f3f-a4a8-477e-af3b-9b25d74d08fc
+		summarizeBy: none
+		sourceColumn: Id_Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 6e0c434b-55c7-4537-981d-92f140dbbc1e
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionario
+		dataType: string
+		lineageTag: d3275f74-3946-435b-a856-96aa74dad5b8
+		summarizeBy: none
+		sourceColumn: Funcionario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: a28f4a94-c783-4c7e-9266-e2af8ed6d0b2
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome de Documento'
+		dataType: string
+		lineageTag: 83535a6d-8d6f-4739-af59-646063f14758
+		summarizeBy: none
+		sourceColumn: Nome de Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: 85b3d45d-ac90-40e9-9346-5575b468afe2
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Pedido
+		dataType: string
+		lineageTag: b6f64583-bc69-43eb-9ef1-49d5d4d81fc2
+		summarizeBy: none
+		sourceColumn: Id_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número de Pedido'
+		dataType: string
+		lineageTag: 4c1c8aa8-f846-46ee-a4fe-aa3f2b084841
+		summarizeBy: none
+		sourceColumn: Número de Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Cadastro_Pedido
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 017e04bf-5c2a-4f65-b74f-390ba7e40833
+		summarizeBy: none
+		sourceColumn: Data_Cadastro_Pedido
+
+		variation Variation
+			isDefault
+			relationship: b0e96ae4-3b8e-4db2-b3b6-c359e4a57a92
+			defaultHierarchy: LocalDateTable_416fb217-c6e3-49aa-93d5-48f5d0abcb99.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Cadastro_Pedido
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6fdabfe1-05a6-44d5-959d-3f5d5fd1e915
+		summarizeBy: none
+		sourceColumn: Hora_Cadastro_Pedido
+
+		variation Variation
+			isDefault
+			relationship: a385842c-af78-4315-b730-69e25b2d1b6a
+			defaultHierarchy: LocalDateTable_57f280d0-b63d-47e8-b8bf-c26516425efc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Prazo_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 06bca5a6-0204-453f-a81e-705d26be1019
+		summarizeBy: none
+		sourceColumn: Prazo_Envio
+
+		variation Variation
+			isDefault
+			relationship: 77e5c7cd-6967-4270-9106-370964ea4e09
+			defaultHierarchy: LocalDateTable_40bf46e5-534b-4ea3-b4ca-bfe1b97626bf.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 624ec74d-7420-4c61-8746-53a70760e59c
+		summarizeBy: none
+		sourceColumn: Data de Envio
+
+		variation Variation
+			isDefault
+			relationship: 501c7d2c-a257-4031-b6a7-775444884c4c
+			defaultHierarchy: LocalDateTable_3879e635-86b8-4f0c-85ee-4127b835dbb7.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Envio
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 455ffd37-f387-4eb2-abf0-1b4b7646c813
+		summarizeBy: none
+		sourceColumn: Hora_Envio
+
+		variation Variation
+			isDefault
+			relationship: 5bad4a8f-bec1-4c75-89d6-62c7565d274c
+			defaultHierarchy: LocalDateTable_d89360c2-0ff3-4c3d-9c16-022def467396.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Análise'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: c52f95a2-cced-42a9-accc-f5a1ed3d3b4d
+		summarizeBy: none
+		sourceColumn: Data de Análise
+
+		variation Variation
+			isDefault
+			relationship: e38e3d21-06e0-482e-bc0a-e5b683491c8e
+			defaultHierarchy: LocalDateTable_5908ee4b-c29c-459d-98f5-eb0627e74026.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Analise
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: df8f30bc-d750-46f3-bd08-abfe4525961e
+		summarizeBy: none
+		sourceColumn: Hora_Analise
+
+		variation Variation
+			isDefault
+			relationship: 88a84f07-9172-4aef-9c33-90fc478fb72d
+			defaultHierarchy: LocalDateTable_fe31ef1c-d1ef-4d15-a29d-5393a2f3bd63.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Foi_Aprovado
+		dataType: string
+		lineageTag: 167eb730-cd12-4a5e-bec8-0a94d15c74c7
+		summarizeBy: none
+		sourceColumn: Foi_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Analista
+		dataType: string
+		lineageTag: e2cf93d0-e7ef-43f2-a6f1-344567eeee70
+		summarizeBy: none
+		sourceColumn: Id_Analista
+
+		annotation SummarizationSetBy = Automatic
+
+	column Analisado_Por
+		dataType: string
+		lineageTag: 9f25dc9e-f956-40a9-8286-a11204cc1628
+		summarizeBy: none
+		sourceColumn: Analisado_Por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: 8a0a49f6-a557-4ce9-bb83-3e7da6efe7e0
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Time
+		dataType: string
+		lineageTag: 91f1f253-40aa-43d5-93fb-21cf1095001c
+		summarizeBy: none
+		sourceColumn: Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ajuste Envio FDS'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 68c715cc-5a44-42a9-bbd6-fdddc50e1f90
+		summarizeBy: none
+		sourceColumn: Ajuste Envio FDS
+
+		variation Variation
+			isDefault
+			relationship: e57b3647-491d-4dfd-b070-6ea0d47e5859
+			defaultHierarchy: LocalDateTable_c3a7c5a5-2da5-451a-9f4e-d3cc39f3df8c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Hora de Envio'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a8ac97da-fbeb-4c67-b3e3-9309c29f2f94
+		summarizeBy: none
+		sourceColumn: Hora de Envio
+
+		variation Variation
+			isDefault
+			relationship: 8898e686-4773-4972-8c01-73c58cd24671
+			defaultHierarchy: LocalDateTable_d0968294-8f44-4f2c-9def-d15d9eb0dd87.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ajuste Análise FDS'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 95dda78d-92b7-4016-ae6b-25f42fb22884
+		summarizeBy: none
+		sourceColumn: Ajuste Análise FDS
+
+		variation Variation
+			isDefault
+			relationship: 178d2886-2e2f-40c6-86d4-70b0bf131bee
+			defaultHierarchy: LocalDateTable_aa3a5277-1b62-4883-bdb4-e4fac336ecd9.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Hora Analise'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: efe487f2-11fd-4733-ac37-414882b07848
+		summarizeBy: none
+		sourceColumn: Hora Analise
+
+		variation Variation
+			isDefault
+			relationship: bb77fe1b-afd6-4387-85f1-02916eaf209d
+			defaultHierarchy: LocalDateTable_96e7d930-02c9-4a10-9092-cff51ae5f7cf.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Primeiro Dia'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ff2266e1-d707-42e3-bc73-13e63b1592c1
+		summarizeBy: none
+		sourceColumn: Primeiro Dia
+
+		variation Variation
+			isDefault
+			relationship: a9bda9cb-474d-4834-8a39-6733d1d701a1
+			defaultHierarchy: LocalDateTable_71dd4eea-fc13-4cc4-a452-3ef3caffc619.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Restante
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ca71cf75-7113-4cd3-bdad-dd081fa60011
+		summarizeBy: none
+		sourceColumn: Restante
+
+		variation Variation
+			isDefault
+			relationship: ec3dd5ea-fe06-4f1d-9f55-dd3b48ec098c
+			defaultHierarchy: LocalDateTable_8c94d204-e2e0-4531-8027-b0e4a486f418.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column hh
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 13fa2c30-eefe-48cf-af3f-50655c5360f2
+		summarizeBy: none
+		sourceColumn: hh
+
+		variation Variation
+			isDefault
+			relationship: 46c36186-e804-4f08-bc73-739c34574405
+			defaultHierarchy: LocalDateTable_83534c9b-5978-4d18-82ec-c0afa20ca458.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'horas total'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9a83680f-296e-4240-8d08-1a45b336a486
+		summarizeBy: none
+		sourceColumn: horas total
+
+		variation Variation
+			isDefault
+			relationship: 43e77093-e94a-4a58-b5fe-e1d59d0508d0
+			defaultHierarchy: LocalDateTable_2df251fa-17d3-4c57-866c-0cbabbc9affd.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Conversão'
+		dataType: double
+		lineageTag: e8116683-6f66-487f-b428-6b2ec9f1c458
+		summarizeBy: sum
+		sourceColumn: Horas Conversão
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'SLA_em_Dias_uteis '
+		dataType: double
+		lineageTag: 35956bf3-e8f6-44f9-81fc-4153ab9f188c
+		summarizeBy: sum
+		sourceColumn: "SLA_em_Dias_uteis "
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Base = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\EDF\02 - SLA Validação\Analise SLA 02.06.xlsx"), null, true),
+				    Base_Sheet = Fonte{[Item="Base",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Base_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Id_Fornecedor", type text}, {"Fornecedor", type text}, {"Funcionario", type text}, {"Id_Documento", type text}, {"Nome_Documento", type text}, {"Tipo", type text}, {"Id_Pedido", type text}, {"Numero_Pedido", type text}, {"Data_Cadastro_Pedido", type date}, {"Hora_Cadastro_Pedido", type datetime}, {"Prazo_Envio", type date}, {"Data_Envio", type date}, {"Hora_Envio", type datetime}, {"Data_Analise", type date}, {"Hora_Analise", type datetime}, {"Foi_Aprovado", type text}, {"Id_Analista", type text}, {"Analisado_Por", type text}, {"Status_Documentacao", type text}, {"Time", type text}, {"Ajuste Envio FDS", type date}, {"Hora de Envio", type datetime}, {"Ajuste Análise FDS", type date}, {"Hora Analise", type datetime}, {"Primeiro Dia", type datetime}, {"Restante", type datetime}, {"hh", type datetime}, {"horas total", type datetime}, {"Horas Conversão", type number}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Linhas em Branco Removidas",{{"Data_Analise", "Data de Análise"}, {"Data_Envio", "Data de Envio"}, {"Nome_Documento", "Nome de Documento"}, {"Numero_Pedido", "Número de Pedido"}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Colunas Renomeadas", "SLA_em_Dias_uteis ", each [Horas Conversão] /8),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"SLA_em_Dias_uteis ", type number}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado1","Atlas","Validação Manual ",Replacer.ReplaceText,{"Time"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","Sistema","Validação Automática",Replacer.ReplaceText,{"Time"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Valor Substituído1", each ([Time] <> "Cliente"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

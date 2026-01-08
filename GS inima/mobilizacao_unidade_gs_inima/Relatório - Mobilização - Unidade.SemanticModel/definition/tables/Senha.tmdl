@@ -1,0 +1,26 @@
+table Senha
+	lineageTag: cbf72521-908e-4028-b27c-9c3909463cef
+
+	measure 'Valor Senha' = SELECTEDVALUE('Senha'[Senha])
+		formatString: 0
+		lineageTag: 82704fd5-d78d-4ee2-a1d6-65d75b0285ae
+
+	column Senha
+		formatString: 0
+		lineageTag: 5e37b9df-30c0-4d4e-adbd-789bb7c9decf
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition Senha = calculated
+		mode: import
+		source = GENERATESERIES(1500, 2500, 1)
+
+	annotation PBI_Id = f4bd5e777b954a3088ba10995a2d6c21
+

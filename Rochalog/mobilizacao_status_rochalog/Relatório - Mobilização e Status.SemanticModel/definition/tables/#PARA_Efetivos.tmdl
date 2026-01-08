@@ -1,0 +1,48 @@
+table #PARA_Efetivos
+	lineageTag: c7215b14-670d-4a4a-8d4e-70dbae064bc5
+
+	column #PARA_Efetivos
+		lineageTag: 7c0f4cfa-082c-4ed2-b68c-3efb185e7a3f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#PARA_Efetivos Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#PARA_Efetivos Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#PARA_Efetivos Campos'
+		isHidden
+		lineageTag: 0eeb01d5-6045-4a78-9578-7eca87823110
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#PARA_Efetivos Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#PARA_Efetivos Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 3f51cb14-bd4f-4267-999a-de43544e171d
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #PARA_Efetivos = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Status Efetivos'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Status Efetivos'[Unidade]), 1)
+				}
+
+	annotation PBI_Id = 62601036c59f4f8e83128abca18c36f4
+

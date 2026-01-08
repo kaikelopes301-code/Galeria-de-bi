@@ -1,0 +1,197 @@
+table 'Número de Contrato'
+	lineageTag: 3dba2ee0-a016-43cf-a065-be733dbae558
+
+	measure 'Quantidade de Pedidos' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: d166ed92-fb2d-418a-8425-86ee3cd85688
+
+	measure '(Contratos) No_Prazo' = ```
+			
+			VAR CONTRATOS = CALCULATE(COUNT('Número de Contrato'[Envio no Prazo]),
+			'Número de Contrato'[Envio no Prazo] = 1)
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+			
+			```
+		lineageTag: f1e2fc47-efa3-4b18-b40a-9bd8a9676562
+
+		formatStringDefinition =
+				VAR FUNC = [(Contratos) No_Prazo]
+				
+				VAR TOTAL = [(Pedidos) _Quantidade]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"#0.0%" & ")")
+
+	measure '(Contratos) Taxa_de_Entrega' =
+			
+			
+			VAR CONTRATOS = CALCULATE(COUNT('Número de Contrato'[Envio no Prazo]),
+			'Número de Contrato'[Aderência] = 0)
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+		lineageTag: e83df171-f3ce-4b67-bbc4-3ddeaf8c0d80
+
+		formatStringDefinition =
+				VAR FUNC = [(Contratos) Taxa_de_Entrega]
+				
+				VAR TOTAL = [(Pedidos) _Quantidade]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"#0.0%" & ")")
+
+	measure '(Pedidos) _Quantidade' =
+			
+			VAR CONTRATOS = CALCULATE(DISTINCTCOUNT('Número de Contrato'[Número do Pedido]))
+			
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+		formatString: 0
+		lineageTag: 0ed5e605-4182-4b2e-8567-403c481b7cf7
+
+	measure '(Sem Cadastro) Funcionários' =
+			
+			VAR CPF = CALCULATE(COUNTROWS(),
+			'Número de Contrato'[Contagem_CPFs] = 0)
+			
+			RETURN IF(CPF=BLANK(),0,CPF)
+		lineageTag: 0c59e598-6103-4402-93c5-f4615905735b
+
+		formatStringDefinition =
+				VAR FUNC = ([(Sem Cadastro) Efetivos])
+				
+				VAR TOTAL = [(Pedidos) _Quantidade]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"0.0%" & ")")
+
+	column Aderência =
+			IFERROR(CALCULATE([_%_Aderência],
+			'Documentos em Análise'[Tipo do documento] = "Recorrente"),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0eaca38d-de80-4827-a91d-f357563426b0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Statude de Envio' = IF([Aderência] = BLANK(), "Não Enviado", "Enviado")
+		lineageTag: 40d07667-c53c-4dd7-b49f-626ca80fff09
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Adesão' =
+			
+			IF( 'Número de Contrato'[Aderência] = BLANK(), "0%",
+			    IF('Número de Contrato'[Aderência] < 0.25, "0%-25%",
+			        IF( 'Número de Contrato'[Aderência] < 0.5, "25%-50%",
+			            IF('Número de Contrato'[Aderência] <0.75, "50%-75%",
+			                IF ('Número de Contrato'[Aderência] <1, "75%-100%",
+			                    IF('Número de Contrato'[Aderência] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: 083fa3a1-69b3-4056-afff-8818dd0c8474
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conformidade =
+			IFERROR(CALCULATE([_%_Conformidade],
+			'Documentos em Análise'[Tipo do documento] = "Recorrente"),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4c30de91-1f28-448a-8380-3d0e8618c75a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Conformidade' =
+			
+			IF( 'Número de Contrato'[Conformidade] = BLANK(), "0%",
+			    IF('Número de Contrato'[Conformidade] < 0.25, "0%-25%",
+			        IF( 'Número de Contrato'[Conformidade] < 0.5, "25%-50%",
+			            IF('Número de Contrato'[Conformidade] <0.75, "50%-75%",
+			                IF ('Número de Contrato'[Conformidade] <1, "75%-100%",
+			                    IF('Número de Contrato'[Conformidade] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: caa22121-4b28-481f-9fe7-0dd8ce2ae3ad
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco = [!Status Bloqueio Pagamento]
+		lineageTag: dd632e2f-e4a6-4fa5-9ebe-abe77498b364
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Peso 2' =
+			
+			
+			VAR P2 = [(Atrasado) Peso 2]
+			
+			RETURN IF(P2 = BLANK(),0,P2)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d0457dbc-4ca9-434b-8a33-9b4d6d920e1a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa Cliente' = ```
+			
+			VAR PESO2 = 'Número de Contrato'[Peso 2]
+			
+			RETURN IF (PESO2 = 0, 
+			            "Risco Médio",
+			            "Risco Alto")
+			```
+		lineageTag: 93abb731-14d2-458b-9754-05391ab278b4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		lineageTag: a4cd1a6a-5555-4bda-8667-df59cc1daff0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[Número do Pedido]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Envio no Prazo' =
+			
+			VAR Enviado =[(Enviado) No Prazo]
+			RETURN if (Enviado=BLANK(),0,Enviado)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e99258e1-1281-4c37-a0c7-a579d60a890b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contagem_CPFs =
+			
+			VAR EFETIVOS = CALCULATE(
+			    DISTINCTCOUNT('Status de Efetivos'[CPF]),
+			    USERELATIONSHIP('Número de Contrato'[Número do Pedido],'Status de Efetivos'[Número do Pedido])
+			)
+			
+			RETURN IF(EFETIVOS=BLANK(),0,EFETIVOS)
+		formatString: 0
+		lineageTag: 85037377-43f4-4b73-895e-64dda8f52027
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Número de Contrato' = calculated
+		mode: import
+		source = DISTINCT('Documentos em Análise'[Número do Pedido])
+
+	annotation PBI_Id = ff5864599cb442fa92214988bb0e7dff
+

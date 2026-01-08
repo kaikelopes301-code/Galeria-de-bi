@@ -1,0 +1,48 @@
+table Status
+	lineageTag: c6ad3dcc-0d27-4538-8fd5-0b7c41523115
+
+	column Status
+		lineageTag: fab25219-446c-4680-a412-4e3c74425473
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Status Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Status Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Campos'
+		isHidden
+		lineageTag: b08aa858-0b8e-4737-b920-c1ca4089d9de
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Status Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 6cec0830-d2c3-4386-bd3f-8dc82affdd58
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Status = calculated
+		mode: import
+		source =
+				{
+				    ("Status", NAMEOF('Documentos em Análise'[Status]), 0),
+				    ("Status Envio", NAMEOF('Documentos em Análise'[Status Envio]), 1)
+				}
+
+	annotation PBI_Id = 17833de153944c939de90eaae23f8a49
+

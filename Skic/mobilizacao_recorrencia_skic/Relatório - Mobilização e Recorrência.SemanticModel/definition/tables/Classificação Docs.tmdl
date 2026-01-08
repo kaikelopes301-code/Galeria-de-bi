@@ -1,0 +1,33 @@
+table 'Classificação Docs'
+	lineageTag: 2b8b65d5-b772-4b40-85b9-939d3ab73014
+
+	column Documento
+		dataType: string
+		lineageTag: e7224fe6-1a88-4353-9c2c-8cbb036d5fc4
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: double
+		formatString: 0
+		lineageTag: 7aa0e3e5-9391-4318-9a45-39254b1590ff
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Classificação Docs' = m
+		mode: import
+		source =
+				let
+				   Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("rVbNbttGEH6VhU8SLP/FaVHoRkuiq8CWBIpQD0YOI3IsL0pylV1SMHrKO+QJjB4CF8gp6MVXvkmfpN+SFElJNnJoL9Jyd2Z2Zr6Zb/bu7kjc+OOZ6NxQFirh589BIgMlQhbjxFCULbUMCV8sZqxlkEXKFBvdo97RxdHH3t2REygN1YGKOJUb1cMq2XCSf83/rHdJqExUguMklBsZZhTZW3xNS4oeVGMuSllTqZ1YA0mqKVVirgJJUUtsQzp/sibcLAmkSijmJG3ZSfgRl4kT4bOOi4hg64EDuSc3nwoKY2mMtRGd2TDz7yGSsCMy5Fqk3h+QTosgJ7MPB5v2vjf2Z6p04LI+YKnJniwokEkV/GC6GA8bddapDCsDw/x5KVNlttmTJiUEOpgM/cZsW8HjVRZRBSUwcK/9uYUEGtvP5ibsuRwChFakk1/FgFJeKS1JXLX2F81axetTMXpc2wT+BUjodOdMqw0lKYsrSoL8ScsyFbQqcbMfc4qKA/OqHgTWW+kmyl0BjwOFdOwifCCzQr60EqOTvZr6kaA4Fq4MHqh92FKuCtVGpRmIlDDauFhvZP5VCQcVlFD4itKBJ1UL/c2m7iFzVnZQvdNK1NDxXPHP5y9iqIKsTqijNQcUNp4gPyxTMhXA0tSJrAODruYVlrhnNBsbQaXTJNYcKcFIEY5bMbjIOO2js3fUwHzLllaEgz7Kv6UyoMYDhePLx/eiA6ch26KY60wWZnQLXtFZ2iyobm1gK9UugrrYt9LAcA/m2YHbNzKwyUea2KxBGMhTT1BFOIYSmRZlir0sRUP8QSVQPRGoJGBjCtSQD/COrL5wT/5FrwCDEbP8ZRmBX0qF+1NxY2spqlCiNc7ypw1HojN67KOh8mcdoNt74A3kDO5s27MnnMliPHd6Ynzl3OLPHTm3+Bi5+Lm2y+Fkht+RP+iCHtDvIQeggeqmTxklSE9i1w8q27BuMuAPHL/+mnji/Oc+yIZlxbIiM0qsMtIoC7ZRGJR4U2aom5byycUvfTFd16wOgVUmk5BMaudKuc4sojGY/Peu6LhKx5VwAaeE1yuOu22j7877aKxVpslCJSx75C8wjZmxnSlwLMa4uY8otgmVFhSAv8xMmn+z3zv23r1ubxpkayrmSyQSErcy2QbS1r687DfXcixGZk2249HI97stb4Xf9+1BKKsGZ3QF6NCJl5Kroqxt4UoMzPwFXGOrm6wi1lnhQQ/JWdd4Yi6wiZW1MKFNi03slT/t+kdRikhrielpw/+zwe182nxde+216NicOp6/rZ6mXBt0vBGqzeOoVRBb1jBnlRdYgyTr3rUgL0vRLf8QwmlVa3vsAUadP4fVCJTLrGzIhtYsA+ONwZhC1UnBjQPf/Y2Xr1x6jx6T6PdjWzJvTZwqOMSV5t+L+bXnoiUWkAztXXaoB2bGiwPjuYjFPi2K9Ruyg4pVyiS4patvyLqaP2Xl9IXlD0oXzP3aO6ul5zEar25PX6Uo9c52GIslGQbV4UVkm6BooiUnfG+pSJkG9dYzy6bQUl/ZgSQWeHigJC7O7djUVNDhNNNFBpueO7TksQmkKVPbTNe6jjv+wPO7xR0/5PQFRch6VEyFKtDOTole2ZhkXS/H4qoYGLvzortrz+N7lv+XMYSVmLXCY/A/GPv4Lw==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Peso = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Peso", type number}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

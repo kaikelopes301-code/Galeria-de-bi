@@ -1,0 +1,121 @@
+table 'Teste - Npedido'
+	lineageTag: 97b3a63c-24df-4850-a6db-c3239a6f031b
+
+	measure 'Quantidade de Pedido' = CALCULATE(DISTINCTCOUNT('Teste - Npedido'[Número de Pedido]))
+		formatString: 0
+		lineageTag: 6144aae6-af41-4c32-a1a8-26c66bc1e180
+
+	column 'Chave de Número de Pedido'
+		lineageTag: 4e49352d-d813-4f8d-95e1-071d4fb96eca
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[Chave de Número de Pedido]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número de Pedido' = LOOKUPVALUE('Documentos em Análise'[Número do Pedido],'Documentos em Análise'[Chave de Número de Pedido],'Teste - Npedido'[Chave de Número de Pedido])
+		lineageTag: 4fa3e751-36ab-48b3-a539-2e26efe94aad
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência = LOOKUPVALUE('Documentos em Análise'[Início do Mês],'Documentos em Análise'[Chave de Número de Pedido],'Teste - Npedido'[Chave de Número de Pedido])
+		formatString: mmmm" de "yyyy
+		lineageTag: 5364ee4e-3a4b-45d0-911f-4d7d24ab6a73
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: fe720353-75f3-4a4f-9426-9b7c954a5ae3
+			defaultHierarchy: LocalDateTable_4071bcc5-f297-432a-9c48-2e562262d612.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Aderência = [4 - %Quantidade de Enviados]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 5e826006-ac6c-4f33-abfa-4efef0dff035
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conformidade = CALCULATE([%Aprovados])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 895a1f7e-a781-4197-be42-f8fb6b9760fc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco = [Risco Críticos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 5deb2cfc-1680-4dcf-98c9-c4aded589fd9
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Adesão' =
+			
+			IF( 'Teste - Npedido'[Aderência] = BLANK(), "0%",
+			    IF('Teste - Npedido'[Aderência] < 0.25, "0%-25%",
+			        IF( 'Teste - Npedido'[Aderência] < 0.5, "25%-50%",
+			            IF('Teste - Npedido'[Aderência] <0.75, "50%-75%",
+			                IF ('Teste - Npedido'[Aderência] <1, "75%-100%",
+			                    IF('Teste - Npedido'[Aderência] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: 9c962f06-ee48-4b49-9c07-0dcb09348c32
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Conformidade' =
+			
+			IF( 'Teste - Npedido'[Conformidade] = BLANK(), "0%",
+			    IF('Teste - Npedido'[Conformidade] < 0.25, "0%-25%",
+			        IF( 'Teste - Npedido'[Conformidade] < 0.5, "25%-50%",
+			            IF('Teste - Npedido'[Conformidade] <0.75, "50%-75%",
+			                IF ('Teste - Npedido'[Conformidade] <1, "75%-100%",
+			                    IF('Teste - Npedido'[Conformidade] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: 67249a27-2e7e-4648-b6b2-19e0ea69d9ee
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Risco' = ```
+			
+			    IF('Teste - Npedido'[Risco] < 0.25, "Risco Baixo",
+			        IF( 'Teste - Npedido'[Risco] < 0.5, "Risco Médio",
+			            IF('Teste - Npedido'[Risco] <0.75, "Risco Alto",
+			                IF ('Teste - Npedido'[Risco] <=1, "Risco Crítico",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    
+			
+			```
+		lineageTag: 0ced36c4-bedb-4702-a25d-3fc4e5b1a42f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Teste - Npedido' = calculated
+		mode: import
+		source = DISTINCT('Documentos em Análise'[Chave de Número de Pedido])
+
+	annotation PBI_Id = 3c59deee75d04cc5a4a896babea3bca8
+

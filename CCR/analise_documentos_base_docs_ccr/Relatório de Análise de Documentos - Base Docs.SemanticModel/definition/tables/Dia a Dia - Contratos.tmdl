@@ -1,0 +1,372 @@
+table 'Dia a Dia - Contratos'
+	lineageTag: 305ac514-54ae-49f6-aaae-28dc0d001dd3
+
+	measure _CNPJ = CALCULATE(DISTINCTCOUNT('Dia a Dia - Contratos'[CNPJ]))
+		formatString: 0
+		lineageTag: 5ed5eab8-5ae5-4998-9caf-7ba9da1244b3
+
+	measure _Quantidade_ = CALCULATE(DISTINCTCOUNT('Dia a Dia - Contratos'[Id do Contrato]))
+		formatString: 0
+		lineageTag: bc5e5397-4516-4fd1-90fd-1666922b88dc
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: f4995a9c-cdb5-4b31-b5af-28b2227cd24b
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Id do Contrato'
+		dataType: string
+		lineageTag: c27bd93b-2e8a-4fe4-8b8b-f02315ced8b9
+		summarizeBy: none
+		sourceColumn: Id do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: fb0db374-d2b9-49bb-99b7-e1f552cc6f22
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 9471eb54-22b6-49db-b1ca-8cfcb592aa4c
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 44f301f6-c0b8-42c7-8620-6489b7672430
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: dc22dd44-b6d8-4646-b471-c51f92eefd29
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 451af1c6-5efb-4f36-a649-45f94d9d0dd0
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 102ffbac-331d-4175-b19e-ea01c9ab854a
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 49fdcded-80f2-4931-ae74-5e3a0e7ecb84
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: b520d4c3-0394-4f0c-8e94-0712312f4786
+			defaultHierarchy: LocalDateTable_bbac2378-8ffc-47ab-8595-40b9c84ce8d6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2ebc74dd-c7ce-4a8d-bd71-168939f22ffb
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: a1e3cc20-b3cd-4d7e-a02d-0201e10d682e
+			defaultHierarchy: LocalDateTable_7f05ca93-eec5-4c0f-9b1a-e10c33023783.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d7a01356-1be0-44cb-9705-094b3b52b719
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: bc78f008-fed5-4aa0-815e-51ddfea7489b
+			defaultHierarchy: LocalDateTable_364145d0-4422-423e-9498-0fe32d5b9224.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: 68163b8b-fadc-4327-aeed-d4ba9f464fe8
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 2db5b6c0-ba66-444d-b066-8b3ec8be3b5e
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 9e54ce51-ea70-4039-a253-2d6052079eec
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 604047f3-7254-4f98-b0ea-6f1d7ba2979b
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: double
+		lineageTag: c1d3e22f-89f0-4428-b027-aea1bdb7e99c
+		summarizeBy: sum
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: 9ef53064-f4d9-404f-9999-989cc3dc5f55
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Gestor'
+		dataType: string
+		lineageTag: 15013193-7b10-417e-bbd1-2600e3f790f7
+		summarizeBy: none
+		sourceColumn: Email do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: 6213688a-312d-4384-9823-e8ddb0d11dc8
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Frequência
+		dataType: string
+		lineageTag: 5160817c-5b54-42e3-89b1-6aa6a56f499c
+		summarizeBy: none
+		sourceColumn: Frequência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'VP de Execução do contrato'
+		dataType: string
+		lineageTag: e715a8c0-7aae-4836-be65-4c1ca8a514f8
+		summarizeBy: none
+		sourceColumn: VP de Execução do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'VP Requisitante do contrato'
+		dataType: string
+		lineageTag: 3bd9af42-1167-4d97-b5f7-8f015ac6415c
+		summarizeBy: none
+		sourceColumn: VP Requisitante do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do gestor técnico'
+		dataType: string
+		lineageTag: 9558c42f-144c-44c8-9919-05a11d9f9823
+		summarizeBy: none
+		sourceColumn: Nome do gestor técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do gestor técnico'
+		dataType: string
+		lineageTag: e05e8817-304e-43db-8c64-c6b4fd686dc4
+		summarizeBy: none
+		sourceColumn: E-mail do gestor técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do fiscal técnico'
+		dataType: string
+		lineageTag: c1900495-a17f-46d4-8ee3-688dfd55fd0f
+		summarizeBy: none
+		sourceColumn: Nome do fiscal técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do fiscal técnico'
+		dataType: string
+		lineageTag: 08e0cdba-7c60-43ab-85eb-2b0401771792
+		summarizeBy: none
+		sourceColumn: E-mail do fiscal técnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do gestor administrativo'
+		dataType: string
+		lineageTag: 50c29ae7-3c86-4335-9db3-18ead6320885
+		summarizeBy: none
+		sourceColumn: Nome do gestor administrativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do gestor administrativo'
+		dataType: string
+		lineageTag: 99fccb69-15e6-47f9-865c-03d859ddefa7
+		summarizeBy: none
+		sourceColumn: E-mail do gestor administrativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do SST responsável'
+		dataType: string
+		lineageTag: c1a63158-9fc7-44a8-b23d-b2f76e31afa3
+		summarizeBy: none
+		sourceColumn: Nome do SST responsável
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do SST responsável'
+		dataType: string
+		lineageTag: e962e7af-150a-4c4e-8b58-5b23a74d6933
+		summarizeBy: none
+		sourceColumn: E-mail do SST responsável
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Centro de Custo'
+		dataType: string
+		lineageTag: 3621c695-557f-4f94-bdda-e56e2ed7575c
+		summarizeBy: none
+		sourceColumn: Centro de Custo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Vigência'
+		dataType: string
+		lineageTag: aff8b6e4-6a16-4b9e-8afa-81824a406eef
+		summarizeBy: none
+		sourceColumn: Status Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave_Contratos
+		dataType: string
+		lineageTag: 937abb89-896f-4dce-b6fb-44e2b0ba5090
+		summarizeBy: none
+		sourceColumn: Chave_Contratos
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 75090acb-45ed-4bb8-9019-f68a674f15fd
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias de Contrato'
+		dataType: double
+		lineageTag: f85f20a5-c3d9-4b1d-a005-134d6fee0b16
+		summarizeBy: sum
+		sourceColumn: Dias de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Personalizar.1'
+		dataType: double
+		lineageTag: 0e5d3e2b-2815-44f9-9fae-f0f547f506f9
+		summarizeBy: sum
+		sourceColumn: Personalizar.1
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Dias
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a0b5974c-8212-4f4c-bf50-60afea89b397
+		summarizeBy: none
+		sourceColumn: Dias
+
+		variation Variation
+			isDefault
+			relationship: 2dde7a2d-0389-4265-8218-8d787cc577bd
+			defaultHierarchy: LocalDateTable_71af9b84-5918-43f9-a944-3a3c825da42d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Dia a Dia - Contratos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)c.OrderNumber[Nº do pedido],#(lf)#(tab)c.Id[Id do Contrato],#(lf)    bc.CompanyName[Razão social],#(lf)    [bc].[Document] AS [CNPJ],#(lf)#(tab)#(lf)    case#(lf)        when c.[Type] = 1 then 'Contínuo'#(lf)        when c.[Type] = 2 then 'Grandes Paradas'#(lf)        when c.[Type] = 4 then 'Eventual'#(lf)        when c.[Type] = 8 then 'Temporário'#(lf)        when c.[Type] = 16 then 'Visitante técnico'#(lf)        when c.[Type] = 32 then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        when c.[Type] = 64 then 'Prestação de serviço eventual fora da área operacional'#(lf)        when c.[Type] = 128 then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        when c.[Type] = 256 then 'Compra Direta, Regulariza e Delegada'#(lf)    end as 'Tipo da contratação',#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN c.FatherId IS NULL THEN 'Contratado'#(lf)#(tab)#(tab)ELSE 'Subcontratado'#(lf)#(tab) END 'Tipo de Fornecedor',#(lf)    case#(lf)        when c.Sla = 0 then 'Padrão'#(lf)        when c.Sla = 1 then 'Emergencial'#(lf)    end as 'Sla',#(lf)    case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)    end as 'Status',#(lf)    convert(date, c.CreatedAt)[Cadastro no sistema],#(lf)    CONCAT(convert(date, c.ValidityInitial), ' a ',convert(date, c.ValidityFinal))[Vigência], #(lf)    b.TradeName[Unidade],#(lf)#(tab)r.Name AS 'Regional',#(lf)#(tab)ca.[Name][Categoria],#(lf)    p.TradeName[Fornecedor],#(lf)    c.[Value][Valor do contrato],#(lf)#(tab)cm.[Name][Nome do Gestor],#(lf)#(tab)cm.[Email][Email do Gestor],#(lf)#(tab)cm.[Phone][Telefone do Gestor],#(lf)#(tab)cfi3.[Name][Frequência],#(lf)#(tab)cfi5.[Name][VP de Execução do contrato],#(lf)#(tab)cfi7.[Name][VP Requisitante do contrato],#(lf)#(tab)cfv10.[Value][Nome do gestor técnico],#(lf)#(tab)cfv11.[Value][E-mail do gestor técnico],#(lf)#(tab)cfv8.[Value][Nome do fiscal técnico],#(lf)#(tab)cfv9.[Value][E-mail do fiscal técnico],#(tab)#(lf)#(tab)cfv12.[Value][Nome do gestor administrativo],#(lf)#(tab)cfv13.[Value][E-mail do gestor administrativo],#(lf)#(tab)cfv14.[Value][Nome do SST responsável],#(lf)#(tab)cfv15.[Value][E-mail do SST responsável],#(lf)#(tab)cfv16.[Value][Centro de Custo]#(lf)#(lf)from [Contract] c with(nolock)#(lf)#(tab)#(tab)#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)INNER JOIN Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)#(tab)inner join [Provider] p with(nolock) on c.ProviderId = p.Id#(lf)#(tab)#(tab)left join ContractManager cm with(nolock) on cm.ContractId = c.Id and cm.Removed = 0#(lf)#(tab)#(tab)left join CustomFieldValue cfv8 WITH(NOLOCK) ON cfv8.EntityId = c.Id AND cfv8.CustomFieldId = '46797071-E688-4C4D-9D1E-A43BA98C9648' -- Nome do fiscal técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv9 WITH(NOLOCK) ON cfv9.EntityId = c.Id AND cfv9.CustomFieldId = '2DA18E51-F8A5-4BDC-8553-87A17EB27A7C' -- E-mail do fiscal técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv10 WITH(NOLOCK) ON cfv10.EntityId = c.Id AND cfv10.CustomFieldId = '9C244155-B8D4-4F0B-9413-7ECBCAFCD254' -- Nome do gestor técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv11 WITH(NOLOCK) ON cfv11.EntityId = c.Id AND cfv11.CustomFieldId = '7BF74685-4491-455C-9A27-F582AEE0ECA9' -- E-mail do gestor técnico#(lf)#(tab)#(tab)left join CustomFieldValue cfv12 WITH(NOLOCK) ON cfv12.EntityId = c.Id AND cfv12.CustomFieldId = '9F3F9320-74D8-4A80-A465-21C47B1D3AB1' -- Nome do gestor administrativo#(lf)#(tab)#(tab)left join CustomFieldValue cfv13 WITH(NOLOCK) ON cfv13.EntityId = c.Id AND cfv13.CustomFieldId = '8909197F-A741-48C4-82A9-02090DAD2FAD' -- E-mail do gestor administrativo#(lf)#(tab)#(tab)left join CustomFieldValue cfv14 WITH(NOLOCK) ON cfv14.EntityId = c.Id AND cfv14.CustomFieldId = '853608BB-71D6-407D-8BF1-413B396A4992' -- Nome do SST responsável#(lf)#(tab)#(tab)left join CustomFieldValue cfv15 WITH(NOLOCK) ON cfv15.EntityId = c.Id AND cfv15.CustomFieldId = '73E86956-CFF0-4D88-940B-F0F09E78E677' -- E-mail do SST responsável#(lf)#(tab)#(tab)left join CustomFieldValue cfv16 WITH(NOLOCK) ON cfv16.EntityId = c.Id AND cfv16.CustomFieldId = 'A684A08F-8759-4429-80C0-23BBB16AF57A' -- Centro de Custo#(lf)#(tab)#(tab)outer apply #(lf)#(tab)#(tab)(#(lf)    select cfi2.[Name] from CustomFieldValue cfv2 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi2 with(nolock) on cfv2.CustomFieldItemId = cfi2.Id#(lf)    where cfv2.EntityId = c.Id#(lf)#(tab)#(tab)and cfv2.[Value] is null#(lf)#(tab)#(tab)and cfv2.Removed = 0#(lf)#(tab)#(tab)and cfi2.Removed = 0#(lf)#(tab)#(tab)AND cfv2.CustomFieldId = '1C30677D-3F2F-4396-93DE-1DA0FD90E592' -- Frequência#(lf)#(tab)) as [cfi3]#(lf)#(tab)outer apply #(lf)#(tab)(#(lf)    select cfi4.[Name] from CustomFieldValue cfv4 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi4 with(nolock) on cfv4.CustomFieldItemId = cfi4.Id#(lf)    where cfv4.EntityId = c.Id#(lf)#(tab)#(tab)and cfv4.[Value] is null#(lf)#(tab)#(tab)and cfv4.Removed = 0#(lf)#(tab)#(tab)and cfi4.Removed = 0#(lf)#(tab)#(tab)AND cfv4.CustomFieldId = '586D0602-B8D0-480F-8565-5A1040393B54' -- VP de Execução do contrato#(lf)#(tab)) as [cfi5]#(lf)#(tab)outer apply #(lf)#(tab)(#(lf)    select cfi6.[Name] from CustomFieldValue cfv6 with(nolock)#(lf)#(tab)#(tab)inner join CustomFieldItem cfi6 with(nolock) on cfv6.CustomFieldItemId = cfi6.Id#(lf)    where cfv6.EntityId = c.Id#(lf)#(tab)#(tab)and cfv6.[Value] is null#(lf)#(tab)#(tab)and cfv6.Removed = 0#(lf)#(tab)#(tab)and cfi6.Removed = 0#(lf)#(tab)#(tab)AND cfv6.CustomFieldId = 'A53C1F6C-9334-4AF9-8B78-03CC327FB6D7' -- VP Requisitante do contrato#(lf)#(tab)) as [cfi7]#(lf)where b.OrganizationId = '23691bb8-3910-436a-9467-0df7b443fb38'#(lf)#(tab)  and c.Removed = 0#(lf)#(tab)  order by c.OrderNumber #(lf)#(lf)#(lf)#(tab) -- Select * from CustomField Where OrganizationId = '23691bb8-3910-436a-9467-0df7b443fb38'#(lf)#(lf)#(lf)#(lf)#(lf)#(tab)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Nº do pedido", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Status", type text}, {"Vigência", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Tipo Alterado", "Vigência", Splitter.SplitTextByDelimiter("a", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Vigência.1", "Vigência Inicial"}, {"Vigência.2", "Vigência Final"}}),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Colunas Renomeadas", "Status Vigência", each if [Vigência Inicial] > DateTime.Date(DateTime.LocalNow()) then "Vigência Futura" else if [Vigência Final] < DateTime.Date(DateTime.LocalNow()) then "Vigência Finalizada" else "Vigente"),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Coluna Condicional Adicionada1", "Chave_Contratos", each Text.Combine({[Nº do pedido], [Razão social], [Unidade], [Categoria]}, ""), type text),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Coluna Mesclada Inserida", "Índice", 0, 1, Int64.Type),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Índice Adicionado", {"Índice"}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Duplicatas Removidas", "Dias de Contrato", each [Vigência Final]-[Vigência Inicial]),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Personalização Adicionada4",{{"Dias de Contrato", type number}}),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Tipo Alterado3", "Personalizar.1", each {0..[Dias de Contrato]}),
+				    #"Personalizar.1 Expandido" = Table.ExpandListColumn(#"Personalização Adicionada5", "Personalizar.1"),
+				    #"Valor Substituído5" = Table.ReplaceValue(#"Personalizar.1 Expandido",null,1,Replacer.ReplaceValue,{"Personalizar.1"}),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Valor Substituído5",{{"Personalizar.1", type number}}),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Tipo Alterado4", "Dias", each Date.AddDays([Vigência Inicial],[Personalizar.1])),
+				    #"Tipo Alterado5" = Table.TransformColumnTypes(#"Personalização Adicionada6",{{"Dias", type date}})
+				in
+				    #"Tipo Alterado5"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

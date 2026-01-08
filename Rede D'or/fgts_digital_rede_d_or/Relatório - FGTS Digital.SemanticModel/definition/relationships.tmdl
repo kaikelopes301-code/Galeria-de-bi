@@ -1,0 +1,70 @@
+relationship 5b5a8516-4037-464c-9ca4-21db9f2df3f8
+	fromColumn: Headcount.Chave
+	toColumn: 'Chave Tabela'.Chave
+
+relationship bbde01bf-b485-4646-9940-f294a882a121
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Retenção.'Data de Admissão'
+	toColumn: LocalDateTable_03c798d6-fccd-45c9-ad7a-6b975202905a.Date
+
+relationship 3423b6a8-5b5b-cf2f-38b5-b2139367fb86
+	fromColumn: 'HC Mês a Mês'.CHAVE
+	toColumn: 'Chave Tabela'.Chave
+
+relationship 6e98f6fd-368b-c45c-f2bd-4836bcda9e1e
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Headcount.Chave
+	toColumn: 'HC Mês a Mês'.CHAVE
+
+relationship b38e18db-d074-7316-67c9-401bb65ccd88
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'SLA''S e HCAPS'.'Chave Compe'
+	toColumn: 'HC Mês a Mês'.'Chave COmpotência'
+
+relationship 30e11a7d-1f60-c991-50bc-b8429db8dd8c
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'SLA''S e HCAPS'.FORNECEDOR
+	toColumn: 'Chave Tabela'.Fornecedor
+
+relationship 179c55e4-6010-a9af-0a62-5d69be99e63a
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Chave Tabela'.Fornecedor
+	toColumn: Score.Fornecedor
+
+relationship 4407bd7e-daad-4aa7-82ba-42422f153171
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Relatório de Fornecedores'.'Prazo de Envio'
+	toColumn: LocalDateTable_47db3005-3824-49b3-b21b-8f9c12f24f93.Date
+
+relationship 618a0209-21db-4f25-9bb8-982851bb7348
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Relatório de Fornecedores'.Competência
+	toColumn: LocalDateTable_5eb8392d-9a6d-4e10-8ac9-ca9d3d28df16.Date
+
+relationship AutoDetected_00a97231-b502-444f-8043-0825baccb61d
+	fromColumn: 'Relatório de Fornecedores'.Fornecedor
+	toColumn: Score.Fornecedor
+
+relationship f065857f-ed2c-4295-8536-8640b19c7079
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendário.Date
+	toColumn: LocalDateTable_96eecd1d-9679-4109-bf80-38533dc24553.Date
+
+relationship 4bd727fa-6718-481d-b2e8-c9c210acb63f
+	isActive: false
+	fromColumn: Headcount.Competência
+	toColumn: Calendário.Date
+
+relationship 1f916cf7-fa09-973f-9514-0f33bea33f0b
+	fromColumn: 'HC Mês a Mês'.Competência
+	toColumn: Calendário.Date
+
+relationship 3e0f7b37-1d05-f674-b4a0-2519f129beb9
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'SLA''S e HCAPS'.Competência
+	toColumn: Calendário.Date
+

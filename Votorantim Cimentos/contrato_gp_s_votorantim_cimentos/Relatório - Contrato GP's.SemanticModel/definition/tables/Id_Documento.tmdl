@@ -1,0 +1,56 @@
+table Id_Documento
+	lineageTag: 71b9b112-5244-4fa9-80b2-99dd1be778b7
+
+	column Id_Documento
+		lineageTag: 1c34e6a1-a0c9-40f4-a672-90587bcf0a38
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: SLA Análise[Id_Documento]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade de Análises' =
+			
+			CALCULATE(COUNT('SLA Análise'[Id_Documento]),'SLA Análise'[Tipo] = "Mobilização",'SLA Análise'[Funcionario] <> "" )
+		formatString: 0
+		lineageTag: 2665e9b4-69f0-488f-9db7-071d3e7773d6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Faixa = ```
+			
+			IF(Id_Documento[Quantidade de Análises] = 1, "Sem Reanálise",
+			    IF(Id_Documento[Quantidade de Análises] = 2, "Reanalisado 1 vez",
+			        IF(Id_Documento[Quantidade de Análises] <= 4, "Reanalisado 2 a 3 vezes",
+			            IF(Id_Documento[Quantidade de Análises] <= 6, "Reanalisado 4 a 5 vezes",
+			                IF(Id_Documento[Quantidade de Análises] <= 8, "Reanalisado 5 a 7 vezes",
+			                    IF(Id_Documento[Quantidade de Análises] <= 12, "Reanalisado 8 a 11 vezes",
+			                        IF(Id_Documento[Quantidade de Análises] <= 16, "Reanalisado 12 a 15 vezes",
+			                            IF(Id_Documento[Quantidade de Análises]  <= 20, "Reanalisado 16 a 19 vezes",
+			                                IF(Id_Documento[Quantidade de Análises]  <= 24, "Reanalisado 20 a 23 vezes",
+			                                    IF(Id_Documento[Quantidade de Análises]  > 24, "Reanalisado Mais 23 Vezes",
+			                                        "Sem Classificação"
+			                                    )
+			                                )
+			                            )
+			                        )
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+			
+			```
+		lineageTag: 89c1c22d-897c-4cbc-812b-3865c3b7e591
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Id_Documento = calculated
+		mode: import
+		source = CALCULATETABLE(DISTINCT('SLA Análise'[Id_Documento]),'SLA Análise'[Tipo] = "Mobilização",'SLA Análise'[Funcionario] <> "")
+
+	annotation PBI_Id = e91333df2f3f43b0a615236e5d1a919a
+

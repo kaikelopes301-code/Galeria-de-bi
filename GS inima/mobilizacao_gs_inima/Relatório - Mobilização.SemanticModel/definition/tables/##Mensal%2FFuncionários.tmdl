@@ -1,0 +1,48 @@
+table ##Mensal/Funcionários
+	lineageTag: 2fac5c45-a785-42a5-9359-f267e1f173de
+
+	column Parâmetro
+		lineageTag: 6bd62bba-daac-4c87-aa7e-896fe928764d
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 91390cc3-a7d1-4537-8039-b409358b2d96
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: a6799640-2011-42c1-8b80-bf8347fd5c6b
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ##Mensal/Funcionários = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Status de funcionários (Mensal)'[Razão Social]), 0),
+				    ("Unidade", NAMEOF('Status de funcionários (Mensal)'[Unidade]), 1)
+				}
+
+	annotation PBI_Id = dbc42a1765bd457ab8575e60f7d3158d
+

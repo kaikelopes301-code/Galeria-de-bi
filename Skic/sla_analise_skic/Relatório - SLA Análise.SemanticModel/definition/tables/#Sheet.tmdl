@@ -1,0 +1,48 @@
+table #Sheet
+	lineageTag: 2933dfbd-fb33-4fa7-8c82-dccfc4819561
+
+	column Parâmetro
+		lineageTag: 85c3002d-b6b5-4e0a-9fa0-4e8fe81122e2
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 9515c7af-05ef-4dbc-9407-8f3658d42a67
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 55cb77ec-c8d9-4816-9fff-89597af821a9
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Sheet = calculated
+		mode: import
+		source =
+				{
+				    ("Unidade", NAMEOF('Sheet1'[Nome Fantasia Unidade]), 0),
+				    ("Razão Social", NAMEOF('Sheet1'[Razão Social Fornecedor - Contrato]), 1)
+				}
+
+	annotation PBI_Id = 56aa1ef321ce4ff4b9e3f28f6a5a0d59
+

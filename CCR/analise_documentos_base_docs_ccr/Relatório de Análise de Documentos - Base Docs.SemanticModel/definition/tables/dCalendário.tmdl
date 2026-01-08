@@ -1,0 +1,30 @@
+table dCalendário
+	lineageTag: 39f9dbb6-a10b-4929-8cb4-185f5961e07f
+
+	column Date
+		formatString: General Date
+		lineageTag: edabc4d4-e425-402a-bce2-f06b49b15dad
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: f2a79a51-1630-47a5-ab4b-4f9078d6afd9
+			defaultHierarchy: LocalDateTable_1fc0363c-0ded-43a3-a4b4-1c7b9d61aa73.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source = ```
+				
+				CALENDAR(
+				    DATE(2023, 1, 1),
+				    EOMONTH(TODAY(), 0)
+				)
+				
+				```
+
+	annotation PBI_Id = ddd187267f0b4bdb908fedba05440fa0
+

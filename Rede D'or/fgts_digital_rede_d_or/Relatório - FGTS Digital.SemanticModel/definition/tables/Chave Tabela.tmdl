@@ -1,0 +1,556 @@
+table 'Chave Tabela'
+	lineageTag: b4e333d0-ee4a-4465-87f5-b14fda096be8
+
+	column Chave
+		lineageTag: e88a1b8c-ba06-4007-baa9-4ab314933c3e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Headcount[Chave]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria = LOOKUPVALUE('Headcount'[Categoria],Headcount[Chave],'Chave Tabela'[Chave])
+		lineageTag: 96a83e1a-0a86-4ae7-8e5a-a67c3d83370c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade = LOOKUPVALUE('Headcount'[Unidade],Headcount[Chave],'Chave Tabela'[Chave])
+		lineageTag: ad3b36f4-b86b-47f3-a4ca-f3b1de4cb794
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor = LOOKUPVALUE('Headcount'[Fornecedor],Headcount[Chave],'Chave Tabela'[Chave])
+		lineageTag: 7644d918-5151-43ed-8cd3-63a8227c2800
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fev/22 = ```
+			CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,02,01))
+			
+			```
+		formatString: 0
+		lineageTag: 736ac280-4f0a-46f0-b7c9-c5d2a038c912
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mar/22 = ```
+			CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,03,01))
+			
+			```
+		formatString: 0
+		lineageTag: e0f085fa-53e0-4bdb-b787-3b6ce76a75b1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Abril/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,04,01))
+			
+			```
+		formatString: 0
+		lineageTag: 52f220e9-32ed-42ab-a65b-6474340cb3cd
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Maio/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,05,01))
+			   
+			```
+		formatString: 0
+		lineageTag: 6b0ec52a-3cb6-4262-bd01-e292a7b30d21
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jun/22 = ```
+			CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,06,01))
+			
+			```
+		formatString: 0
+		lineageTag: b1c7ea67-cc97-4aca-8f6d-08090deee873
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jul/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,07,01))
+			
+			```
+		formatString: 0
+		lineageTag: b5771a2d-3799-4b39-bcad-559e8180287c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ago/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,08,01))
+			   
+			```
+		formatString: 0
+		lineageTag: 4de1aee1-7d96-4068-93fc-0f1b84f1f980
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Set/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,09,01))
+			```
+		formatString: 0
+		lineageTag: d397d383-fc9d-483c-91ed-0a5fd2e4534c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Out/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,10,01))
+			
+			```
+		formatString: 0
+		lineageTag: ad74d2a9-01cb-4dd9-bb3b-fbc425d8561b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nov/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,11,01))
+			
+			```
+		formatString: 0
+		lineageTag: 013d80ab-e1a3-4e7b-95bb-49f35262b0f0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dez/22 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2022,12,01))
+			
+			```
+		formatString: 0
+		lineageTag: 6d38c466-f630-4442-b8e5-674389eaceb5
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jan/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,01,01))
+			 
+			```
+		formatString: 0
+		lineageTag: 1ab662a5-982a-470c-b2b4-9ba374b6b9a1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fev/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,02,01))
+			
+			```
+		formatString: 0
+		lineageTag: 18733d80-127d-42b9-a217-1c4dd374e765
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mar/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,03,01))
+			 
+			```
+		formatString: 0
+		lineageTag: 619ae62f-fd88-4368-abfc-d8605b4a6094
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Abril/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,04,01))
+			
+			```
+		formatString: 0
+		lineageTag: d2cba39b-c6e9-46a0-9f8d-8cf214423a92
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column maio/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,05,01))
+			
+			```
+		formatString: 0
+		lineageTag: 9ac4ae7a-60aa-45af-b1a7-e8e0e6b66780
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jun/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,06,01))
+			
+			```
+		formatString: 0
+		lineageTag: 11630d56-0d89-467d-a8f6-370f0f73e56c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jul/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,07,01))
+			 
+			```
+		formatString: 0
+		lineageTag: 114c0b23-6bfd-4e78-84bb-63edc6b36553
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ago/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,08,01))
+			
+			```
+		formatString: 0
+		lineageTag: 25a2fef2-eca1-4c92-b49b-8e2ef8914898
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Set/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,09,01))
+			
+			```
+		formatString: 0
+		lineageTag: fce9b119-d18d-4868-b30e-cc0229b886c2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column out/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,10,01))
+			
+			```
+		formatString: 0
+		lineageTag: 00b44543-b2df-412a-8216-4b6fa15ac46a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column nov/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,11,01))
+			
+			```
+		formatString: 0
+		lineageTag: d0f13a7d-da36-4352-95e2-cefb74aab0a2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column dez/23 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2023,12,01))
+			
+			```
+		formatString: 0
+		lineageTag: c840e052-bca1-4695-97c0-c23aae2aa477
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Meses Em Análise' = ```
+			CALCULATE(
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Fev/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Mar/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Abril/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Maio/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Jun/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Jul/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Ago/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Set/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Out/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Nov/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Dez/22]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Jan/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Fev/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Mar/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Abril/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[maio/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Jun/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Jul/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Ago/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[Set/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[out/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[nov/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[dez/23]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[jan/24]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[fev/24]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[mar/24]) +
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[abril/24]) + 
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[maio/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[junho/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[julho/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[agosto/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[setembro/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[outubro/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[novembro/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[dezembro/24])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[jan/25])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[fev/25])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[mar/25])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[abril/25])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[mai/25])+
+			DISTINCTCOUNTNOBLANK('Chave Tabela'[jun/25]))
+			```
+		formatString: 0
+		lineageTag: 790568d0-9198-4641-9ea3-9215c32ff524
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column jan/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,02,01))
+			
+			```
+		formatString: 0
+		lineageTag: 6bd6ec90-dda8-4298-8cfd-cc8fa23855c4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column fev/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,02,01))
+			```
+		formatString: 0
+		lineageTag: 89a6bf99-c9fd-406c-add0-694245c5ea10
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column mar/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,03,01))
+			```
+		formatString: 0
+		lineageTag: d3a6bf72-6d8b-4152-a0fd-faa447d20a46
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column abril/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,04,01))
+			```
+		formatString: 0
+		lineageTag: 5b5aa1d7-c447-4448-aa5c-31f072391f6b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column maio/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,05,01))
+			```
+		formatString: 0
+		lineageTag: 791f8573-73f7-4be3-8b35-e0314b9aa9af
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column junho/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,06,01))
+			```
+		formatString: 0
+		lineageTag: ee1a7c05-2379-4637-ad2e-cd8d84034b4a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column julho/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,07,01))
+			```
+		formatString: 0
+		lineageTag: 8d935214-c7a0-4d84-9a1c-91b975d76495
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column agosto/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,08,01))
+			```
+		formatString: 0
+		lineageTag: aa9e264e-aea8-4807-8a4f-ba3897a0afa4
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column setembro/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,09,01))
+			```
+		formatString: 0
+		lineageTag: 4c9fc7d4-9bed-4bbb-80d6-3b077190afdc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column outubro/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,10,01))
+			```
+		formatString: 0
+		lineageTag: af095e4e-8385-4180-ae90-7b0fb597a9bc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column novembro/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,11,01))
+			```
+		formatString: 0
+		lineageTag: ab1cdff2-a403-4ede-aede-81f94f621a95
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column dezembro/24 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2024,12,01))
+			```
+		formatString: 0
+		lineageTag: a58ca886-a4b1-42dd-b4d5-f127bf360358
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column jan/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,01,01))
+			```
+		formatString: 0
+		lineageTag: 11e86cfb-9f7f-4935-9343-c21dd80757a0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column fev/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,02,01))
+			```
+		formatString: 0
+		lineageTag: c5a93e6c-5f30-4f5f-948a-d9bb90d56ef9
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column mar/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,03,01))
+			```
+		formatString: 0
+		lineageTag: 7d80f6db-065d-4113-a2b0-3e5efe513a97
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column abril/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,04,01))
+			```
+		formatString: 0
+		lineageTag: 097b42c6-1667-4f03-903c-72d1eb872deb
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column mai/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,05,01))
+			```
+		formatString: 0
+		lineageTag: c9bf7f6b-b365-4f36-a5d4-d387406226f8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column jun/25 = ```
+			
+			    CALCULATE(COUNT(Headcount[Competência]),
+			    Headcount[Competência] = DATE(2025,06,01))
+			```
+		formatString: 0
+		lineageTag: 5a04522e-2dab-4003-8ce2-fb0c241addb9
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Chave Tabela' = calculated
+		mode: import
+		source = VALUES(Headcount[Chave])
+
+	annotation PBI_Id = fec4474c2e72451b8dc0ad8497b37b78
+

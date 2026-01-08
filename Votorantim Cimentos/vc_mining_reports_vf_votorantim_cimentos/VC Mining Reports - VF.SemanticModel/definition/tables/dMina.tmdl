@@ -1,0 +1,25 @@
+table dMina
+	lineageTag: de078c39-cff3-473a-a15b-55ce87e95aaf
+
+	column Mina
+		dataType: string
+		lineageTag: 6cfe6d59-0546-4340-9372-10f29cbdc8fe
+		summarizeBy: none
+		sourceColumn: Mina
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMina = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45W8vX0c1QIdvQJ8VeK1YFzPcMclWJjAQ==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Mina = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Mina", type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado","MINA SALTO","SALTO",Replacer.ReplaceText,{"Mina"})
+				in
+				    #"Valor Substituído"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

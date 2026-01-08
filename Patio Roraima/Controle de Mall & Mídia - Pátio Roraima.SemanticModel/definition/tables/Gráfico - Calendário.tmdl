@@ -1,0 +1,265 @@
+table 'Gráfico - Calendário'
+	lineageTag: 8a791c62-674a-46b1-ba24-8b6039d5bf7e
+
+	measure 'Quantidade total - contratos' = CALCULATE(COUNT('Gráfico - Calendário'[Espaços para Locação]))
+		formatString: 0
+		lineageTag: e2969f24-d09e-40b5-a37d-2b6888bbad57
+
+	column Unidade
+		dataType: string
+		lineageTag: ea1f7315-d69b-407b-bbec-c760b6898a85
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Atual'
+		dataType: string
+		lineageTag: 1af183a9-d6d4-4315-a3e7-50f4e6131751
+		summarizeBy: none
+		sourceColumn: Status Atual
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias Distribuidos'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0c61fc21-d4e5-4f7b-97f6-07a448d8e09f
+		summarizeBy: none
+		sourceColumn: Dias Distribuidos
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Chave
+		dataType: string
+		lineageTag: 2ef1ccaf-9cff-468e-8370-190559da624f
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome fantasia do cliente'
+		dataType: string
+		lineageTag: 16a03eb6-ccd0-48ef-aae3-cd7e3fd07bef
+		summarizeBy: none
+		sourceColumn: Nome fantasia do cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ/CPF do cliente'
+		dataType: string
+		lineageTag: 147f7939-3b85-48f7-9416-971b466e7b8a
+		summarizeBy: none
+		sourceColumn: CNPJ/CPF do cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Identificação
+		dataType: string
+		lineageTag: 10f5b4be-351a-4444-8c79-774508738512
+		summarizeBy: none
+		sourceColumn: Identificação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Inicio de Contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3c27ab18-3cad-4ef4-a6ab-3cd34f73ad8c
+		summarizeBy: none
+		sourceColumn: Inicio de Contrato
+
+		variation Variation
+			isDefault
+			relationship: 07201113-1529-46bc-86f2-2b434efdc4ae
+			defaultHierarchy: LocalDateTable_fc1cce0e-19a7-4cd3-9bf2-3cba7e88e392.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim de Contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6864429a-f801-426c-9c91-ba2a8cbb67f9
+		summarizeBy: none
+		sourceColumn: Fim de Contrato
+
+		variation Variation
+			isDefault
+			relationship: 6a2d5c93-3871-44d3-8435-06eb83198536
+			defaultHierarchy: LocalDateTable_4a33e77d-5c8d-4ff0-8a1b-1891f759842d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Segmento
+		dataType: string
+		lineageTag: da6c295a-6f9a-4631-b1af-d58d6fa44e23
+		summarizeBy: none
+		sourceColumn: Segmento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 1ec5bce7-2b81-43bd-92e4-81bc2dc46bf6
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cliente do Contrato'
+		dataType: string
+		lineageTag: d276443e-9c2e-4886-b1ca-9d435ebabfc6
+		summarizeBy: none
+		sourceColumn: Cliente do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Espaços para Locação'
+		dataType: string
+		lineageTag: 5e248197-4694-44c8-9f0d-650d47007b4e
+		summarizeBy: none
+		sourceColumn: Espaços para Locação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Hoje'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fecd8bb4-3da0-43b8-aa95-dc16387a617c
+		summarizeBy: none
+		sourceColumn: Data de Hoje
+
+		variation Variation
+			isDefault
+			relationship: 63d186f0-089c-42bd-8193-704ba36874c7
+			defaultHierarchy: LocalDateTable_878645f4-260c-4077-800d-ff8af770eeaa.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Valor do contrato'
+		dataType: double
+		lineageTag: 3d19ac1a-da0d-4f49-a32b-a76f793fa682
+		summarizeBy: sum
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unidades.Família'
+		dataType: string
+		lineageTag: fdc8a2e5-dbbb-408c-8ac2-51f24b94c772
+		summarizeBy: none
+		sourceColumn: Unidades.Família
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do Aluguel'
+		dataType: double
+		lineageTag: b4495562-94bc-4c2c-8500-2afe6aedbdad
+		summarizeBy: sum
+		sourceColumn: Valor do Aluguel
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Família
+		dataType: string
+		lineageTag: 6ffb19a3-30c9-494b-82e1-2b10b60ed2e3
+		summarizeBy: none
+		sourceColumn: Família
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 8b66fcde-5448-47d3-9bd5-0154146de5ed
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Mídia'
+		dataType: string
+		lineageTag: 42cf30c5-a27b-4aff-9e9f-25023e36b481
+		summarizeBy: none
+		sourceColumn: Tipo de Mídia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: double
+		lineageTag: 1fcb4020-ba67-4c5b-8328-39586b953b2c
+		summarizeBy: sum
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Gráfico - Calendário' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="#(lf)SELECT DISTINCT#(lf)    ct.Name AS 'Nome fantasia do cliente',#(lf)    CASE #(lf)        WHEN LEN(ct.Document) = 11 THEN #(lf)            FORMAT(CAST(ct.Document AS BIGINT), '000\.000\.000\-00') #(lf)        WHEN LEN(ct.Document) = 14 THEN #(lf)            FORMAT(CAST(ct.Document AS BIGINT), '00\.000\.000\/0000\-00') #(lf)        ELSE #(lf)            ct.Document #(lf)    END AS 'CNPJ/CPF do cliente',#(lf)    #(lf)    c.OrderNumber AS 'Identificação',#(lf)    b.TradeName AS 'Unidade',#(lf)    CONCAT(FORMAT(c.ValidityInitial, 'dd/MM/yyyy'), +' a ', FORMAT(c.ValidityFinal, 'dd/MM/yyyy')) AS 'Vigência',#(lf)    c.MediaSegment AS 'Segmento',#(lf)    CASE#(lf)        WHEN c.[MediaStatus] = 1 THEN 'Em Negociação'#(lf)        WHEN c.[MediaStatus] = 2 THEN 'Regular'#(lf)        WHEN c.[MediaStatus] = 3 THEN 'Cancelado'#(lf)    END AS 'Status',#(lf)    CASE#(lf)        WHEN c.[MediaClient] = 1 THEN 'Lojista'#(lf)        WHEN c.[MediaClient] = 2 THEN 'Cliente Externo'#(lf)        WHEN c.[MediaClient] = 3 THEN 'Shopping'#(lf)        WHEN c.[MediaClient] = 4 THEN 'Mídia'#(lf)    END AS 'Cliente do Contrato',#(lf)#(tab)bls.Name AS 'Espaços para Locação',#(lf)#(tab)cbls.RentalValue AS 'Valor'#(lf)#(tab)#(lf)FROM#(lf)    [Contract] c WITH(NOLOCK)#(lf)    INNER JOIN Customer ct WITH(NOLOCK) ON c.CustomerId = ct.Id#(lf)    INNER JOIN Building b WITH(NOLOCK) ON c.BuildingId = b.Id#(lf)#(tab)INNER JOIN ContractBuildingLeaseSpace cbls WITH(NOLOCK) ON c.Id = cbls.ContractId #(lf)#(tab)Inner JOIN BuildingLeaseSpace bls WITH(NOLOCK) ON cbls.BuildingLeaseSpaceId = bls.Id#(lf)WHERE#(lf)    IsMedia = 1#(lf)    AND c.OrganizationId = '1eed0188-e117-41d5-ab47-c8d88649d174'#(lf)    AND c.Removed = 0;#(lf)#(lf)#(lf)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Linhas em Branco Removidas", "Vigência", Splitter.SplitTextByDelimiter("a", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Vigência.1", "Inicio de Contrato"}, {"Vigência.2", "Fim de Contrato"}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Renomeadas", "Data de Hoje", each DateTime.LocalNow ()),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Data de Hoje", type date}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado2", "Status Atual", each if [Inicio de Contrato] > [Data de Hoje] then "Alocação Futura"
+				
+				else if [Inicio de Contrato] < [Data de Hoje] then if [Fim de Contrato] < [Data de Hoje] then "Contrato Finalizado"
+				
+				else if [Fim de Contrato] >= [Data de Hoje] then "Mídia Ocupada"
+				
+				else "Erro"
+				
+				else "Mídia Ocupada"),
+				    #"Subtração da Data Inserida" = Table.AddColumn(#"Personalização Adicionada", "Subtração", each Duration.Days([Fim de Contrato] - [Inicio de Contrato])+1, Int64.Type),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Subtração da Data Inserida",{{"Subtração", "Dias de Contrato"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas2",{{"Valor", type number}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado", "Valor de Contrato", each [Valor]/100),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Personalização Adicionada2",{"Valor"}),
+				    #"Colunas Renomeadas3" = Table.RenameColumns(#"Colunas Removidas",{{"Valor de Contrato", "Valor do contrato"}}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Colunas Renomeadas3",{{"Valor do contrato", type number}}),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Tipo Alterado3", "Lista", each {1..[Dias de Contrato]}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Personalização Adicionada3", {"Espaços para Locação"}, Unidades, {"Espaços para Locação"}, "Unidades", JoinKind.LeftOuter),
+				    #"Unidades Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Unidades", {"Família"}, {"Unidades.Família"}),
+				    #"Lista Expandido" = Table.ExpandListColumn(#"Unidades Expandido", "Lista"),
+				    #"Colunas Removidas2" = Table.RemoveColumns(#"Lista Expandido",{"Dias de Contrato"}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Colunas Removidas2", "Dias Distribuidos", each Date.AddDays([Inicio de Contrato],[Lista]-1)),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Personalização Adicionada4", "Índice", 1, 1, Int64.Type),
+				    #"Consultas Mescladas1" = Table.NestedJoin(#"Índice Adicionado", {"Espaços para Locação"}, Unidades, {"Espaços para Locação"}, "Unidades", JoinKind.LeftOuter),
+				    #"Unidades Expandido1" = Table.ExpandTableColumn(#"Consultas Mescladas1", "Unidades", {"Família"}, {"Família"}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Unidades Expandido1", {"Índice"}),
+				    #"Consulta Acrescentada" = Table.Combine({#"Duplicatas Removidas", Unidades}),
+				    #"Colunas Removidas3" = Table.RemoveColumns(#"Consulta Acrescentada",{"Mídia Vaga"}),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Colunas Removidas3",{{"Dias Distribuidos", type date}}),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Tipo Alterado4", "Chave", each [Espaços para Locação]&" "& [Nome fantasia do cliente]&" "& [Cliente do Contrato]&" "&[Segmento]&" "&"Eventual"),
+				    #"Colunas Removidas5" = Table.RemoveColumns(#"Personalização Adicionada5",{"Lista"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Colunas Removidas5",null,#date(2024, 1, 1),Replacer.ReplaceValue,{"Dias Distribuidos"}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Valor Substituído3",null,"Sem Contrato",Replacer.ReplaceValue,{"Status Atual"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído",null,"Sem Contrato",Replacer.ReplaceValue,{"Nome fantasia do cliente"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1","Mídia ","",Replacer.ReplaceText,{"Status Atual"}),
+				    #"Valor Substituído4" = Table.ReplaceValue(#"Valor Substituído2","Shopping Manaus ","",Replacer.ReplaceText,{"Unidade"}),
+				    #"Valor Substituído5" = Table.ReplaceValue(#"Valor Substituído4"," Shopping","",Replacer.ReplaceText,{"Unidade"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Valor Substituído5", each ([Unidade] = "Pátio Roraima"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

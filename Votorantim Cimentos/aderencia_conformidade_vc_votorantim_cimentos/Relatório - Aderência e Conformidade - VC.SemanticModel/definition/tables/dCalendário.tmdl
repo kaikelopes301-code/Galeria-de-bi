@@ -1,0 +1,23 @@
+table dCalendário
+	lineageTag: ac445c58-21be-4bdd-92b7-75a7e2704a86
+
+	column Date
+		formatString: General Date
+		lineageTag: b260e704-bf3e-47b7-b10f-d7429f13b085
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: c925e794-77b7-4f9e-922c-a32bc461fe5d
+			defaultHierarchy: LocalDateTable_ba7984af-6697-4dff-a7f6-03810b6ab283.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source = CALENDAR(MIN('Relatório Fornecedores'[Competência]),MAX('Relatório Fornecedores'[Competência]))
+
+	annotation PBI_Id = 8625fe0698ec46ecb3ca5dd9c379aa2e
+

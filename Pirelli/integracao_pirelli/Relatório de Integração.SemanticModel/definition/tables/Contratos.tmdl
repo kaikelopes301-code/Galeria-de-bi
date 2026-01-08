@@ -1,0 +1,292 @@
+table Contratos
+	lineageTag: 2f6479d6-26e3-4ed8-a247-f7bf8f902046
+
+	measure 'Nº de Unidades' = CALCULATE(DISTINCTCOUNT(Contratos[Unidade]))
+		formatString: 0
+		lineageTag: 7727b45f-2f7e-4313-ac64-2c57343979c7
+
+	measure 'Nº de Categorias' = CALCULATE(DISTINCTCOUNT(Contratos[Categoria]))
+		formatString: 0
+		lineageTag: 33ac6133-e287-4288-af73-a44ee3f8c5c4
+
+	measure 'Nº de Fornecedores' = CALCULATE(DISTINCTCOUNT(Contratos[CNPJ]))
+		formatString: 0
+		lineageTag: 26126c36-a0f7-414c-9d2a-98c0333bcfee
+
+	measure 'Nº de Pedidos' = CALCULATE(COUNT(Contratos[Nº do pedido]))
+		formatString: #,0
+		lineageTag: 30493a15-aca6-4ba7-84e9-adb381f3a6e7
+
+	measure '(Quantidade) de Contrato' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 7a25b9df-35f2-4edf-b627-2f7621e89e5e
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: 48a0507c-831c-4976-9cd9-22f7d993ec81
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: 1b822e93-9935-441f-a043-b39ccf9ffc31
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 2f54ff9e-4ade-4108-8574-cf6d45469c1e
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: b6f2456e-1dac-4d33-9301-f00f62f5f8b1
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLA
+		dataType: string
+		lineageTag: 3b85b73f-9527-4f18-89e5-c738474badda
+		summarizeBy: none
+		sourceColumn: SLA
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 506c606e-186d-44cf-8bee-a473f8e97c0a
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1d16586d-e4ec-49be-8f57-47d46747f3bb
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 93543d60-1442-4c4e-94ac-34bf6758678c
+			defaultHierarchy: LocalDateTable_97993f2b-2405-4644-a3d6-5ccc6718b07f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: a6a966f0-1e65-4de7-a0dc-da546bc690c5
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: aca60ebe-6b5d-4b32-8af9-339d3d618b2c
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 8a074901-4644-45a7-b55b-7e42fa71b4e5
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a2f618d6-0adf-4aff-8ca9-6dc6dceca322
+		summarizeBy: none
+		sourceColumn: Vigência Inicio
+
+		variation Variation
+			isDefault
+			relationship: d59841a9-bd2a-469b-ada8-9864999c7b4a
+			defaultHierarchy: LocalDateTable_5247de00-522b-490e-91fc-504fee51a88a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Fim'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bf1473d5-3f9c-4d27-9c82-5652a848ee6c
+		summarizeBy: none
+		sourceColumn: Vigência Fim
+
+		variation Variation
+			isDefault
+			relationship: be443acf-472f-4ce9-a011-e3144124ca66
+			defaultHierarchy: LocalDateTable_791fd84b-5425-4e09-a97f-3b5c58f87c48.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data Hoje'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f9295558-9269-4325-b76a-7a666880de30
+		summarizeBy: none
+		sourceColumn: Data Hoje
+
+		variation Variation
+			isDefault
+			relationship: b7bb548d-5e11-4d75-9aff-e72c6712574e
+			defaultHierarchy: LocalDateTable_c1c1bb58-18c2-4757-a884-6d468bb1199f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status do Contrato'
+		dataType: string
+		lineageTag: 3f57c0e4-d7a2-46ff-98db-431c34cb42ef
+		summarizeBy: none
+		sourceColumn: Status do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contratação'
+		dataType: string
+		lineageTag: 50b1f2f3-9140-4727-aa24-85c9fa933ccf
+		summarizeBy: none
+		sourceColumn: Tipo de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: e7fa983f-f064-41ac-b0c4-4d508d3b866e
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna
+		type: calculated
+		lineageTag: cc7e7ee5-657a-4575-a5a0-6453aa04a2dc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	column 'Data Referência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 05809a11-c0cc-4df5-adb2-5a3bd4304521
+		summarizeBy: none
+		sourceColumn: Data Referência
+
+		variation Variation
+			isDefault
+			relationship: 1399b4e4-512f-443f-a06a-15ee9eb6a7cd
+			defaultHierarchy: LocalDateTable_d34b4ef5-d94f-4335-9ea5-cb29ad49590a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Column13
+		dataType: string
+		lineageTag: a3ec7cde-c825-4487-a2fe-0deb7c9227d0
+		summarizeBy: none
+		sourceColumn: Column13
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column14
+		dataType: string
+		lineageTag: 9ed7f78f-9f65-43e5-b717-b5a911460672
+		summarizeBy: none
+		sourceColumn: Column14
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column15
+		dataType: string
+		lineageTag: d84082a2-94a6-4ff9-8866-b92e0170ba30
+		summarizeBy: none
+		sourceColumn: Column15
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column16
+		dataType: string
+		lineageTag: 52101398-ea79-450c-a2c5-67ffcb4e7681
+		summarizeBy: none
+		sourceColumn: Column16
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column17
+		dataType: string
+		lineageTag: bb57f038-5436-4df8-9f73-7f45e45938dd
+		summarizeBy: none
+		sourceColumn: Column17
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column18
+		dataType: string
+		lineageTag: c9126527-798c-4fe6-9e0e-e4379d74d7fa
+		summarizeBy: none
+		sourceColumn: Column18
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column19
+		dataType: string
+		lineageTag: 60b7d3ab-ef7f-4228-a43e-d9ad8c5ea45f
+		summarizeBy: none
+		sourceColumn: Column19
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/:x:/r/sites/DiretrioPadro/Documentos%20Compartilhados/Relat%C3%B3rios/Dados/02.%20Externo/01.%20AFM%20Gest%C3%A3o/Pirelli/(Excel)%20Hist%C3%B3rico%20Contratos.xlsx"), null, true),
+				    Contratos_Sheet = Fonte{[Item="Contratos",Kind="Sheet"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Contratos_Sheet,{{"Column1", type any}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}, {"Column10", type text}, {"Column11", type text}, {"Column12", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Nº do pedido", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"SLA", type text}, {"Status", type text}, {"Cadastro no sistema", type datetime}, {"Vigência", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado1","a","-",Replacer.ReplaceText,{"Vigência"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Valor Substituído", "Vigência", Splitter.SplitTextByDelimiter(" - ", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado2",{{"Vigência.1", "Vigência Inicio"}, {"Vigência.2", "Vigência Fim"}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Colunas Renomeadas", "Status de Contrato", each DateTimeZone.LocalNow()),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Status de Contrato", type date}}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Tipo Alterado3",{{"Status de Contrato", "Data Hoje"}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Renomeadas1", "Status do Contrato", each if [Vigência Inicio] > #date(2024, 3, 31) then "Contrato Futuro" else if [Vigência Fim] >= #date(2024, 3, 31) then "Contrato Vigente" else if [Vigência Fim] < #date(2024, 3, 31) then "Contrato Finalizado" else "S/Classificação"),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Personalização Adicionada1", "Tipo de Contratação", each if Text.Contains([Nº do pedido], "SUB") then "Subcontratado" else "Contratado"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Coluna Condicional Adicionada", "Chave", each [Nº do pedido]&[Fornecedor]&[Categoria]&[Unidade]&[CNPJ]),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Personalização Adicionada2", "Chave.1", each Text.Combine({[Nº do pedido], [CNPJ], [Unidade], [Categoria]}, ""), type text),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Coluna Mesclada Inserida",{"Chave.1"}),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Colunas Removidas1",{{"Data Referência", type date}})
+				in
+				    #"Tipo Alterado4"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

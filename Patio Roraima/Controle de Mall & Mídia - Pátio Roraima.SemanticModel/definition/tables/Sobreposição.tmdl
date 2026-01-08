@@ -1,0 +1,95 @@
+table Sobreposição
+	lineageTag: 9b9acfb8-6013-45be-8e0c-d69b258c392e
+
+	column 'Chave de Sobreposição'
+		dataType: string
+		lineageTag: 62647ed3-7b9e-490a-8500-03149c7d57f2
+		summarizeBy: none
+		sourceColumn: Chave de Sobreposição
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contagem
+		dataType: int64
+		formatString: 0
+		lineageTag: e06e37cb-2626-4a0b-9912-14e36545a271
+		summarizeBy: sum
+		sourceColumn: Contagem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 6ba1a4dd-c6d1-4857-a939-c6ad28938a87
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Família
+		dataType: string
+		lineageTag: 29d5edb8-e9e6-4e54-91fa-2ab7436308b4
+		summarizeBy: none
+		sourceColumn: Família
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sobreposição = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="#(lf)SELECT DISTINCT#(lf)    ct.Name AS 'Nome fantasia do cliente',#(lf)    CASE #(lf)        WHEN LEN(ct.Document) = 11 THEN #(lf)            FORMAT(CAST(ct.Document AS BIGINT), '000\.000\.000\-00') #(lf)        WHEN LEN(ct.Document) = 14 THEN #(lf)            FORMAT(CAST(ct.Document AS BIGINT), '00\.000\.000\/0000\-00') #(lf)        ELSE #(lf)            ct.Document #(lf)    END AS 'CNPJ/CPF do cliente',#(lf)    #(lf)    c.OrderNumber AS 'Identificação',#(lf)    b.TradeName AS 'Unidade',#(lf)    CONCAT(FORMAT(c.ValidityInitial, 'dd/MM/yyyy'), +' a ', FORMAT(c.ValidityFinal, 'dd/MM/yyyy')) AS 'Vigência',#(lf)    c.MediaSegment AS 'Segmento',#(lf)    CASE#(lf)        WHEN c.[MediaStatus] = 1 THEN 'Em Negociação'#(lf)        WHEN c.[MediaStatus] = 2 THEN 'Regular'#(lf)        WHEN c.[MediaStatus] = 3 THEN 'Cancelado'#(lf)    END AS 'Status',#(lf)    CASE#(lf)        WHEN c.[MediaClient] = 1 THEN 'Lojista'#(lf)        WHEN c.[MediaClient] = 2 THEN 'Cliente Externo'#(lf)        WHEN c.[MediaClient] = 3 THEN 'Shopping'#(lf)        WHEN c.[MediaClient] = 4 THEN 'Mídia'#(lf)    END AS 'Cliente do Contrato',#(lf)#(tab)bls.Name AS 'Espaços para Locação',#(lf)#(tab)cbls.RentalValue AS 'Valor'#(lf)#(tab)#(lf)FROM#(lf)    [Contract] c WITH(NOLOCK)#(lf)    INNER JOIN Customer ct WITH(NOLOCK) ON c.CustomerId = ct.Id#(lf)    INNER JOIN Building b WITH(NOLOCK) ON c.BuildingId = b.Id#(lf)#(tab)INNER JOIN ContractBuildingLeaseSpace cbls WITH(NOLOCK) ON c.Id = cbls.ContractId #(lf)#(tab)Inner JOIN BuildingLeaseSpace bls WITH(NOLOCK) ON cbls.BuildingLeaseSpaceId = bls.Id#(lf)WHERE#(lf)    IsMedia = 1#(lf)    AND c.OrganizationId = '1eed0188-e117-41d5-ab47-c8d88649d174'#(lf)    AND c.Removed = 0;#(lf)#(lf)#(lf)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Linhas em Branco Removidas", "Vigência", Splitter.SplitTextByDelimiter("a", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Vigência.1", "Inicio de Contrato"}, {"Vigência.2", "Fim de Contrato"}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Renomeadas", "Data de Hoje", each DateTime.LocalNow ()),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Data de Hoje", type date}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado2", "Status Atual", each if [Inicio de Contrato] > [Data de Hoje] then "Alocação Futura"
+				
+				else if [Inicio de Contrato] < [Data de Hoje] then if [Fim de Contrato] < [Data de Hoje] then "Contrato Finalizado"
+				
+				else if [Fim de Contrato] >= [Data de Hoje] then "Mídia Ocupada"
+				
+				else "Erro"
+				
+				else "Mídia Ocupada"),
+				    #"Subtração da Data Inserida" = Table.AddColumn(#"Personalização Adicionada", "Subtração", each Duration.Days([Fim de Contrato] - [Inicio de Contrato])+1, Int64.Type),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Subtração da Data Inserida",{{"Subtração", "Dias de Contrato"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas2",{{"Valor", type number}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado", "Valor de Contrato", each [Valor]/100),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Personalização Adicionada2",{"Valor"}),
+				    #"Colunas Renomeadas3" = Table.RenameColumns(#"Colunas Removidas",{{"Valor de Contrato", "Valor do contrato"}}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Colunas Renomeadas3",{{"Valor do contrato", type number}}),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Tipo Alterado3", "Lista", each {1..[Dias de Contrato]}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Personalização Adicionada3", {"Espaços para Locação"}, Unidades, {"Espaços para Locação"}, "Unidades", JoinKind.LeftOuter),
+				    #"Unidades Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Unidades", {"Família"}, {"Unidades.Família"}),
+				    #"Lista Expandido" = Table.ExpandListColumn(#"Unidades Expandido", "Lista"),
+				    #"Colunas Removidas2" = Table.RemoveColumns(#"Lista Expandido",{"Dias de Contrato"}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Colunas Removidas2", "Dias Distribuidos", each Date.AddDays([Inicio de Contrato],[Lista]-1)),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Personalização Adicionada4", "Índice", 1, 1, Int64.Type),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Índice Adicionado", each ([Unidade] = "Pátio Roraima Shopping")),
+				    #"Consultas Mescladas1" = Table.NestedJoin(#"Linhas Filtradas1", {"Espaços para Locação"}, Unidades, {"Espaços para Locação"}, "Unidades", JoinKind.LeftOuter),
+				    #"Unidades Expandido1" = Table.ExpandTableColumn(#"Consultas Mescladas1", "Unidades", {"Família"}, {"Família"}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Unidades Expandido1", {"Índice"}),
+				    #"Consulta Acrescentada" = Table.Combine({#"Duplicatas Removidas", Unidades}),
+				    #"Colunas Removidas3" = Table.RemoveColumns(#"Consulta Acrescentada",{"Mídia Vaga"}),
+				    #"Tipo Alterado4" = Table.TransformColumnTypes(#"Colunas Removidas3",{{"Dias Distribuidos", type date}}),
+				    #"Colunas Removidas5" = Table.RemoveColumns(#"Tipo Alterado4",{"Lista"}),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Colunas Removidas5", "Chave", each [Espaços para Locação]&" "& [Nome fantasia do cliente]&" "& [Cliente do Contrato]&" "&[Segmento]&" "&"Eventual"),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Personalização Adicionada5", "Chave de Sobreposição", each [Espaços para Locação] & Text.From([Dias Distribuidos])),
+				    #"Linhas Agrupadas" = Table.Group(#"Personalização Adicionada6", {"Chave de Sobreposição"}, {{"Contagem", each Table.RowCount(Table.Distinct(_)), Int64.Type}, {"Unidade", each _, type table [Nome fantasia do cliente=text, #"CNPJ/CPF do cliente"=text, Identificação=text, Unidade=text, Inicio de Contrato=nullable date, Fim de Contrato=nullable date, Segmento=text, Status=text, Cliente do Contrato=text, Espaços para Locação=text, Data de Hoje=nullable date, Status Atual=text, Valor do contrato=nullable number, Unidades.Família=nullable text, Dias Distribuidos=nullable date, Índice=nullable number, Família=nullable text, Valor do Aluguel=any, Chave=text, Chave de Sobreposição=text]}, {"Família", each _, type table [Nome fantasia do cliente=text, #"CNPJ/CPF do cliente"=text, Identificação=text, Unidade=text, Inicio de Contrato=nullable date, Fim de Contrato=nullable date, Segmento=text, Status=text, Cliente do Contrato=text, Espaços para Locação=text, Data de Hoje=nullable date, Status Atual=text, Valor do contrato=nullable number, Unidades.Família=nullable text, Dias Distribuidos=nullable date, Índice=nullable number, Família=nullable text, Valor do Aluguel=any, Chave=text, Chave de Sobreposição=text]}}),
+				    #"Unidade Expandido" = Table.ExpandTableColumn(#"Linhas Agrupadas", "Unidade", {"Unidade"}, {"Unidade.1"}),
+				    #"Família Expandido" = Table.ExpandTableColumn(#"Unidade Expandido", "Família", {"Família"}, {"Família.1"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Família Expandido",{{"Contagem", Order.Descending}}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Linhas Classificadas", each ([Chave de Sobreposição] <> null)),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Linhas Filtradas",{{"Unidade.1", "Unidade"}, {"Família.1", "Família"}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Renomeadas1","Shopping Manaus ","",Replacer.ReplaceText,{"Unidade"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído"," Shopping","",Replacer.ReplaceText,{"Unidade"})
+				in
+				    #"Valor Substituído1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

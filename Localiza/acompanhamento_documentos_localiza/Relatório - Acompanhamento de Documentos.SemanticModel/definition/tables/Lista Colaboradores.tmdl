@@ -1,0 +1,147 @@
+table 'Lista Colaboradores'
+	lineageTag: 093157b1-1049-47ff-8f57-267fdb44ab4a
+
+	measure 'Quantidade de Colaboradores' = CALCULATE(DISTINCTCOUNT('Lista Colaboradores'[NomeMovimentador]))
+		formatString: 0
+		lineageTag: 98b6d110-3db2-44ce-b96e-3c71ad042e43
+
+	column Codigo
+		dataType: string
+		lineageTag: fe9f54d7-81d5-4210-abce-5e03116839b4
+		summarizeBy: none
+		sourceColumn: Codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situacao
+		dataType: string
+		lineageTag: 22a6367c-e04c-4f2f-a71d-de267090dcf5
+		summarizeBy: none
+		sourceColumn: Situacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column DataInicioPrevista
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3aac29b2-8635-42b4-9649-52f885aeb9c9
+		summarizeBy: none
+		sourceColumn: DataInicioPrevista
+
+		variation Variation
+			isDefault
+			relationship: 9994e19c-460f-406b-9d17-83ce9e76a3ad
+			defaultHierarchy: LocalDateTable_1ba27b96-b535-4074-b2d5-7db7498f6d37.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DataInicioRealizada
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b58ff3c7-88d4-408b-a783-c646baf6537e
+		summarizeBy: none
+		sourceColumn: DataInicioRealizada
+
+		variation Variation
+			isDefault
+			relationship: d6b3c92f-f68c-456f-b3cd-996a1acad001
+			defaultHierarchy: LocalDateTable_23bf9f66-4113-49f5-98c4-dffe6bcbb202.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Divisional
+		dataType: string
+		lineageTag: 96b8dc06-0d48-4921-8a62-e62e5ccf131d
+		summarizeBy: none
+		sourceColumn: Divisional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Distrital
+		dataType: string
+		lineageTag: 3ac232b5-7ba8-474c-aae8-c8914f35ee40
+		summarizeBy: none
+		sourceColumn: Distrital
+
+		annotation SummarizationSetBy = Automatic
+
+	column Agência
+		dataType: string
+		lineageTag: ca558a00-cae2-4999-b4a4-67d3482bb035
+		summarizeBy: none
+		sourceColumn: Agência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 4373d60a-e564-4148-8554-102dc830498c
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column NomeMovimentador
+		dataType: string
+		lineageTag: 1015ae52-4ce9-4a47-af7e-0a2a67c2c468
+		summarizeBy: none
+		sourceColumn: NomeMovimentador
+
+		annotation SummarizationSetBy = Automatic
+
+	column HorasTrabalhadasPrestacaoServico
+		dataType: double
+		lineageTag: b9ed3659-e60e-43ed-b15c-dbfad70e61de
+		summarizeBy: sum
+		sourceColumn: HorasTrabalhadasPrestacaoServico
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MotivoSolicitacao
+		dataType: string
+		lineageTag: f921d8c5-d7b1-4e55-9a25-60f6757a4b39
+		summarizeBy: none
+		sourceColumn: MotivoSolicitacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Listagem de Colaboradores'
+		dataType: string
+		lineageTag: 0a235e72-bacd-456d-ac7f-7344f0e8bf4c
+		summarizeBy: none
+		sourceColumn: Listagem de Colaboradores
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Efetivo.Nome*'
+		dataType: string
+		lineageTag: 6c275e10-c21e-4e8e-a4b5-dbf0e8e1590b
+		summarizeBy: none
+		sourceColumn: Efetivo.Nome*
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Lista Colaboradores' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Localiza\Qtd Motorista Premium Agosto.xlsx"), null, true),
+				    #"Qtd Motoristas Agosto_Sheet" = Fonte{[Item="Qtd Motoristas Agosto",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Qtd Motoristas Agosto_Sheet", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Codigo", type text}, {"Situacao", type text}, {"DataInicioPrevista", type date}, {"DataInicioRealizada", type datetime}, {"Divisional", type text}, {"Distrital", type text}, {"Agência", type text}, {"Fornecedor", type text}, {"NomeMovimentador", type text}, {"HorasTrabalhadasPrestacaoServico", type number}, {"MotivoSolicitacao", type text}}),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Tipo Alterado",{{"NomeMovimentador", Text.Upper, type text}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Texto em Maiúscula", {"NomeMovimentador"}, Efetivo, {"Nome*"}, "Efetivo", JoinKind.LeftOuter),
+				    #"Efetivo Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Efetivo", {"Nome*"}, {"Efetivo.Nome*"}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Efetivo Expandido", "Personalizar", each if [#"Efetivo.Nome*"] <> null then "Consta" else "Não Consta"),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Coluna Condicional Adicionada",{{"Personalizar", "Listagem de Colaboradores"}})
+				in
+				    #"Colunas Renomeadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

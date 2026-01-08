@@ -1,0 +1,363 @@
+table 'Relatório Fornecedores'
+	lineageTag: 03127346-04d4-4f46-b5d7-6bf1ba609e5d
+
+	measure '(Total) Quantidade de Documentos' = CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]))
+		formatString: #,0
+		lineageTag: 66222a72-976a-4ae6-bb8d-fa31449e39ca
+
+		changedProperty = IsHidden
+
+	measure '(Enviado) Quantidade de Enviado' =
+			CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			'Relatório Fornecedores'[Status] <> "Atrasado")+0
+		formatString: #,0
+		lineageTag: 904fa552-0c70-4f3f-af26-472f02079e3e
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure '% (Enviado)' = [(Enviado) Quantidade de Enviado]/[(Total) Quantidade de Documentos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a076964a-25cc-4f8c-80cd-fc495ced1dba
+
+		changedProperty = IsHidden
+
+	measure '(Aprovado) Quantidade Aprovado' =
+			CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			'Relatório Fornecedores'[Status] = "Aprovado")
+		formatString: #,0
+		lineageTag: 8ac182e9-9c02-4afe-83e5-37ccd6511c0c
+
+		changedProperty = IsHidden
+
+	measure %(Aprovado) = ([(Aprovado) Quantidade Aprovado])/[(Total) Quantidade de Documentos] + 0
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c7398d94-5915-40f3-8f29-fce3290161fa
+
+		changedProperty = IsHidden
+
+	measure '%Média Aderência Tipo de Documento' = ```
+			AVERAGEX(FILTER(VALUES('dCalendário'[Date].[Mês]),NOT(ISBLANK([(Total) Quantidade de Documentos]))),[(Enviado) Quantidade de Enviado]/[(Total) Quantidade de Documentos]) 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6fba5dc4-443a-4f7c-acd9-ad4b68942a09
+
+	measure '%Média Conformidade Tipo de Documento' = AVERAGEX(FILTER(VALUES('dCalendário'[Date].[Mês]),NOT(ISBLANK([(Total) Quantidade de Documentos]))),[%(Aprovado)])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2a7379c7-49de-45bf-856d-0ce5d9c49adf
+
+	measure '(Recorrente) Média Mensal - Aderência' = AVERAGEX(FILTER(VALUES('dCalendário'[Date].[Mês]),NOT(ISBLANK([(Total) Quantidade de Documentos]))),[(Enviado) Quantidade de Enviado]/[(Total) Quantidade de Documentos])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: dcd85cf5-117c-4da0-9a34-08d6de6078ae
+
+	measure '(Recorrente) Média Mensal - Conformidade' = AVERAGEX(FILTER(VALUES('dCalendário'[Date].[Mês]),NOT(ISBLANK([(Total) Quantidade de Documentos]))),[%(Aprovado)])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c70d6d20-5088-4d75-932d-8d5560825c7f
+
+	measure '(Média Fornecedor) - %Enviados' =
+			AVERAGEX(
+			    VALUES('Relatório Fornecedores'[Fornecedor]),
+			    (CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			        'Relatório Fornecedores'[Status (Reclassificação)] <> "Atrasado")+0)/[(Total) Quantidade de Documentos])
+		lineageTag: 862b97d8-60f7-4865-8877-81b22a8d6114
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Média Mensal Fornecedor) - %Enviados' = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[(Média Fornecedor) - %Enviados])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f1ac957b-49cf-4580-8586-be5de075d597
+
+	measure '(Média Fornecedor) - %Aprovado' =
+			AVERAGEX(
+			    VALUES('Relatório Fornecedores'[Fornecedor]),
+			    (CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			        'Relatório Fornecedores'[Status (Reclassificação)] ="Aprovado")+0)/[(Total) Quantidade de Documentos])
+		lineageTag: e33304d9-d395-4788-8168-ef0548d1db37
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Média Mensal Fornecedor) - %Aprovados' = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[(Média Fornecedor) - %Aprovado])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: cb7e9e47-9393-40fe-9e78-280f699a48a6
+
+	measure 'Cartão (Aprovado) Quantidade Aprovado' = ```
+			CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			'Relatório Fornecedores'[Status] = "Aprovado") 
+			```
+		formatString: 0
+		lineageTag: 727e2c7f-e0da-484a-b65b-8947f6a72322
+
+	measure 'Cartão (Enviado) Quantidade Aprovado' = ```
+			CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[DocumentScheduleId]),
+			'Relatório Fornecedores'[Status] <> "Atrasado") 
+			```
+		formatString: 0
+		lineageTag: c828aa5a-2f84-40c5-b95c-0e4c10510c0b
+
+	measure '% Cartão (Enviado)' = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),([Cartão (Enviado) Quantidade Aprovado]/[(Total) Quantidade de Documentos]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4ad45bdb-2bca-49cb-804a-4c0139f33732
+
+	measure '(Não Enviado) Quantidade' = CALCULATE([(Total) Quantidade de Documentos],'Relatório Fornecedores'[Status]="Atrasado" || 'Relatório Fornecedores'[Status]="Atrasado Recusado")
+		formatString: 0
+		lineageTag: 891d8bea-d089-4b3f-bb47-f02a63378a27
+
+	column Documento
+		dataType: string
+		lineageTag: a1d96fe6-e08f-4965-9b58-174d4a90a35d
+		summarizeBy: none
+		sourceColumn: Documento
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: 83632567-7a55-4232-a27c-7756d881614f
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0f634e8c-c0ec-49a7-a5cf-22c3b6abb03b
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: c0daea0e-d8ae-4cf8-8a66-761c7d8f34f2
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 71d01fc4-f5e5-47ee-b773-5c23c6fed5d0
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7d83a5db-ea56-4db3-9eb8-54bbc949b9e1
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: 979736ce-ca53-4691-9eb7-fe14ccf78127
+			defaultHierarchy: LocalDateTable_d00fb76c-7ed7-4d5e-9d38-58f9f6f7e0bc.'Hierarquia de datas'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data da Análise'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d74cc3cb-7fe1-43f6-9ad1-55818259d635
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		variation Variation
+			isDefault
+			relationship: 30a1fe37-294a-47c3-a6b9-b10485c9c025
+			defaultHierarchy: LocalDateTable_feba2619-3919-4d39-be7b-7307c32aca8e.'Hierarquia de datas'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: c6f9cbbc-e4ad-410f-859f-514eb884e103
+		summarizeBy: none
+		sourceColumn: Status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: f2416076-9a00-4982-af23-5e5d96b9649f
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status (Reclassificação)'
+		dataType: string
+		lineageTag: a9d71edd-8bf0-40be-9d40-08b4df123e1f
+		summarizeBy: none
+		sourceColumn: Status (Reclassificação)
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: a1f5da9a-1c37-41c0-8a63-36c62d373c56
+		summarizeBy: none
+		sourceColumn: Competência
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 751ba93e-a1df-4059-add9-45c2bdff13c8
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Numeros dos Pedidos'
+		dataType: string
+		lineageTag: 9823e2eb-05fd-41a4-b769-b3c5cca0175f
+		summarizeBy: none
+		sourceColumn: Numeros dos Pedidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipos do Contrato'
+		dataType: string
+		lineageTag: 1f097e1f-7bfc-4ed5-854e-090f9ea74b3e
+		summarizeBy: none
+		sourceColumn: Tipos do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: 0edb96b8-ba12-4675-9d3e-8b98f80ad80e
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 23eab62b-7eec-4c03-8557-492f7e85768b
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Hoje'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: e1dd6110-f92e-4d24-b921-50955043e0fb
+		summarizeBy: none
+		sourceColumn: Data de Hoje
+
+		variation Variation
+			isDefault
+			relationship: 0a8e3e32-013e-4604-ac69-3b5eaaaaa1a4
+			defaultHierarchy: LocalDateTable_247e02f6-28cd-4a9f-a5eb-799f421bc808.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tempo de Atraso (Dias)'
+		dataType: string
+		lineageTag: 81c36b6a-67bf-4345-ac03-90a10062f0a8
+		summarizeBy: none
+		sourceColumn: Tempo de Atraso (Dias)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Meses de Atraso'
+		dataType: string
+		lineageTag: 7a14aa93-2838-447d-8eba-400773d86e7c
+		summarizeBy: none
+		sourceColumn: Meses de Atraso
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 7b455c9d-fc9d-4c43-b155-2c23ea21aa91
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Envio'
+		dataType: string
+		lineageTag: 702a0a7c-ff6d-4fc5-87cf-25647ede681a
+		summarizeBy: none
+		sourceColumn: Data de Envio
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relatório Fornecedores' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = GETDATE();#(lf)DECLARE @organizationId uniqueidentifier = 'ed655166-232e-4710-8095-0ae504faa5eb';#(lf)DECLARE @initialDate datetime2 = '2024-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = GETDATE();#(lf)#(lf)#(lf)WITH DocumentScheduleBuildings AS (#(lf)    SELECT#(lf)        [dsb].[DocumentScheduleId],#(lf)        STRING_AGG(CAST([b].[TradeName] as nvarchar(MAX)), ', ') AS [Buildings]#(lf)    FROM#(lf)        [DocumentScheduleBuilding] AS [dsb]#(lf)        INNER JOIN [Building] AS [b] ON [dsb].[BuildingId] = [b].[Id]#(lf)    WHERE#(lf)        [dsb].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsb].[DocumentScheduleId]#(lf)),#(lf)DocumentScheduleCategories AS (#(lf)    SELECT#(lf)        [dsc].[DocumentScheduleId],#(lf)        STRING_AGG(CAST([c].[Name] as nvarchar(MAX)), ', ') AS [Categories]#(lf)    FROM#(lf)        [DocumentScheduleCategory] AS [dsc]#(lf)        INNER JOIN [Category] AS [c] ON [dsc].[CategoryId] = [c].[Id]#(lf)    WHERE#(lf)        [dsc].[Removed] = CAST(0 AS bit)#(lf)    GROUP BY#(lf)        [dsc].[DocumentScheduleId]#(lf))#(lf)SELECT#(lf)    DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)    [ds].Id AS [DocumentScheduleId],#(lf)#(tab) CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)        ELSE '--'#(lf)    END AS 'Tipo do documento',#(lf)    (select STRING_AGG(CAST([OrderNumber] as nvarchar(MAX)), ', ') from Contract c where (#(lf)        (#(lf)            [ds].[UploadedAt] IS NOT NULL#(lf)            OR [c].[Removed] = 0#(lf)        )#(lf)        AND [c].[BranchCompanyId] = [ds].[BranchCompanyId]#(lf)        AND EXISTS (SELECT 1 FROM [Building] AS [b] WITH (NOLOCK) WHERE [b].[Id] = [c].[BuildingId] AND [b].[Removed] = 0 AND [b].[OrganizationId] = @organizationId)#(lf)        AND (#(lf)            (#(lf)                ([ds].[ContractId] IS NOT NULL AND [ds].[ContractId] = [c].[Id])#(lf)                OR [ds].[ContractId] IS NULL#(lf)            )#(lf)            OR (#(lf)                (#(lf)                    [d].[OrderNumberInclusiveOrExclusive] IS NULL#(lf)                    OR (#(lf)                        [d].[OrderNumberInclusiveOrExclusive] = 1#(lf)                        AND EXISTS (#(lf)                            SELECT 1#(lf)                            FROM STRING_SPLIT([d].[OrderNumber], ';')#(lf)                            WHERE value = [c].[OrderNumber]#(lf)                        )#(lf)                    )#(lf)                    OR (#(lf)                        [d].[OrderNumberInclusiveOrExclusive] = 0#(lf)                        AND NOT EXISTS (#(lf)                            SELECT 1#(lf)                            FROM STRING_SPLIT([d].[OrderNumber], ';')#(lf)                            WHERE value = [c].[OrderNumber]#(lf)                        )#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([ds].[ContractSetId] IS NOT NULL AND [ds].[ContractSetId] = [c].[ContractSetId])#(lf)                    OR [ds].[ContractSetId] IS NULL#(lf)                )#(lf)                AND ([d].[TypeContract] IS NULL OR ([d].[TypeContract] & [c].[Type]) = [c].[Type])#(lf)                AND (#(lf)                    (#(lf)                        ([ds].[BuildingId] IS NOT NULL AND [ds].[BuildingId] = [c].[BuildingId])#(lf)                    )#(lf)                    OR (#(lf)                        NOT EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsb].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsb].[Removed] = 0#(lf)                        ) OR EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsb].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsb].[BuildingId] = [c].[BuildingId]#(lf)                                AND [dsb].[Removed] = 0#(lf)                        ) #(lf)                    )#(lf)                ) -- unidades#(lf)                AND (#(lf)                    (#(lf)                        ([ds].[CategoryId] IS NOT NULL AND [ds].[CategoryId] = [c].[CategoryId])#(lf)                    )#(lf)                    OR (#(lf)                        NOT EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsc].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsc].[Removed] = 0#(lf)                        ) OR EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsc].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsc].[CategoryId] = [c].[CategoryId]#(lf)                                AND [dsc].[Removed] = 0#(lf)                        )#(lf)                    )#(lf)                ) -- categorias#(lf)                AND (#(lf)                    ([d].[Frequency] = 7 AND [d].[OccurrenceKind] = 15 AND [c].[ValidityFinal] < GETDATE()) -- se o documento for de desmobilização e o contrato estiver vencido#(lf)                    OR ([d].[Frequency] <> 7 OR [d].[OccurrenceKind] <> 15)#(lf)                )#(lf)                AND (#(lf)                    ([d].[Kind] = 4 AND [d].[DeliveryKind] = 3 AND [c].[ValidityFinal] < GETDATE()) -- se o documento for de desmobilização e o contrato estiver vencido#(lf)                    OR ([d].[Kind] <> 4 OR [d].[DeliveryKind] <> 3)#(lf)                )#(lf)                AND (#(lf)                    (#(lf)                        [d].[DeliveryKind] <> 0#(lf)                        AND [d].[DeliveryKind] <> 1#(lf)                    )#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 1#(lf)                        AND (#(lf)                            [ds].[ExpectedUploadAt] <= [c].[ValidityFinal]#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0#(lf)                                AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                        AND (#(lf)                            ([d].[DeliveryDay] < 0 AND DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) >= [c].[ValidityInitial])#(lf)                            OR ([d].[DeliveryDay] > 0 AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial])#(lf)                        )#(lf)                    )#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 0#(lf)                        AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial]#(lf)                        AND (#(lf)                            (#(lf)                                [d].[DeliveryDay] > 0#(lf)                                AND (#(lf)                                    DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0#(lf)                                AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                    )#(lf)                ) -- deliveykind#(lf)                AND (#(lf)                    -- Agendamento por funcionario#(lf)                    (#(lf)                        [er].[Id] IS NOT NULL#(lf)                        AND [c].[BranchCompanyId] = [bc].[Id]#(lf)                        AND [ds].[Kind] = 5#(lf)                        AND EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [EmployeeRegisterContract] AS [erc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [erc].[EmployeeRegisterId] = [er].[Id]#(lf)                                AND [erc].[ContractId] = [c].[Id]#(lf)                                AND [erc].[Removed] = 0#(lf)                        )#(lf)                    )#(lf)                    -- / Agendamento por funcionario#(lf)                    -- Agendamento comum#(lf)                    OR (#(lf)                        [ds].[EmployeeRegisterId] IS NULL#(lf)                        AND [ds].[ContractId] IS NULL#(lf)                        AND [ds].[Kind] = 1#(lf)                    )#(lf)                    -- / Agendamento comum#(lf)                    -- Agendamento por unidade#(lf)                    OR (#(lf)                        [ds].Kind = 4#(lf)                    )#(lf)                    -- / Agendamento por unidade#(lf)                )#(lf)            )#(lf)        )#(lf)    )) AS [Numeros dos Pedidos],#(lf)#(tab)(#(lf)#(tab)SELECT #(lf)    (SELECT STRING_AGG(ContractType, ', ')#(lf)     FROM (#(lf)         SELECT DISTINCT #(lf)             CAST(CASE#(lf)                 WHEN [c].[Type] & 1 = 1 THEN 'Contínuo'#(lf)                 WHEN [c].[Type] & 2 = 2 THEN 'Grandes Paradas'#(lf)                 WHEN [c].[Type] & 4 = 4 THEN 'Eventual'#(lf)                 WHEN [c].[Type] & 8 = 8 THEN 'Temporário'#(lf)                 WHEN [c].[Type] & 16 = 16 THEN 'Visitante técnico'#(lf)                 WHEN [c].[Type] & 32 = 32 THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)                 WHEN [c].[Type] & 64 = 64 THEN 'Prestação de serviço eventual fora da área operacional'#(lf)                 WHEN [c].[Type] & 128 = 128 THEN 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)                 WHEN [c].[Type] & 256 = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)                 ELSE 'Nenhum'#(lf)             END AS nvarchar(MAX)) AS ContractType#(lf)         FROM Contract AS [c]#(lf)         where (#(lf)        (#(lf)            [ds].[UploadedAt] IS NOT NULL#(lf)            OR [c].[Removed] = 0#(lf)        )#(lf)        AND [c].[BranchCompanyId] = [ds].[BranchCompanyId]#(lf)        AND EXISTS (SELECT 1 FROM [Building] AS [b] WITH (NOLOCK) WHERE [b].[Id] = [c].[BuildingId] AND [b].[Removed] = 0 AND [b].[OrganizationId] = @organizationId)#(lf)        AND (#(lf)            (#(lf)                ([ds].[ContractId] IS NOT NULL AND [ds].[ContractId] = [c].[Id])#(lf)                OR [ds].[ContractId] IS NULL#(lf)            )#(lf)            OR (#(lf)                (#(lf)                    [d].[OrderNumberInclusiveOrExclusive] IS NULL#(lf)                    OR (#(lf)                        [d].[OrderNumberInclusiveOrExclusive] = 1#(lf)                        AND EXISTS (#(lf)                            SELECT 1#(lf)                            FROM STRING_SPLIT([d].[OrderNumber], ';')#(lf)                            WHERE value = [c].[OrderNumber]#(lf)                        )#(lf)                    )#(lf)                    OR (#(lf)                        [d].[OrderNumberInclusiveOrExclusive] = 0#(lf)                        AND NOT EXISTS (#(lf)                            SELECT 1#(lf)                            FROM STRING_SPLIT([d].[OrderNumber], ';')#(lf)                            WHERE value = [c].[OrderNumber]#(lf)                        )#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([ds].[ContractSetId] IS NOT NULL AND [ds].[ContractSetId] = [c].[ContractSetId])#(lf)                    OR [ds].[ContractSetId] IS NULL#(lf)                )#(lf)                AND ([d].[TypeContract] IS NULL OR ([d].[TypeContract] & [c].[Type]) = [c].[Type])#(lf)                AND (#(lf)                    (#(lf)                        ([ds].[BuildingId] IS NOT NULL AND [ds].[BuildingId] = [c].[BuildingId])#(lf)                    )#(lf)                    OR (#(lf)                        NOT EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsb].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsb].[Removed] = 0#(lf)                        ) OR EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsb].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsb].[BuildingId] = [c].[BuildingId]#(lf)                                AND [dsb].[Removed] = 0#(lf)                        ) #(lf)                    )#(lf)                ) -- unidades#(lf)                AND (#(lf)                    (#(lf)                        ([ds].[CategoryId] IS NOT NULL AND [ds].[CategoryId] = [c].[CategoryId])#(lf)                    )#(lf)                    OR (#(lf)                        NOT EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsc].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsc].[Removed] = 0#(lf)                        ) OR EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [dsc].[DocumentScheduleId] = [ds].[Id]#(lf)                                AND [dsc].[CategoryId] = [c].[CategoryId]#(lf)                                AND [dsc].[Removed] = 0#(lf)                        )#(lf)                    )#(lf)                ) -- categorias#(lf)                AND (#(lf)                    ([d].[Frequency] = 7 AND [d].[OccurrenceKind] = 15 AND [c].[ValidityFinal] < GETDATE()) -- se o documento for de desmobilização e o contrato estiver vencido#(lf)                    OR ([d].[Frequency] <> 7 OR [d].[OccurrenceKind] <> 15)#(lf)                )#(lf)                AND (#(lf)                    ([d].[Kind] = 4 AND [d].[DeliveryKind] = 3 AND [c].[ValidityFinal] < GETDATE()) -- se o documento for de desmobilização e o contrato estiver vencido#(lf)                    OR ([d].[Kind] <> 4 OR [d].[DeliveryKind] <> 3)#(lf)                )#(lf)                AND (#(lf)                    (#(lf)                        [d].[DeliveryKind] <> 0#(lf)                        AND [d].[DeliveryKind] <> 1#(lf)                    )#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 1#(lf)                        AND (#(lf)                            [ds].[ExpectedUploadAt] <= [c].[ValidityFinal]#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0#(lf)                                AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                        AND (#(lf)                            ([d].[DeliveryDay] < 0 AND DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) >= [c].[ValidityInitial])#(lf)                            OR ([d].[DeliveryDay] > 0 AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial])#(lf)                        )#(lf)                    )#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 0#(lf)                        AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial]#(lf)                        AND (#(lf)                            (#(lf)                                [d].[DeliveryDay] > 0#(lf)                                AND (#(lf)                                    DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0#(lf)                                AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR (#(lf)                                        DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                    )#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                    )#(lf)                ) -- deliveykind#(lf)                AND (#(lf)                    -- Agendamento por funcionario#(lf)                    (#(lf)                        [er].[Id] IS NOT NULL#(lf)                        AND [c].[BranchCompanyId] = [bc].[Id]#(lf)                        AND [ds].[Kind] = 5#(lf)                        AND EXISTS (#(lf)                            SELECT#(lf)                                1#(lf)                            FROM#(lf)                                [EmployeeRegisterContract] AS [erc] WITH (NOLOCK)#(lf)                            WHERE#(lf)                                [erc].[EmployeeRegisterId] = [er].[Id]#(lf)                                AND [erc].[ContractId] = [c].[Id]#(lf)                                AND [erc].[Removed] = 0#(lf)                        )#(lf)                    )#(lf)                    -- / Agendamento por funcionario#(lf)                    -- Agendamento comum#(lf)                    OR (#(lf)                        [ds].[EmployeeRegisterId] IS NULL#(lf)                        AND [ds].[ContractId] IS NULL#(lf)                        AND [ds].[Kind] = 1#(lf)                    )#(lf)                    -- / Agendamento comum#(lf)                    -- Agendamento por unidade#(lf)                    OR (#(lf)                        [ds].Kind = 4#(lf)                    )#(lf)                    -- / Agendamento por unidade#(lf)                )#(lf)            )#(lf)        )#(lf)     )) AS UniqueContractTypes#(lf)    )) AS [Tipos do Contrato],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)#(tab)[bc].[CompanyName] AS [Razão Social],#(lf)    dbo.FormatCNPJ([bc].[Document]) AS [CNPJ],#(lf)    CASE#(lf)        WHEN [er].[Name] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [er].[Name]#(lf)    END AS [Funcionário],#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(tab)FORMAT([ds].[UploadedAt], 'dd/MM/yyyy') AS [Data de Envio],#(lf)    FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)    CASE#(lf)        WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Atrasado'#(lf)        WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Próxima Entrega'#(lf)        WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Atrasado Recusado'#(lf)        WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Próxima Entrega Recusado'#(lf)        WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL#(lf)        THEN#(lf)            'Em Análise'#(lf)        WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 0#(lf)        THEN#(lf)            'Aprovado'#(lf)        WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[IsValidated] IS NOT NULL AND [ds].[IsValidated] = 1#(lf)        THEN#(lf)            'Aprovado'#(lf)        ELSE#(lf)            '--'#(lf)    END AS [Status],#(lf)    ISNULL(dsBuildings.[Buildings], '---') AS [Unidade(s)],#(lf)    ISNULL(dsCategories.[Categories], '---') AS [Categoria(s)]#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)    LEFT JOIN [DocumentScheduleBuildings] AS dsBuildings WITH (NOLOCK) ON [ds].[Id] = dsBuildings.[DocumentScheduleId]#(lf)    LEFT JOIN [DocumentScheduleCategories] AS dsCategories WITH (NOLOCK) ON [ds].[Id] = dsCategories.[DocumentScheduleId]#(lf)WHERE#(lf)    [ds].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Archived] = CAST(0 AS bit)#(lf)#(tab)AND [d].[Kind] IN (0, 1, 2, 3, 5)#(lf)    AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] < @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)-- ORDER BY #(lf)--     [p].[TradeName], [d].[Kind], [d].[Name], [ds].[ExpectedUploadAt], [er].[Name];"]),
+				    #"Consulta Acrescentada" = Table.Combine({Fonte, Rel_FOR_2}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Consulta Acrescentada", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Linhas em Branco Removidas", "Status (Reclassificação)", each if [Status] = "Atrasado Recusado" then "Recusado" else [Status]),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Coluna Condicional Adicionada",{{"Prazo de Envio", type date}}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado3", each ([Prazo de Envio] <> #date(2024, 9, 02))),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Linhas Filtradas", "Competência", each if [Tipo do documento] = "Recorrente" then Date.AddMonths([Prazo de Envio],-1)
+				
+				else [Prazo de Envio]),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}, {"Numeros dos Pedidos", type text}, {"Prazo de Envio", type date}, {"Data da Análise", type date}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Tipo Alterado2", each ([#"Status (Reclassificação)"] <> "Próxima Entrega" and [#"Status (Reclassificação)"] <> "Próxima Entrega Recusado")),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Linhas Filtradas1", "Unidade(s)", Splitter.SplitTextByDelimiter(", ", QuoteStyle.Csv), {"Unidade(s).1", "Unidade(s).2", "Unidade(s).3", "Unidade(s).4", "Unidade(s).5", "Unidade(s).6", "Unidade(s).7", "Unidade(s).8", "Unidade(s).9", "Unidade(s).10", "Unidade(s).11", "Unidade(s).12", "Unidade(s).13", "Unidade(s).14", "Unidade(s).15", "Unidade(s).16", "Unidade(s).17", "Unidade(s).18", "Unidade(s).19", "Unidade(s).20", "Unidade(s).21", "Unidade(s).22", "Unidade(s).23", "Unidade(s).24", "Unidade(s).25", "Unidade(s).26", "Unidade(s).27", "Unidade(s).28", "Unidade(s).29", "Unidade(s).30", "Unidade(s).31", "Unidade(s).32", "Unidade(s).33", "Unidade(s).34", "Unidade(s).35", "Unidade(s).36", "Unidade(s).37", "Unidade(s).38", "Unidade(s).39", "Unidade(s).40", "Unidade(s).41", "Unidade(s).42", "Unidade(s).43", "Unidade(s).44", "Unidade(s).45", "Unidade(s).46", "Unidade(s).47", "Unidade(s).48", "Unidade(s).49", "Unidade(s).50", "Unidade(s).51", "Unidade(s).52", "Unidade(s).53", "Unidade(s).54", "Unidade(s).55", "Unidade(s).56", "Unidade(s).57", "Unidade(s).58", "Unidade(s).59", "Unidade(s).60", "Unidade(s).61", "Unidade(s).62", "Unidade(s).63", "Unidade(s).64", "Unidade(s).65", "Unidade(s).66", "Unidade(s).67", "Unidade(s).68", "Unidade(s).69", "Unidade(s).70", "Unidade(s).71", "Unidade(s).72", "Unidade(s).73", "Unidade(s).74", "Unidade(s).75", "Unidade(s).76", "Unidade(s).77", "Unidade(s).78", "Unidade(s).79", "Unidade(s).80", "Unidade(s).81", "Unidade(s).82", "Unidade(s).83", "Unidade(s).84", "Unidade(s).85", "Unidade(s).86", "Unidade(s).87", "Unidade(s).88"}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Unidade(s).1", type text}, {"Unidade(s).2", type text}, {"Unidade(s).3", type text}, {"Unidade(s).4", type text}, {"Unidade(s).5", type text}, {"Unidade(s).6", type text}, {"Unidade(s).7", type text}, {"Unidade(s).8", type text}, {"Unidade(s).9", type text}, {"Unidade(s).10", type text}, {"Unidade(s).11", type text}, {"Unidade(s).12", type text}, {"Unidade(s).13", type text}, {"Unidade(s).14", type text}, {"Unidade(s).15", type text}, {"Unidade(s).16", type text}, {"Unidade(s).17", type text}, {"Unidade(s).18", type text}, {"Unidade(s).19", type text}, {"Unidade(s).20", type text}, {"Unidade(s).21", type text}, {"Unidade(s).22", type text}, {"Unidade(s).23", type text}, {"Unidade(s).24", type text}, {"Unidade(s).25", type text}, {"Unidade(s).26", type text}, {"Unidade(s).27", type text}, {"Unidade(s).28", type text}, {"Unidade(s).29", type text}, {"Unidade(s).30", type text}, {"Unidade(s).31", type text}, {"Unidade(s).32", type text}, {"Unidade(s).33", type text}, {"Unidade(s).34", type text}, {"Unidade(s).35", type text}, {"Unidade(s).36", type text}, {"Unidade(s).37", type text}, {"Unidade(s).38", type text}, {"Unidade(s).39", type text}, {"Unidade(s).40", type text}, {"Unidade(s).41", type text}, {"Unidade(s).42", type text}, {"Unidade(s).43", type text}, {"Unidade(s).44", type text}, {"Unidade(s).45", type text}, {"Unidade(s).46", type text}, {"Unidade(s).47", type text}, {"Unidade(s).48", type text}, {"Unidade(s).49", type text}, {"Unidade(s).50", type text}, {"Unidade(s).51", type text}, {"Unidade(s).52", type text}, {"Unidade(s).53", type text}, {"Unidade(s).54", type text}, {"Unidade(s).55", type text}, {"Unidade(s).56", type text}, {"Unidade(s).57", type text}, {"Unidade(s).58", type text}, {"Unidade(s).59", type text}, {"Unidade(s).60", type text}, {"Unidade(s).61", type text}, {"Unidade(s).62", type text}, {"Unidade(s).63", type text}, {"Unidade(s).64", type text}, {"Unidade(s).65", type text}, {"Unidade(s).66", type text}, {"Unidade(s).67", type text}, {"Unidade(s).68", type text}, {"Unidade(s).69", type text}, {"Unidade(s).70", type text}, {"Unidade(s).71", type text}, {"Unidade(s).72", type text}, {"Unidade(s).73", type text}, {"Unidade(s).74", type text}, {"Unidade(s).75", type text}, {"Unidade(s).76", type text}, {"Unidade(s).77", type text}, {"Unidade(s).78", type text}, {"Unidade(s).79", type text}, {"Unidade(s).80", type text}, {"Unidade(s).81", type text}, {"Unidade(s).82", type text}, {"Unidade(s).83", type text}, {"Unidade(s).84", type text}, {"Unidade(s).85", type text}, {"Unidade(s).86", type text}, {"Unidade(s).87", type text}, {"Unidade(s).88", type text}}),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Tipo Alterado", {"Documento", "DocumentScheduleId", "Tipo do documento", "Numeros dos Pedidos", "Tipos do Contrato", "Fornecedor", "CNPJ", "Funcionário", "Prazo de Envio", "Data da Análise", "Status", "Categoria(s)", "Status (Reclassificação)", "Competência","Razão Social", "Data de Envio"}, "Atributo", "Valor"),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Não Dinâmicas",{{"Valor", "Unidade(s)"}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Colunas Renomeadas",{"Atributo"}),
+				    #"Linhas Filtradas2" = Table.SelectRows(#"Colunas Removidas", each [Competência] > #date(2023, 12, 31)),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Linhas Filtradas2", "Índice", 1, 1, Int64.Type),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Índice Adicionado", "Data de Hoje", each DateTimeZone.LocalNow()),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Data de Hoje", type date}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado1", "Tempo de Atraso (Dias)", each if [Status] = "Atrasado"
+				    then Duration.Days([Data de Hoje] - [Prazo de Envio])
+				
+				    else null),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Personalização Adicionada2", "Meses de Atraso", each if [#"Tempo de Atraso (Dias)"] = null then null else if [#"Tempo de Atraso (Dias)"] < 30 then "Menos de 1 Mês" else if [#"Tempo de Atraso (Dias)"] < 60 then "1 Mês e menos de 2 Meses" else if [#"Tempo de Atraso (Dias)"] < 90 then "2 Mês e menos de 3 Meses" else "Mais de 3 Meses"),
+				    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Coluna Condicional Adicionada1", {{"Prazo de Envio", null}}),
+				    #"Erros Substituídos1" = Table.ReplaceErrorValues(#"Erros Substituídos", {{"Data da Análise", null}}),
+				    #"Erros Substituídos2" = Table.ReplaceErrorValues(#"Erros Substituídos1", {{"Competência", null}}),
+				    #"Erros Substituídos3" = Table.ReplaceErrorValues(#"Erros Substituídos2", {{"Data de Hoje", null}})
+				in
+				    #"Erros Substituídos3"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

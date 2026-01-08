@@ -1,0 +1,889 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "Tabelas_Efetivos_A",
+  "name": "051940302b5207c68b00",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "43e984c11b39be36a5f8",
+    "filters": {
+      "byExpr": [
+        {
+          "name": "a8ecda3f7491bbc02076",
+          "type": "Advanced",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Documentos em Análise"
+                }
+              },
+              "Property": "Competência"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "f156109ba47920006ed3",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "dCalendário"
+                }
+              },
+              "Property": "Date"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "9f6ed3f290dcb63ba8ac",
+          "type": "Advanced",
+          "filter": {
+            "Version": 2,
+            "From": [
+              {
+                "Name": "d",
+                "Entity": "dCalendário",
+                "Type": 0
+              }
+            ],
+            "Where": [
+              {
+                "Condition": {
+                  "Comparison": {
+                    "ComparisonKind": 3,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "Date"
+                      }
+                    },
+                    "Right": {
+                      "DateSpan": {
+                        "Expression": {
+                          "Literal": {
+                            "Value": "datetime'2025-03-01T00:00:00'"
+                          }
+                        },
+                        "TimeUnit": 5
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "dCalendário"
+                }
+              },
+              "Property": "Date"
+            }
+          },
+          "howCreated": 1
+        }
+      ]
+    },
+    "sections": {
+      "43e984c11b39be36a5f8": {
+        "visualContainers": {
+          "24dcb8bf9e4053d071b0": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "d3342c8e661c83e3c146",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "s",
+                        "Entity": "Status de Efetivos",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "s"
+                                  }
+                                },
+                                "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "69597a126751bc2d2080",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Relação_Ativos_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "a99383b55b6376e0d904",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "barChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "702bba66ad437973e9bc": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "9d7ef12d10b212936630",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Nome Fantasia Unidade"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "77f46b54c43691d00c88",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "414637af2987802428a1",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Relação_Ativos_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "barChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Nome Fantasia Unidade"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "f909b537217826da54d3": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "0b5fef7628141830e9d1",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "d3387d0c4be0127060e2",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Relação_Ativos_Quantidade_Efetivos_Cadastrados"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "_Cadastro_Quantidade_Efetivos_Cadastrados"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "655e740cd61c02b977b2": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "2fa8d61077a3eb1ee530": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "6958868b8e4da6414880": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "021674cf0410b4d1ddd3": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "b95237e3937e88987575",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Nome Fantasia Unidade"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Nome Fantasia Unidade"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "73bc9a4f1ee7c8730b0c": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "d2c62acc991ce4e50e98",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "1ba32dae400a30908d30": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "2ec76a7e9233c30b1010",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Tipo do Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {}
+            }
+          },
+          "b947a13e052c07513023": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "cd27d655b79ba0570a72",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Categoria"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Categoria"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "b4d0973826bb875d7429": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "0defb9c69075a6083a89",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "e177e77b83354e8593a9",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Gestor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Contratos"
+                        }
+                      },
+                      "Property": "Gestor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "e4911d5aa2d28e001d72": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "51fb70e65bde97a5ea06",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "textSlicer",
+              "objects": {}
+            }
+          },
+          "42d2bd76ed76c5a46140": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "9422c21f1cea4c57e5dc",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "cf36de4f131e6c3b9180",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Id_Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Id_Contrato"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "30284c65b86059a6a750": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "6971e141da060b256a12": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "ba50f00044e4065113d5": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "648ad627ba183a1aca63",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Nome"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "0032d0952351da0536ec",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Situação"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "be7d702708462509e329",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "CPF"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "045b541e68a9219a2dad",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Categoria"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "b5d78dfcc012ab370ab3",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Razão Social Fornecedor - Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "056654170cca74b61d5a",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "CNPJ Fornecedor - Contrato"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "1cc00fbc725ebcd8635a",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de Efetivos"
+                        }
+                      },
+                      "Property": "Número do Pedido"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "fa3932a979d3c58e3703": {
+            "isHidden": false
+          },
+          "28bad327cbe605e78ac0": {
+            "isHidden": false
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

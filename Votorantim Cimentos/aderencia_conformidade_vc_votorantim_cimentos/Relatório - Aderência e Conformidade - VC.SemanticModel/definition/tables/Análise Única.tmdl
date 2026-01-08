@@ -1,0 +1,39 @@
+table 'Análise Única'
+	lineageTag: 8690e910-c62d-401c-85f3-1d1034323f18
+
+	column 'Chave de Análise única'
+		dataType: string
+		lineageTag: ec7a55ac-1190-4b79-b6d1-08025f49529d
+		summarizeBy: none
+		sourceColumn: Chave de Análise única
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contagem
+		dataType: int64
+		formatString: 0
+		lineageTag: c2d928d9-bcaf-47d6-ba61-d502541f8c59
+		summarizeBy: none
+		sourceColumn: Contagem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Análise Única' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-gestao"),
+				    dbo_DocumentValidationSla = Fonte{[Schema="dbo",Item="DocumentValidationSla"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(dbo_DocumentValidationSla,{{"Id_Cliente", type text}, {"Cliente", type text}, {"Id_Fornecedor", type text}, {"Fornecedor", type text}, {"Funcionario", type text}, {"Id_Documento", type text}, {"Nome_Documento", type text}, {"Tipo", type text}, {"Id_Pedido", type text}, {"Numero_Pedido", type text}, {"Data_Cadastro_Pedido", type date}, {"Hora_Cadastro_Pedido", type datetime}, {"Prazo_Envio", type date}, {"Data_Envio", type date}, {"Hora_Envio", type datetime}, {"Data_Analise", type date}, {"Hora_Analise", type datetime}, {"Foi_Aprovado", type text}, {"Id_Analista", type text}, {"Analisado_Por", type text}, {"Status_Documentacao", type text}, {"Perfil", type text}, {"Observacao_Cliente", type text}, {"Observacao_Fornecedor", type text}}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado", each ([Cliente] = "VC- Votorantim cimentos")),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Linhas Filtradas",{{"Hora_Envio", type time}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado1", "Chave de Análise única", each [Id_Documento]),
+				    #"Linhas Agrupadas" = Table.Group(#"Personalização Adicionada", {"Chave de Análise única"}, {{"Contagem", each Table.RowCount(_), Int64.Type}}),
+				    #"Linhas Classificadas" = Table.Sort(#"Linhas Agrupadas",{{"Contagem", Order.Descending}})
+				in
+				    #"Linhas Classificadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,35 @@
+table 'Chave Fornecedores'
+	lineageTag: 873f3f06-973a-46bf-84e6-c69262eb5fea
+
+	column 'Chave de Fornecedor'
+		lineageTag: ee760efb-8648-43e6-85cd-f33d7cd9261f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Status de fornecedores[Chave de Fornecedor]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor = LOOKUPVALUE('Status de fornecedores'[Nome],'Status de fornecedores'[Chave de Fornecedor],'Chave Fornecedores'[Chave de Fornecedor])
+		lineageTag: b826a263-25a2-47fc-8539-c41e3614d221
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria = LOOKUPVALUE('Status de fornecedores'[Categoria],'Status de fornecedores'[Chave de Fornecedor],'Chave Fornecedores'[Chave de Fornecedor])
+		lineageTag: 0aedf974-fe2f-4d5e-af40-51ec7f3547c4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade = LOOKUPVALUE('Status de fornecedores'[Unidade],'Status de fornecedores'[Chave de Fornecedor],'Chave Fornecedores'[Chave de Fornecedor])
+		lineageTag: 089d7e9f-901e-4cfc-96e8-f89a1ca36fa5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Chave Fornecedores' = calculated
+		mode: import
+		source = DISTINCT('Status de fornecedores'[Chave de Fornecedor])
+
+	annotation PBI_Id = 083347956a2146b2a0672fe942e30156
+

@@ -1,0 +1,122 @@
+table Análises
+	lineageTag: 3f1bce8f-2d44-40ea-8b18-c2f301e479e0
+
+	measure 'Quantidade de Ocorrências' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 2eaf1519-6189-4d92-864d-50b0cdfc6c37
+
+	measure _Ocorrencias_Quantidade = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: a74367c2-2da5-4507-9b7d-8859ba12c424
+
+	measure _Recusas_Quantidade =
+			CALCULATE([_Ocorrencias_Quantidade],
+			'Análises'[Status_Documentacao] = "Reprovado")
+		formatString: #,0
+		lineageTag: 88e0614a-aa55-42a5-944c-12f835b16384
+
+	measure _Documentos_Enviados = CALCULATE(DISTINCTCOUNT('Análises'[Id_Documento]))
+		formatString: #,0
+		lineageTag: 46869c0c-6725-4480-8591-5fd3cb636e85
+
+	column Fornecedor
+		dataType: string
+		lineageTag: f1a4e4c2-c2e5-4767-9e05-3562d0f73af2
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionario
+		dataType: string
+		lineageTag: eeac1934-6a0b-442f-b55d-a8f07ba9331c
+		summarizeBy: none
+		sourceColumn: Funcionario
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: a6f37430-1a0a-470b-9e34-b729a529f6b8
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Documento
+		dataType: string
+		lineageTag: dab4d7af-032e-4814-b123-487aa36d1e0e
+		summarizeBy: none
+		sourceColumn: Nome_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: 599f766b-3f4d-45b1-97d3-ed48f9c61562
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Pedido
+		dataType: string
+		lineageTag: b2840590-0105-4b02-8f22-c70bac619b11
+		summarizeBy: none
+		sourceColumn: Id_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Numero_Pedido
+		dataType: string
+		lineageTag: ac58940e-a0ff-4823-b16a-7bfde1a3cedc
+		summarizeBy: none
+		sourceColumn: Numero_Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: dd1f9ae6-7311-430e-a51e-78f3d4f87d2e
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observacao_Cliente
+		dataType: string
+		lineageTag: f2371a4a-4f92-4279-be38-5cdba978c3b7
+		summarizeBy: none
+		sourceColumn: Observacao_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 6642636d-a97f-4e0f-873f-858e1e40f788
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: fd61b89c-b584-49b5-90c7-140d6b7875ec
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Análises = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate    datetime2        = GETDATE();#(lf)DECLARE @organizationId uniqueidentifier = '41CACAFC-2823-4A1A-A0DB-381A24EB9014';#(lf)DECLARE @DataInicial    datetime2        = '2024-11-01 00:00:00';#(lf)DECLARE @DataFinal      datetime2        = GETDATE();#(lf)#(lf)SELECT#(lf)    O.Id                                        AS Id_Cliente,#(lf)    O.TradeName                                 AS Cliente,#(lf)    P.Id                                        AS Id_Fornecedor,#(lf)    P.TradeName                                 AS Fornecedor,#(lf)    E.Name                                      AS Funcionario,#(lf)    DS.Id                                       AS Id_Documento,#(lf)    DS.Name                                     AS Nome_Documento,#(lf)    CASE D.DeliveryKind#(lf)        WHEN 0 THEN 'Recorrente'#(lf)        WHEN 1 THEN 'Mobilização'#(lf)        WHEN 2 THEN 'Treinamento'#(lf)        WHEN 3 THEN 'Desmobilização'#(lf)    END                                         AS Tipo,#(lf)    C.Id                                        AS Id_Pedido,#(lf)    C.OrderNumber                               AS Numero_Pedido,#(lf)#(lf)    -- Usando janela para evitar GROUP BY#(lf)    FORMAT(MIN(C.CreatedAt) OVER (PARTITION BY C.Id), 'dd/MM/yyyy') AS Data_Cadastro_Pedido,#(lf)    FORMAT(MIN(C.CreatedAt) OVER (PARTITION BY C.Id), 'HH:mm:ss')   AS Hora_Cadastro_Pedido,#(lf)#(lf)    DS.ExpectedUploadAt                          AS Prazo_Envio,#(lf)#(lf)    ISNULL(FORMAT(DF.CreatedAt, 'yyyy-MM-dd'),#(lf)           FORMAT(DS.UploadedAt, 'yyyy-MM-dd'))  AS Data_Envio,#(lf)    ISNULL(FORMAT(DF.CreatedAt, 'HH:mm:ss'),#(lf)           FORMAT(DS.UploadedAt, 'HH:mm:ss')) AS Hora_Envio,#(lf)#(lf)    ISNULL(FORMAT(DSL.CreatedAt, 'yyyy-MM-dd'),#(lf)           FORMAT(DS.ValidatedAt, 'yyyy-MM-dd')) AS Data_Analise,#(lf)    ISNULL(FORMAT(DSL.CreatedAt, 'HH:mm:ss'),#(lf)           FORMAT(DS.ValidatedAt, 'HH:mm:ss')) AS Hora_Analise,#(lf)    b.tradename as [Unidade],#(lf)    cat.Name as [Categoria],#(lf)    CASE#(lf)        WHEN ISNULL(DSL.IsValid, DS.IsValidated) = 1 THEN 'Sim'#(lf)        WHEN ISNULL(DSL.IsValid, DS.IsValidated) = 0 THEN 'Não'#(lf)        ELSE 'Pendente'#(lf)    END                                         AS Foi_Aprovado,#(lf)#(lf)    ISNULL(ISNULL (dsl.Responsibleid, ds.ValidatedBy), '00000000-0000-0000-0000-000000000000')   AS Id_Analista,#(lf)#(lf)     CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy =  '00000000-0000-0000-0000-000000000000' and dsl.Responsibleid is null)   THEN 'Validado Automaticamente'#(lf)        WHEN dsl.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Validado Automaticamente'#(lf)#(tab)#(tab)WHEN [ds].[RequiresValidation] = 0 THEN 'Não é Necessário Validação'#(lf)        WHEN (ds.ValidatedBy IS NULL and dsl.Responsibleid is null) THEN 'Pendente de Validação'#(lf)        ELSE ISNULL(u.Name, isnull(dsu.name,'---'))#(lf)    END                                         AS Analisado_Por,#(lf)#(lf)    CASE#(lf)        WHEN ISNULL(DSL.IsValid, DS.IsValidated) = 1 THEN 'Aprovado'#(lf)        WHEN ISNULL(DSL.IsValid, DS.IsValidated) = 0 THEN 'Reprovado'#(lf)        WHEN DS.IsValidated IS NULL THEN 'Aguardando Validação'#(lf)        ELSE 'Pendente'#(lf)    END                                         AS Status_Documentacao,#(lf)#(lf)   CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy = '00000000-0000-0000-0000-000000000000' and dsl.Responsibleid is null) THEN 'Sistema'#(lf)        WHEN dsl.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Sistema'#(lf)#(tab)#(tab)WHEN u.Email like '%Atlas%'  THEN 'Atlas'#(lf)        WHEN ds.ValidatedBy IS NULL THEN 'Pendente de Validação'#(lf)        ELSE 'Cliente'#(lf)    END                                         AS Perfil,#(lf)#(lf)    ISNULL(DSL.Message, DS.ValidationMessage)   AS Observacao_Cliente,#(lf)    DF.Observation                               AS Observacao_Fornecedor#(lf)FROM#(lf)    DocumentSchedule DS                 WITH (NOLOCK)#(lf)    INNER JOIN Document D               WITH (NOLOCK) ON D.Id = DS.DocumentId#(lf)    INNER JOIN Provider P               WITH (NOLOCK) ON P.Id = DS.ProviderId#(lf)    INNER JOIN Organization O           WITH (NOLOCK) ON O.Id = DS.OrganizationId#(lf)    LEFT  JOIN EmployeeRegister E       WITH (NOLOCK) ON E.Id = DS.EmployeeRegisterId#(lf)    INNER JOIN [DocumentScheduleBuilding] AS dsb ON [ds].[Id] = dsb.[DocumentScheduleId]#(lf)    INNER JOIN [DocumentScheduleCategory] AS dsc ON [ds].[Id] = dsc.[DocumentScheduleId]#(lf)    INNER JOIN Building AS b ON [b].[Id] = dsb.[BuildingId]#(lf)    INNER JOIN Category AS cat ON [cat].[Id] = dsc.[CategoryId]#(lf)    LEFT  JOIN DocumentScheduleValidationLog DSL WITH (NOLOCK) ON DS.Id = DSL.DocumentScheduleId#(lf)    LEFT  JOIN DocumentFile DF          WITH (NOLOCK) ON DF.Id = DSL.DocumentFileId#(lf)    LEFT  JOIN [User] U                 WITH (NOLOCK) ON DSL.ResponsibleId = U.Id#(lf)    LEFT  JOIN [User] DSU               WITH (NOLOCK) ON DS.ValidatedBy   = DSU.Id#(lf)    LEFT  JOIN DocumentScheduleContractBI dscBI WITH (NOLOCK) ON dscBI.DocumentScheduleId = DS.Id#(lf)    LEFT  JOIN [Contract] C             WITH (NOLOCK) ON C.Id = dscBI.ContractId#(lf)WHERE#(lf)    DSL.CreatedAt BETWEEN @DataInicial AND @DataFinal#(lf)    AND (DS.Removed = 0 OR (DS.Removed = 1 AND DS.IsValidated = 0))#(lf)    AND (DS.UploadedAt IS NOT NULL or DF.CreatedAt IS NOT NULL)#(lf)    AND DS.RequiresValidation = 1#(lf)    --AND DS.CertificationId IS NULL#(lf)    AND DS.OrganizationId = @organizationId#(lf)ORDER BY#(lf)    O.TradeName ASC,#(lf)    P.TradeName ASC,#(lf)    E.Name ASC,#(lf)    DS.Name ASC,#(lf)    Data_Envio ASC,#(lf)    Hora_Envio ASC;#(lf)"]),
+				    #"Colunas Removidas" = Table.RemoveColumns(Fonte,{"Id_Cliente", "Cliente", "Id_Fornecedor", "Data_Cadastro_Pedido", "Hora_Cadastro_Pedido", "Prazo_Envio", "Data_Envio", "Hora_Envio", "Foi_Aprovado", "Id_Analista", "Analisado_Por", "Perfil", "Observacao_Fornecedor", "Data_Analise", "Hora_Analise"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

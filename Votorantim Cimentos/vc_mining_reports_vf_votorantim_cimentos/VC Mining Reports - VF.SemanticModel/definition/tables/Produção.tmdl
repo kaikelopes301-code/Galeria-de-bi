@@ -1,0 +1,110 @@
+table Produção
+	lineageTag: 90635c8f-8620-483e-bf2c-f9490d2f5a09
+
+	measure 'KWH / ton' = ```
+			
+			VAR Energia = SUM(Energia[ENERGIA])
+			VAR Producao = SUM('Produção'[Produção de equipamento (ton)])
+			
+			RETURN
+			IF (
+			    ISBLANK(Energia) || ISBLANK(Producao) || Producao = 0,
+			    BLANK(),
+			    Energia / Producao
+			)
+			
+			```
+		lineageTag: 8c1c4c0a-da56-4b20-818c-9807a98e4883
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MesAno
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: a6e0894a-5e54-48d4-9eb0-ce1c9dfd43eb
+		summarizeBy: none
+		sourceColumn: MesAno
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Name
+		dataType: string
+		lineageTag: 8c79eaa2-31bf-441e-ba12-d130e05d73f3
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'AllEquipment.Tag'
+		dataType: string
+		lineageTag: dbc075de-012d-4ded-9eec-43f6bea33566
+		summarizeBy: none
+		sourceColumn: AllEquipment.Tag
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Produção de equipamento (ton)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1bab8ac7-a761-45ee-9dcb-6c17f0a1afbd
+		summarizeBy: sum
+		sourceColumn: Produção de equipamento (ton)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column 'Horas em produção (h)'
+		dataType: double
+		lineageTag: d8de2506-2643-4d17-9ea6-00f66d6a407b
+		summarizeBy: sum
+		sourceColumn: Horas em produção (h)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Produtividade
+		dataType: double
+		lineageTag: e2c284f7-9a6b-424a-8010-cb0301621121
+		summarizeBy: sum
+		sourceColumn: Produtividade
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Prod_Calc (ton/h)'
+		dataType: double
+		formatString: 0.00
+		lineageTag: 71b4d581-5a48-42ce-8645-e5be4ba9fdd9
+		summarizeBy: sum
+		sourceColumn: Prod_Calc (ton/h)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mina_Padrão
+		dataType: string
+		lineageTag: 9d42eb31-32a4-43ab-afbd-538759fcb01b
+		summarizeBy: none
+		sourceColumn: Mina_Padrão
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Produção = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\DanielCozendey\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\05. Projetos\3. VC\Projeto Desmonte\Planilhas Importantes\Produtividade_vf.xlsx"), null, true),
+				    Tabela1_Sheet = Fonte{[Item="Tabela1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Tabela1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"MesAno", type date}, {"Name", type text}, {"AllEquipment.Tag", type text}, {"Produção de equipamento (ton)", Int64.Type}, {"Horas em produção (h)", type number}, {"Produtividade", type number}, {"Prod_Calc (ton/h)", type number}, {"Mina_Padrão", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

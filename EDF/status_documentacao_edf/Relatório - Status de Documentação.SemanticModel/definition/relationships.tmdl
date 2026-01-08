@@ -1,0 +1,88 @@
+relationship c4e27a1e-b071-4a90-bc4e-7629315aede6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Inicio'
+	toColumn: LocalDateTable_29dc1f1a-8950-49c9-9312-66fbca8aa175.Date
+
+relationship f966eb6b-d1e8-4e9a-af09-48f3b4a9e796
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Fim'
+	toColumn: LocalDateTable_38af1735-8ab0-48bf-9a6a-39a0e8bbc129.Date
+
+relationship b6118b9f-17b5-4365-b86a-94681a560edc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Prazo de Envio'
+	toColumn: LocalDateTable_601600e6-bb4d-43b9-b6d2-852c3b8420b6.Date
+
+relationship e3235d18-953f-4421-a55e-8ccd744820af
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Data da Análise'
+	toColumn: LocalDateTable_357696e8-dd17-4215-94fe-b3ee76ea8695.Date
+
+relationship 70123a36-9ca1-413d-ea1a-3b501a7aec4f
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status do Fornecedores'.Chave
+	toColumn: 'Análise de Colaboradores'.Chave
+
+relationship AutoDetected_7cd88b2b-02ed-4e31-a3b6-cb1f3345b0ec
+	fromColumn: 'Documentos em Análise'.Documento
+	toColumn: 'Classificação Docs'.Documento
+
+relationship c0019a24-7508-08d7-1e5a-38668eed31e7
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.'Número do Pedido'
+	toColumn: 'Número de Pedido'.'Número do Pedido'
+
+relationship AutoDetected_67f7fe5f-adab-4bc0-a822-1958db88061a
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status de funcionários'.'Número do Pedido'
+	toColumn: 'Status do Fornecedores'.'Número do Pedido'
+
+relationship 527fb114-8762-6e95-ef8b-970213212001
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'Número de Pedido'.'Número do Pedido'
+	toColumn: 'Status do Fornecedores'.'Número do Pedido'
+
+relationship d9a08348-fe53-6f72-d4d5-7cb051c46f50
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status de funcionários'.'Número do Pedido'
+	toColumn: 'Número de Pedido'.'Número do Pedido'
+
+relationship c526becf-c005-6b8d-3d43-d997ce8d7461
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Análise de Colaboradores'.'Número do Pedido2'
+	toColumn: 'Número de Pedido'.'Número do Pedido'
+
+relationship fe720353-75f3-4a4f-9426-9b7c954a5ae3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Teste - Npedido'.Competência
+	toColumn: LocalDateTable_4071bcc5-f297-432a-9c48-2e562262d612.Date
+
+relationship dd8f80af-fb26-9ea8-cca4-f16eece95f9f
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Documentos em Análise'.'Chave de Número de Pedido'
+	toColumn: 'Teste - Npedido'.'Chave de Número de Pedido'
+
+relationship a9d9fd61-8d69-4f49-a994-a87c6d8f60ae
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Documentos em Análise'.'Início do Mês'
+	toColumn: LocalDateTable_48db6bef-46cc-436d-b9b3-ecc8ff826528.Date
+
+relationship e6e9c9a1-33d7-4967-8bb8-099d9726e1df
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.Date
+
+relationship 7c6d58bd-6607-b97d-3b78-946a1875669d
+	fromColumn: 'Documentos em Análise'.Competência
+	toColumn: dCalendário.Date
+
+relationship 63d9d7c9-b0af-5cbf-c628-9324eef3cf4f
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Análise de Colaboradores'.Competência
+	toColumn: dCalendário.Date
+

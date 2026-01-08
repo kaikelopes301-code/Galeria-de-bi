@@ -1,0 +1,78 @@
+table Referência
+	lineageTag: bf4f5bd2-b5be-406c-a13d-06d19e7c06e8
+
+	column Column1
+		dataType: string
+		lineageTag: 925e1c0d-efec-44fe-975e-6ea56b14444e
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: fbec0534-f143-470a-a93a-9c36e9f9066b
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: 58307baa-dfca-4255-b8cb-16d66d9d3995
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: f21a8904-4d08-4291-9d7d-0b4056ac58fd
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column5
+		dataType: string
+		lineageTag: b5ee593a-5f6a-4291-8274-076c82d388c6
+		summarizeBy: none
+		sourceColumn: Column5
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atributo
+		dataType: string
+		lineageTag: 1582c4f9-76b8-422a-bdfc-186426a4e0fe
+		summarizeBy: none
+		sourceColumn: Atributo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: string
+		lineageTag: 7428509f-2882-4041-827f-2701a1ba66b3
+		summarizeBy: none
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Referência = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Skic\afm_gestao_report_documentos_13_56_02_09_2024.xlsx"), null, true),
+				    #"Entrega de documentos_Sheet" = Fonte{[Item="Entrega de documentos",Kind="Sheet"]}[Data],
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Entrega de documentos_Sheet",{"Column1"}),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Colunas Removidas",10),
+				    #"Linhas Inferiores Removidas" = Table.RemoveLastN(#"Linhas Superiores Removidas",2),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Inferiores Removidas", [PromoteAllScalars=true]),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Cabeçalhos Promovidos1", {"Column1", "Column2", "Column3", "Column4", "Column5"}, "Atributo", "Valor"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Colunas Não Dinâmicas", each ([Valor] <> "Ok" and [Valor] <> "X"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

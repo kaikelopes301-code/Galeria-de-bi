@@ -1,0 +1,107 @@
+table 'Número de Contrato'
+	lineageTag: 3dba2ee0-a016-43cf-a065-be733dbae558
+
+	measure 'Quantidade de Pedidos' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: d166ed92-fb2d-418a-8425-86ee3cd85688
+
+	column Aderência = CALCULATE([%Aderência],'Documentos em Análise'[Tipo do documento] = "Recorrente")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0eaca38d-de80-4827-a91d-f357563426b0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Statude de Envio' = IF([Aderência] = BLANK(), "Não Enviado", "Enviado")
+		lineageTag: 40d07667-c53c-4dd7-b49f-626ca80fff09
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Adesão' =
+			
+			IF( 'Número de Contrato'[Aderência] = BLANK(), "0%",
+			    IF('Número de Contrato'[Aderência] < 0.25, "0%-25%",
+			        IF( 'Número de Contrato'[Aderência] < 0.5, "25%-50%",
+			            IF('Número de Contrato'[Aderência] <0.75, "50%-75%",
+			                IF ('Número de Contrato'[Aderência] <1, "75%-100%",
+			                    IF('Número de Contrato'[Aderência] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: 083fa3a1-69b3-4056-afff-8818dd0c8474
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conformidade = CALCULATE([%Conformidade],'Documentos em Análise'[Tipo do documento] = "Recorrente")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4c30de91-1f28-448a-8380-3d0e8618c75a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Conformidade' =
+			
+			IF( 'Número de Contrato'[Conformidade] = BLANK(), "0%",
+			    IF('Número de Contrato'[Conformidade] < 0.25, "0%-25%",
+			        IF( 'Número de Contrato'[Conformidade] < 0.5, "25%-50%",
+			            IF('Número de Contrato'[Conformidade] <0.75, "50%-75%",
+			                IF ('Número de Contrato'[Conformidade] <1, "75%-100%",
+			                    IF('Número de Contrato'[Conformidade] = 1, "100%",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+		lineageTag: caa22121-4b28-481f-9fe7-0dd8ce2ae3ad
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco = CALCULATE([%Grupo Risco(Média Mensal)],'Documentos em Análise'[Tipo do documento]="Recorrente")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: dd632e2f-e4a6-4fa5-9ebe-abe77498b364
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Risco' = ```
+			
+			    IF('Número de Contrato'[Risco] < 0.25, "Risco Baixo",
+			        IF( 'Número de Contrato'[Risco] < 0.5, "Risco Médio",
+			            IF('Número de Contrato'[Risco] <0.75, "Risco Alto",
+			                IF ('Número de Contrato'[Risco] <=1, "Risco Crítico",
+			                    ""
+			                    )
+			                )
+			            )
+			        )
+			    
+			
+			```
+		lineageTag: 802b38bd-f2b7-4f9f-b377-3590090e2116
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Id.Contrato'
+		lineageTag: 476b0a04-3235-4a74-a443-7db8543023c9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[Id.Contrato]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Número de Contrato' = calculated
+		mode: import
+		source = DISTINCT('Documentos em Análise'[Id.Contrato])
+
+	annotation PBI_Id = ff5864599cb442fa92214988bb0e7dff
+

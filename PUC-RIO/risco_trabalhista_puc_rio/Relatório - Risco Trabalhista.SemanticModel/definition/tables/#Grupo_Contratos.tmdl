@@ -1,0 +1,48 @@
+table #Grupo_Contratos
+	lineageTag: 5a39138c-93de-401e-adc7-9040684de82d
+
+	column ###CONTRATOS
+		lineageTag: f803f174-5bc8-48ae-a431-8d71119a3bda
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '###CONTRATOS Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '###CONTRATOS Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###CONTRATOS Campos'
+		isHidden
+		lineageTag: d0632125-fb8c-4d83-9180-0d427bb5ea6b
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '###CONTRATOS Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###CONTRATOS Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 8a127762-644d-421e-a330-47b3f206f743
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Grupo_Contratos = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Contratos'[Razão Social]), 0),
+				    ("Unidade", NAMEOF('Contratos'[Distribuidora]), 1)
+				}
+
+	annotation PBI_Id = 75f27a38170b453d87baf39e91e7776d
+

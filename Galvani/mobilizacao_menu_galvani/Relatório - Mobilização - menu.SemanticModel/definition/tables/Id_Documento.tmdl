@@ -1,0 +1,59 @@
+table Id_Documento
+	lineageTag: f77fcb35-e1b6-49c7-8169-39817096fb55
+
+	column Id_Documento
+		lineageTag: 3dc4f52a-2693-4bd9-974a-5d71334f6771
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Relatório de Validação[Id_Documento]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade de Análises' = ```
+			
+			CALCULATE(COUNT('Relatório de Validação'[Id_Documento]))
+			
+			
+			```
+		formatString: 0
+		lineageTag: ce221102-edfe-4a30-a3a4-1acd9106ff1e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Faixa = ```
+			
+			IF(Id_Documento[Quantidade de Análises] = 1, "Sem Reanálise",
+			    IF(Id_Documento[Quantidade de Análises] = 2, "1 vez",
+			        IF(Id_Documento[Quantidade de Análises] <= 4, "2 a 3 vezes",
+			            IF(Id_Documento[Quantidade de Análises] <= 6, "4 a 5 vezes",
+			                IF(Id_Documento[Quantidade de Análises] <= 8, "5 a 7 vezes",
+			                    IF(Id_Documento[Quantidade de Análises] <= 12, "8 a 11 vezes",
+			                        IF(Id_Documento[Quantidade de Análises] <= 16, "12 a 15 vezes",
+			                            IF(Id_Documento[Quantidade de Análises]  <= 20, "16 a 19 vezes",
+			                                IF(Id_Documento[Quantidade de Análises]  <= 24, "20 a 23 vezes",
+			                                    IF(Id_Documento[Quantidade de Análises]  > 24, "Mais 23 Vezes",
+			                                        "Sem Classificação"
+			                                    )
+			                                )
+			                            )
+			                        )
+			                    )
+			                )
+			            )
+			        )
+			    )
+			)
+			
+			```
+		lineageTag: fc58fba2-bed9-42e7-a3fe-79298df30a38
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Id_Documento = calculated
+		mode: import
+		source = CALCULATETABLE(DISTINCT('Relatório de Validação'[Id_Documento]))
+
+	annotation PBI_Id = b4d69f27229a43dbb953ad0506c403f3
+

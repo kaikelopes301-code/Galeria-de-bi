@@ -1,0 +1,35 @@
+table dFaixaHorario
+	lineageTag: 057fb350-4e98-41ca-b5f5-e32f855927fc
+
+	column Faixa
+		dataType: string
+		lineageTag: e25df6f6-7009-4ac5-851a-86d3b1e258ae
+		summarizeBy: none
+		sourceColumn: Faixa
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a715235-160d-4da5-b784-f67217e6f940
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dFaixaHorario = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("LdC7DcNADATRVoSLFdxQ/1oEVaGKXIsbM3njdILFw9536336ft6p0+ZGe+YsWCJLWMKyZFksi2XNslpWy5Zls2yWPctu2S1HlsNyWM4sp+W0XFkuyzUKvYR9JEQz0KpRTamRjWyKjW50U26EI5yCoxzllBzpSKfoaEc7ZUc84ik86lEfpQ/1oT5KH+pDfYzP1Yf6KH2oj//rtdWe5wc=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Faixa = _t, ID = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Faixa", type text}, {"ID", Int64.Type}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado",null,24,Replacer.ReplaceValue,{"ID"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Valor Substituído",{{"ID", Int64.Type}})
+				in
+				    #"Tipo Alterado1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

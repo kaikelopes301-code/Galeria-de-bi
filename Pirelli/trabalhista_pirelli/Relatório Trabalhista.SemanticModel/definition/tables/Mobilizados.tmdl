@@ -1,0 +1,371 @@
+table Mobilizados
+	lineageTag: b2c59e45-4bcc-4b2c-9fd7-9c545afa1b5a
+
+	measure _Mobilizados_ =
+			CALCULATE(DISTINCTCOUNT(Mobilizados[CPF]),
+			Mobilizados[Status Atual] = "Mobilizado",
+			Mobilizados[Situação] = "Ativo")
+		formatString: #,0
+		lineageTag: 3a209e71-374a-4555-a2ba-5221f578bc2e
+
+	measure '_Efetivos Ativos_' = CALCULATE([_Efetivos_],Mobilizados[Situação] = "Ativo")
+		formatString: #,0
+		lineageTag: cc00adcd-86af-4688-9577-a001c6a8e636
+
+	measure _Efetivos_ = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 0d52dfb1-a308-4d98-84f6-45d7a135e1d0
+
+	measure _Não_Mobilizados_ = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT(Mobilizados[CPF]),
+			    Mobilizados[Situação] = "Ativo",
+			    FILTER(
+			        Mobilizados, 
+			        NOT (
+			            Mobilizados[Nome Fantasia Unidade] IN {
+			                "PIRELLI PNEUS Campinas", 
+			                "PIRELLI PNEUS Feira de Santana"
+			            }
+			        )
+			    )
+			)
+			```
+		formatString: 0
+		lineageTag: 0bf23ee8-c73b-49bb-98a0-dc72a93748ee
+
+	measure _Efetivos_Sem_Controle_Mobilização =
+			
+			CALCULATE(DISTINCTCOUNT(Mobilizados[Nome Fantasia Unidade]),
+			Mobilizados[Controle de Mobilização] = "Sem Controle de Mobilização")
+		formatString: 0
+		lineageTag: 397fa430-ea43-408b-8800-f56669f77262
+
+	measure _%_Sem_Controle =
+			
+			VAR NMOB = Mobilizados[_Não_Mobilizados_]
+			
+			VAR ATIVO = [_Efetivos Ativos_]
+			
+			RETURN IF(NMOB = BLANK() && ATIVO >0,
+			    0,
+			    NMOB/ATIVO)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8c6fa18a-a408-466e-a593-3482ad8dc315
+
+	measure _Controle_Mobilizados_ = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT(Mobilizados[CPF]),
+			    FILTER(
+			        Mobilizados, 
+			            Mobilizados[Nome Fantasia Unidade] IN {
+			                "PIRELLI PNEUS Campinas", 
+			                "PIRELLI PNEUS Feira de Santana"
+			            }
+			        )
+			)
+			```
+		formatString: #,0
+		lineageTag: be7d4ac9-5723-4eea-bc97-8c46b1a239da
+
+	column Chave
+		dataType: string
+		lineageTag: 9cc8ec12-4d57-4153-adb2-07724efac9f5
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: d8e4a730-d322-4f5d-b9e6-eaf4429d315f
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 59c55340-2893-4a7a-bd68-fea93d46e2bd
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: c250574c-3371-425d-b46c-7a73bee063c3
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 29382bb5-fd92-48a8-b9db-d6b72cfb5ff1
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 52aca897-7a1f-4763-8c91-254cd8b891d5
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: d7ea6f43-bd8a-4ad9-967a-146143bdb641
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: 99575f04-37e3-4ead-87f5-e43a2d86f9c7
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Origem dos dados de fornecedor'
+		dataType: string
+		lineageTag: 47fd4ad3-ea8e-439f-83d5-bbaa3bc424e3
+		summarizeBy: none
+		sourceColumn: Origem dos dados de fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: 704c1a72-8a9b-4b0f-b519-7d8a66481d85
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 88758d97-6c27-4597-bba2-84a08562d48d
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: aa6c5a3f-c1f2-4ea4-aecb-af1c54c279e0
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 139faeaa-e5db-4bc5-a07f-1cdff0c9a4e0
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		variation Variation
+			isDefault
+			relationship: 36c2493c-bfcd-4837-b8e8-a5a377b4537d
+			defaultHierarchy: LocalDateTable_b946a965-39c2-41fc-b911-9db334ef964e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b394a5e0-018c-48d7-8d41-4e7c25551a52
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: fb1a7792-bfa8-4a6c-9dfb-ba494e5f6780
+			defaultHierarchy: LocalDateTable_8db4494f-325c-4d71-aa80-8bd756bc5a84.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3256ef8f-dbdc-45f8-98a6-fe93f8b67c3e
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: 40b4485a-2251-4d10-aaea-6c13999f395c
+			defaultHierarchy: LocalDateTable_2cc374df-8d66-403a-a49d-7da2710a208e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PIS
+		dataType: string
+		lineageTag: b71dae21-1e79-434a-ac75-fc4fe756ea64
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 44439886-df12-44db-a484-23982af66471
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: a41caef8-595e-4eff-9e7d-f253ce745df1
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 030f1dd7-e6e1-4107-bd13-65a7b8764ad1
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b2233406-a1a1-4dbc-a85f-7c6d23b61835
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		variation Variation
+			isDefault
+			relationship: a7036fe6-9684-4222-8630-118396b99481
+			defaultHierarchy: LocalDateTable_6dd83a82-6092-43c6-9bf1-bad402ee641a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo de cobrança do funcionário'
+		dataType: string
+		lineageTag: 3ce66ba2-c4df-4814-9ec1-65dfd40faeea
+		summarizeBy: none
+		sourceColumn: Tipo de cobrança do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Atual'
+		dataType: string
+		lineageTag: 4dd44812-4b3c-4912-84a4-b165df7a5aa3
+		summarizeBy: none
+		sourceColumn: Status Atual
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mobilização atual'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 18b45d11-83b4-4dee-a2fa-184ad043f013
+		summarizeBy: none
+		sourceColumn: Mobilização atual
+
+		variation Variation
+			isDefault
+			relationship: 90e334b8-874d-4dbf-94db-cdc25427d0eb
+			defaultHierarchy: LocalDateTable_23e80769-4d4f-4dc9-be43-95fc268296d7.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Personalizar
+		dataType: string
+		lineageTag: 7aac5ae8-7aaf-4511-8bfd-88a3be8b25c5
+		summarizeBy: none
+		sourceColumn: Personalizar
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave - Status Funcio'
+		dataType: string
+		lineageTag: d1ee550b-091c-4b1d-8b7c-ee8db6e43cdc
+		summarizeBy: none
+		sourceColumn: Chave - Status Funcio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gestor = ```
+			
+			VAR GESTOR = LOOKUPVALUE(Gestores[Gestor],Gestores[Fornecedores],Mobilizados[Razão Social Fornecedor - Contrato])
+			
+			RETURN IF(GESTOR = BLANK(), 
+			"Sem Gestor",
+			GESTOR)
+			```
+		lineageTag: a5c7e563-49d2-469a-a64a-0f7ba7a648b9
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Controle de Mobilização'
+		dataType: string
+		lineageTag: 83510274-b63f-40a1-b6fa-bac0fa25b8d0
+		summarizeBy: none
+		sourceColumn: Controle de Mobilização
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigente
+		dataType: string
+		lineageTag: b06a23bb-6507-48b2-a68a-30a2b63adab6
+		summarizeBy: none
+		sourceColumn: Vigente
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Mobilizados = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = '0ef9a2b4-43f6-4be5-8e9c-aeaef626e7cf'#(lf)Declare @Date DateTime = GETDATE()#(lf)#(lf)Select #(lf)#(tab)bc.Id As 'Chave',#(lf)#(tab)c.OrderNumber As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)p.TradeName As 'Nome Fantasia Fornecedor',#(lf)#(tab)bc.CompanyName As 'Razão Social Fornecedor - Contrato',#(lf)#(tab)(Select dbo.FNCNPJMask(bc.Document)) As 'CNPJ Fornecedor - Contrato',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When (cb.CompanyName is not null) then cb.CompanyName#(lf)#(tab)#(tab)#(tab)When (c.FatherId is not null) then BranchCompanyFather.CompanyName#(lf)#(tab)#(tab)#(tab)When (c.FatherId is null) and (c.OrderNumber like '%Subcontratada%') then#(lf)#(tab)#(tab)#(tab)(#(lf)#(tab)#(tab)#(tab)#(tab)select top 1 BranchCompanyFatherSub.CompanyName from Contract as ContractSub with(nolock)#(lf)#(tab)#(tab)#(tab)#(tab)inner join BranchCompany as BranchCompanyFatherSub with(nolock)#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)On BranchCompanyFatherSub.Id = ContractSub.BranchCompanyId#(lf)#(tab)#(tab)#(tab)#(tab)where#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)ContractSub.OrderNumber like#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)(#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)CONCAT(#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)'%',#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)(select top 1 * from STRING_SPLIT((SELECT REPLACE(c.OrderNumber, ' ', '')), '-') where value not like 'Subcontratada'),#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)'%'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab))#(lf)#(tab)#(tab)#(tab)#(tab)#(tab))#(lf)#(tab)#(tab)#(tab)#(tab)Order by LEN(ContractSub.OrderNumber)#(lf)#(tab)#(tab)#(tab))#(lf)#(tab)#(tab)#(tab)Else bc.CompanyName#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Razão Social Fornecedor - Faturamento',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When (c.ContractBillingId is not null) then cb.Document#(lf)#(tab)#(tab)#(tab)When (c.FatherId is not null) then BranchCompanyFather.Document#(lf)#(tab)#(tab)#(tab)When (c.FatherId is null) and (c.OrderNumber like '%Subcontratada%') then#(lf)#(tab)#(tab)#(tab)dbo.FNCNPJMask((#(lf)#(tab)#(tab)#(tab)#(tab)select top 1 BranchCompanyFatherSub.Document from Contract as ContractSub with(nolock)#(lf)#(tab)#(tab)#(tab)#(tab)inner join BranchCompany as BranchCompanyFatherSub with(nolock)#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)On BranchCompanyFatherSub.Id = ContractSub.BranchCompanyId#(lf)#(tab)#(tab)#(tab)#(tab)where#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)ContractSub.OrderNumber like#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)(#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)CONCAT(#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)'%',#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)(select top 1 * from STRING_SPLIT((SELECT REPLACE(c.OrderNumber, ' ', '')), '-') where value not like 'Subcontratada'),#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)'%'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab))#(lf)#(tab)#(tab)#(tab)#(tab)#(tab))#(lf)#(tab)#(tab)#(tab)#(tab)Order by LEN(ContractSub.OrderNumber)#(lf)#(tab)#(tab)#(tab)))#(lf)#(tab)#(tab)#(tab)Else dbo.FNCNPJMask(bc.Document)#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'CNPJ Fornecedor - Faturamento',#(lf)    (#(lf)        Case #(lf)            When c.ContractBillingId is null Then 'Contrato'#(lf)            Else 'Dados de faturamento'#(lf)        End#(lf)    ) As 'Origem dos dados de fornecedor',#(lf)#(tab)b.TradeName As 'Nome Fantasia Unidade',#(lf)#(tab)ca.Name As 'Categoria',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then 'Contínuo'#(lf)#(tab)#(tab)#(tab)When c.Type = 2 Then 'Grandes Paradas'#(lf)#(tab)#(tab)#(tab)When c.Type = 4 Then 'Eventual'#(lf)#(tab)#(tab)#(tab)When c.Type = 8 Then 'Temporário'#(lf)#(tab)#(tab)#(tab)When c.Type = 16 Then 'Visitante técnico'#(lf)#(tab)#(tab)#(tab)When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)#(tab)#(tab)#(tab)When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)#(tab)#(tab)#(tab)When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)#(tab)#(tab)#(tab)When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)#(tab)#(tab)#(tab)Else 'Tipo de contrato desconhecido'#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo do Contrato',#(lf)#(tab)Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)#(tab)Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)#(tab)Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(tab)(Select dbo.FNPISMask(e.PisNumber)) As 'PIS',#(lf)#(tab)(Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)#(tab)e.Name As 'Nome',#(lf)#(tab)CASE #(lf)        WHEN (E.Situation = 0 AND E.Removed = 0) THEN 'Ativo' #(lf)        WHEN (E.Situation = 1 OR E.Removed = 1) THEN 'Inativo' #(lf)        WHEN E.Situation = 2 THEN 'Folguista' #(lf)    END AS 'Situação',#(lf)#(tab)Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro',#(lf)#(tab)(#(lf)#(tab)#(tab)Case #(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then#(lf)#(tab)#(tab)#(tab)#(tab)Case #(lf)#(tab)#(tab)#(tab)#(tab)#(tab)When Month(e.CreatedAt) = Month(@Date) And Year(e.CreatedAt) = Year(@Date) Then 'Mobilização'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)When @Date > e.CreatedAt And (@Date Between c.ValidityInitial And DateAdd(Month, 1, c.ValidityFinal)) Then 'Recorrente'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)Else 'Não cobrar'#(lf)#(tab)#(tab)#(tab)#(tab)End#(lf)#(tab)#(tab)#(tab)Else#(lf)#(tab)#(tab)#(tab)#(tab)Case #(lf)#(tab)#(tab)#(tab)#(tab)#(tab)When Month(e.CreatedAt) = Month(@Date) And Year(e.CreatedAt) = Year(@Date) Then 'Mobilização'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)When @Date > e.CreatedAt And (@Date Between c.ValidityInitial And c.ValidityFinal) Then 'Recorrente'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)Else 'Não cobrar'#(lf)#(tab)#(tab)#(tab)#(tab)End#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo de cobrança do funcionário',#(lf)#(tab)CASE #(lf)        WHEN (ercm.IsMobilized = 1 AND ercm.Removed = 0) THEN 'Mobilizado' #(lf)        ELSE 'Não mobilizado'#(lf)    END AS 'Status Atual',#(lf)#(tab)ercm.MobilizedAt AS 'Mobilização atual',#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN (mh.IsMobilized = 1 AND mh.Removed = 0) THEN 'Mobilizado' #(lf)#(tab)#(tab)ELSE 'Não mobilizado'#(lf)    END AS 'Status Histórico',#(lf)#(tab)FORMAT(mh.MobilizedAt, 'dd/MM/yy') AS 'Historico Mobilizado',#(lf)#(tab)FORMAT(mh.CreatedAt, 'dd/MM/yy') AS 'Criação do Histórico'#(lf)#(tab)#(lf)FROM Effective AS e WITH(NOLOCK)#(lf)INNER JOIN [Contract] AS c WITH(NOLOCK) ON c.Id = e.ContractId AND c.Removed = 0#(lf)INNER JOIN Building AS b WITH(NOLOCK) ON b.Id = c.BuildingId AND b.Removed = 0#(lf)INNER JOIN Provider AS p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)INNER JOIN BranchCompany AS bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)INNER JOIN Category AS ca WITH(NOLOCK) ON ca.Id = c.CategoryId#(lf)LEFT JOIN ContractBilling cb WITH(NOLOCK) ON cb.Id = c.ContractBillingId#(lf)LEFT JOIN Contract AS ContractFather WITH(NOLOCK) ON ContractFather.Id = c.FatherId#(lf)LEFT JOIN BranchCompany AS BranchCompanyFather WITH(NOLOCK) ON BranchCompanyFather.Id = ContractFather.BranchCompanyId#(lf)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)LEFT JOIN EmployeeRegisterContractMobilization AS ercm WITH(NOLOCK) ON ercm.EmployeeRegisterContractId = erc.Id#(lf)LEFT JOIN EmployeeRegisterContractMobilizationHistory AS mh WITH(NOLOCK) ON mh.EmployeeRegisterContractMobilizationId = ercm.Id#(lf)#(lf)Where#(lf)#(tab)b.OrganizationId = @OrganizationId#(lf)#(tab)And c.Removed = 0#(lf)#(tab)And e.Removed = 0#(lf)#(tab)And e.CreatedAt < @Date#(lf)    And c.[Status] = 0#(lf)#(lf)#(lf)#(lf)#(lf)#(lf)"]),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(Fonte, "Mesclado", each Text.Combine({[Chave], [Número Contrato], [Id_Contrato], [Nome Fantasia Fornecedor], [#"Razão Social Fornecedor - Contrato"], [#"CNPJ Fornecedor - Contrato"], [#"Razão Social Fornecedor - Faturamento"], [#"CNPJ Fornecedor - Faturamento"], [Origem dos dados de fornecedor], [Nome Fantasia Unidade], [Categoria], [Tipo do Contrato], [Data de cadastro do contrato], [Data de início da vigência], [Data de fim da vigência], [PIS], [CPF], [Nome], [Situação], [Data de cadastro], [Tipo de cobrança do funcionário], [Status Atual], Text.From([Mobilização atual], "pt-BR")}, ""), type text),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Coluna Mesclada Inserida1", {"Mesclado"}),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Duplicatas Removidas",{"Status Histórico", "Historico Mobilizado", "Criação do Histórico", "Mesclado"}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Removidas1",{{"Chave", type text}, {"Número Contrato", type text}, {"Nome Fantasia Fornecedor", type text}, {"Razão Social Fornecedor - Contrato", type text}, {"CNPJ Fornecedor - Contrato", type text}, {"Razão Social Fornecedor - Faturamento", type text}, {"CNPJ Fornecedor - Faturamento", type text}, {"Origem dos dados de fornecedor", type text}, {"Nome Fantasia Unidade", type text}, {"Categoria", type text}, {"Tipo do Contrato", type text}, {"Data de cadastro do contrato", type date}, {"Data de início da vigência", type date}, {"Data de fim da vigência", type date}, {"PIS", type text}, {"CPF", type text}, {"Nome", type text}, {"Data de cadastro", type date}, {"Tipo de cobrança do funcionário", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Linhas em Branco Removidas", "Personalizar", each if Text.Contains([Nome Fantasia Unidade], "Campinas") then "Com Controle de Mobilização" else if Text.Contains([Nome Fantasia Unidade], "Feira de Santana") then "Com Controle de Mobilização" else "Sem Controle de Mobilização"),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Coluna Condicional Adicionada", "CPF", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"CPF.1", "CPF.2"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Dividir Coluna por Delimitador",{{"CPF.1", "CPF"}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Colunas Renomeadas",{"CPF.2"}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Colunas Removidas", "Chave - Status Funcio", each Text.Combine({[#"Nome Fantasia Fornecedor"], [Nome Fantasia Unidade], [Categoria], [CPF]}, ""), type text),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Coluna Mesclada Inserida", "Controle de Mobilização", each if Text.Contains([Nome Fantasia Unidade], "Campinas") then "Com Controle de Mobilização" else if Text.Contains([Nome Fantasia Unidade], "Feira de Santana") then "Com Controle de Mobilização" else "Sem Controle de Mobilização"),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Coluna Condicional Adicionada1", "Vigente", each let 
+				    inicial =  [Data de início da vigência],
+				    final = [Data de fim da vigência],
+				    hoje = Date.From(DateTime.LocalNow())
+				in 
+				    if final < hoje then "Não Vigente"
+				        else if inicial > hoje then "Vigente Futuramente"
+				        else "Vigente")
+				in
+				    #"Personalização Adicionada"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

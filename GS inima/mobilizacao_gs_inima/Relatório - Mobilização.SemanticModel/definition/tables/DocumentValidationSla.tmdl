@@ -1,0 +1,210 @@
+table DocumentValidationSla
+	lineageTag: 286669a5-5054-49db-8eb1-a8006179fb91
+
+	measure '_Enviados_Quantidade de Enviados' = CALCULATE(DISTINCTCOUNT(DocumentValidationSla[DocumentScheduleId]))
+		formatString: #,0
+		lineageTag: ae644c1f-d457-4453-81a6-d36cde4c7a62
+
+	measure _Análises_Quantidade = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 3db85d50-7f10-44df-ba31-00048589bc2b
+
+	measure _Reprovações_Quantidade =
+			
+			VAR Recusados = CALCULATE(COUNTROWS(),
+			DocumentValidationSla[Status_Documentacao] = "Reprovado")
+			
+			VAR Total = [_Análises_Quantidade]
+			
+			RETURN IF(Recusados = BLANK() && Total >0, 0, Recusados)
+		formatString: #,0
+		lineageTag: efd1906b-1794-4c64-94c0-864eaf20a2ed
+
+	measure _%Reprovação_ =
+			
+			VAR Reprovacoes = [_Reprovações_Quantidade]
+			VAR Total = [_Análises_Quantidade]
+			RETURN IF(Reprovacoes = BLANK() && Total>0,0, Reprovacoes/Total)
+		lineageTag: 5d4e5424-0251-4d2e-89fb-195e5278fd7a
+
+		formatStringDefinition =
+				VAR PORC = FORMAT([_%Reprovação_],"0.0%")
+				
+				VAR ANALI = [_Análises_Quantidade]
+				
+				RETURN """" & PORC & " (" & ANALI & ")"
+
+	measure '_Validação_Quantidade de Validação' = CALCULATE(COUNTROWS())
+		lineageTag: 996440ac-1eac-4190-8717-9414fbba4bf5
+
+		formatStringDefinition =
+				VAR ANALI = FORMAT([_Análises_Quantidade],"#,###")
+				
+				VAR ENVIA = FORMAT([_Enviados_Quantidade de Enviados],"#,###")
+				
+				RETURN """" & ANALI & " (" & ENVIA & ")"
+
+	measure _Taxa_Reprovação = ```
+			
+			VAR Reprovacoes = [_Reprovações_Quantidade]
+			VAR Total = [_Enviados_Quantidade de Enviados]
+			RETURN IF(Reprovacoes = BLANK() && Total>0,0, Reprovacoes/Total)
+			
+			```
+		lineageTag: 3fedc077-a11b-49dc-b979-569fe315fc3e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 6f13d601-0ec3-4fa1-a1ce-63041c12d3f0
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9c017835-4dc3-404f-9fbe-178af5bb51c5
+		summarizeBy: none
+		sourceColumn: Data_Envio
+
+		variation Variation
+			isDefault
+			relationship: da7c13e2-58ac-4135-8798-17fcb70265ce
+			defaultHierarchy: LocalDateTable_aa81911a-1e44-400c-8cf5-43dedb2a2b74.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status_Documentacao
+		dataType: string
+		lineageTag: c58ff95d-139c-4a79-b465-843c8d99ded2
+		summarizeBy: none
+		sourceColumn: Status_Documentacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Documento
+		dataType: string
+		lineageTag: f4e0d4ff-91b7-4a0c-925e-48108f62c856
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: 2ddce901-301d-45f2-833d-f6806fb366f3
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Cliente'
+		dataType: string
+		lineageTag: dc712886-09ca-4955-b99b-9deebca1e2e4
+		summarizeBy: none
+		sourceColumn: Nome Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: e88030b2-31c1-4476-b348-c3585efc952b
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: b21a165d-ee47-4e5c-8475-2a3ba86780f4
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Analisado por'
+		dataType: string
+		lineageTag: 0ddee304-aad4-4d8b-a746-8d005df08145
+		summarizeBy: none
+		sourceColumn: Analisado por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Validador
+		dataType: string
+		lineageTag: 8e71f8ca-d2fd-4ec1-bf6e-89e5d85d11d4
+		summarizeBy: none
+		sourceColumn: Id_Validador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Time
+		dataType: string
+		lineageTag: 9dac9bb1-a523-4c68-a13a-fdfb789bce14
+		summarizeBy: none
+		sourceColumn: Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4acb67dd-080b-4595-ab6c-594f5822a50a
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: 2af4523f-beac-469e-a00d-f9bbcd30e0b6
+			defaultHierarchy: LocalDateTable_99ee2c6a-4e07-43ba-900b-82c3bffc8113.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Data_Análise
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 030ff027-2a37-4c25-a191-7b80ffedf4f7
+		summarizeBy: none
+		sourceColumn: Data_Análise
+
+		variation Variation
+			isDefault
+			relationship: 132b08a7-59f9-4251-a31f-3a73cc86b80e
+			defaultHierarchy: LocalDateTable_70612ee3-4ccc-43f2-8737-e002cd7c4ebb.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Reanálise
+		dataType: string
+		lineageTag: 72b41686-fd8d-4e7b-8d5d-7065122af063
+		summarizeBy: none
+		sourceColumn: Id_Reanálise
+
+		annotation SummarizationSetBy = Automatic
+
+	column message
+		dataType: string
+		lineageTag: 52f45a90-0b41-40d9-a8d1-952c51ff990c
+		summarizeBy: none
+		sourceColumn: message
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DocumentValidationSla = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = EOMONTH(GETDATE(),-1);#(lf)DECLARE @organizationId uniqueidentifier = '24d80b2f-c0de-4e58-9273-06a8de082474';#(lf)DECLARE @initialDate datetime2 = '2024-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = EOMONTH(GETDATE(),-1);#(lf)#(lf)#(lf)SELECT DISTINCT#(lf)       [ds].[Name] AS [Documento],#(lf)#(tab)   [ds].Id AS [DocumentScheduleId],#(lf)#(tab)   o.TradeName as 'Nome Cliente',#(lf)#(tab)   CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS 'Tipo do documento',#(lf)    --[c].[Id] as [Id_Contrato],#(lf)    --[c].[OrderNumber] as [Número de Pedido],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    [b].[TradeName] AS [Unidade],#(lf)#(lf)#(tab) CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy =  '00000000-0000-0000-0000-000000000000' and dsv.Responsibleid is null) THEN 'Validado Automaticamente'#(lf)        WHEN dsv.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Validado Automaticamente'#(lf)#(tab)#(tab)WHEN ds.RequiresValidation = 0 THEN 'Não é Necessário Validação'#(lf)        WHEN (ds.ValidatedBy IS NULL and dsv.Responsibleid is null) THEN 'Pendente de Validação'#(lf)        ELSE ISNULL(u.Name, '---')#(lf)    END AS 'Analisado por',#(lf)#(lf)#(tab)ISNULL(ISNULL (dsv.Responsibleid, ds.ValidatedBy), '00000000-0000-0000-0000-000000000000')  as 'Id_Validador',#(lf)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN (ds.ValidatedBy = '00000000-0000-0000-0000-000000000000' and dsv.Responsibleid is null) THEN 'Sistema'#(lf)        WHEN dsv.Responsibleid =  '00000000-0000-0000-0000-000000000000' THEN 'Sistema'#(lf)#(tab)#(tab)WHEN u.Email like '%Atlas%'  THEN 'Atlas'#(lf)        WHEN ds.ValidatedBy IS NULL THEN 'Pendente de Validação'#(lf)        ELSE 'Cliente'#(lf)    END AS 'Time',#(lf)#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)    ISNULL(ISNULL(FORMAT(df.CreatedAt, 'dd/MM/yyyy HH:mm:ss'), FORMAT(df.UpdatedAt,  'dd/MM/yyyy HH:mm:ss')),FORMAT([ds].[UploadedAt], 'dd/MM/yyyy HH:mm:ss')) AS Data_Envio,#(lf)#(tab)ISNULL(FORMAT(dsv.Createdat, 'dd/MM/yyyy HH:mm:ss'), FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy HH:mm:ss')) AS Data_Análise,#(lf)#(tab)#(lf)#(lf)#(tab)CASE#(lf)            WHEN #(lf)                ISNULL(dsv.IsValid, Ds.IsValidated) = 1#(lf)            THEN#(lf)                'Aprovado'#(lf)            WHEN#(lf)                ISNULL(dsv.IsValid, ds.IsValidated) = 0#(lf)            THEN #(lf)                'Reprovado'#(lf)            WHEN#(lf)                ds.IsValidated IS NULL#(lf)            THEN #(lf)                'Aguardando Validação'#(lf)            ELSE#(lf)                'Pendente'#(lf)        END AS Status_Documentacao,#(lf)#(lf)#(lf)        ISNULL(dsv.id,ds.id) as 'Id_Reanálise',#(lf)#(lf)dsv.message#(lf)#(lf)#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)#(tab)INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    INNER JOIN [DocumentScheduleBuilding] as [dsb] WITH (NOLOCK) ON [dsb].[DocumentScheduleId] = [ds].[Id] and dsb.Removed = 0#(lf)    INNER JOIN [Building] AS [b] WITH (NOLOCK) ON  [b].[Id] = [dsb].[BuildingId] and b.Removed = 0#(lf)#(tab)--INNER JOIN [Category] AS [cat] WITH (NOLOCK) ON  [cat].[Id] = [c].[CategoryId]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)    LEFT JOIN DocumentScheduleValidationLog AS dsv WITH(NOLOCK) ON dsv.DocumentScheduleId = ds.Id#(lf)#(tab)LEFT JOIN [User] AS u WITH(NOLOCK) ON u.Id = COALESCE(dsv.Responsibleid, ds.ValidatedBy)#(lf)#(tab)LEFT JOIN DocumentFile AS df WITH(NOLOCK) ON df.Id = dsv.DocumentFileId#(lf)    #(lf)#(lf)WHERE#(lf)      --COALESCE(dsv.CreatedAt, ds.ValidatedAt) >= @initialDate#(lf)  COALESCE(dsv.CreatedAt, ds.ValidatedAt) <  @finalDate#(lf)  AND ds.OrganizationId = @organizationId#(lf)  --AND (DS.Removed = 0 OR (DS.Removed = 1 AND IsValidated = 0))#(lf)        AND DS.UploadedAt IS NOT NULL#(lf)        AND DS.RequiresValidation = 1#(lf)        AND DS.CertificationId IS NULL#(lf)       -- AND DS.OrganizationId in (#(lf)        --    SELECT #(lf)         --       Id #(lf)          --  FROM #(lf)           --     Organization #(lf)            --WHERE ([Resource] & 4) = 4 #(lf)              --  AND [Resource] != 0#(lf)                --AND [Status] = 1#(lf)               -- AND Removed = 0#(lf)               -- AND GestaoScope != 0#(lf)      --  )#(lf)order by  #(lf)[ds].Id ,#(lf)ISNULL(ISNULL(FORMAT(df.CreatedAt, 'dd/MM/yyyy HH:mm:ss'), FORMAT(df.UpdatedAt,  'dd/MM/yyyy HH:mm:ss')),FORMAT([ds].[UploadedAt], 'dd/MM/yyyy HH:mm:ss')) ,#(lf)ISNULL(FORMAT(dsv.Createdat, 'dd/MM/yyyy HH:mm:ss'), FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy HH:mm:ss'))"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Prazo de Envio", type date}, {"Data_Envio", type datetime}, {"Data_Análise", type datetime}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

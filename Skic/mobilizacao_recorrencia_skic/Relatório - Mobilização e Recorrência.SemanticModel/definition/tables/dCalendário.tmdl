@@ -1,0 +1,35 @@
+table dCalendário
+	lineageTag: deefdb87-1b73-4596-ba7a-295ae91f816d
+
+	column Date
+		formatString: Short Date
+		lineageTag: b3568cac-232b-463c-9633-d649178a538e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 457782c9-a79b-4efb-8e1d-3395ed81592d
+			defaultHierarchy: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hoje = TODAY()
+		formatString: General Date
+		lineageTag: 21fee073-b94f-452f-a4d9-5ef5ea38817c
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 20b17af5-4ffe-4d5b-b307-0084f2a1bd3c
+			defaultHierarchy: LocalDateTable_2b1da44f-a0ea-40b8-afdd-16dcc79c7c7b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2024,04,01),LASTDATE('Documentos em Análise'[Prazo de Envio]))
+
+	annotation PBI_Id = 47228ca7a2ec489686807956ed4015c1
+

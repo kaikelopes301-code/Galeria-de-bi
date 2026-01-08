@@ -1,0 +1,32 @@
+table 'Indicador de Risco'
+	lineageTag: b5438490-a84c-4f61-bde1-6e6646abd242
+
+	column '% de Entrega FGTS'
+		dataType: string
+		lineageTag: f77595aa-8ab8-41b4-9943-5dd5bdf6e657
+		summarizeBy: none
+		sourceColumn: % de Entrega FGTS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco
+		dataType: string
+		lineageTag: 7aef8f9e-5d66-44df-900c-58ff86967f14
+		summarizeBy: none
+		sourceColumn: Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Indicador de Risco' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WSkxKzKzIV0hJVTA2UFXSUXLMKclXitWJVkrNKykCCyqkKpiDpXwPr0zJhEgmJmfmJoI0QWScQGYoxcYCAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"% de Entrega FGTS" = _t, Risco = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"% de Entrega FGTS", type text}, {"Risco", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

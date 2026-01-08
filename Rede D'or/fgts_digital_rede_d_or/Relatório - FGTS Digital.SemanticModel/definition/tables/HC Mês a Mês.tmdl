@@ -1,0 +1,269 @@
+table 'HC Mês a Mês'
+	lineageTag: b78bb430-6d93-4e4a-9f2c-8c5c9b367bd6
+
+	measure '(Percapta) HC Atualizado' = ```
+			
+			
+			VAR Resultado = CALCULATE( 
+			    AVERAGE('HC Mês a Mês'[VALOR FIXO Na Prática]) / 
+			    AVERAGE('HC Mês a Mês'[HC na Prática]) 
+			)
+			RETURN Resultado
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 4dc708f9-7be2-41df-8ee2-1651e3ca6cb1
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure '(Percapta) HC Formalizado Em Contrato' = CALCULATE(SUM('HC Mês a Mês'[VALOR FIXO Formalizado])/SUM('HC Mês a Mês'[HC Formalizado]))
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: b15e33f8-c0f0-4f21-8c22-a5ce96dd3f11
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure '(Variação) Per Capita' = IF([(Percapta) HC Atualizado] = 0, "N/A",[(Média) Per Capta (FGTS Digital) - Cartão]- [(Percapta) HC Atualizado])
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: def4b0b8-fd8f-4497-9fa3-04a6f85c6f43
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure '%Variação de Per Capita - Teste' = IF(([(Média) Per Capta (FGTS Digital) - Cartão] - [(Percapta) HC Atualizado]/[(Percapta) HC Atualizado])=0,"N/A",(([(Média) Per Capta (FGTS Digital) - Cartão]) - [(Percapta) HC Atualizado])/[(Percapta) HC Atualizado])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 7b1c5dd6-79a8-4a8e-a391-a16c4bc5109d
+
+	measure '%Variação de HC' = ```
+			if([HC na Prática (Média de Meses)] = BLANK(),"--",
+			    ([Relação HC Média - Caléndario] -  'HC Mês a Mês'[HC na Prática (Média de Meses)])/('HC Mês a Mês'[HC na Prática (Média de Meses)]))
+			   
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 724ada35-5b3a-4dc9-915b-cfcc0e88dcf6
+
+	measure '(Média) Per Capta (FGTS Digital) - Cartão' = AVERAGEX(VALUES('Calendário'[Date]),[(Percapta) Média])
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 590c86a9-7166-47b8-bb25-97c7690ab046
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'HC na Prática (Média de Meses)' = AVERAGEX(VALUES('Calendário'[Date]),'HC Mês a Mês'[(HC Prática)])
+		lineageTag: 7a4b75a1-f7b5-406e-a6a4-8c49af641982
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Percapta) Média' = IF([Relação HC Média - Caléndario]=0,"",(SUM(('HC Mês a Mês'[VALOR FIXO Na Prática]))/[Relação HC Média - Caléndario]))
+		lineageTag: 0926d5e0-9ea9-4145-87db-6c0613c37b56
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Leito) Indicador' =
+			CALCULATE([(Média) Leitos]/[(Relação) HC Média - Caléndario],
+			'HC Mês a Mês'[Número de Leitos] <> 0)
+		formatString: 0.000
+		lineageTag: 7b73d424-b457-45a5-bd69-7bbdac6afed9
+
+	measure '(HC Prática)' = SUM('HC Mês a Mês'[HC na Prática])
+		formatString: 0
+		lineageTag: f824b28d-cf5b-4aac-a65f-6385762a7b2f
+
+	measure '(Variação) HC' = IF(SUM('HC Mês a Mês'[HC na Prática])/CALCULATE(COUNTROWS()) = 0, "--",[Relação HC Média - Caléndario] - 'HC Mês a Mês'[HC na Prática (Média de Meses)])
+		lineageTag: d1edaccd-645d-4d9f-8b0b-fb071dd7a71b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Média) Leitos' = ```
+			AVERAGE('HC Mês a Mês'[Número de Leitos]) 
+			```
+		lineageTag: a5f1e97f-03c4-40ab-987c-9b3913f8d83b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Percapta) - HC Atualizado' = ```
+			
+			
+			VAR Resultado = CALCULATE( 
+			    AVERAGE('HC Mês a Mês'[VALOR FIXO Na Prática]) / 
+			    AVERAGE('HC Mês a Mês'[HC na Prática]) 
+			)
+			RETURN 
+			IF(ISBLANK(Resultado), "Não Informado", Resultado)
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: fbd76f76-2905-4ac0-9657-7ed3c4a0d574
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column CHAVE
+		dataType: string
+		lineageTag: d6d67d09-b1c4-428d-889c-f718e2569fc3
+		summarizeBy: none
+		sourceColumn: CHAVE
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESTADO
+		dataType: string
+		lineageTag: cde8cea3-e2e1-4ba4-9abc-9ef5919d02f5
+		summarizeBy: none
+		sourceColumn: ESTADO
+
+		annotation SummarizationSetBy = Automatic
+
+	column FORNECEDOR
+		dataType: string
+		lineageTag: 6730d8e9-9c45-4e0d-b2bd-e96b8f2049bc
+		summarizeBy: none
+		sourceColumn: FORNECEDOR
+
+		annotation SummarizationSetBy = Automatic
+
+	column UNIDADE
+		dataType: string
+		lineageTag: 99ff55b8-8e36-487a-852f-e595f23c4a26
+		summarizeBy: none
+		sourceColumn: UNIDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column CATEGORIA
+		dataType: string
+		lineageTag: 5da0f828-9ba6-4259-a951-4e7846271705
+		summarizeBy: none
+		sourceColumn: CATEGORIA
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HC Formalizado'
+		dataType: int64
+		formatString: 0
+		lineageTag: c3e64c03-0540-426e-a713-971fb521623c
+		summarizeBy: sum
+		sourceColumn: HC Formalizado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'VALOR FIXO Formalizado'
+		dataType: double
+		lineageTag: 50c6615d-a479-4ae1-9d37-843256289960
+		summarizeBy: sum
+		sourceColumn: VALOR FIXO Formalizado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'HC na Prática'
+		dataType: int64
+		formatString: #,0.00
+		lineageTag: 54b3139b-0c3d-4842-a8d9-ab0c552e9af2
+		summarizeBy: sum
+		sourceColumn: HC na Prática
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'VALOR FIXO Na Prática'
+		dataType: double
+		lineageTag: 0831296e-92b9-42ce-bd6c-e1aebe14f7c6
+		summarizeBy: sum
+		sourceColumn: VALOR FIXO Na Prática
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Per Capita Inicial'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: ec5f846c-0120-4477-9e37-ade17d9b01db
+		summarizeBy: sum
+		sourceColumn: Per Capita Inicial
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Per Capita Mínimo'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 7cb3e9be-48d3-48ff-b359-57035c01f407
+		summarizeBy: sum
+		sourceColumn: Per Capita Mínimo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Per Capita Média por Regional'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: e5749158-9e2d-448e-8c23-2a5b4de1dc49
+		summarizeBy: sum
+		sourceColumn: Per Capita Média por Regional
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'HC Inicial'
+		dataType: double
+		lineageTag: 29050d82-0ca1-45ac-b4d7-2bffd464c7c3
+		summarizeBy: sum
+		sourceColumn: HC Inicial
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Número de Leitos'
+		dataType: double
+		lineageTag: 3ead11e4-d3cb-4658-81b7-1b9e6dab9e02
+		summarizeBy: sum
+		sourceColumn: Número de Leitos
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Competência
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 0fd01ddb-6434-496b-8d42-f7e68d8e6fac
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Chave COmpotência' = CONCATENATE('HC Mês a Mês'[CHAVE],'HC Mês a Mês'[Competência])
+		lineageTag: dcd6032e-f94f-401e-a98a-26514ce825f8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'HC Mês a Mês' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\CLIENTES\REDE D'OR\06. Relatórios\Relatório Power BI\2025\07 - Julho\HC Mensal.xlsx"), null, true),
+				    #"HC Mês a Mês_Sheet" = Fonte{[Item="HC Mês a Mês",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"HC Mês a Mês_Sheet", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"CHAVE", type text}, {"ESTADO", type text}, {"FORNECEDOR", type text}, {"UNIDADE", type text}, {"CATEGORIA", type text}, {"Competência", type date}, {"HC Formalizado", Int64.Type}, {"VALOR FIXO Formalizado", type number}, {"HC na Prática", Int64.Type}, {"VALOR FIXO Na Prática", type number}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Linhas em Branco Removidas","N/A",0,Replacer.ReplaceValue,{"Número de Leitos"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Valor Substituído", each true),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Linhas Filtradas",{{"Per Capita Inicial", type number}, {"Per Capita Mínimo", type number}, {"Per Capita Média por Regional", type number}, {"HC Inicial", type number}, {"Número de Leitos", type number}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Tipo Alterado1", each ([Competência] <> #date(2022, 11, 1))),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Linhas Filtradas1", "Personalizar", each Date.AddMonths([Competência],0)),
+				    #"Colunas Reordenadas" = Table.ReorderColumns(#"Personalização Adicionada",{"CHAVE", "ESTADO", "FORNECEDOR", "UNIDADE", "CATEGORIA", "Competência", "Personalizar", "HC Formalizado", "VALOR FIXO Formalizado", "HC na Prática", "VALOR FIXO Na Prática", "Per Capita Inicial", "Per Capita Mínimo", "Per Capita Média por Regional", "HC Inicial", "Número de Leitos"}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Colunas Reordenadas",{"Competência"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"Personalizar", "Competência"}}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Competência", type date}}),
+				    #"Linhas Filtradas2" = Table.SelectRows(#"Tipo Alterado2", each [Competência] > #date(2023, 12, 31)),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Linhas Filtradas2",{"Column16"})
+				in
+				    #"Colunas Removidas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

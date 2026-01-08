@@ -1,0 +1,49 @@
+table '#Fornecedor, Categoria e Gestor'
+	lineageTag: 72e27a95-da3e-46c4-9b2d-57fe15be3bd0
+
+	column ###FORN,CATEG
+		lineageTag: 0b063c1d-6e15-43b5-8692-adab6d4070f5
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '###FORN,CATEG Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '###FORN,CATEG Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###FORN,CATEG Campos'
+		isHidden
+		lineageTag: 02a68a71-7724-4a26-a837-b94230c73b63
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '###FORN,CATEG Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###FORN,CATEG Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: d95d9aee-c864-4f17-bd61-1ce9f4eb3f37
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '#Fornecedor, Categoria e Gestor' = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Documentos em Análise'[Razão Social]), 0),
+				    ("Categoria", NAMEOF('Documentos em Análise'[Categoria(s)]), 1),
+				     ("Gestor", NAMEOF(Contratos[Gestor]), 2)
+				}
+
+	annotation PBI_Id = f5e21df28ff84ddba1bc1102efc80792
+

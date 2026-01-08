@@ -1,0 +1,196 @@
+table Efetivos
+	lineageTag: c9569cd1-4783-453a-a122-764eec845f8f
+
+	measure _Cadastrados_Quantidade_ = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: db6feb2a-4e25-4f97-b228-0ac39359d472
+
+	measure _Média_Mensal_Cadastro_Efetivos_ = CALCULATE(AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[_Cadastrados_Quantidade_]))
+		lineageTag: 7e32c377-bd17-4b3c-acf9-bff6ecca08bb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Chave
+		dataType: string
+		lineageTag: 2523f04e-a093-4399-b408-cae9bb4217a2
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 9ab3b9b7-5602-4291-8530-31192cd3c801
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: 9dd368bf-356a-4362-9521-9f1019f6c348
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: eed4d353-3868-428e-89ca-01e11a315e46
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: 4559c175-1762-40aa-abc3-e3de59a27e9c
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 69949c64-a1bb-40b3-bcc8-4385be4a03be
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: b355a173-e8d2-43bb-881b-911be4fa0ffe
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: string
+		lineageTag: d15e14c2-7d14-424d-9ed9-d7e208179ff5
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 832cfe93-dd8d-4b81-bca7-7551b6c7bae6
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: 792245da-9937-4526-b36b-596ba9365185
+			defaultHierarchy: LocalDateTable_7340cb95-60b8-4e56-abf3-a6f0a88cd375.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1e036ab2-f8cd-4c5c-90a9-1cdff43e76c6
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: 49e003b3-5df2-4c31-aef3-2a61297f7c52
+			defaultHierarchy: LocalDateTable_95948716-5052-491f-ba87-5bad979a9584.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PIS
+		dataType: string
+		lineageTag: fd6fcf54-5c82-48c6-950e-4b1fa4fa40d2
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 184022a9-44ad-4889-b956-3246fdf6823d
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 38d59dca-b7d1-44ab-bfd4-65133a3474f8
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1e2e1dc0-10cb-4d6b-8fc0-a627452fd42f
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 41e053e4-3f68-48ec-8d20-109b0551ef96
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: c26168e2-ed54-4c91-b78a-133d666772b0
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_CPF
+		dataType: string
+		lineageTag: 460c6bdb-a0d3-4b91-ae2b-182dc5d65d81
+		summarizeBy: none
+		sourceColumn: Id_CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor do Contrato'
+		dataType: string
+		lineageTag: daa0d198-792c-4fc6-8bff-d9be6b183858
+		summarizeBy: none
+		sourceColumn: Nome do Gestor do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: d8c42956-4302-4404-8270-f094c1586ede
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Efetivos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = '24d80b2f-c0de-4e58-9273-06a8de082474'#(lf)Declare @Date DateTime = EOMONTH(GETDATE(), -1)#(lf)#(lf)Select #(lf)#(tab)bc.Id As 'Chave',#(lf)#(tab)c.OrderNumber As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)p.TradeName As 'Nome Fantasia Fornecedor',#(lf)#(tab)bc.CompanyName As 'Razão Social Fornecedor - Contrato',#(lf)#(tab)b.TradeName As 'Nome Fantasia Unidade',#(lf)#(tab)ca.Name As 'Categoria',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then 'Contínuo'#(lf)#(tab)#(tab)#(tab)When c.Type = 2 Then 'Grandes Paradas'#(lf)#(tab)#(tab)#(tab)When c.Type = 4 Then 'Eventual'#(lf)#(tab)#(tab)#(tab)When c.Type = 8 Then 'Temporário'#(lf)#(tab)#(tab)#(tab)When c.Type = 16 Then 'Visitante técnico'#(lf)#(tab)#(tab)#(tab)When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)#(tab)#(tab)#(tab)When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)#(tab)#(tab)#(tab)When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)#(tab)#(tab)#(tab)When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)#(tab)#(tab)#(tab)Else 'Tipo de contrato desconhecido'#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo do Contrato',#(lf)#(tab)Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)#(tab)Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)#(tab)Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(lf)#(tab)CASE#(lf)        WHEN c.ValidityInitial > GETDATE() THEN 'Contrato Futuro'#(lf)        WHEN c.ValidityFinal < GETDATE() THEN 'Contrato Inativo'#(lf)        ELSE 'Contrato Ativo'#(lf)    END AS 'Status Contrato',#(lf)#(lf)#(tab)(Select dbo.FNPISMask(e.PisNumber)) As 'PIS',#(lf)#(tab)(Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)        e.id as 'Id_CPF',#(lf)#(tab)e.Name As 'Nome',#(lf)#(tab)CASE #(lf)        WHEN (E.Situation <> 1) THEN 'Ativo' #(lf)        WHEN (E.Situation = 1) THEN 'Inativo' #(lf)#(lf)    END AS 'Situação',#(lf)#(tab)cfv6.[Value] AS [Nome do Gestor do Contrato],#(lf)#(tab)Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro'#(lf)#(lf)#(lf)#(lf)FROM Effective AS e WITH(NOLOCK)#(lf)INNER JOIN [Contract] AS c WITH(NOLOCK) ON c.Id = e.ContractId AND c.Removed = 0#(lf)INNER JOIN Building AS b WITH(NOLOCK) ON b.Id = c.BuildingId AND b.Removed = 0#(lf)INNER JOIN Provider AS p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)INNER JOIN BranchCompany AS bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)INNER JOIN Category AS ca WITH(NOLOCK) ON ca.Id = c.CategoryId#(lf)LEFT JOIN  CustomFieldValue cfv6 WITH(NOLOCK) ON cfv6.EntityId = c.Id AND cfv6.CustomFieldId = 'BEA30E2D-D72D-466B-9DCF-E3963CDD894E' -- Nome do gestor do contrato#(lf)#(lf)Where#(lf)#(tab)b.OrganizationId = @OrganizationId#(lf)#(tab)And e.CreatedAt < @Date#(lf)        AND e.removed = 0#(lf)        AND c.Removed = 0#(lf)    AND [c].ValidityInitial <= @date#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Data de início da vigência", type date}, {"Data de fim da vigência", type date}, {"Data de cadastro", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

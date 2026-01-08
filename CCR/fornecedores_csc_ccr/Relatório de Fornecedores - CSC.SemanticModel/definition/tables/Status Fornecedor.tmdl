@@ -1,0 +1,253 @@
+table 'Status Fornecedor'
+	lineageTag: c6d93692-be35-4c0f-baf8-7cdc91024858
+
+	measure 'Quantidade Efetivos' = CALCULATE(SUM('Status Fornecedor'[Quantidade de efetivos]))
+		formatString: #,0
+		lineageTag: 5e51c1e2-bf66-4eb3-853a-a91084c0aac9
+
+	measure %Efetivos = [Quantidade Efetivos]/CALCULATE([Quantidade Efetivos],ALL('Status Fornecedor'[Nome],'Status Fornecedor'[Categoria],'Status Fornecedor'[Unidade]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0bddd3c4-509c-46fc-917a-4481c5e505db
+
+	measure 'Quantidade de Fornecedores' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 96da9fbc-a0ba-4363-8b0e-94eee9275309
+
+	measure 'Quantidade de Fornecedores com Restrição de Pagamentos' =
+			CALCULATE(COUNTROWS(),
+			'Status Fornecedor'[Restrições] = "Restrição de pagamento")
+		formatString: 0
+		lineageTag: 0fb6d7ec-dfbe-49df-905d-691f79ff76ca
+
+	column Nome
+		dataType: string
+		lineageTag: d6bcd536-ca02-402f-978d-2e285378a0a9
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: 199014b9-b074-4bc4-b786-62e4b9877424
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 1418b3a7-f7ca-42a3-9bee-8b581ec5d039
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: a81a5aee-fbc0-41ed-b401-995ff946a756
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 993b8078-162c-4c5f-8a7a-0aa5a04fad89
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social do Contrato'
+		dataType: string
+		lineageTag: 0ed3c6f5-6a55-46b6-950a-864f0008f3cb
+		summarizeBy: none
+		sourceColumn: Razão Social do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Contrato'
+		dataType: string
+		lineageTag: c28d22f0-d7f0-41f5-8160-ccb5f8ae4bd6
+		summarizeBy: none
+		sourceColumn: CNPJ do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: 9748bce4-01c4-4a4c-80c6-0e69f100f0dd
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia do Subcontrato'
+		dataType: string
+		lineageTag: ffbb91a1-2393-4092-a876-02321fad7486
+		summarizeBy: none
+		sourceColumn: Nome Fantasia do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social do Subcontrato'
+		dataType: string
+		lineageTag: dfe0bc6b-c14f-4d58-809e-1c0c2c386688
+		summarizeBy: none
+		sourceColumn: Razão Social do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Subcontrato'
+		dataType: string
+		lineageTag: 944d0140-65ff-45af-95fc-455863b399df
+		summarizeBy: none
+		sourceColumn: CNPJ do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência do Contrato'
+		dataType: string
+		lineageTag: 5cd087fe-296d-46d3-9b39-d9af0a6b3ac1
+		summarizeBy: none
+		sourceColumn: Vigência do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contratação'
+		dataType: string
+		lineageTag: ab01b8d6-1a6b-4bda-841f-1e3506f251b4
+		summarizeBy: none
+		sourceColumn: Tipo de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: ef7c444b-ab8f-4e9a-9d54-999cbd787f39
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Docs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 322e8885-3399-4b38-a5aa-3431dc008024
+		summarizeBy: sum
+		sourceColumn: Total Docs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documentos entregues'
+		dataType: int64
+		formatString: 0
+		lineageTag: e6e62eb6-d1d8-4f9a-89a9-2de8049fd3e4
+		summarizeBy: sum
+		sourceColumn: Documentos entregues
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Taxa de entrega'
+		dataType: double
+		lineageTag: 01d2191b-90f5-47c9-a4ab-fcce739da83e
+		summarizeBy: sum
+		sourceColumn: Taxa de entrega
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Restrições
+		dataType: string
+		lineageTag: 11c7cfa2-37b5-4a0b-8b20-da2549dd515f
+		summarizeBy: none
+		sourceColumn: Restrições
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Docs pendentes com restrição de pgto'
+		dataType: string
+		lineageTag: 627ff223-b06a-4628-bd1b-f9b969c02256
+		summarizeBy: none
+		sourceColumn: Docs pendentes com restrição de pgto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documentos pendentes'
+		dataType: string
+		lineageTag: 44dc13ff-2abf-4ee2-888d-0bab41497dff
+		summarizeBy: none
+		sourceColumn: Documentos pendentes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Atividades do contrato'
+		dataType: string
+		lineageTag: 44b0cefc-dc64-45ce-a042-10330b70c3dd
+		summarizeBy: none
+		sourceColumn: Atividades do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtde pessoas contratadas'
+		dataType: string
+		lineageTag: 7a88dc11-f51f-425d-9200-6feebe10f858
+		summarizeBy: none
+		sourceColumn: Qtde pessoas contratadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtde funcionários mobilizados'
+		dataType: string
+		lineageTag: ffadfb9e-1a33-40f3-839c-ab87f554fe52
+		summarizeBy: none
+		sourceColumn: Qtde funcionários mobilizados
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantidade de Efetivos'
+		dataType: int64
+		formatString: 0
+		lineageTag: d8eaf5b1-141c-46d8-af34-1b2003428e0b
+		summarizeBy: sum
+		sourceColumn: Quantidade de Efetivos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documentos em análise'
+		dataType: string
+		lineageTag: 574f9052-eed5-4bb7-9de5-66eb79eb2bb8
+		summarizeBy: none
+		sourceColumn: Documentos em análise
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status Fornecedor' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\CCR\2025\08 - Agosto\28.08\Fornecedores - 2508281029.xlsx")),
+				    #"Status de fornecedores_sheet" = Fonte{[Item="Status de fornecedores",Kind="Sheet"]}[Data],
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Status de fornecedores_sheet", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Outras Colunas Removidas" = Table.SelectColumns(#"Linhas Superiores Removidas", List.Select(Table.ColumnNames(#"Linhas Superiores Removidas"), each try not List.IsEmpty(FilterNullAndWhitespace(Table.Column(#"Linhas Superiores Removidas", _))) otherwise true)),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Outras Colunas Removidas", each not List.IsEmpty(FilterNullAndWhitespace(Record.FieldValues(_)))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Cabeçalhos Promovidos",{{"Qtde funcionários cadastrados", "Quantidade de Efetivos"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Nome", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Categoria", type text}, {"Unidade", type text}, {"Razão Social do Contrato", type text}, {"CNPJ do Contrato", type text}, {"Tipo de Fornecedor", type text}, {"Nome Fantasia do Subcontrato", type text}, {"Razão Social do Subcontrato", type text}, {"CNPJ do Subcontrato", type text}, {"Vigência do Contrato", type text}, {"Tipo de Contratação", type text}, {"Número do Pedido", type text}, {"Quantidade de Efetivos", Int64.Type}, {"Total Docs", Int64.Type}, {"Documentos entregues", Int64.Type}, {"Taxa de entrega", type number}, {"Restrições", type text}, {"Docs pendentes com restrição de pgto", type text}, {"Documentos pendentes", type text}}),
+				    #"Linhas em Branco Removidas1" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas em Branco Removidas1", "diadia", each Text.Combine({[Nome], [Razão social], [CNPJ], [Categoria], [Unidade], [Razão Social do Contrato], [CNPJ do Contrato], [Tipo de Fornecedor], [Nome Fantasia do Subcontrato], [Razão Social do Subcontrato], [CNPJ do Subcontrato], [Vigência do Contrato], [Tipo de Contratação], [Número do Pedido], Text.From([Quantidade de efetivos], "pt-BR"), Text.From([Total Docs], "pt-BR"), Text.From([Documentos entregues], "pt-BR"), Text.From([Taxa de entrega], "pt-BR"), [Restrições], [Docs pendentes com restrição de pgto], [Documentos pendentes]}, ""), type text),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Mesclada Inserida", each ([Categoria] <> "CSC")),
+				    #"Linhas em Branco Removidas2" = Table.SelectRows(#"Linhas Filtradas", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas em Branco Removidas3" = Table.SelectRows(#"Linhas em Branco Removidas2", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Linhas em Branco Removidas3", each true),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Linhas Filtradas1",{"diadia"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

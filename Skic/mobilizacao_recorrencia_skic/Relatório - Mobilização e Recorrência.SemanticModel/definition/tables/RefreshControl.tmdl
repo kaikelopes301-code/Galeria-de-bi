@@ -1,0 +1,32 @@
+table RefreshControl
+	lineageTag: 2139d9d9-910a-44c5-8ee6-ff0f65635e91
+
+	column RefreshDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: bf8a0554-c1de-4d4c-b844-e331e41ea2bd
+		summarizeBy: none
+		sourceColumn: RefreshDate
+
+		variation Variation
+			isDefault
+			relationship: a0ab9c7f-0020-4d1b-839b-91de2d0c66eb
+			defaultHierarchy: LocalDateTable_620206bc-10cf-42da-9d35-868873de5d4a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RefreshControl = m
+		mode: import
+		source =
+				let
+				    Fonte = #table(
+				        type table [RefreshDate = datetime],
+				        {{ DateTime.LocalNow() }}
+				    )
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

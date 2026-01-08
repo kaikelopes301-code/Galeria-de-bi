@@ -1,0 +1,173 @@
+table Contratos
+	lineageTag: 1fd70a1f-e20f-49bf-89f4-880cb325b5f9
+
+	column CNPJ
+		dataType: string
+		lineageTag: 7a3d5058-81e8-48a8-8501-51c7d57bda87
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: d161d663-6e3c-496c-9e02-61057a061737
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 3f757940-f19d-45be-86f1-73a9b7a69ba5
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 631462a0-35f8-46f0-a32c-dbcf4dcc654f
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 981e8b82-c32f-40ce-8008-2c6ea563dd4a
+			defaultHierarchy: LocalDateTable_0b2a5d4c-cb90-4c9f-a030-6dd6d808f000.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Vigência
+		dataType: string
+		lineageTag: 2d18865a-b644-4a3d-8387-59ba5f6203dc
+		summarizeBy: none
+		sourceColumn: Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: f34ee242-8a86-4fba-8937-ec2c97b22d15
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 9362236c-15de-4969-a4ca-9fe3a14d0195
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 6ab54d3a-1196-498f-ab6b-d4e79ba55f7c
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: d979e22a-321d-4bd0-a992-3aca6d79b0dd
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 9decc831-2b5e-4c01-af41-f019bcb5ed9a
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: 126668e7-2153-4cf3-963c-ad694723ac9f
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 8e8bb7fe-ac14-45c2-b07c-8a44b5aa78e6
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: bcba5699-c374-4f5e-8f77-9b31faa4dc2a
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 4048e499-105c-4301-9c3c-9d9ddad11c5c
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: string
+		lineageTag: 1bc6fb89-ae21-48c8-9dcf-6d91ea4bd727
+		summarizeBy: none
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: 6f338744-ae65-4eac-9bb2-c2b579a05399
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Email do Gestor'
+		dataType: string
+		lineageTag: 8cbe6bb5-8d50-4fc6-9626-e7fb10871d4c
+		summarizeBy: none
+		sourceColumn: Email do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: ad8c9c3e-3058-4919-9ccd-f56d88e3cb8f
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\Algar\2025\03 - Março\Contratos - Algar.xlsx"), null, true),
+				    Contratos_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Contratos_Sheet, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Linhas em Branco Removidas",{"Column19"}),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Colunas Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Cadastro no sistema", type date}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado","NULL","GESTOR NÃO IDENTIFICADO",Replacer.ReplaceText,{"Nome do Gestor"})
+				in
+				    #"Valor Substituído"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

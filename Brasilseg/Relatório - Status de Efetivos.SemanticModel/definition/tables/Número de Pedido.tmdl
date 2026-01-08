@@ -1,0 +1,51 @@
+table 'Número de Pedido'
+	lineageTag: 3dba2ee0-a016-43cf-a065-be733dbae558
+
+	measure 'Quantidade de Pedidos' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: d166ed92-fb2d-418a-8425-86ee3cd85688
+
+	column Fornecedor = LOOKUPVALUE('Status do Fornecedores'[Fornecedor],'Status do Fornecedores'[chave1],'Número de Pedido'[chave1])
+		lineageTag: 0eaca38d-de80-4827-a91d-f357563426b0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade = LOOKUPVALUE('Status do Fornecedores'[Unidade],'Status do Fornecedores'[chave1],'Número de Pedido'[chave1])
+		lineageTag: 40d07667-c53c-4dd7-b49f-626ca80fff09
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria = LOOKUPVALUE('Status do Fornecedores'[Categoria],'Status do Fornecedores'[chave1],'Número de Pedido'[chave1])
+		lineageTag: 083fa3a1-69b3-4056-afff-8818dd0c8474
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave2 - Análise de Colaboradores' = CONCATENATE('Número de Pedido'[Fornecedor],'Número de Pedido'[Categoria])
+		lineageTag: 4c30de91-1f28-448a-8380-3d0e8618c75a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave1
+		lineageTag: be68406a-0615-42f2-85bf-020cb5a6d86d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Status do Fornecedores[chave1]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave 3- Análise de Colaboradores' = CONCATENATE('Número de Pedido'[Chave2 - Análise de Colaboradores],'Número de Pedido'[Unidade])
+		lineageTag: 60268448-925a-48a0-8de5-f5d9ff2797f4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Número de Pedido' = calculated
+		mode: import
+		source = DISTINCT('Status do Fornecedores'[chave1])
+
+	annotation PBI_Id = ff5864599cb442fa92214988bb0e7dff
+

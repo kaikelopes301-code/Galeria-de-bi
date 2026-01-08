@@ -1,0 +1,21 @@
+expression 'Efetivo (2)' =
+		let
+		    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Localiza\Planilha_Template_Efetivos_Findup.xlsx"), null, true),
+		    Efetivo_Sheet = Fonte{[Item="Efetivo",Kind="Sheet"]}[Data],
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Efetivo_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}, {"Column10", type text}, {"Column11", type text}, {"Column12", type text}, {"Column13", type text}, {"Column14", type text}, {"Column15", type text}, {"Column16", type any}, {"Column17", type text}, {"Column18", type text}, {"Column19", type text}, {"Column20", type text}, {"Column21", type text}, {"Column22", type text}, {"Column23", type text}, {"Column24", type any}, {"Column25", type any}, {"Column26", type any}, {"Column27", type text}, {"Column28", type text}, {"Column29", type text}, {"Column30", type text}, {"Column31", type text}, {"Column32", type text}, {"Column33", type text}, {"Column34", type text}, {"Column35", type text}, {"Column36", type text}, {"Column37", type text}, {"Column38", type text}, {"Column39", type text}, {"Column40", type text}, {"Column41", type text}, {"Column42", type text}, {"Column43", type text}, {"Column44", type text}, {"Column45", type text}, {"Column46", type text}, {"Column47", type text}, {"Column48", type text}, {"Column49", type text}, {"Column50", type text}, {"Column51", type text}, {"Column52", type text}, {"Column53", type text}, {"Column54", type text}, {"Column55", type any}}),
+		    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+		    #"Linhas Superiores Removidas" = Table.Skip(#"Linhas em Branco Removidas",8),
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+		    #"Colunas Removidas" = Table.RemoveColumns(#"Cabeçalhos Promovidos",{"Column1", "Column2", "Column55"}),
+		    #"Texto em Maiúscula" = Table.TransformColumns(#"Colunas Removidas",{{"Nome*", Text.Upper, type text}}),
+		    #"Valor Substituído" = Table.ReplaceValue(#"Texto em Maiúscula","---","FINDUP TECNOLOGIA",Replacer.ReplaceText,{"Nome Social"}),
+		    #"Colunas Renomeadas" = Table.RenameColumns(#"Valor Substituído",{{"Nome Social", "Fornecedor"}, {"Gênero*", "Unidade"}}),
+		    #"Valor Substituído1" = Table.ReplaceValue(#"Colunas Renomeadas","---","Matriz",Replacer.ReplaceText,{"Unidade"})
+		in
+		    #"Valor Substituído1"
+	lineageTag: 4d508631-2e53-4f48-abee-115dbc9bddda
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

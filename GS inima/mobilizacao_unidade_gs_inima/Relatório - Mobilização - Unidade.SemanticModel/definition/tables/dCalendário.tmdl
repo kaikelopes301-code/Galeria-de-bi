@@ -1,0 +1,31 @@
+table dCalendário
+	lineageTag: fb668aa4-c09d-4229-a4ab-c3e87fbec3f5
+
+	column Date
+		formatString: dd/mm/yyyy
+		lineageTag: bad75d8e-1707-4769-a5fd-de5271839d70
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: fa7e46c8-d725-464a-9620-eaef42f923a8
+			defaultHierarchy: LocalDateTable_287a26e2-3e32-41ab-916a-6832d1dd37a1.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column AnoMes = FORMAT('dCalendário'[Date], "YYYY-MM")
+		lineageTag: 34a86315-fdec-469e-a914-47be3d274e78
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2024,01,01),EOMONTH(TODAY(),-1))
+
+	annotation PBI_Id = 83599be353824be98b2e303754f33765
+

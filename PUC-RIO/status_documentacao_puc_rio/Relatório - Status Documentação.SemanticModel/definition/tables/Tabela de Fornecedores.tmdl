@@ -1,0 +1,50 @@
+table 'Tabela de Fornecedores'
+	lineageTag: a208cbc4-f6d3-42d6-8d7b-a40abeb8f27d
+
+	column '%Documentos Críticos' = 'Análise de Documentos'[1 - %Documentos Críticos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9842b1aa-d958-4916-8693-9a43b9c5c8ba
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco =
+			
+			IF([1 - %Documentos Críticos] = 0, "Crítico",
+			    IF ([1 - %Documentos Críticos] < 0.5,"Alto",
+			        If ([1 - %Documentos Críticos]<0.8,"Moderado",
+			            IF([1 - %Documentos Críticos] >= 0.8, "Baixo", "Erro")
+			        )
+			    )
+			)
+		lineageTag: b1c69e07-7b14-4d7f-9a1a-4855e429d183
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		lineageTag: f2d6af75-4976-4599-948b-249c57f5565c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Análise de Documentos[Chave]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor = LOOKUPVALUE('Análise de Documentos'[Fornecedor],'Análise de Documentos'[Chave],'Tabela de Fornecedores'[Chave])
+		lineageTag: 50f60958-c3d5-4d8a-8feb-7b09191d1311
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido' = LOOKUPVALUE('Análise de Documentos'[Número do Pedido],'Análise de Documentos'[Chave],'Tabela de Fornecedores'[Chave])
+		lineageTag: 3893b536-f11d-47ce-aabc-6f46b4cb165d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tabela de Fornecedores' = calculated
+		mode: import
+		source = DISTINCT('Análise de Documentos'[Chave])
+
+	annotation PBI_Id = c9c7bb578dd14dbdab557ed5110d9701
+

@@ -1,0 +1,224 @@
+table 'Histórico Ativos'
+	lineageTag: 2f76bf02-7bc0-4ea1-acad-d99280a40e53
+
+	measure Ativos = ```
+			
+			COALESCE(
+			    CALCULATE(
+			        DISTINCTCOUNT('Histórico Ativos'[CPF])
+			    ),
+			    0
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: 09827a8d-9daf-4d7d-a68d-1ac242d95c85
+
+	column Chave
+		dataType: string
+		lineageTag: d47633b2-5acf-476b-b869-ddecdbaf847a
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 50c2a3d5-0e9f-44ca-ab7a-0e8ddf51800d
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: bf061c56-d43a-49ab-a349-b1895df31744
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: 70b710ee-505e-46f6-9372-4f6a70ed0498
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 19fc1799-7a22-4943-ab25-c05b5c2b9b8c
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 47c0dd0c-c38f-4585-a045-69ef74b37fc5
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: c6d604a3-09fb-4040-a447-f4db518f9d0a
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: 70183d07-cb35-4686-a1cb-b397ecdb4a9e
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Origem dos dados de fornecedor'
+		dataType: string
+		lineageTag: 2a5c33ac-eacc-4c42-bfab-3ca739143d65
+		summarizeBy: none
+		sourceColumn: Origem dos dados de fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: b0f94900-8e1b-4b45-b06d-d4594d58d008
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 87289017-59c4-4343-b7ef-7e5ed9234c84
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: 7de6058e-9b59-47e6-83ef-764850190308
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: string
+		lineageTag: c9b6597e-a920-4b23-97ce-bce4e9ba6c39
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de início da vigência'
+		dataType: string
+		lineageTag: ae5d8250-d58a-45bc-b2b5-2c638f75f5d1
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de fim da vigência'
+		dataType: string
+		lineageTag: 437ee612-3eec-4cfa-9810-ffc043e98e35
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: efd5c8b4-52aa-473a-a995-b2f3542c44a4
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 5e9f52a7-98af-464a-af01-30b30526d09c
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: f6f3d70f-8ff3-4aa7-b02e-eef8b9d95e2c
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 23d44222-32bc-4185-9b8c-2c7e81ae8d04
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		variation Variation
+			isDefault
+			relationship: 854f79e4-cfd5-406c-8d1b-1480e671baf4
+			defaultHierarchy: LocalDateTable_d7b7ce1c-8d13-41cc-8752-37ee5e40270f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo de cobrança do funcionário'
+		dataType: string
+		lineageTag: 746ce75f-070f-45b5-8e6f-845147bd3fcc
+		summarizeBy: none
+		sourceColumn: Tipo de cobrança do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: bd83f34e-9d9a-40e5-a174-57580e4f5911
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4852723e-0c69-428c-877c-a007e6a966ae
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Histórico Ativos' = m
+		mode: import
+		source =
+				let
+				Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Galvani\00 . Setup\Hist.xlsx"), null, true),
+				    #"Status de funcionários_Sheet" = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Status de funcionários_Sheet", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Número Contrato", type text}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Tipo Alterado1",{{"CPF", type text}, {"Data de cadastro", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado", "Personalizar", each if [Situação] = "Inativo" then "Inativo" else "Ativo"),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Coluna Condicional Adicionada",{"Situação"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Colunas Removidas1",{{"Personalizar", "Situação"}}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Colunas Renomeadas1",{{"Competência", type date}})
+				in
+				    #"Tipo Alterado2"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

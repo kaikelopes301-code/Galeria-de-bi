@@ -1,0 +1,48 @@
+table #Relatorio_Fornecedores
+	lineageTag: 9ba7b4c2-2f24-424a-9c54-84a3cf9017db
+
+	column #Relatorio_Fornecedores
+		lineageTag: 6b828085-a255-4889-818b-35942f785cbf
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Relatorio_Fornecedores Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Relatorio_Fornecedores Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Relatorio_Fornecedores Campos'
+		isHidden
+		lineageTag: 5a1bcd8f-c891-4231-828f-35f138469fc2
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Relatorio_Fornecedores Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Relatorio_Fornecedores Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 93a463a7-ceed-425a-a504-47f7a16ab3a9
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Relatorio_Fornecedores = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Relatório de Fornecedores'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Relatório de Fornecedores'[Unidade(s)]), 1)
+				}
+
+	annotation PBI_Id = b1539c1cfdf54770b1b55010647e43ac
+

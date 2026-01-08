@@ -1,0 +1,154 @@
+table Efetivo
+	lineageTag: 59b1ff7b-9f71-40fe-8225-9b79af181020
+
+	measure '(Colaboradores) Quantidade' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: f6639161-4eff-49e0-a1cc-0b7c4663204e
+
+	column Nome*
+		dataType: string
+		lineageTag: 2cd1f611-d5fb-4a84-9ccb-525c4cf9c253
+		summarizeBy: none
+		sourceColumn: Nome*
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 961fd509-fa58-4081-9dce-335cca067c4f
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 963dbf6a-61db-415a-bc8e-b6a70cb2f40c
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modalidade de Contratação*'
+		dataType: string
+		lineageTag: 1013dc82-decd-44c6-baf0-ea0140afcb74
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação*
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'É Residente?'
+		dataType: string
+		lineageTag: 1fcfe7c7-ce3b-430a-a59d-efe3d74c7104
+		summarizeBy: none
+		sourceColumn: É Residente?
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF**
+		dataType: string
+		lineageTag: 240d5634-2055-42bd-9a36-b5ae24e13871
+		summarizeBy: none
+		sourceColumn: CPF**
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIS ***'
+		dataType: string
+		lineageTag: c4ef4980-ab2b-4724-bcc0-6173dc8c38f5
+		summarizeBy: none
+		sourceColumn: PIS ***
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro**'
+		dataType: string
+		lineageTag: 85e70821-a952-4f02-9109-6040d6d8f519
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro**
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Moradia*'
+		dataType: string
+		lineageTag: 4ae963a8-b869-4bb0-9683-f7adbdd968b8
+		summarizeBy: none
+		sourceColumn: Tipo de Moradia*
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função*
+		dataType: string
+		lineageTag: a801a889-33f4-4a93-a2df-9bf31c4a84e7
+		summarizeBy: none
+		sourceColumn: Função*
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atividades****
+		dataType: string
+		lineageTag: 22368572-bbde-4b87-b584-ac928b4474c9
+		summarizeBy: none
+		sourceColumn: Atividades****
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de funcionários.Documentos pendentes (Não entregues ou Recusados)'
+		dataType: string
+		lineageTag: 8c7ebce6-d995-49b0-ac5b-9d27fce0cd26
+		summarizeBy: none
+		sourceColumn: Status de funcionários.Documentos pendentes (Não entregues ou Recusados)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de funcionários.Esta Mobilizado'
+		dataType: string
+		lineageTag: 094aeca2-d122-4c1f-ba63-09dec42b89fb
+		summarizeBy: none
+		sourceColumn: Status de funcionários.Esta Mobilizado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Listagem de Colaboradores' = LOOKUPVALUE('Lista Colaboradores'[Listagem de Colaboradores],'Lista Colaboradores'[Efetivo.Nome*],Efetivo[Nome*])
+		lineageTag: ef310f46-3336-437d-bf2a-922a1e9a3666
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de funcionários.Faixa'
+		dataType: string
+		lineageTag: 562817c3-4c1c-40cf-9e1e-6beff289b15e
+		summarizeBy: none
+		sourceColumn: Status de funcionários.Faixa
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Efetivo = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Localiza\Planilha_Template_Efetivos (2).xlsx"), null, true),
+				    Efetivo_Sheet = Fonte{[Item="Efetivo",Kind="Sheet"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Efetivo_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}, {"Column10", type text}, {"Column11", type text}, {"Column12", type text}, {"Column13", type text}, {"Column14", type text}, {"Column15", type text}, {"Column16", type any}, {"Column17", type text}, {"Column18", type text}, {"Column19", type text}, {"Column20", type text}, {"Column21", type text}, {"Column22", type text}, {"Column23", type text}, {"Column24", type any}, {"Column25", type any}, {"Column26", type any}, {"Column27", type text}, {"Column28", type text}, {"Column29", type text}, {"Column30", type text}, {"Column31", type text}, {"Column32", type text}, {"Column33", type text}, {"Column34", type text}, {"Column35", type text}, {"Column36", type text}, {"Column37", type text}, {"Column38", type text}, {"Column39", type text}, {"Column40", type text}, {"Column41", type text}, {"Column42", type text}, {"Column43", type text}, {"Column44", type text}, {"Column45", type text}, {"Column46", type text}, {"Column47", type text}, {"Column48", type text}, {"Column49", type text}, {"Column50", type text}, {"Column51", type text}, {"Column52", type text}, {"Column53", type text}, {"Column54", type text}, {"Column55", type any}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Linhas em Branco Removidas",8),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Column1", type text}, {"Column2", type text}, {"Nome*", type text}, {"Nome Social", type text}, {"Gênero", type text}, {"Modalidade de Contratação*", type text}, {"É Residente?", type text}, {"CPF**", type text}, {"PIS ***", type text}, {"Documento Estrangeiro**", type text}, {"Tipo de Moradia*", type text}, {"Função*", type text}, {"Atividades****", type text}, {"Início atividades", type text}, {"Fim atividades", type text}, {"Salário*", type number}, {"Escala*", type text}, {"Início da jornada*", type time}, {"Término da jornada*", type time}, {"Intrajornada descansada*", type time}, {"Intrajornada remunerada*", type time}, {"Horas extras*", type time}, {"Trabalha nos feriados?*", type text}, {"Insalubridade (%)*", Int64.Type}, {"Periculosidade (%)*", Int64.Type}, {"Gratificação / Acúm. Funções", Int64.Type}, {"Situação*", type text}, {"Estado Civil", type text}, {"Grau de instrução", type text}, {"Orientação Sexual", type text}, {"Identidade de Gênero", type text}, {"PCD", type text}, {"Descrição PCD", type text}, {"Naturalidade", type text}, {"Raça", type text}, {"Religião", type text}, {"RG", type text}, {"Data Emissão RG", type text}, {"Órgão Emissor RG", type text}, {"Data de nascimento", type text}, {"Comemora Aniversário?", type text}, {"DDD", type text}, {"Telefone", type text}, {"Email", type text}, {"CEP", type text}, {"Logradouro", type text}, {"Número", type text}, {"Complemento", type text}, {"Bairro", type text}, {"Cidade", type text}, {"UF", type text}, {"DDD Comercial", type text}, {"Telefone Comercial", type text}, {"Ramal", type text}, {"Column55", type any}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado1",{"Column1", "Column2", "Column55"}),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Colunas Removidas",{{"Nome*", Text.Upper, type text}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Texto em Maiúscula",{{"Nome Social", "Fornecedor"}, {"Gênero", "Unidade"}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Renomeadas","---","PREMIUM",Replacer.ReplaceText,{"Fornecedor"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","---","Matriz",Replacer.ReplaceText,{"Unidade"}),
+				    #"Consulta Acrescentada" = Table.Combine({#"Valor Substituído1", #"Efetivo (2)"}),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Consulta Acrescentada",{"Início atividades", "Fim atividades", "Salário*", "Escala*", "Início da jornada*", "Término da jornada*", "Intrajornada descansada*", "Intrajornada remunerada*", "Horas extras*", "Trabalha nos feriados?*", "Insalubridade (%)*", "Periculosidade (%)*", "Gratificação / Acúm. Funções", "Situação*", "Estado Civil", "Grau de instrução", "Orientação Sexual", "Identidade de Gênero", "PCD", "Descrição PCD", "Naturalidade", "Raça", "Religião", "RG", "Data Emissão RG", "Órgão Emissor RG", "Data de nascimento", "Comemora Aniversário?", "DDD", "Telefone", "Email", "CEP", "Logradouro", "Número", "Complemento", "Bairro", "Cidade", "UF", "DDD Comercial", "Telefone Comercial", "Ramal", "Estado Civil*", "Grau de instrução*", "Naturalidade*", "Data de nascimento*", "DDD*", "Telefone*", "CEP*", "Logradouro*", "Número*", "Cidade*", "UF*"}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Colunas Removidas1", {"Nome*"}, #"Status de funcionários", {"Nome"}, "Status de funcionários", JoinKind.LeftOuter),
+				    #"Status de funcionários Expandido1" = Table.ExpandTableColumn(#"Consultas Mescladas", "Status de funcionários", {"Documentos pendentes (Não entregues ou Recusados)", "Faixa", "Esta Mobilizado"}, {"Status de funcionários.Documentos pendentes (Não entregues ou Recusados)", "Status de funcionários.Faixa", "Status de funcionários.Esta Mobilizado"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Status de funcionários Expandido1",null,"Inativo",Replacer.ReplaceValue,{"Status de funcionários.Esta Mobilizado"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2",null,"Inativo",Replacer.ReplaceValue,{"Status de funcionários.Faixa"})
+				in
+				    #"Valor Substituído3"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

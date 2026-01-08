@@ -1,0 +1,66 @@
+table 'Documentos Algar'
+	lineageTag: e022e7c2-8857-4c0b-95bc-5ca865c4b3a8
+
+	column Documento
+		dataType: string
+		lineageTag: 71c89f1e-5f67-4232-8c31-c6b2fb3f9bdc
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Documento
+		dataType: string
+		lineageTag: d3e03f07-c765-4afe-a241-42373a3cc8df
+		summarizeBy: none
+		sourceColumn: Id_Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: fcbfef37-abe3-4ee3-9b45-ed7b38151c86
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação Docs.Peso'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ee83dae-7cea-4aa6-9273-4eb8991d627c
+		summarizeBy: sum
+		sourceColumn: Classificação Docs.Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação Docs.Classificação de Risco'
+		dataType: string
+		lineageTag: 765033b1-1be3-499f-a448-b10689fd188b
+		summarizeBy: none
+		sourceColumn: Classificação Docs.Classificação de Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação Docs.Prazo Bloqueio Pagamento'
+		dataType: string
+		lineageTag: 4c88beef-1401-4aa0-8fe2-d2940e3853aa
+		summarizeBy: none
+		sourceColumn: Classificação Docs.Prazo Bloqueio Pagamento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos Algar' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @organizationId uniqueidentifier = 'b271f317-ca46-4890-8f51-1d421363313d';#(lf) #(lf)SELECT#(lf)#(tab)DISTINCT#(lf)#(tab)   [d].[Name] AS [Documento],#(lf)#(tab)   [d].Id as [Id_Documento],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)#(tab)#(tab)ELSE '--'#(lf)#(tab)END AS 'Tipo do documento'#(lf) #(lf)#(tab)FROM#(lf)#(tab)[Document] AS [d] WITH (NOLOCK)#(lf)INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON#(lf)#(tab)[d].[OrganizationId] = [o].[Id]#(lf) #(lf)#(tab)WHERE#(lf)#(tab)[d].[Removed] = 0 #(lf)#(tab)AND [d].[Archived] = 0#(lf)#(tab)AND [d].[OrganizationId] = @organizationId#(lf)#(lf)#(tab)ORDER BY d.name"]),
+				    #"Consultas Mescladas" = Table.NestedJoin(Fonte, {"Documento"}, #"Classificação Docs", {"Documento"}, "Classificação Docs", JoinKind.LeftOuter),
+				    #"Classificação Docs Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Classificação Docs", {"Peso", "Classificação de Risco", "Prazo Bloqueio Pagamento"}, {"Classificação Docs.Peso", "Classificação Docs.Classificação de Risco", "Classificação Docs.Prazo Bloqueio Pagamento"})
+				in
+				    #"Classificação Docs Expandido"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

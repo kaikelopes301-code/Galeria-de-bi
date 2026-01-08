@@ -1,0 +1,575 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "Reanalise_A",
+  "name": "584cd431aa718a90be66",
+  "options": {
+    "targetVisualNames": [
+      "11101d5828115ba302bc"
+    ],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "f1cfcc1467195362b502",
+    "sections": {
+      "f1cfcc1467195362b502": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "1439549f01c2a531dad6",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "s",
+                    "Entity": "SLA Análise",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Not": {
+                        "Expression": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "s"
+                                    }
+                                  },
+                                  "Property": "Funcionario"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "null"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SLA Análise"
+                    }
+                  },
+                  "Property": "Funcionario"
+                }
+              },
+              "howCreated": 1
+            },
+            {
+              "name": "d93607e57361907d1780",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "s",
+                    "Entity": "SLA Análise",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "s"
+                                }
+                              },
+                              "Property": "Tipo"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'Mobilização'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SLA Análise"
+                    }
+                  },
+                  "Property": "Tipo"
+                }
+              },
+              "howCreated": 1
+            }
+          ]
+        },
+        "visualContainers": {
+          "3a79e59a0c7b2cd161cc": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "0102194da49bc893b6bc": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "6e9a147f90e097058d67": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "49127e25132a55e58238": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "5667765a3200a7362921",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_Quantidade_Documentação_"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "8718da7816d90610230b",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Id_Documento"
+                        }
+                      },
+                      "Property": "Faixa"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "pieChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_Quantidade_Documentação_"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Id_Documento"
+                        }
+                      },
+                      "Property": "Faixa"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ed02987653ebb6501507": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "fa6e4c1531d9b5dae2a0",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_Taxa_Reanalise"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "d0212de7736967033406",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_Taxa_Recusa"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "241704fa19d95ed3649b",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_%Reanálise_Nomes"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "_Taxa_Reanalise"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "f7247e72a271461948ee": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "c6d53f7c3bd45153446d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "977eda9297849018277d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Numero_Pedido"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Basic'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Numero_Pedido"
+                    }
+                  }
+                ]
+              },
+              "expansionStates": [
+                {
+                  "roles": [
+                    "Values"
+                  ],
+                  "levels": [
+                    {
+                      "queryRefs": [
+                        "SLA Análise.Fornecedor"
+                      ],
+                      "isCollapsed": true,
+                      "identityKeys": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Entity": "SLA Análise"
+                              }
+                            },
+                            "Property": "Fornecedor"
+                          }
+                        }
+                      ],
+                      "isPinned": true
+                    },
+                    {
+                      "queryRefs": [
+                        "SLA Análise.Numero_Pedido"
+                      ],
+                      "isCollapsed": true,
+                      "isPinned": true
+                    }
+                  ],
+                  "root": {
+                    "identityValues": null,
+                    "children": [
+                      {
+                        "identityValues": [
+                          {
+                            "Literal": {
+                              "Value": "'ALFA LAVAL LTDA.'"
+                            }
+                          }
+                        ],
+                        "isToggled": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "11101d5828115ba302bc": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "2a441e1cdd04583a3366": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "3fd0e8e177a2131300cc",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Numero_Pedido"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "d7ac22f02d7e0d74156d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "18015870bee54e2c0901",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Funcionario"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "a0ff5ded2054270241a3",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 1,
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "SLA Análise"
+                        }
+                      },
+                      "Property": "Nome_Documento"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "2b4688761a00a6b305b0": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "f665311ddaee8ddf1745": {
+            "isHidden": false,
+            "children": {
+              "840e4083d3c9ab2dc9f5": {
+                "isHidden": false
+              },
+              "a1d2da271aaa17402305": {
+                "isHidden": false
+              },
+              "de247c20c8ec22dff076": {
+                "isHidden": false
+              },
+              "b58131a6afc1cc1d9cdc": {
+                "isHidden": false
+              },
+              "e0056660d684d6b7e9b2": {
+                "isHidden": false
+              },
+              "b31111597be2cdb35092": {
+                "isHidden": false
+              },
+              "b1805fc55c018eab200c": {
+                "isHidden": false
+              },
+              "73c3cd41c21313ba09cc": {
+                "isHidden": false
+              },
+              "63629a1aba70fbc906e7": {
+                "isHidden": false
+              }
+            }
+          },
+          "b9726870d42ec7439bcb": {
+            "isHidden": false
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

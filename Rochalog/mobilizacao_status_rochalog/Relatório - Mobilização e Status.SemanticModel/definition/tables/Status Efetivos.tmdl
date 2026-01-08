@@ -1,0 +1,182 @@
+table 'Status Efetivos'
+	lineageTag: b7dde405-32f0-49c1-aaf0-9264826f95f8
+
+	measure _Efetivos_Quantidade = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 094d29b3-76fc-4092-8afd-079269baaa04
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 4cb6832d-22ac-4858-9dee-c0e98e6a7af8
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 71d051c2-2db8-4004-82c3-fd2f83d0d552
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: a6c27f85-160a-4c11-b076-3c7bb277e2a0
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 71fa90e0-550a-4bc3-8587-58b86095c6b6
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: bfc83be0-2a2f-4472-b68c-f2816f430415
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: fdf0d51f-6c65-4566-8f63-58164c5485f0
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Restrição'
+		dataType: string
+		lineageTag: d9996f93-83e0-4658-a398-6ebdc18f88d4
+		summarizeBy: none
+		sourceColumn: Status de Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: ff38b633-7ec1-440e-a9ef-f46c18f02d49
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 799e55a3-3003-4146-9f29-133ac2a2dfd1
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 03872d44-923c-4dcc-a1b3-d1dd93c649fd
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: b0da10fa-bfcd-4d33-8899-444b011a2782
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contratação'
+		dataType: string
+		lineageTag: e84090aa-5788-4938-b9dc-e4ac446d2402
+		summarizeBy: none
+		sourceColumn: Tipo de contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 5207ff18-4b79-429a-a471-7a40fc242834
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Carro
+		dataType: string
+		lineageTag: 0ae7d5c9-d9aa-401d-8173-a91c722f5177
+		summarizeBy: none
+		sourceColumn: Carro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 005d8aa9-2d2e-40c0-8fe5-759361b92e0b
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Colaborador
+		dataType: string
+		lineageTag: 88b5abb7-44b7-4f55-a8dc-70d1d1f1c37f
+		summarizeBy: none
+		sourceColumn: Id_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato_Colaborador
+		dataType: string
+		lineageTag: 258e2824-7576-4974-96d9-54b1f9a94be7
+		summarizeBy: none
+		sourceColumn: Id_Contrato_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Docs_Nao_Aprovados =
+			
+			VAR vContrato = 'Status Efetivos'[Id_Contrato]
+			VAR vColab    = 'Status Efetivos'[Id_Colaborador]
+			VAR tDocs =
+			    FILTER (
+			        'Documentos em Análise',
+			        'Documentos em Análise'[Id do Contrato]   = vContrato
+			        && 'Documentos em Análise'[Id_Colaborador] = vColab
+			        && UPPER( TRIM ( 'Documentos em Análise'[Status] ) ) <> "Aprovado"
+			    )
+			VAR tDistinct =
+			    DISTINCT ( SELECTCOLUMNS ( tDocs, "Documento", 'Documentos em Análise'[Documento] ) )
+			RETURN
+			IF (
+			    ISEMPTY ( tDistinct ),
+			    BLANK (),
+			    CONCATENATEX ( tDistinct, [Documento], ", ", [Documento], ASC )
+			)
+		lineageTag: a055872b-fa72-4b15-bd72-a12e7c0c632d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = '49443CB2-548F-4529-AA0B-019F6FC55E27';#(lf)#(lf)SELECT #(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)bc.CompanyName AS 'Razão Social',#(lf)#(tab)p.TradeName AS 'Fornecedor',#(lf)#(tab)dbo.FNCNPJMask(bc.Document) AS 'CNPJ',#(lf)#(tab)b.TradeName AS 'Unidade',#(lf)#(tab)e.Name AS 'Nome',#(lf)#(tab)e.id as 'Id_Colaborador',#(lf)#(lf)#(tab)CASE #(lf)#(tab)#(tab)WHEN e.Situation = 1 THEN 'Inativo'#(lf)#(tab)#(tab)--WHEN e.ForeignerDocument IS NOT NULL and cs.statusRestriction = '' and e.Situation <> 1 THEN 'Equipamento'#(lf)#(tab)#(tab)Else cs.statusRestriction #(lf)#(tab)END AS 'Status de Restrição',#(lf)#(lf)    dbo.FNCPFMask(e.CpfNumber) As 'CPF',#(lf)#(tab)dbo.FNPISMask(e.PisNumber) AS 'PIS',#(lf)    e.ForeignerDocument AS 'Documento Estrangeiro',#(lf)    CASE#(lf)        WHEN e.Situation = 0 THEN 'Ativo'#(lf)        WHEN e.Situation = 1 THEN 'Inativo'#(lf)    END AS 'Situação', #(lf)#(lf)    CASE#(lf)        WHEN e.TypeHiring = 1 THEN 'CLT'#(lf)        WHEN e.TypeHiring = 2 THEN 'PJ (MEI)'#(lf)        WHEN e.TypeHiring = 4 THEN 'Autônomo'#(lf)        WHEN e.TypeHiring = 8 THEN 'Estrangeiro'#(lf)        WHEN e.TypeHiring = 16 THEN 'Sócio'#(lf)        ELSE 'Nenhum'#(lf)    END AS 'Tipo de contratação',#(lf)#(tab)ca.Name as 'Categoria',#(lf)    F.Name AS 'Função'#(lf)#(lf)FROM Effective e WITH(NOLOCK)#(lf)#(tab)INNER JOIN Contract c WITH(NOLOCK) ON c.Id = e.ContractId#(lf)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)INNER JOIN BranchCompany bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)#(tab)INNER JOIN Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)#(tab)INNER JOIN Provider p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)#(tab)INNER JOIN [Function] f WITH(NOLOCK) ON f.Id = e.FunctionId#(lf)#(tab)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)#(tab)LEFT JOIN EmployeeRegisterContractStatus AS cs WITH(NOLOCK) ON cs.EmployeeRegisterContractId = erc.Id AND cs.DeliveryKind IS NULL#(lf)  #(lf)WHERE#(lf)    b.OrganizationId = @OrganizationId#(lf)    AND c.Removed = 0#(lf)    AND e.Removed = 0#(lf)    AND erc.Removed = 0"]),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(Fonte, "Carro", each Text.Combine({[CPF], [PIS], [Tipo de contratação]}, ""), type text),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Mesclada Inserida", each ([Carro] <> "Nenhum")),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Linhas Filtradas", "Id_Contrato_Colaborador", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text)
+				in
+				    #"Coluna Mesclada Inserida1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

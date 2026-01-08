@@ -1,0 +1,133 @@
+table 'SLA - Python'
+	lineageTag: 1a8b532b-1c05-4388-98eb-5c95bcee3f31
+
+	measure _Média_SLA_Python = AVERAGE('SLA - Python'[SLA (Dias)])
+		lineageTag: f6483932-12c9-4d71-9b24-c12e048e5a82
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Medida
+		lineageTag: ccbc7801-507e-4d15-9d48-c24fb1be5347
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 40ecdd9d-d0e5-4eef-acd1-40cc44d179d6
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Colaborador
+		dataType: string
+		lineageTag: cb1f9422-4526-4b3b-b0ab-c5cef499dd7f
+		summarizeBy: none
+		sourceColumn: Id_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: de316729-b610-4a8a-b259-dff257cafbb8
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Corrigida_Envio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d2d5d85f-9ba5-451e-a118-11c771ea43ef
+		summarizeBy: none
+		sourceColumn: Data_Corrigida_Envio
+
+		variation Variation
+			isDefault
+			relationship: 66cefa11-a118-4647-909c-b514c32fe311
+			defaultHierarchy: LocalDateTable_ed020abc-e92e-453c-b211-d0faeddac997.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Corrigida_Envio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 637c154c-46c9-42fe-8e0d-ddc788301336
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Envio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Data_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1a07a686-a79b-4686-9617-1f3fa03254f2
+		summarizeBy: none
+		sourceColumn: Data_Corrigida_Análise
+
+		variation Variation
+			isDefault
+			relationship: 88a0102e-bf7d-46bb-8b04-6bf47bd9a910
+			defaultHierarchy: LocalDateTable_96e702a4-dcce-42ba-bec1-46b2257e2d2a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Hora_Corrigida_Análise
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: fd272154-be72-4dec-ab2b-a567d81c0ebe
+		summarizeBy: none
+		sourceColumn: Hora_Corrigida_Análise
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column 'SLA (Dias)'
+		dataType: double
+		lineageTag: cdb77a3d-e6b8-4a61-ad27-4aa2ae919f81
+		summarizeBy: sum
+		sourceColumn: SLA (Dias)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Id_Chave
+		dataType: string
+		lineageTag: 929f9c7d-3b1c-4498-9c1a-8ea745426565
+		summarizeBy: none
+		sourceColumn: Id_Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ocorrencia
+		dataType: string
+		lineageTag: 7d58c484-bb74-4483-bf01-ebeaec4ecbe9
+		summarizeBy: none
+		sourceColumn: Ocorrencia
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SLA - Python' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Galvani\03 - SLA's\sql\SLA_Analise_Consolidado.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Id_Contrato", type text}, {"Id_Colaborador", type text}, {"DocumentScheduleId", type text}, {"Data_Corrigida_Envio", type date}, {"Hora_Corrigida_Envio", type time}, {"Data_Corrigida_Análise", type date}, {"Hora_Corrigida_Análise", type time}, {"SLA (Dias)", type number}}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Tipo Alterado", "Id_Chave", each Text.Combine({[Id_Contrato], [Id_Colaborador]}, ""), type text)
+				in
+				    #"Coluna Mesclada Inserida"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

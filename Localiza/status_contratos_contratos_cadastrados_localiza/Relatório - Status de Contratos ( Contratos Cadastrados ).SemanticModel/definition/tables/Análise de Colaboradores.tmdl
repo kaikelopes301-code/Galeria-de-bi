@@ -1,0 +1,354 @@
+table 'Análise de Colaboradores'
+	lineageTag: 790b9f12-9920-423d-a83f-d93e1eb8efbb
+
+	measure 'Quantidade de Colaboradores' = CALCULATE(AVERAGEX(VALUES('Análise de Colaboradores'[Competência]),DISTINCTCOUNT('Análise de Colaboradores'[Funcionário])))
+		formatString: #,0
+		lineageTag: 665b424b-2ae0-4a71-bcde-922c961379c4
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure %Colaboradores = [Quantidade de Colaboradores]/CALCULATE([Quantidade de Colaboradores],ALL('Análise de Colaboradores'[Fornecedor],'Análise de Colaboradores'[Categoria],'Análise de Colaboradores'[Unidade]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: be1493f4-461b-422e-b7ef-00bce730d79c
+
+	measure 'Relação - Quantidade de Colaboradores' =
+			CALCULATE(AVERAGEX(VALUES('Análise de Colaboradores'[Competência]),
+			DISTINCTCOUNT('Análise de Colaboradores'[Funcionário])),
+			USERELATIONSHIP('Número de Contrato'[Id.Contrato],'Análise de Colaboradores'[ID_Contrato]))
+		lineageTag: 3a10e46f-30a5-4265-8b8c-4f881cb6f1f0
+
+	column Cliente
+		dataType: string
+		lineageTag: 73e0b366-2caa-4b40-b8bf-11bb1825429b
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: b459bb0c-8cf5-4d35-929e-6273d7df8e8b
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 7191e595-c01a-495a-80bb-d2b71cb2ee9c
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 60b6ecf2-64b7-4412-8a7e-50cfe8b77903
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 2967193f-a740-4b1c-bd3e-a1c56718f94e
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 285d6c48-beec-44de-aa27-ae9118afe90a
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b96e1676-2708-4892-b996-faacb50b4ffd
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: 819ea6f0-c4a7-4c47-9338-ccc1463203bf
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observação
+		dataType: string
+		lineageTag: b7294a5f-e64e-44bd-a9e1-c904bfa80db8
+		summarizeBy: none
+		sourceColumn: Observação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor sefip'
+		dataType: int64
+		formatString: 0
+		lineageTag: 973871e4-7386-4805-ab0e-8a0810673a2a
+		summarizeBy: sum
+		sourceColumn: Valor sefip
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: int64
+		formatString: 0
+		lineageTag: f9fad3d8-ea06-457f-9452-b1a26324564c
+		summarizeBy: sum
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor cadastrado'
+		dataType: int64
+		formatString: 0
+		lineageTag: fb5e2df2-2283-45b4-a766-493dcfca339b
+		summarizeBy: sum
+		sourceColumn: Valor cadastrado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escala
+		dataType: string
+		lineageTag: cc020574-d252-4a24-888a-23c7b0ec54e2
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada'
+		dataType: string
+		lineageTag: 60dea427-8987-4be8-9281-06329f56f4c3
+		summarizeBy: none
+		sourceColumn: Início da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Término da jornada'
+		dataType: string
+		lineageTag: 43644417-0d21-4eb5-bd42-453665581b37
+		summarizeBy: none
+		sourceColumn: Término da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada descansada'
+		dataType: string
+		lineageTag: e09d41df-e7c1-48e4-a2e7-9184abfa6ef4
+		summarizeBy: none
+		sourceColumn: Intrajornada descansada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada remunerada'
+		dataType: string
+		lineageTag: a0aa4864-f1fa-41fb-ab6a-15c6157145e4
+		summarizeBy: none
+		sourceColumn: Intrajornada remunerada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor intrajornada remunerada'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7427f10f-1548-4888-b839-420896febf79
+		summarizeBy: sum
+		sourceColumn: Valor intrajornada remunerada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Adicional noturno'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7f7d0f4f-f418-4beb-9e6c-8476f40798c4
+		summarizeBy: sum
+		sourceColumn: Adicional noturno
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hora noturna reduzida'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1f426cfd-2163-4fdc-9371-42cc499d5a57
+		summarizeBy: sum
+		sourceColumn: Hora noturna reduzida
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hora extra'
+		dataType: string
+		lineageTag: f619713c-d186-4880-bbea-a197451f9499
+		summarizeBy: none
+		sourceColumn: Hora extra
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor hora extra'
+		dataType: int64
+		formatString: 0
+		lineageTag: 70982e94-9082-4b80-82db-cfc3bebd8379
+		summarizeBy: sum
+		sourceColumn: Valor hora extra
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trabalha aos feriados'
+		dataType: string
+		lineageTag: bf6ff321-7b84-412b-a615-0fcde1827f32
+		summarizeBy: none
+		sourceColumn: Trabalha aos feriados
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insalubridade
+		dataType: int64
+		formatString: 0
+		lineageTag: 82920348-6937-46cb-b67b-c779a80306ef
+		summarizeBy: sum
+		sourceColumn: Insalubridade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total insalubridade'
+		dataType: int64
+		formatString: 0
+		lineageTag: f90d761c-79b6-4e5f-8445-0de54fadd1fd
+		summarizeBy: sum
+		sourceColumn: Total insalubridade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Periculosidade
+		dataType: int64
+		formatString: 0
+		lineageTag: 28a52195-dabe-47c1-85ef-85883347d076
+		summarizeBy: sum
+		sourceColumn: Periculosidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total periculosidade'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7363fe95-4f92-4f23-9fc5-d074768b4c8d
+		summarizeBy: sum
+		sourceColumn: Total periculosidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gratificação/Acúm. funções'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a6cd765-f865-44e1-a57b-146ed6a93485
+		summarizeBy: sum
+		sourceColumn: Gratificação/Acúm. funções
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor gratificação/Acúm. funções'
+		dataType: int64
+		formatString: 0
+		lineageTag: f2fedf18-9343-4c15-a6b9-4251973ceb15
+		summarizeBy: sum
+		sourceColumn: Valor gratificação/Acúm. funções
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gratificação liderança'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7b984e82-7305-43f7-b890-61708f85d40b
+		summarizeBy: sum
+		sourceColumn: Gratificação liderança
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Outros adicionais'
+		dataType: int64
+		formatString: 0
+		lineageTag: d2a0d67d-0871-4244-81e0-061d5cdbcb59
+		summarizeBy: sum
+		sourceColumn: Outros adicionais
+
+		annotation SummarizationSetBy = Automatic
+
+	column Responsável
+		dataType: string
+		lineageTag: 8ca0a36e-c429-4543-8333-59e35e47a624
+		summarizeBy: none
+		sourceColumn: Responsável
+
+		annotation SummarizationSetBy = Automatic
+
+	column Email
+		dataType: string
+		lineageTag: 0e9f7f75-7ff9-417a-8e5d-5ec03fa51c83
+		summarizeBy: none
+		sourceColumn: Email
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: f8fbe26a-cbfc-4f71-9a00-c02fbbeb9ada
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: c0ea14f6-271a-4dea-af72-e24a480bc75e
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contrato
+		dataType: string
+		lineageTag: 3d7ff1b9-48ed-4cba-8ad5-1a9911d8f480
+		summarizeBy: none
+		sourceColumn: Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Contrato
+		dataType: string
+		lineageTag: 02ec937d-607a-4cf1-8f7c-b189a63e5383
+		summarizeBy: none
+		sourceColumn: ID_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigência = LOOKUPVALUE(Contratos[Status Contrato],Contratos[Id_Contrato],'Análise de Colaboradores'[ID_Contrato])
+		lineageTag: 8e64a510-4c22-46cb-98df-a71c92f13625
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Análise de Colaboradores' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select#(lf)#(tab)o.TradeName as 'Cliente',#(lf)#(tab)b.TradeName as 'Unidade',#(lf)#(tab)p.TradeName as 'Fornecedor',#(lf)#(tab)c.OrderNumber as 'Contrato',#(lf)#(tab)c.Id AS 'ID_Contrato',#(lf)#(tab)cat.Name as 'Categoria',#(lf)#(tab)r.Name as 'Regional',#(lf)#(tab)e.Name as 'Funcionário',#(lf)#(tab)e.PisNumber as 'PIS',#(lf)#(tab)FORMAT(g.Competency, 'MM/yyyy') as 'Competência',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.Status = 0#(lf)#(tab)#(tab)THEN 'Irregular'#(lf)#(lf)#(tab)#(tab)WHEN ee.Status = 1#(lf)#(tab)#(tab)THEN 'Regular'#(lf)#(tab)END as 'Status',#(lf)#(tab)ee.StatusObservation as 'Observação',#(lf)#(tab)ee.Remuneration as 'Valor sefip',#(lf)#(tab)ee.SalaryExpected as 'Valor do contrato',#(lf)#(tab)ee.EffectiveSalary as 'Valor cadastrado',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 0#(lf)#(tab)#(tab)THEN '0x0'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 1#(lf)#(tab)#(tab)THEN '2x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 2#(lf)#(tab)#(tab)THEN '4x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 3#(lf)#(tab)#(tab)THEN '5x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 4#(lf)#(tab)#(tab)THEN '5x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 5#(lf)#(tab)#(tab)THEN '6x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 6#(lf)#(tab)#(tab)THEN '6x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 7#(lf)#(tab)#(tab)THEN '12x36'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 8#(lf)#(tab)#(tab)THEN '12x48'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 9#(lf)#(tab)#(tab)THEN '12x36 (36hrs)'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 10#(lf)#(tab)#(tab)THEN '4x4'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 11#(lf)#(tab)#(tab)THEN '14x14'#(lf)#(tab)END as 'Escala',#(lf)#(tab)FORMAT(ee.EffectiveStartTime, 'HH:mm') as 'Início da jornada',#(lf)#(tab)FORMAT(ee.EffectiveEndTime, 'HH:mm') as 'Término da jornada',#(lf)#(tab)FORMAT(ee.EffectiveInterval, 'HH:mm') as 'Intrajornada descansada',#(lf)#(tab)FORMAT(ee.EffectiveOvertimeInterval, 'HH:mm') as 'Intrajornada remunerada',#(lf)#(tab)ee.EffectiveTotalMonthlyOvertimeInterval as 'Valor intrajornada remunerada',#(lf)#(tab)ee.EffectiveTotalAdditionalValueNightTime as 'Adicional noturno',#(lf)#(tab)ee.EffectiveTotalAdditionalValueNightTimeReduced as 'Hora noturna reduzida',#(lf)#(tab)FORMAT(ee.EffectiveOverTime, 'HH:mm') as 'Hora extra',#(lf)#(tab)ee.EffectiveTotalMonthlyOvertimeHour as 'Valor hora extra',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 0#(lf)#(tab)#(tab)THEN 'Sim, Trabalha nos feriados'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 1#(lf)#(tab)#(tab)THEN 'Não trabalha nos feriados'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 3#(lf)#(tab)#(tab)THEN 'Folga compensada'#(lf)#(tab)END as 'Trabalha aos feriados',#(lf)#(tab)ee.EffectiveUnhealthiness as 'Insalubridade',#(lf)#(tab)ee.EffectiveTotalUnhealthiness as 'Total insalubridade',#(lf)#(tab)ee.EffectiveDangerousness as 'Periculosidade',#(lf)#(tab)ee.EffectiveTotalDangerousness as 'Total periculosidade',#(lf)#(tab)ee.EffectiveBonus as 'Gratificação/Acúm. funções',#(lf)#(tab)ee.EffectiveTotalBonus as 'Valor gratificação/Acúm. funções',#(lf)#(tab)ee.EffectiveTotalLeadership as 'Gratificação liderança',#(lf)#(tab)ee.EffectiveTotalOthersAdditional as 'Outros adicionais',#(lf)#(tab)u.Name as 'Responsável',#(lf)#(tab)u.Email as 'Email'#(lf)from #(lf)#(tab)EmployeeEntry ee WITH(NOLOCK)#(lf)#(lf)#(tab)left join Employee e WITH(NOLOCK)#(lf)#(tab)on e.Id = ee.EmployeeId#(lf)#(lf)#(tab)inner join [User] u WITH(NOLOCK)#(lf)#(tab)on u.Id = ee.ResponsibleId#(lf)#(lf)#(tab)left join [Function] f WITH(NOLOCK)#(lf)#(tab)on f.Id = ee.FunctionId#(lf)#(lf)#(tab)inner join Gfip g WITH(NOLOCK)#(lf)#(tab)on g.Id = ee.GfipId#(lf)#(lf)#(tab)inner join ContractSet cs WITH(NOLOCK)#(lf)#(tab)on cs.Id = g.ContractSetId#(lf)#(lf)#(tab)inner join Building b WITH(NOLOCK)#(lf)#(tab)on b.Id = cs.BuildingId#(lf)#(lf)#(tab)inner join Region r WITH(NOLOCK)#(lf)#(tab)on r.Id = b.RegionId #(lf)#(lf)#(tab)inner join Provider p WITH(NOLOCK)#(lf)#(tab)on p.Id = cs.ProviderId#(lf)#(lf)#(tab)inner join Organization o WITH(NOLOCK)#(lf)#(tab)on o.Id = b.OrganizationId#(lf)#(lf)#(tab)inner join CategoryContractSet catSet WITH(NOLOCK)#(lf)#(tab)on g.ContractSetId = catSet.ContractSetId#(lf)#(lf)#(tab)inner join Category cat WITH(NOLOCK)#(lf)#(tab)on catSet.CategoryId = cat.Id#(lf)#(lf)#(tab)inner join Contract c WITH(NOLOCK)#(lf)#(tab)on c.ContractSetId = cs.Id#(lf)where#(lf)o.Id = '13441278-69AB-4AE0-88D0-DF196EB615DE' and#(lf)g.Competency >= '2022-02-01 00:00:00.0000000'#(lf)and g.Id NOT IN#(lf)(#(lf)'F950FDB2-E041-4A73-8950-A7E80C3D0E69',#(lf)'679BE57D-5145-4DF1-956D-D08E4CA9E54E',#(lf)'CCCBD6D1-EDCC-4373-9ADF-00C0FE5EAA9C',#(lf)'22E7A015-3F18-4E85-8446-6E1BE76AE6CA'#(lf))#(lf)#(lf)order by #(lf)#(tab)o.TradeName,#(lf)#(tab)b.TradeName,#(lf)#(tab)p.TradeName,#(lf)#(tab)e.Name,#(lf)#(tab)g.Competency"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Cliente", type text}, {"Unidade", type text}, {"Fornecedor", type text}, {"Categoria", type text}, {"Funcionário", type text}, {"PIS", type any}, {"Competência", type date}, {"Status", type text}, {"Observação", type text}, {"Valor sefip", Int64.Type}, {"Valor do contrato", Int64.Type}, {"Valor cadastrado", Int64.Type}, {"Escala", type text}, {"Início da jornada", type text}, {"Término da jornada", type text}, {"Intrajornada descansada", type text}, {"Intrajornada remunerada", type text}, {"Valor intrajornada remunerada", Int64.Type}, {"Adicional noturno", Int64.Type}, {"Hora noturna reduzida", Int64.Type}, {"Hora extra", type text}, {"Valor hora extra", Int64.Type}, {"Trabalha aos feriados", type text}, {"Insalubridade", Int64.Type}, {"Total insalubridade", Int64.Type}, {"Periculosidade", Int64.Type}, {"Total periculosidade", Int64.Type}, {"Gratificação/Acúm. funções", Int64.Type}, {"Valor gratificação/Acúm. funções", Int64.Type}, {"Gratificação liderança", Int64.Type}, {"Outros adicionais", Int64.Type}, {"Responsável", type text}, {"Email", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Linhas em Branco Removidas", "Chave", each [Fornecedor]&[Categoria]&[Unidade])
+				in
+				    #"Personalização Adicionada"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

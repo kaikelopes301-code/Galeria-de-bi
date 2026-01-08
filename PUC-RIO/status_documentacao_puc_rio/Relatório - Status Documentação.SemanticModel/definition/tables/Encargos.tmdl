@@ -1,0 +1,117 @@
+table Encargos
+	lineageTag: f58a92f0-f4e4-4622-b4f8-970e639761ad
+
+	measure %Acumulado =
+			CALCULATE(AVERAGE(Encargos[Encargos]),
+			Encargos[Leganda do Valor] = "Acumulado",
+			Encargos[Unidade] <> "Total acumulado no mês" )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 7d402cc7-1792-432e-944f-455a7416a781
+
+	measure '%No Mês' =
+			CALCULATE(AVERAGE(Encargos[Encargos]),
+			Encargos[Leganda do Valor] = "No mês",
+			Encargos[Unidade] <> "Total acumulado no mês")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6256a306-487e-4300-bfb1-9cc5467df7f7
+
+	measure '%Total acumulado no mês' =
+			CALCULATE(AVERAGE(Encargos[Encargos]),
+			Encargos[Unidade] = "Total acumulado no mês")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: dd58414b-58eb-45f0-8912-a94d34f59cde
+
+	column Regional
+		dataType: string
+		lineageTag: 6b3d1b06-c96a-464b-905b-14a8b394b51b
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: c1b45ff6-7df1-422c-81e3-0b7b7dbd93a4
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 0079d43b-f07e-41b0-8f28-445a6a1fcb9a
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 5272fe4e-1efa-4089-82e9-8fc0449e50a2
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 25ea2f48-b22e-42ed-be8e-66d433ba3e43
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 079490d4-64b2-49d3-b10d-7e493e58f242
+			defaultHierarchy: LocalDateTable_e171bcf6-4090-4058-a232-d387b067d7b5.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Leganda do Valor'
+		dataType: string
+		lineageTag: df903e8e-6482-4dbf-ba04-6980a7eb3ef0
+		summarizeBy: none
+		sourceColumn: Leganda do Valor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Encargos
+		dataType: double
+		lineageTag: 58790b9a-9051-407d-976c-b38877c52644
+		summarizeBy: sum
+		sourceColumn: Encargos
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Encargos = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("7Vhda+NGFP0rwhDYgrarmdF8KG9u6t02JPbi2KF0yYOwhRE4UurYUPpzug9LC31q/4H/WEfSnLE00xK3G9Zr1iDIyZnRzL1zz7135Hfver3wqJ678GTyJzN5nC3T9fbPVV4GL4O32WqWFetNmj8G8yzIilm6WpSPhzf2S4jEMT1WPIu8LNLli/zxq/NgUs7TY9TKtMjn6Tx7ccw+vC5XRTbL5uUKbrTSVqf19g/NnB/e3H39uUjX2aJc5ek/RCUir/RDI0qDNGD6H1b9Ex/e9n2dO6bneE2elOt02W5jQTrb3G+WqU6N80Dwr5M4ODu8tR8Visv+8BWlbfB6cOuA6/7YAf1vXHDd/94Bl9OhB64c0H8zcsDNYOKA0dQFw9GtA74d/OiA2h3WBrU7HVC70wG1Ox1Qu9MBtTsOuHJA7U4H1O50QO1OB9TudEDtTgfU7sRtULvTAbU7LeD02p5tWL122e+1amZlQxncb3+vamYfoj+xJ/Z/sxCh/kzQFfUyLbJ8Vc19O714qclKfYPhpD8djzS8zRf5cvtrMaulKFiYxGcuiACYx5BnYj4HEIeEg6Eewz1GeIzqMnEYEY9hHhN7jPSYxGUI9RjW7ZBPy2Dww8XoWv+9yRabVVpsP6TBYJmtV9u/inxWyYEnoar3+QKBjMK4OfUoVHFnqGKIy0jhMdRlROIx3luCeYy/TiMrYV4XJGS8O0czzGMoBPK0NHRfnAwuvqvEsXkoV+ssmGx/m2lZlMHgp03+kN5nxXrvXxt0bsRItn8D+888AffcPnU8D/k87etNOc9+rkB/mVdupdsP2/elK0md3uSsAwiKs07dBtBQMTMUN5mWmBzWxy9Y93U9WRkQcQME1kkABHffYpFheITXsbKIzO67zAcjMVmiBMimj3BsQUMCB43NemVh5hhAQyqNOyTu7qVgBg3jekiSkOJKYLsPRe8z64hdc5fodMr2WWXsMa3T3jEkvIhDjt5H0TqbU/2Pob/K7x+yX9ImZMZsC3goldmXic4ueihmZsgy5vQ4AsQRVoGzsgsqc1Z6qOnLKsJdwg7xUHGcMDeGmZWVsVD3HoE5AmZIrGOqvww5MYwSZlPDJGblqocp6BZvRREYAA5tmwBpv6RhzMraeJiqAChsbnqhtFpSKFESKyuYoXfHQVnlmL2kdy2UYWwvOTCeJh8nBr2UvbYhFxgkJ3F/i3GnarKeEIJCEO8uedxOSmCuRHbBycTmJE6WMoTTDpFugHUUMTmC2wmGGLRIcAUwhUliSAcP9hh1StP5tT0MJysAiM32BOGE8mQCWVhVQZ12SOAtYhVjI/Q81Xwy7g9vBm+m4573sWLLcwsI1GDJ3SGpPCZxGRXtwRCPoc/KMJQKiuRoMfazbMeoLsNQuduMN4fEHpO4DPXmUG8d5s1h3joxPnEYDOPEY9zMbn4TtL8DBoX91H3ekVODMKn8OTQI1robAEToFKa+UlRsCoahelEjo11W0PpY7u7+Bg==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t, #"Coluna 2" = _t, #"Coluna 3" = _t, #"Coluna 4" = _t, #"Coluna 5" = _t, #"Coluna 6" = _t, #"Coluna 7" = _t, #"Coluna 8" = _t, #"Coluna 9" = _t, #"Coluna 10" = _t, #"Coluna 11" = _t, #"Coluna 12" = _t, #"Coluna 13" = _t, #"Coluna 14" = _t, #"Coluna 15" = _t, #"Coluna 16" = _t, #"Coluna 17" = _t, #"Coluna 18" = _t, #"Coluna 19" = _t, #"Coluna 20" = _t, #"Coluna 21" = _t, #"Coluna 22" = _t, #"Coluna 23" = _t, #"Coluna 24" = _t, #"Coluna 25" = _t, #"Coluna 26" = _t, #"Coluna 27" = _t, #"Coluna 28" = _t, #"Coluna 29" = _t, #"Coluna 30" = _t, #"Coluna 31" = _t, #"Coluna 32" = _t, #"Coluna 33" = _t, #"Coluna 34" = _t, #"Coluna 35" = _t, #"Coluna 36" = _t, #"Coluna 37" = _t, #"Coluna 38" = _t, #"Coluna 39" = _t, #"Coluna 40" = _t, #"Coluna 41" = _t, #"Coluna 42" = _t, #"Coluna 43" = _t, #"Coluna 44" = _t, #"Coluna 45" = _t, #"Coluna 46" = _t, #"Coluna 47" = _t, #"Coluna 48" = _t, #"Coluna 49" = _t, #"Coluna 50" = _t, #"Coluna 51" = _t, #"Coluna 52" = _t, #"Coluna 53" = _t, #"Coluna 54" = _t, #"Coluna 55" = _t, #"Coluna 56" = _t, #"Coluna 57" = _t, #"Coluna 58" = _t, #"Coluna 59" = _t]),
+				    #"Colunas Removidas2" = Table.RemoveColumns(Fonte,{"Coluna 1"}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Colunas Removidas2", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Cabeçalhos Promovidos",5),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Cabeçalhos Promovidos1", {"", "_1", "_2", "_3"}, "Atributo", "Valor"),
+				    #"Cabeçalhos Promovidos2" = Table.PromoteHeaders(#"Colunas Não Dinâmicas", [PromoteAllScalars=true]),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Cabeçalhos Promovidos2",{{"JAN/22", "Competência"}}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Colunas Renomeadas", each ([No mês] <> "Acumulado" and [No mês] <> "No mês")),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Linhas Filtradas1", {"Competência"}, Referência, {"Atributo"}, "Referência", JoinKind.LeftOuter),
+				    #"Referência Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Referência", {"Valor"}, {"Referência.Valor"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Referência Expandido", "Competência", Splitter.SplitTextByDelimiter("_", QuoteStyle.Csv), {"Competência.1", "Competência.2"}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Competência.1", type date}, {"Competência.2", Int64.Type}}),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Tipo Alterado3",{"Competência.2"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Colunas Removidas1",{{"Competência.1", "Competência"}, {"Referência.Valor", "Leganda do Valor"}, {"No mês", "Encargos"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas1",{{"Encargos", Percentage.Type}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

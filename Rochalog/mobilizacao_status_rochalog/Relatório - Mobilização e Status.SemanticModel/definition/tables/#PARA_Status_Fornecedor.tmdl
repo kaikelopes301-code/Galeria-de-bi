@@ -1,0 +1,48 @@
+table #PARA_Status_Fornecedor
+	lineageTag: 0209df8d-33d8-41d2-b927-12e9944ec487
+
+	column '(Parâmetro) Status de Fornecedor'
+		lineageTag: a67efd21-23e0-43f6-95ea-17b12c9ef574
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '(Parâmetro) Status de Fornecedor Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '(Parâmetro) Status de Fornecedor Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Parâmetro) Status de Fornecedor Campos'
+		isHidden
+		lineageTag: f1087f0d-afa9-4248-9918-e9e0615bad4f
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '(Parâmetro) Status de Fornecedor Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Parâmetro) Status de Fornecedor Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 72ee2431-e097-40cc-90d4-889d2fdebfb8
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #PARA_Status_Fornecedor = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Status do Fornecedores'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Status do Fornecedores'[Unidade]), 1)
+				}
+
+	annotation PBI_Id = d321dde6b77342a297b0f6e38b803251
+

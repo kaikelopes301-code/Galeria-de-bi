@@ -1,0 +1,48 @@
+table ###TIPO
+	lineageTag: 088835c8-c4be-4c76-ada5-b732dd6a12e7
+
+	column ###TIPO
+		lineageTag: f4e1ab0f-a54b-4a4b-bab3-dd5c8203fa8b
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '###TIPO Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '###TIPO Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###TIPO Campos'
+		isHidden
+		lineageTag: 699e63b6-e356-4b55-9fd2-9b5b7ae3648c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '###TIPO Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###TIPO Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: c1b0b620-8b4f-4951-9e01-bd0e077df954
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ###TIPO = calculated
+		mode: import
+		source =
+				{
+				    ("Tipo de Fornecedor", NAMEOF('Status de funcionários'[Tipo de Fornecedor]), 0),
+				    ("Tipo de Contratação", NAMEOF('Status de funcionários'[Tipo de Contratação]), 1)
+				}
+
+	annotation PBI_Id = bdaf5b1962494c2f9776368a82106f02
+

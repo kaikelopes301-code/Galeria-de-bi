@@ -1,0 +1,31 @@
+table Unidade
+	lineageTag: c3d3afc8-d01a-4588-8c1d-5f93c803a491
+
+	column Unidade
+		dataType: string
+		lineageTag: 65e505c6-251b-482e-9bfc-84d2cf9c8201
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 04523e0e-b0ef-4c34-93e6-74679d9487c9
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Unidade = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = EOMONTH(GETDATE(), -1);#(lf)#(lf)SELECT DISTINCT #(lf)    b.TradeName as [Unidade],#(lf)    r.Name AS [Regional]#(lf)  #(lf)FROM #(lf)    [Contract] c WITH(NOLOCK)#(lf)INNER JOIN #(lf)    Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)INNER JOIN #(lf)    Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(lf)WHERE #(lf)    b.OrganizationId = '24d80b2f-c0de-4e58-9273-06a8de082474'#(lf)    and c.ValidityInitial <= @currentDate#(lf)    and c.removed = 0#(lf)#(lf)"])
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

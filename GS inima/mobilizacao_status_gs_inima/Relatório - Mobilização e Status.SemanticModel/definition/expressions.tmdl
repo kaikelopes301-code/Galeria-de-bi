@@ -1,0 +1,12 @@
+expression Pesos =
+		let
+		    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("fVI7jtswEL0KoSqLODCCdOlke7VIkcDQGklhbDGixt4BaFIYUapzh5wgSBG42GqPwJvkJBlRsqR1Po0woN7w/bjfJ2t3qti1YD2qEtUWjnBC6516rVbOoHfvVVqFZ0M6/r/HY8NOfbAltVQ2YJRr1LoDUuuSRfI2eVjsk+xud6/eqLuGoFti1M48Un/vqyJeeyPgdxH8GQyqHA9I4Wf4IYAcDfSj7K7Q4oE0he9Mrh5VyTBTfjMyX9nJZ8wj4aDuClpdnI+4TZpn6tfXb2rjdNOLF1zKYgfKSaFwIHmoVYYlMlB9TZTfdp+5qVthxiOUrl7uGAowjzIzTptzbSuwOrp/2U9XBpg+ltF+qh2XbixkIZNt0fbEwyl0lQ3AWY9y36Bl6jFWI6e2rhx7XGaMXpQu47loLJrah6cWTYzp/719yhReZ76dZd4zdnf48BzdgtqgNsBwkX+qxAD0lax32RcsxsCkBCr6bK3vsv1jXX5twrkgL2pECIdzGecdU9H4QealQrVllFzQjgb+RprJ24KXrXxEW0uYqZVqnjxpmCoF9oOOrZs/s0n6IZyZoAtL//ttSk4PvwE=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Peso = _t]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Peso", type number}})
+		in
+		    #"Tipo Alterado"
+	lineageTag: 3830f6c6-9414-4cde-a5c4-e1a3d49de5bd
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

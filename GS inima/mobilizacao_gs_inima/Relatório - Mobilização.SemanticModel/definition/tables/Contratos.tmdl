@@ -1,0 +1,274 @@
+table Contratos
+	lineageTag: 66ce3d5b-8b8d-45b3-a4b2-18f6ecdd6fa7
+
+	measure _Quantidade_Contratos = CALCULATE(DISTINCTCOUNT(Contratos[Id_Contrato]))
+		formatString: 0
+		lineageTag: 6d416de0-5cc7-4b6a-ae15-552a15836cbf
+
+	measure '_Relação_(Quantidade)_ Contratos' = CALCULATE(DISTINCTCOUNT(Contratos[Id_Contrato]),USERELATIONSHIP(Contratos[N° do Pedido],'Status de funcionários (Mensal)'[Número do Pedido]))
+		formatString: 0
+		lineageTag: 911105d0-7fb7-496d-b9dc-46a01c9907b9
+
+	column CNPJ
+		dataType: string
+		lineageTag: d1f0fd49-55eb-4997-b37c-aa00dffa17b1
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: c05dd0e5-96d8-402e-8ce7-420003e144dc
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: db71b456-74ef-4569-afdd-9060c9982e9e
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 22a0fb98-2624-410d-9ec5-27eda5caee4c
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 1c0230b7-336b-4b7a-b5da-bf08e5d5390a
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave-Cadas
+		dataType: string
+		lineageTag: 19fd75af-537d-443d-ab45-9995ff54ed35
+		summarizeBy: none
+		sourceColumn: Chave-Cadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'N° do Pedido'
+		dataType: string
+		lineageTag: 2fde6ef8-69c8-44b2-b039-a0ce6c29c2c5
+		summarizeBy: none
+		sourceColumn: N° do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 3ab2345c-7624-4d4d-be9a-eaa0b442e61e
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 0a4f7bd6-f2ab-48c9-ad22-c1cb5aaccbf0
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da Contratação'
+		dataType: string
+		lineageTag: 4972efd8-9a0c-42ee-aef4-25be2ded35a0
+		summarizeBy: none
+		sourceColumn: Tipo da Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 1d94919a-895a-4131-afbe-32b802b220d1
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: a26a2b13-77c3-46a1-9864-9bfdcff35d45
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do Contrato'
+		dataType: double
+		lineageTag: 5c34425d-d0d2-4bd8-a898-138f4f5ed347
+		summarizeBy: sum
+		sourceColumn: Valor do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Grupo de Risco - Mobilização'
+		dataType: string
+		lineageTag: f9fc3bbb-fc79-40b7-af3f-70a4a963db5d
+		summarizeBy: none
+		sourceColumn: Grupo de Risco - Mobilização
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data Original do Contrato'
+		dataType: string
+		lineageTag: d7f9074d-ae1e-4caf-b3b4-d4341ff823ad
+		summarizeBy: none
+		sourceColumn: Data Original do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Objeto de Contrato'
+		dataType: string
+		lineageTag: 33530af8-102e-4bea-927e-6f07e830d927
+		summarizeBy: none
+		sourceColumn: Objeto de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNO
+		dataType: string
+		lineageTag: 7e568a7a-4647-43cb-9d51-1dd5259fff52
+		summarizeBy: none
+		sourceColumn: CNO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Mobilização'
+		dataType: string
+		lineageTag: 1af1516d-5fd7-482a-93ad-47d8a5130bd7
+		summarizeBy: none
+		sourceColumn: Data de Mobilização
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grau de Risco - Trabalhista'
+		dataType: string
+		lineageTag: 872329a3-3fa2-4690-8f9d-08c38bf4732c
+		summarizeBy: none
+		sourceColumn: Grau de Risco - Trabalhista
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor do Contrato'
+		dataType: string
+		lineageTag: b3dfbfe2-d5db-4bf5-9fa1-62660bd0dcf1
+		summarizeBy: none
+		sourceColumn: Nome do Gestor do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do Gestor do Contrato'
+		dataType: string
+		lineageTag: f125fa76-63da-450c-8354-3cfd76922435
+		summarizeBy: none
+		sourceColumn: E-mail do Gestor do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Solicitante
+		dataType: string
+		lineageTag: 39d41c55-db12-401d-9727-b94ee12fe182
+		summarizeBy: none
+		sourceColumn: Solicitante
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data da Solicitação'
+		dataType: string
+		lineageTag: 85341f5e-01c7-4ffe-bb84-0e168c244e7f
+		summarizeBy: none
+		sourceColumn: Data da Solicitação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: 9bc70837-dd4f-45f5-919f-dc128494add2
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: 22dc9a74-a243-400e-863a-9b55ed344be2
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e3b0eb0f-114c-4857-aa80-1a510502fa30
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: d8627222-b743-43e4-91cc-acd39b54f6e5
+			defaultHierarchy: LocalDateTable_0df58f7d-fbde-473b-b185-0bee75296fc8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 48aefc9d-1bb3-4165-9673-d8ada43e32e5
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 019ff32e-c8aa-4f43-a0aa-b87ab723b02f
+			defaultHierarchy: LocalDateTable_44c93dd0-bac9-46f4-8afa-0dc752cee554.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a0c3c043-7dea-4ca5-a5cc-72dcc369e9d9
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: d738bee3-49ed-4d02-9835-9d64588ea993
+			defaultHierarchy: LocalDateTable_8cb48131-ebe6-4148-b42a-a0ea4fdc66f3.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = EOMONTH(GETDATE(), -1);#(lf)#(lf)SELECT DISTINCT #(lf)    c.OrderNumber AS [N° do Pedido],#(lf)#(tab)c.Id AS [Id_Contrato],#(lf)    bc.CompanyName AS [Razão Social],#(lf)  SUBSTRING(bc.Document, 1, 2) + '.' + SUBSTRING(bc.Document, 3, 3) + '.' + SUBSTRING(bc.Document, 6, 3) + '/' + SUBSTRING(bc.Document, 9, 4) + '-' + SUBSTRING(bc.Document, 13, 2) AS [CNPJ],#(lf)    CASE#(lf)        WHEN c.[Type] = 1 THEN 'Contínuo'#(lf)        WHEN c.[Type] = 2 THEN 'Grandes Paradas'#(lf)        WHEN c.[Type] = 4 THEN 'Eventual'#(lf)        WHEN c.[Type] = 8 THEN 'Temporário'#(lf)        WHEN c.[Type] = 16 THEN 'Visitante técnico'#(lf)        WHEN c.[Type] = 32 THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        WHEN c.[Type] = 64 THEN 'Prestação de serviço eventual fora da área operacional'#(lf)        WHEN c.[Type] = 128 THEN 'Prestação de serviço de auditoria, sem acesso às áreas restritas'#(lf)        WHEN c.[Type] = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)    END AS [Tipo da Contratação],#(lf)#(tab)#(tab)CASE #(lf)#(tab)#(tab)WHEN c.FatherId IS NULL THEN 'Contratado'#(lf)#(tab)#(tab)ELSE 'Subcontratado'#(lf)#(tab) END as 'Tipo de Fornecedor',#(lf)    CASE#(lf)        WHEN c.Sla = 0 THEN 'Padrão'#(lf)        WHEN c.Sla = 1 THEN 'Emergencial'#(lf)    END AS [Sla],#(lf)    CASE#(lf)        WHEN c.[Status] = 0 THEN 'Regular'#(lf)        WHEN c.[Status] = 1 THEN 'Aguardando dados de contatos do fornecedor'#(lf)        WHEN c.[Status] = 2 THEN 'Aguardando fornecedor preencher o contrato'#(lf)        WHEN c.[Status] = 3 THEN 'Arquivado'#(lf)    END AS [Status],#(lf)    FORMAT(TRY_CAST(c.CreatedAt AS DATE), 'dd/MM/yyyy') AS [Cadastro no sistema],#(lf)    FORMAT(c.ValidityInitial, 'dd/MM/yyyy') AS [Vigência Inicial],#(lf)    FORMAT(c.ValidityFinal, 'dd/MM/yyyy') AS [Vigência Final],#(lf)#(lf)    CASE #(lf)        WHEN c.ValidityInitial > GETDATE() THEN 'Contrato Futuro'#(lf)        WHEN c.ValidityFinal < GETDATE() THEN 'Contrato Inativo'#(lf)        ELSE 'Contrato Ativo'#(lf)     END AS [Status Contrato],#(lf)    CONCAT(c.OrderNumber,b.TradeName) as [Chave-Cadas],#(lf)    b.TradeName AS [Unidade],#(lf)    r.Name AS [Regional],#(lf)    ca.[Name] AS [Categoria],#(lf)    p.TradeName AS [Fornecedor],#(lf)    c.[Value] AS [Valor do Contrato], #(lf)    [Grupo de Risco].[Name] AS [Grupo de Risco - Mobilização],#(lf)    FORMAT(TRY_CAST(cfv2.[Value] AS DATE), 'dd/MM/yyyy') AS [Data Original do Contrato], #(lf)    cfv3.[Value] AS [Objeto de Contrato],#(lf)    cfv4.[Value] AS [CNO],#(lf)    cfv5.[Value] AS [Data de Mobilização],#(lf)    [Grau de Risco].[Name] AS [Grau de Risco - Trabalhista],#(lf)    ISNULL(cfv6.[Value],'Sem Gestor') AS [Nome do Gestor do Contrato],#(lf)    cfv7.[Value] AS [E-mail do Gestor do Contrato],#(lf)    cfv8.[Value] AS [Solicitante],#(lf)    cfv9.[Value] AS [Data da Solicitação]#(lf)FROM #(lf)    [Contract] c WITH(NOLOCK)#(lf)INNER JOIN #(lf)    Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)INNER JOIN #(lf)    Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)INNER JOIN #(lf)    CustomFieldValue cfv WITH(NOLOCK) ON cfv.EntityId = c.Id#(lf)INNER JOIN #(lf)    BranchCompany bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)INNER JOIN #(lf)    [Category] ca WITH(NOLOCK) ON ca.Id = c.CategoryId#(lf)INNER JOIN #(lf)    [Provider] p WITH(NOLOCK) ON c.ProviderId = p.Id#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv2 WITH(NOLOCK) ON cfv2.EntityId = c.Id AND cfv2.CustomFieldId = '35F4D9D3-A055-4BBA-AC14-168B26BC2A07' -- Data original do início do contrato#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv3 WITH(NOLOCK) ON cfv3.EntityId = c.Id AND cfv3.CustomFieldId = 'B334C1D9-2CA3-4954-A7A4-7056362CC480' -- Objeto de Contrato#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv4 WITH(NOLOCK) ON cfv4.EntityId = c.Id AND cfv4.CustomFieldId = '4D0CB535-C054-4D66-96D5-A4C9A697DDF6' -- CNO#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv5 WITH(NOLOCK) ON cfv5.EntityId = c.Id AND cfv5.CustomFieldId = 'FE71101C-EA3A-4F21-A392-999EE3810D92' -- Data de Mobilização#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv6 WITH(NOLOCK) ON cfv6.EntityId = c.Id AND cfv6.CustomFieldId = 'BEA30E2D-D72D-466B-9DCF-E3963CDD894E' -- Nome do gestor do contrato#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv7 WITH(NOLOCK) ON cfv7.EntityId = c.Id AND cfv7.CustomFieldId = 'D76E189B-AF15-4881-B8EF-13AF376BDF5B' -- E-mail do gestor do contrato#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv8 WITH(NOLOCK) ON cfv8.EntityId = c.Id AND cfv8.CustomFieldId = '810B170B-D585-4EDA-BBD7-299F1E844750' -- Nome do solicitante#(lf)LEFT JOIN #(lf)    CustomFieldValue cfv9 WITH(NOLOCK) ON cfv9.EntityId = c.Id AND cfv9.CustomFieldId = '9D457DE9-8142-4098-95E6-312C255C85DE' -- Data da solicitação#(lf)OUTER APPLY #(lf)    (#(lf)        SELECT cfi2.[Name]#(lf)        FROM CustomFieldValue cfv10 WITH(NOLOCK)#(lf)        INNER JOIN CustomFieldItem cfi2 WITH(NOLOCK) ON cfv10.CustomFieldItemId = cfi2.Id#(lf)        WHERE cfv10.EntityId = c.Id#(lf)            AND cfv10.Removed = 0#(lf)            AND cfi2.Removed = 0#(lf)            AND cfv10.CustomFieldId = 'fd7e2177-9dc6-4ca0-9b79-a7c88fa6abcb' -- Grupo de Risco - Mobilização#(lf)    ) AS [Grupo de Risco]#(lf)OUTER APPLY #(lf)    (#(lf)        SELECT cfi3.[Name]#(lf)        FROM CustomFieldValue cfv11 WITH(NOLOCK)#(lf)        INNER JOIN CustomFieldItem cfi3 WITH(NOLOCK) ON cfv11.CustomFieldItemId = cfi3.Id#(lf)        WHERE cfv11.EntityId = c.Id#(lf)            AND cfv11.Removed = 0#(lf)            AND cfi3.Removed = 0#(lf)            AND cfv11.CustomFieldId = '2740532e-e70c-434c-99e1-e9930cd607d5' -- Grau de Risco - Trabalhista#(lf)    ) AS [Grau de Risco]#(lf)WHERE #(lf)    b.OrganizationId = '24d80b2f-c0de-4e58-9273-06a8de082474'#(lf)    and c.ValidityInitial <= @currentDate#(lf)    and c.CreatedAt <= @CurrentDate#(lf)    and c.removed =0 #(lf)ORDER BY #(lf)    c.OrderNumber;#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"N° do Pedido", type text}, {"Razão Social", type text}, {"CNPJ", type text}, {"Tipo da Contratação", type text}, {"Status", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Cadastro no sistema", type date}, {"Vigência Inicial", type date}, {"Vigência Final", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

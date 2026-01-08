@@ -1,0 +1,50 @@
+table 'CND FEDERAL'
+	lineageTag: 2006cdb2-2b4f-4061-92b0-af75b9d5884f
+
+	column Fornecedor
+		dataType: string
+		lineageTag: a389f2c7-0644-4ab4-ad27-3f884a0bd4bc
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do Pedido'
+		dataType: string
+		lineageTag: a2b2d356-64ef-4711-9a02-6ce96ecc9651
+		summarizeBy: none
+		sourceColumn: Nº do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Fornecedor'
+		dataType: string
+		lineageTag: 2b0aa4bf-2f49-473b-8767-a38cf1bc84ed
+		summarizeBy: none
+		sourceColumn: CNPJ do Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CND Federal'
+		dataType: string
+		lineageTag: 787eb9a5-f2a4-4e2a-b2af-3ec807450cd0
+		summarizeBy: none
+		sourceColumn: CND Federal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'CND FEDERAL' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("lZDfasIwFMZfJeTaZknzr7mUGCeDpaXWIRQvismk4AxU2cPtck+21MrmEKFCSDhfzu/7OKeu4Tx0B7/1LnRwAu33F3ABFN61LsRa2+KlF/41aTsDc+981+zhZlJDbWw1XZV5/EqSJN6UoJRxJJR6whiTJKNRLMKxPbWfDdiGD+DffXsKwHlw8Luml89Ose1ybiuz1vnrbwQmSBKJBMuGCCZGRtj8rTJ68WckEaYcYcYvRvjK6Ews85lZ98MRmaZZfJlCimLECRsQyu8jqZL8USQjYhRSlVO7NM+r8nrxVApEBRkYgcdsZfMD", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t, #"Coluna 2" = _t, #"Coluna 3" = _t, #"Coluna 4" = _t]),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Fornecedor", type text}, {"Nº do Pedido", type text}, {"CNPJ do Fornecedor", type text}, {"CND Federal", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

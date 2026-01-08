@@ -1,0 +1,42 @@
+table Pesos
+	lineageTag: 29a20fa9-348d-4296-9bf4-d88352f80a55
+
+	column Documento
+		dataType: string
+		lineageTag: 9e0c84fd-89f6-44ac-8799-a84dcb3b5a05
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco
+		dataType: string
+		lineageTag: dbea6b06-b409-43c3-bf4b-bafef4d23ee6
+		summarizeBy: none
+		sourceColumn: Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: double
+		lineageTag: 68cb9171-11c8-4328-845e-47eafa8b7aad
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Pesos = m
+		mode: import
+		source =
+				let
+				   Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("jVM7jtswEL0KoWqDOEiQKq0h2Ys0iSALSGFsMaLG3gEk0hhSrnOHnGCRInCdI+gmOUmGtNZa5yOrEfgZzbwft9ukQE2VVTWqlfGMe1A1qAx1Awz9j/57vMr6U0XeOoUq5f5Ux3XJVHW+f2KSzRprZCCncsYj1Wg0DTe/vn5TWVquv2CVLJKCnLYqtQ16Olo5eLf4kDwstsnaNo8QZh1gDy0aby/VH01N0rODJta/j/UFNuD7nzLiL8CpbQ/SH+aOTpE91X9SLRkqaB7JSaM3Kv2UlZPw78uNlBWr8BFoF+lW7SGoWlv3dugoa0Y31Wy5+SyMWnKOrImsJ4QIbNkewXhUFRgdZQ+T82chw2YDzdmP+c2uWtzdF8X61Y2fgf3AOrc3DVxqy/VIfyErc0TzbGE8BWU7NRSOTcKAQUs7JWOALMA7irmSoEvE6EynQKfJDfGxKrh3g9z4Tnb9iQmceq30tVozkyvOWuM8Q4Abpr/IxSyds6Xwitm2urs4vGRGDfWYPEGM5GF8m1Na5cg7apTQ2cXY7bl/2pHUHq7fs7rL8/wGvjItyoivRG4HKFHuMy7xOZC3/7RxTipfOvlfTg+/AQ==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Risco = _t, Peso = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Risco", type text}, {"Peso", type number}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,226 @@
+table Headcount
+	lineageTag: 39eda6c8-b1cc-40e6-a8ae-592cd46d1bde
+
+	measure 'Média Headcount' = AVERAGEX(VALUES(Headcount[Competência]),CALCULATE(SUM(Headcount[HC])))
+		formatString: 0
+		lineageTag: bc1637fe-38e6-457e-931c-cc991370a670
+
+	measure 'Relação HC Média - Caléndario' =
+			
+			
+			VAR HC = CALCULATE(Headcount[Média Headcount],
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]))
+			
+			RETURN HC
+		formatString: #,0.00
+		lineageTag: 81013cfd-f047-4744-8823-95a68044f13a
+
+	measure 'Relação (Distintos) Número Funcionários' =
+			CALCULATE(DISTINCTCOUNT(Headcount[Chave2]),
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]))
+		formatString: #,0
+		lineageTag: 8fe4e445-0f68-4739-a3d2-1cd370eeb551
+
+	measure '(Remuneração Mensal)' =
+			CALCULATE(AVERAGE(Headcount[Valor Remuneração Mensal]),
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]))
+		formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+		lineageTag: d1f7caae-ef93-46f5-8c69-5cd33fb7e198
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure '(Relação) HC Média - Caléndario' =
+			CALCULATE(Headcount[Média Headcount],
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]),
+			'HC Mês a Mês'[Número de Leitos]>0)
+		lineageTag: 13b01aeb-4288-43ca-9c0b-4d965b3b9bab
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Filtro) HC' = [(Relação) HC Média - Caléndario] + SUM('HC Mês a Mês'[HC na Prática])
+		lineageTag: b6524af9-5267-40bb-b74a-562738bffa1c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Distintos) Número Funcionários' =
+			VAR HC = CALCULATE(DISTINCTCOUNT(Headcount[Chave2]),
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]))
+			
+			RETURN IF(HC=BLANK(), "Não Possui Envio de FGTS Digital", HC)
+		formatString: 0
+		lineageTag: 86eb2592-4bd8-4a84-8b21-bbe79fae3036
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure '(Quantidade) HC Média - Caléndario' =
+			
+			
+			VAR HC = CALCULATE(Headcount[Média Headcount],
+			USERELATIONSHIP('Calendário'[Date],Headcount[Competência]))
+			
+			RETURN IF( HC= BLANK(),"Não Possui Envio de FGTS Digital",HC)
+		lineageTag: ded0e181-28be-4b13-a30b-fc311541cb07
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Cliente
+		dataType: string
+		lineageTag: 30411f0e-8d53-46eb-8f27-acd876b7e5ae
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 52c59be5-a5a9-4795-9274-ecc63091a1d5
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: dbc932cd-1577-4d68-864b-8a5517f5baa7
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 3bb82400-3774-4924-bdff-d03ad68fb17d
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 2fb27c00-59e1-48a3-8ee5-19df555134b4
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: a0561123-e2c7-47f1-805b-3becc4da6212
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 0333eec0-fc2c-42f0-8849-9fe3d20bed48
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 26a05b60-8096-48a3-b2ad-10e5d027c078
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Valor Remuneração Mensal'
+		dataType: decimal
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 02af2d97-1923-4ea2-86ba-a4fbf4a431ba
+		summarizeBy: sum
+		sourceColumn: Valor Remuneração Mensal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column Escopo
+		dataType: string
+		lineageTag: 100b274e-411c-4b35-84c3-fa59d508e65b
+		summarizeBy: none
+		sourceColumn: Escopo
+
+		annotation SummarizationSetBy = Automatic
+
+	column HC
+		dataType: double
+		lineageTag: f62864bc-914d-43d3-8e0a-ad7b513156d2
+		summarizeBy: sum
+		sourceColumn: HC
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Faixa Salarial'
+		dataType: string
+		lineageTag: 24984ce5-6efc-4656-8b1a-70644e05db1c
+		summarizeBy: none
+		sourceColumn: Faixa Salarial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: 948de67d-708b-45fa-a4b2-345f80d7efd6
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave2
+		dataType: string
+		lineageTag: fbfe9ed1-1855-43f4-ac8a-50889680168b
+		summarizeBy: none
+		sourceColumn: Chave2
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Headcount = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select#(lf)#(tab)o.TradeName as 'Cliente',#(lf)#(tab)b.TradeName as 'Unidade',#(lf)#(tab)p.TradeName as 'Fornecedor',#(lf)#(tab)cat.Name as 'Categoria',#(lf)#(tab)r.Name as 'Regional',#(lf)#(tab)c.OrderNumber AS 'Número do Pedido',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)e.Name as 'Funcionário',#(lf)#(tab)e.CpfNumber AS 'CPF',#(lf)#(tab)e.PisNumber AS 'PIS',#(lf)#(tab)FORMAT(g.Competency, 'MM/yyyy') as 'Competência',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.Status = 0#(lf)#(tab)#(tab)THEN 'Irregular'#(lf)#(lf)#(tab)#(tab)WHEN ee.Status = 1#(lf)#(tab)#(tab)THEN 'Regular'#(lf)#(tab)END as 'Status',#(lf)#(tab)ee.StatusObservation as 'Observação',#(lf)#(tab)ee.Remuneration as 'Valor sefip',#(lf)#(tab)ee.SalaryExpected as 'Valor do contrato',#(lf)#(tab)ee.EffectiveSalary as 'Valor cadastrado',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 0#(lf)#(tab)#(tab)THEN '0x0'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 1#(lf)#(tab)#(tab)THEN '2x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 2#(lf)#(tab)#(tab)THEN '4x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 3#(lf)#(tab)#(tab)THEN '5x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 4#(lf)#(tab)#(tab)THEN '5x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 5#(lf)#(tab)#(tab)THEN '6x1'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 6#(lf)#(tab)#(tab)THEN '6x2'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 7#(lf)#(tab)#(tab)THEN '12x36'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 8#(lf)#(tab)#(tab)THEN '12x48'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 9#(lf)#(tab)#(tab)THEN '12x36 (36hrs)'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 10#(lf)#(tab)#(tab)THEN '4x4'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveScale = 11#(lf)#(tab)#(tab)THEN '14x14'#(lf)#(tab)END as 'Escala',#(lf)#(tab)FORMAT(ee.EffectiveStartTime, 'HH:mm') as 'Início da jornada',#(lf)#(tab)FORMAT(ee.EffectiveEndTime, 'HH:mm') as 'Término da jornada',#(lf)#(tab)FORMAT(ee.EffectiveInterval, 'HH:mm') as 'Intrajornada descansada',#(lf)#(tab)FORMAT(ee.EffectiveOvertimeInterval, 'HH:mm') as 'Intrajornada remunerada',#(lf)#(tab)ee.EffectiveTotalMonthlyOvertimeInterval as 'Valor intrajornada remunerada',#(lf)#(tab)ee.EffectiveTotalAdditionalValueNightTime as 'Adicional noturno',#(lf)#(tab)ee.EffectiveTotalAdditionalValueNightTimeReduced as 'Hora noturna reduzida',#(lf)#(tab)FORMAT(ee.EffectiveOverTime, 'HH:mm') as 'Hora extra',#(lf)#(tab)ee.EffectiveTotalMonthlyOvertimeHour as 'Valor hora extra',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 0#(lf)#(tab)#(tab)THEN 'Sim, Trabalha nos feriados'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 1#(lf)#(tab)#(tab)THEN 'Não trabalha nos feriados'#(lf)#(lf)#(tab)#(tab)WHEN ee.EffectiveHolidayWorkingKind = 3#(lf)#(tab)#(tab)THEN 'Folga compensada'#(lf)#(tab)END as 'Trabalha aos feriados',#(lf)#(tab)ee.EffectiveUnhealthiness as 'Insalubridade',#(lf)#(tab)ee.EffectiveTotalUnhealthiness as 'Total insalubridade',#(lf)#(tab)ee.EffectiveDangerousness as 'Periculosidade',#(lf)#(tab)ee.EffectiveTotalDangerousness as 'Total periculosidade',#(lf)#(tab)ee.EffectiveBonus as 'Gratificação/Acúm. funções',#(lf)#(tab)ee.EffectiveTotalBonus as 'Valor gratificação/Acúm. funções',#(lf)#(tab)ee.EffectiveTotalLeadership as 'Gratificação liderança',#(lf)#(tab)ee.EffectiveTotalOthersAdditional as 'Outros adicionais',#(lf)#(tab)u.Name as 'Responsável',#(lf)#(tab)u.Email as 'Email'#(lf)from #(lf)#(tab)EmployeeEntry ee#(lf)#(lf)#(tab)left join Employee e#(lf)#(tab)on e.Id = ee.EmployeeId#(lf)#(lf)#(tab)inner join [User] u #(lf)#(tab)on u.Id = ee.ResponsibleId#(lf)#(lf)#(tab)left join [Function] f#(lf)#(tab)on f.Id = ee.FunctionId#(lf)#(lf)#(tab)inner join Gfip g#(lf)#(tab)on g.Id = ee.GfipId#(lf)#(lf)#(tab)inner join ContractSet cs#(lf)#(tab)on cs.Id = g.ContractSetId#(lf)#(lf)#(tab)inner join Contract c#(lf)#(tab)on c.ContractSetId = g.ContractSetId#(lf)#(lf)#(tab)inner join Building b#(lf)#(tab)on b.Id = cs.BuildingId#(lf)#(lf)#(tab)inner join Region r#(lf)#(tab)on r.Id = b.RegionId #(lf)#(lf)#(tab)inner join Provider p #(lf)#(tab)on p.Id = cs.ProviderId#(lf)#(lf)#(tab)inner join Organization o#(lf)#(tab)on o.Id = b.OrganizationId#(lf)#(lf)#(tab)inner join CategoryContractSet catSet#(lf)#(tab)on g.ContractSetId = catSet.ContractSetId#(lf)#(lf)#(tab)inner join Category cat#(lf)#(tab)on catSet.CategoryId = cat.Id#(lf)where#(lf)o.Id = '3d9bc20b-b80d-4118-85bf-48bb22b13535' and#(lf)g.Competency >= '2024-01-01 00:00:00.0000000'#(lf)and g.Id NOT IN#(lf)(#(lf)'F950FDB2-E041-4A73-8950-A7E80C3D0E69',#(lf)'679BE57D-5145-4DF1-956D-D08E4CA9E54E',#(lf)'CCCBD6D1-EDCC-4373-9ADF-00C0FE5EAA9C',#(lf)'22E7A015-3F18-4E85-8446-6E1BE76AE6CA'#(lf))#(lf)#(lf)order by #(lf)#(tab)o.TradeName,#(lf)#(tab)b.TradeName,#(lf)#(tab)p.TradeName,#(lf)#(tab)e.Name,#(lf)#(tab)g.Competency#(lf)#(lf)#(lf)#(lf)#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Cliente", type text}, {"Unidade", type text}, {"Fornecedor", type text}, {"Categoria", type text},  {"Funcionário", type text}, {"PIS", type text}, {"Competência", type date}, {"Status", type text}, {"Observação", type text}, {"Valor sefip", Int64.Type}, {"Valor do contrato", Int64.Type}, {"Valor cadastrado", Int64.Type}, {"Escala", type text}, {"Início da jornada", type text}, {"Término da jornada", type text}, {"Intrajornada descansada", type text}, {"Intrajornada remunerada", type text}, {"Valor intrajornada remunerada", Int64.Type}, {"Adicional noturno", Int64.Type}, {"Hora noturna reduzida", Int64.Type}, {"Hora extra", type text}, {"Valor hora extra", Int64.Type}, {"Trabalha aos feriados", type text}, {"Insalubridade", Int64.Type}, {"Total insalubridade", Int64.Type}, {"Periculosidade", Int64.Type}, {"Total periculosidade", Int64.Type}, {"Gratificação/Acúm. funções", Int64.Type}, {"Valor gratificação/Acúm. funções", Int64.Type}, {"Gratificação liderança", Int64.Type}, {"Outros adicionais", Int64.Type}, {"Responsável", type text}, {"Email", type text}}),
+				    #"Linhas em Branco Removidas1" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Linhas em Branco Removidas1",{{"Valor sefip", "Valor Remuneração Mensal"}}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Valor Remuneração Mensal", Currency.Type}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Tipo Alterado1", "Escopo", each if [Valor Remuneração Mensal] <= 100 then "Escopo Não Contabilizado" else if [Valor Remuneração Mensal] <= 1000 then "Escopo Parcial" else "Espoco Full"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "HC", each if [Escopo] = "Escopo Não Contabilizado" then 0
+				else if [Escopo] = "Escopo Parcial" then 0.5
+				else 1),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada2",{{"HC", type number}}),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Tipo Alterado2", "Faixa Salarial", each if [Valor Remuneração Mensal] <= 1000 then "Até R$ 1000"
+				
+				else if [Valor Remuneração Mensal] <= 1250 then "Entre R$1000 - R$1250"
+				
+				else if [Valor Remuneração Mensal] <= 1500 then "Entre R$1250 - R$1500"
+				
+				else if [Valor Remuneração Mensal] <= 1750 then "Entre R$1500 - R$1750"
+				
+				else if [Valor Remuneração Mensal] <= 2000 then "Entre R$1750 - R$2000"
+				
+				else if [Valor Remuneração Mensal] <= 3000 then "Entre R$2000 - R$3000"
+				
+				else "Acima de R$ 3000"),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Personalização Adicionada3", "Chave", each [Unidade] & " " & [Categoria] & " " & [Fornecedor]),
+				    #"Outras Colunas Removidas" = Table.SelectColumns(#"Personalização Adicionada4",{"Cliente", "Unidade", "Fornecedor", "Categoria", "Regional", "Funcionário", "PIS", "Competência","Valor Remuneração Mensal", "Escopo", "HC", "Faixa Salarial", "Chave"}),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Outras Colunas Removidas", "Chave2", each [Funcionário]&[Unidade]&[Categoria]&[Fornecedor]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Personalização Adicionada5", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Linhas em Branco Removidas", each ([Categoria] = "Alimentação" or [Categoria] = "Limpeza")),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Filtradas"),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Duplicatas Removidas", each [Competência] > #date(2023, 12, 31))
+				in
+				    #"Linhas Filtradas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

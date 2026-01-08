@@ -1,0 +1,771 @@
+table Risco
+	lineageTag: 52224995-a8d8-489c-964a-091ccaa58d62
+
+	measure _FGTS_Valor =
+			
+			
+			VAR FGTS = CALCULATE(SUM('Análise de Colaboradores'[Valor sefip]))
+			
+			RETURN IF(FGTS=BLANK(),0,FGTS)
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 0eb33df3-b1a8-4e7c-ad2d-d796ffc81e50
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Colaboradores_FGTS =
+			
+			VAR COLA = CALCULATE(DISTINCTCOUNT('Análise de Colaboradores'[CPF]))
+			
+			RETURN IF( COLA = BLANK(),0,COLA)
+		formatString: 0
+		lineageTag: 8bab1e51-f4aa-4dd5-9c70-d8e1fd76e00f
+
+	measure _FGTS_ENVIADOS = ```
+			
+			VAR ENVIADOS = 
+			    CALCULATE(
+			        [_Total_Documentos_Risco],
+			        FILTER(
+			            'Risco Críticos',
+			            'Risco Críticos'[Status] = "Aprovado" &&
+			            (
+			                'Risco Críticos'[Documento] = "FGTS - Comprovante de pagamento" ||
+			                'Risco Críticos'[Documento] = "FGTS - RE - Relação de Empregados/Trabalhadores" ||
+			                'Risco Críticos'[Documento] = "FGTS - Guia de recolhimento (boleto)"
+			            )
+			        )
+			    )
+			RETURN IF(ISBLANK(ENVIADOS), 0, ENVIADOS)
+			```
+		formatString: 0
+		lineageTag: a29ac271-83aa-4bc4-abee-35a2a4d003a8
+
+	measure _FGTS_AGENDADOS = ```
+			
+			VAR agendados = CALCULATE([_Total_Documentos_Risco],
+			'Risco Críticos'[Documento] = "FGTS - Comprovante de pagamento"||
+			'Risco Críticos'[Documento] = "FGTS - RE - Relação de Empregados/Trabalhadores"||
+			'Risco Críticos'[Documento] = "FGTS - Guia de recolhimento (boleto)")
+			
+			
+			
+			RETURN 
+			IF(ISBLANK(agendados), 0, agendados)
+			```
+		formatString: 0
+		lineageTag: 8b21e993-2685-4316-a470-10a66038e710
+
+	measure _INSS_AGENDADOS = ```
+			
+			VAR AGENDADOS = CALCULATE([_Total_Documentos_Risco],
+			        'Risco Críticos'[Documento] ="Comprovante de Recolhimento" ||
+			        'Risco Críticos'[Documento] ="DARF – Documento de Arrecadação de Receitas Federais" ||
+			        'Risco Críticos'[Documento] ="Recibo de Entrega da Declaração de Débitos e Créditos Tributários Federais Previdenciários – DCTFWeb"||
+			        'Risco Críticos'[Documento] ="Relatório da Declaração Completa – DCTFWeb" )
+			
+			RETURN IF(AGENDADOS  = BLANK(), 
+			        0, 
+			        AGENDADOS)
+			```
+		formatString: 0
+		lineageTag: 97b7b105-2e6f-4752-8857-7c7a2dbbd06b
+
+	measure _INSS_ENVIADOS = ```
+			
+			
+			VAR AGENDADOS = CALCULATE([_Total_Documentos_Risco],
+			FILTER('Risco Críticos',
+			        'Risco Críticos'[Status] = "Aprovado" &&
+			            (
+			        'Risco Críticos'[Documento] ="Comprovante de Recolhimento" ||
+			        'Risco Críticos'[Documento] ="DARF – Documento de Arrecadação de Receitas Federais" ||
+			        'Risco Críticos'[Documento] ="Recibo de Entrega da Declaração de Débitos e Créditos Tributários Federais Previdenciários – DCTFWeb"||
+			        'Risco Críticos'[Documento] ="Relatório da Declaração Completa – DCTFWeb" )))
+			
+			RETURN IF(AGENDADOS  = BLANK(), 
+			        0, 
+			        AGENDADOS)
+			```
+		formatString: 0
+		lineageTag: bd1939b8-7644-48d0-8462-5ac199bc4db8
+
+	measure _SALARIOS_ENVIADOS = ```
+			
+			
+			VAR AGENDADOS = CALCULATE([_Total_Documentos_Risco],
+			FILTER('Risco Críticos',
+			        'Risco Críticos'[Status] = "Aprovado" && (
+			'Risco Críticos'[Documento] ="Comprovante Bancário de Pagamento de Salários" ||
+			'Risco Críticos'[Documento] ="Folha de Pagamento Mensal Analítica")))
+			
+			RETURN IF(AGENDADOS  = BLANK(), 
+			        0, 
+			        AGENDADOS)
+			```
+		formatString: 0
+		lineageTag: 47abba45-36ea-4db0-847b-8f19ec491d90
+
+	measure _SALARIOS_AGENDADOS = ```
+			
+			VAR DocumentosSalario = 
+			    CALCULATE([_Total_Documentos_Risco],
+			        'Risco Críticos'[Documento] ="Comprovante Bancário de Pagamento de Salários"||
+			        'Risco Críticos'[Documento] = "Folha de Pagamento Mensal Analítica"
+			
+			    )
+			
+			RETURN 
+			IF(ISBLANK(DocumentosSalario), 0, DocumentosSalario)
+			
+			```
+		formatString: 0
+		lineageTag: 4570beb8-c926-44d0-aa58-dc7e70da71d5
+
+	measure _Risco_INSS = ```
+			
+			
+			VAR FOLHA = [_FGTS_Valor]
+			VAR CONTRATO = CALCULATE(SUM(Risco[Valor de Contrato]))
+			VAR INSS_AGEN = [_INSS_AGENDADOS]
+			VAR INSS_ENVIA = [_INSS_ENVIADOS]
+			VAR VIGENCIA_INICIAL = MAX(Risco[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Risco[Vigência Final])
+			VAR COMPETENCIA = MAX(Risco[Competência])
+			VAR CONTRATO_FUTURO = [_Valor_INSS_Contrato_Outras_Competências]
+			VAR PEDIDO = MAX('Risco Críticos'[Número do Pedido])
+			
+			RETURN 
+			IF(VIGENCIA_INICIAL > COMPETENCIA,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        VIGENCIA_FINAL < COMPETENCIA,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((INSS_AGEN - INSS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0),
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (INSS_AGEN - INSS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4*0.28
+			                    ),
+			                    FOLHA*0.28
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 05cc072f-3731-4ad5-8053-0835b25320b7
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Risco_FGTS = ```
+			
+			VAR FOLHA = [_FGTS_Valor]
+			VAR CONTRATO = CALCULATE(SUM(Risco[Valor de Contrato]))
+			VAR FGTS_AGEN = [_FGTS_AGENDADOS]
+			VAR FGTS_ENVIA = [_FGTS_ENVIADOS]
+			VAR VIGENCIA_INICIAL = MAX(Risco[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Risco[Vigência Final])
+			VAR COMPETENCIA = MAX(Risco[Competência])
+			VAR CONTRATO_FUTURO = [_Valor_FGTS_Contrato_Outras_Competências]
+			
+			
+			RETURN 
+			IF(VIGENCIA_INICIAL > COMPETENCIA,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        VIGENCIA_FINAL < COMPETENCIA,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((FGTS_AGEN - FGTS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0), 
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (FGTS_AGEN - FGTS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4* 0.08 
+			                    ),
+			                    FOLHA*0.4
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 431218d4-fc4b-4a7d-a948-5be677895242
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Risco_SALARIOS = ```
+			
+			
+			VAR FOLHA = [_FGTS_Valor]
+			VAR CONTRATO = CALCULATE(SUM(Risco[Valor de Contrato]))
+			VAR SALARIOS_AGEN = [_SALARIOS_AGENDADOS]
+			VAR SALARIOS_ENVIA = [_SALARIOS_ENVIADOS]
+			VAR VIGENCIA_INICIAL = MAX(Risco[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Risco[Vigência Final])
+			VAR COMPETENCIA = MAX(Risco[Competência])
+			VAR CONTRATO_FUTURO = [_Valor_SALARIOS_Contrato_Outras_Competências]
+			
+			
+			RETURN 
+			IF(VIGENCIA_INICIAL > COMPETENCIA,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        VIGENCIA_FINAL < COMPETENCIA,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((SALARIOS_AGEN - SALARIOS_ENVIA > 0 && CONTRATO = 0 && FOLHA = 0)),
+			                IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (SALARIOS_AGEN - SALARIOS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4
+			                    ),
+			                    FOLHA
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 4790df9f-89ca-4609-814d-322e79ae115a
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Valor_FGTS_Contrato_Outras_Competências = ```
+			
+			// Medida que trás os Valores de Contratos ou Valor da Folha para contratos que não possuem documentação agendadas ou valores para o cálculo
+			
+			VAR COMPETENCIA_ATUAL = MAX(Risco[Competência])
+			VAR ID_CONTRATO = MAX(Risco[Id_Contrato])
+			VAR DIFERENCA_FGTS = [_FGTS_AGENDADOS] - [_FGTS_ENVIADOS]
+			VAR AGENDADOS = [_FGTS_AGENDADOS]
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            Risco[Valor de Contrato] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Risco[Valor de Contrato]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    )* 0.08 * 0.4
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            [_FGTS_Valor] > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			        [_FGTS_Valor],
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.4
+			
+			RETURN
+			IF(
+			    (DIFERENCA_FGTS > 0),
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    0
+			)
+			
+			```
+		lineageTag: 22c7599a-15a8-44cd-8fbc-ef53f5ab456f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Valor_INSS_Contrato_Outras_Competências =
+			
+			// Medida que trás os Valores de Contratos ou Valor da Folha para contratos que não possuem documentação agendadas ou valores para o cálculo
+			
+			VAR COMPETENCIA_ATUAL = MAX(Risco[Competência])
+			VAR ID_CONTRATO = MAX(Risco[Id_Contrato])
+			VAR DIFERENCA_INSS = [_INSS_AGENDADOS] - [_INSS_ENVIADOS]
+			VAR AGENDADOS = [_INSS_AGENDADOS]
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            Risco[Valor de Contrato] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Risco[Valor de Contrato]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.28*0.4
+			
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            [_FGTS_Valor] > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			        [_FGTS_Valor],
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.28
+			
+			RETURN
+			IF(
+			    (DIFERENCA_INSS > 0),
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    0
+			)
+		lineageTag: b20b900c-49bc-4d02-ab4f-b7fb3a6ebdc2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Valor_SALARIOS_Contrato_Outras_Competências = ```
+			
+			// Medida que traz os Valores de Contratos ou Valor da Folha para contratos que não Possuem Valores para cálculo do Risco
+			VAR COMPETENCIA_ATUAL = MAX(Risco[Competência])
+			VAR ID_CONTRATO = MAX(Risco[Id_Contrato])
+			VAR DIFERENCA_SALARIOS = [_SALARIOS_AGENDADOS] - [_SALARIOS_ENVIADOS]
+			
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            Risco[Valor de Contrato] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Risco[Valor de Contrato]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    ) * 0.4
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Risco[Competência]),
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] <> COMPETENCIA_ATUAL &&
+			            Risco[Id_Contrato] = ID_CONTRATO &&
+			            [_FGTS_Valor] > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			        [_FGTS_Valor],
+			        FILTER(
+			            ALL(Risco),
+			            Risco[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Risco[Id_Contrato] = ID_CONTRATO
+			        )
+			    )
+			
+			RETURN
+			IF(DIFERENCA_SALARIOS>0,
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 904279c4-c1aa-4c29-aaff-609ee838a5fb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure !!_Verificação = ```
+			
+			VAR COMPETENCIA_ATUAL = MAX(Risco[Competência])
+			VAR ID_CONTRATO = MAX(Risco[Id_Contrato])
+			VAR DIFERENCA_SALARIOS = [_SALARIOS_AGENDADOS] - [_SALARIOS_ENVIADOS]
+			VAR AGENDADOS = [_SALARIOS_AGENDADOS]
+			
+			-- Verifica se existem mais de 1 linha com SALARIOS_AGENDADOS > 0 para esse contrato
+			
+			VAR AGENDADOS_EM_OUTRAS =
+			    CALCULATE(
+			        COUNTROWS(
+			            FILTER(
+			                ALL(Risco),
+			                Risco[Id_Contrato] = ID_CONTRATO &&
+			                [_SALARIOS_AGENDADOS] > 0
+			            )
+			        )
+			    ) > 1
+			
+			RETURN
+			
+			   AGENDADOS_EM_OUTRAS 
+			
+			```
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 54d329f8-8e9f-419a-8852-1a2e41a87d01
+
+	measure _Total_Risco = Risco[_Risco_FGTS] + Risco[_Risco_INSS]+ Risco[_Risco_SALARIOS]
+		lineageTag: f81dbdcc-7e2f-45d1-86fe-05b7f8c89be1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Total_Risco_Somado_Contrato_Competencia = ```
+			
+			SUMX(
+			    SUMMARIZE(
+			        Risco,
+			        Risco[Id_Contrato],
+			        Risco[Competência],
+			        "_TotalRiscoPorLinha",
+			        VAR vFGTS = IF(ISBLANK([_Risco_FGTS]) || ISTEXT([_Risco_FGTS]), 0, [_Risco_FGTS])
+			        VAR vINSS = IF(ISBLANK([_Risco_INSS]) || ISTEXT([_Risco_INSS]), 0, [_Risco_INSS])
+			        VAR vSALARIOS = IF(ISBLANK([_Risco_SALARIOS]) || ISTEXT([_Risco_SALARIOS]), 0, [_Risco_SALARIOS])
+			        RETURN
+			            vFGTS + vINSS + vSALARIOS
+			    ),
+			    [_TotalRiscoPorLinha]
+			)
+			
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 8c2159ff-d5e0-4756-9d80-e4c0dfd1eb86
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Total_Documentos_Risco = CALCULATE(DISTINCTCOUNT('Risco Críticos'[DocumentScheduleId]))
+		formatString: 0
+		lineageTag: d9123eb6-e838-4cc4-a2bd-8812c2961be1
+
+	measure _Status_Contrato_Competencia = ```
+			
+			VAR VIGENCIA_FINAL = SELECTEDVALUE(Risco[Vigência Final])
+			VAR VIGENCIA_INICIAL = SELECTEDVALUE(Risco[Vigência Inicial])
+			VAR COMPETENCIA = SELECTEDVALUE(Risco[Competência])
+			RETURN 
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(VIGENCIA_FINAL) || ISBLANK(VIGENCIA_INICIAL) || ISBLANK(COMPETENCIA), BLANK(),
+			        VIGENCIA_FINAL < COMPETENCIA, "Vigência Finalizada",
+			        VIGENCIA_INICIAL > COMPETENCIA, "Vigência Futura",
+			        VIGENCIA_FINAL >= COMPETENCIA && VIGENCIA_INICIAL <= COMPETENCIA, "Vigente",
+			        "Indeterminado"
+			    )
+			```
+		lineageTag: 61e6d82c-e496-4c7c-86aa-ca99a1f42c63
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: 29c389a8-0fd4-47ad-b11b-f7c1baa81b76
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 53a21378-7129-4d73-b458-c90d49da703f
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 4b509304-3f7b-4dd8-b1ae-470d0f29ac8d
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 390ccf61-949c-4c95-8d26-b0a05a0786c0
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 9ad80c1e-bd43-4226-8ab3-04377aa22c23
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 9ceaf1a6-4b0a-4278-8a70-1b348a141d13
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 466ce0eb-75cd-484a-a16f-2ed87669cab7
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: int64
+		formatString: 0
+		lineageTag: 56b6961a-2254-4d56-b032-fe527007c615
+		summarizeBy: sum
+		sourceColumn: Cadastro no sistema
+
+		annotation SummarizationSetBy = Automatic
+
+	column Distribuidora
+		dataType: string
+		lineageTag: 531ac904-78bc-4d9e-999c-d6e3519a74e4
+		summarizeBy: none
+		sourceColumn: Distribuidora
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 125f266d-cec7-4b7e-b4a8-e25266e26fcc
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: ec9862d7-001c-4b38-9d8f-65d2b0ba254a
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 12586376-1ff4-41cb-bc95-3b5da73caf2f
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: 0bb98777-cef5-450e-a13e-8306cd038a60
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: c643c244-ca2f-4f46-8ebe-da71288ef8c7
+			defaultHierarchy: LocalDateTable_2145566d-ea30-4e40-a8d0-0fe299b5d28b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Chave_Risco
+		dataType: string
+		lineageTag: 0b297ef7-b6e3-4146-b672-0fc535150b37
+		summarizeBy: none
+		sourceColumn: Chave_Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor de Contrato'
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: f678f4b1-3194-4c3f-aa01-e45ff4ad0074
+		summarizeBy: sum
+		sourceColumn: Valor de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 215c0c6d-674d-4319-bd7b-45d5736e0f51
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: 0900b67c-ad35-426c-9e28-0dd7b4f2faa2
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 9a07c98c-c9b1-4420-8aa7-65d9b0da7b9c
+			defaultHierarchy: LocalDateTable_c36d889f-f202-4633-92d7-cd375b63da4c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: 4c96fda6-3993-49f0-a3d8-b4ce30b97114
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: 97b78e29-d9fd-485c-b66e-dfa21530a2b0
+			defaultHierarchy: LocalDateTable_23849350-e2e3-4c21-810b-d018ffe094cc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Status de Contrato'
+		dataType: string
+		lineageTag: 7a6cd347-4928-453e-881a-1a8cd7c1c61d
+		summarizeBy: none
+		sourceColumn: Status de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor da Folha' =
+			
+			
+			VAR FOLHA = [_FGTS_Valor]
+			
+			RETURN IF(FOLHA=BLANK(),
+			            0,
+			            FOLHA)
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 7c6378be-976f-4d67-bdc2-a8585c527f1a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'Status Contrato Competência '
+		dataType: string
+		lineageTag: cf0ef406-71b7-459d-9079-460a8c572936
+		summarizeBy: none
+		sourceColumn: "Status Contrato Competência "
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Risco = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Puc-Rio\02. Risco Trabalhista\Relatório_Contratos_Expandido.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"N° do pedido", type text}, {"Id_Contrato", type text}, {"Razão Social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Sla", type text}, {"Status", type text}, {"Cadastro no sistema", Int64.Type}, {"Vigência", type text}, {"Unidade", type text}, {"Regional", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Valor do contrato", Int64.Type}, {"Competência", type date}}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Tipo Alterado", "Chave_Risco", each Text.Combine({[Id_Contrato], Text.From([Competência], "pt-BR")}, ""), type text),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Coluna Mesclada Inserida", {"Id_Contrato"}, #"Valor de Contrato", {"Id_Contrato"}, "Valor de Contrato", JoinKind.LeftOuter),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Consultas Mescladas", "Índice", 0, 1, Int64.Type),
+				    #"Valor de Contrato Expandido" = Table.ExpandTableColumn(#"Índice Adicionado", "Valor de Contrato", {"Valor contrato"}, {"Valor de Contrato.Valor contrato"}),
+				    #"Linhas Classificadas" = Table.Sort(#"Valor de Contrato Expandido",{{"Índice", Order.Ascending}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Linhas Classificadas",{"Valor do contrato"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Colunas Removidas", "Vigência", Splitter.SplitTextByDelimiter(" a ", QuoteStyle.Csv), {"Vigência.1", "Vigência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência.1", type date}, {"Vigência.2", type date}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Vigência.1", "Vigência Inicial"}, {"Vigência.2", "Vigência Final"}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Colunas Renomeadas", "Status de Contrato", each if [Vigência Inicial] > Date.From(DateTime.LocalNow()) then "Vigência Futura"
+				
+				else if [Vigência Final] < Date.From(DateTime.LocalNow()) then "Vigência Finalizada"
+				
+				else "Vigente"),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Personalização Adicionada",null,0,Replacer.ReplaceValue,{"Valor de Contrato.Valor contrato"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Valor Substituído",{{"Valor de Contrato.Valor contrato", "Valor de Contrato"}, {"Unidade", "Distribuidora"}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Renomeadas1", "Status Contrato Competência ", each if [Vigência Final] < [Competência] then "Vigência Finalizada"
+				else if [Vigência Inicial] > [Competência] then "Vigência Futura"
+				else if [Vigência Final] >= [Competência] and [Vigência Inicial] <= [Competência] then "Vigente"
+				else "Indeterminado"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada1", each ([#"Status Contrato Competência "] = "Vigente"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

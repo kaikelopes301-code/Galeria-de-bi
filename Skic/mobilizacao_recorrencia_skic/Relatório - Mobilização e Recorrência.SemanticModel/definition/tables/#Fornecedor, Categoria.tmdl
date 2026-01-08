@@ -1,0 +1,48 @@
+table '#Fornecedor, Categoria'
+	lineageTag: 9c8009ed-743a-43d4-ad4a-86b675c70663
+
+	column 'Fornecedor, Categoria, Unidade'
+		lineageTag: f6841ff8-99ec-4c8d-8013-c2206b3b1f60
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Fornecedor, Categoria, Unidade Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Fornecedor, Categoria, Unidade Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor, Categoria, Unidade Campos'
+		isHidden
+		lineageTag: 26794b48-80f2-477f-a2e1-587657867026
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Fornecedor, Categoria, Unidade Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor, Categoria, Unidade Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 759a1553-236f-475b-a84a-5f43c057e1cf
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '#Fornecedor, Categoria' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Documentos em Análise'[Fornecedor]), 0),
+				        ("Unidade", NAMEOF('Documentos em Análise'[Unidade]),1)
+				}
+
+	annotation PBI_Id = 8df328104281455e84bb98ccfacce973
+

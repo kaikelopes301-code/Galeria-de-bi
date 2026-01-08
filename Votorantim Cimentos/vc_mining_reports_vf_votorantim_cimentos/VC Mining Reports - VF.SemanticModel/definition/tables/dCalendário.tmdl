@@ -1,0 +1,167 @@
+table dCalendário
+	lineageTag: 460c849e-ee9c-424b-8800-5a7078162a55
+	dataCategory: Time
+
+	measure Filtro = ```
+			
+			
+			VAR mna = CALCULATE(SUM(dMina[Mina]))
+			
+			RETURN
+			
+			IF(ISBLANK(mna), BLANK(), mna)
+			
+			
+			
+			
+			```
+		formatString: 0
+		lineageTag: 66eef8cb-3f64-49a6-a8e2-dcaf13480978
+
+	column Mês
+		dataType: string
+		lineageTag: 01c0092b-855c-4f03-98c7-accc43510582
+		summarizeBy: none
+		sourceColumn: Mês
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a83e6c6-b4ce-475a-9ce5-bd8dd51aa3fa
+		summarizeBy: sum
+		sourceColumn: Ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dia
+		dataType: int64
+		formatString: 0
+		lineageTag: d8fb0d98-1fe4-4561-9d4a-d31ee6538bf9
+		summarizeBy: sum
+		sourceColumn: Dia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 0372eb16-a693-4377-88d5-f0f56b3e8d89
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Número do Mês'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b3659b2-7967-4583-92ec-6b144b3c31ef
+		summarizeBy: sum
+		sourceColumn: Número do Mês
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: 97ac667f-6922-4a73-80bf-051468c11df0
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Ano = ```
+			YEAR('dCalendário'[Data])
+			
+			
+			```
+		formatString: 0
+		lineageTag: ffa14d7c-baab-458d-85bf-88a0e3a6cfef
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column '_Mês Número' = MONTH('dCalendário'[Data])
+		formatString: 0
+		lineageTag: de20e469-091a-412b-8e4c-4ab1c1ac37e9
+		summarizeBy: sum
+		sortByColumn: 'Número do Mês'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Mês = ```
+			FORMAT('dCalendário'[Data], "MMMM", "pt-BR")
+			
+			```
+		lineageTag: bbb55c32-3bdd-4cce-8923-b211d8cbd5aa
+		summarizeBy: none
+		sortByColumn: '_Mês Número'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Trimestre = ```
+			"T" & FORMAT('dCalendário'[Data], "Q")
+			
+			```
+		lineageTag: c9346da5-3fa0-428c-a1b2-eb91f42d5602
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Dia = DAY('dCalendário'[Data])
+		formatString: 0
+		lineageTag: ee532ef4-a500-4978-b568-4ce184d4e413
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column '_Dia da Semana' = ```
+			FORMAT('dCalendário'[Data], "dddd", "pt-BR")
+			
+			```
+		lineageTag: 59027f55-e958-4fe4-88d9-83d30caadb72
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy '_Ano Hierarquia'
+		lineageTag: 1085fa2f-e347-4c03-b75c-faf3f8581b38
+
+		level _Ano
+			lineageTag: d7246433-24da-4c18-87a8-d942c139ca4d
+			column: _Ano
+
+		level _Mês
+			lineageTag: a8087e77-8814-456f-8f14-588d8026dc12
+			column: _Mês
+
+	partition dCalendário = m
+		mode: import
+		source =
+				let
+				    DataInicial = #date(2023, 01, 01),
+				    QuantidadeDias = 5 * 365,
+				    ListaDatas = List.Dates(DataInicial, QuantidadeDias, #duration(1, 0, 0, 0)),
+				    TabelaDatas = Table.FromList(ListaDatas, Splitter.SplitByNothing(), {"Data"}),
+				    TabelaComTipo = Table.TransformColumnTypes(TabelaDatas, {{"Data", type date}}),
+				
+				    // Colunas para hierarquia
+				    Ano = Table.AddColumn(TabelaComTipo, "Ano", each Date.Year([Data]), Int64.Type),
+				    Trimestre = Table.AddColumn(Ano, "Trimestre", each "T" & Text.From(Date.QuarterOfYear([Data])), type text),
+				    NumeroMes = Table.AddColumn(Trimestre, "Número do Mês", each Date.Month([Data]), Int64.Type),
+				    NomeMes = Table.AddColumn(NumeroMes, "Mês", each Date.ToText([Data], "MMMM", "pt-BR"), type text),
+				    Dia = Table.AddColumn(NomeMes, "Dia", each Date.Day([Data]), Int64.Type)
+				in
+				    Dia
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

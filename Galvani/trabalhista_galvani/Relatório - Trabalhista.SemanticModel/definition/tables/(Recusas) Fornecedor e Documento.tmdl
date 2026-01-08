@@ -1,0 +1,48 @@
+table '(Recusas) Fornecedor e Documento'
+	lineageTag: 01f08f03-b95a-430f-81dc-c9300af5699e
+
+	column '(Recusas) Fornecedor e Documento'
+		lineageTag: 6116cf8f-fc91-4a39-b986-432d4a5280a2
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '(Recusas) Fornecedor e Documento Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '(Recusas) Fornecedor e Documento Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Recusas) Fornecedor e Documento Campos'
+		isHidden
+		lineageTag: b9d2e217-2464-455c-a17a-b0d6315bfc7f
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '(Recusas) Fornecedor e Documento Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Recusas) Fornecedor e Documento Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 1460d985-1db9-43b0-ae81-18707c11b8f6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '(Recusas) Fornecedor e Documento' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Reprovação'[Fornecedor]), 0),
+				    ("Documento", NAMEOF('Reprovação'[Nome_Documento]), 1)
+				}
+
+	annotation PBI_Id = e0fd8c93c3e54a79892711b14955ee56
+

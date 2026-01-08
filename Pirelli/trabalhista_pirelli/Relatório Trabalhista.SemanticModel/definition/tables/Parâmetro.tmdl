@@ -1,0 +1,50 @@
+table Parâmetro
+	lineageTag: 3653ad3b-383a-4a9c-b284-9bc26a2b2cee
+
+	column Parâmetro
+		lineageTag: 16c1fc34-7332-4320-ad34-3aeda2517fa1
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 19953a5c-95a5-4951-afd2-d4889a88e699
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 4b4e824c-eb64-4fe0-8819-57200f9e6de7
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parâmetro = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Fornecedores'[Fornecedor]), 0),
+				    ("Documento", NAMEOF('Fornecedores'[Documento]), 1),
+				    ("Gestor", NAMEOF(Fornecedores[Gestor]), 2)
+				
+				}
+
+	annotation PBI_Id = 2ddaaf7310924072aa149e3077f1d317
+

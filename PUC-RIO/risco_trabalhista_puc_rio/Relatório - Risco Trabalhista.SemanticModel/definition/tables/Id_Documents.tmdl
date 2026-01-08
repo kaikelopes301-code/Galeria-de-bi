@@ -1,0 +1,24 @@
+table Id_Documents
+	lineageTag: db7ca692-f45e-4462-8010-fc2748eb9667
+
+	column DocumentScheduleId
+		lineageTag: 8162da2b-a258-4af3-9b9e-ba0004ade4ab
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[DocumentScheduleId]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Indice = RANKX(ALL(Id_Documents), Id_Documents[DocumentScheduleId], , ASC, DENSE)
+		formatString: 0
+		lineageTag: dd93e901-1373-483e-98f1-b257d3f845c2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Id_Documents = calculated
+		mode: import
+		source = DISTINCT('Documentos em Análise'[DocumentScheduleId])
+
+	annotation PBI_Id = cf6d6aa5722049b1898afe53708798f0
+

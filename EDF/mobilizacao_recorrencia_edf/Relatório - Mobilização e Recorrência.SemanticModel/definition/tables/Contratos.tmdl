@@ -1,0 +1,172 @@
+table Contratos
+	lineageTag: 33203019-45b3-4408-9f6f-bbcb107f01e5
+
+	measure _Quantidade_Contratos = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 69fe6617-b25a-4c8f-9b61-395cff47d4b2
+
+	measure _Eventuais_Contratos =
+			CALCULATE([_Quantidade_Contratos],
+			'Documentos em Análise'[Tipo de Contrato] = "Eventual",
+			USERELATIONSHIP('Status de Efetivos'[Id_Contrato],Contratos[Id_Contrato]))
+		formatString: 0
+		lineageTag: 4c1ecdbd-e092-4abc-acac-7b85f7541d13
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: 848cbdb9-ef11-4822-8967-975bc05b4b1a
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 123533f8-d77d-4273-a6d4-76cb93d7a29c
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: e7043ae3-a889-4722-a2af-32f88381ee05
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 9a0cfd55-99a8-441b-a8c5-719c02c51f7a
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sla
+		dataType: string
+		lineageTag: 83373f62-d1f1-4cc0-bdbb-015915266d55
+		summarizeBy: none
+		sourceColumn: Sla
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 6bf48811-0194-4537-83a2-f22a4915c34d
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b3485691-3867-4ae6-91ba-20c1cc1f0184
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 79fcae21-1c72-499a-af60-6e6cf92a10c8
+			defaultHierarchy: LocalDateTable_f2b77408-f670-4ea2-92e4-56df79cc7986.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: d47859b7-10c7-4a3b-9d46-050771f7877e
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: be323ba9-9fed-465e-b8ae-e6432016b5ac
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 802284ed-82f2-40f6-850b-28a1b0425157
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 9108edd6-2f04-4e2c-9ee0-c7f0fd45e23f
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do contrato'
+		dataType: int64
+		formatString: 0
+		lineageTag: b2d76fbe-4ee9-471a-8403-e132b5df580d
+		summarizeBy: sum
+		sourceColumn: Valor do contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Telefone do Gestor'
+		dataType: string
+		lineageTag: af815e2b-dc87-40cd-bb49-5eed4b200da2
+		summarizeBy: none
+		sourceColumn: Telefone do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 523df4ea-f6a1-4db1-a74c-677e2ae17baa
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vigência
+		dataType: string
+		lineageTag: 0f4e5b89-6bff-4c2e-a033-508128141f3c
+		summarizeBy: none
+		sourceColumn: Vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do Gestor'
+		dataType: string
+		lineageTag: e33de8f9-3879-4e79-9c67-a5abdaa8542e
+		summarizeBy: none
+		sourceColumn: Nome do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'E-mail do Gestor'
+		dataType: string
+		lineageTag: a94afa7f-ac4a-4c7d-8ce2-bd8039e1ac5a
+		summarizeBy: none
+		sourceColumn: E-mail do Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select distinct #(lf)#(tab)c.OrderNumber[N° do pedido],#(lf)#(tab)c.Id [Id_Contrato],#(lf)    bc.CompanyName[Razão Social],#(lf)    dbo.FormatCNPJ([bc].[Document]) AS [CNPJ],#(lf)    case#(lf)        when c.[Type] = 1 then 'Contínuo'#(lf)        when c.[Type] = 2 then 'Grandes Paradas'#(lf)        when c.[Type] = 4 then 'Eventual'#(lf)        when c.[Type] = 8 then 'Temporário'#(lf)        when c.[Type] = 16 then 'Visitante técnico'#(lf)        when c.[Type] = 32 then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)        when c.[Type] = 64 then 'Prestação de serviço eventual fora da área operacional'#(lf)        when c.[Type] = 128 then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)        when c.[Type] = 256 then 'Compra Direta, Regulariza e Delegada'#(lf)    end as 'Tipo da contratação',#(lf)    case#(lf)        when c.Sla = 0 then 'Padrão'#(lf)        when c.Sla = 1 then 'Emergencial'#(lf)    end as 'Sla',#(lf)    case#(lf)        when c.[Status] = 0 then 'Regular'#(lf)        when c.[Status] = 1 then 'Aguardando dados de contatos do fornecedor'#(lf)        when c.[Status] = 2 then 'Aguardando fornecedor preencher o contrato'#(lf)        when c.[Status] = 3 then 'Arquivado'#(lf)    end as 'Status',#(lf)    convert(date, c.CreatedAt)[Cadastro no sistema],#(lf)    CONCAT(convert(date, c.ValidityInitial), ' a ',convert(date, c.ValidityFinal))[Vigência], #(lf)    b.TradeName[Unidade],#(lf)#(tab)r.Name AS 'Regional',#(lf)#(tab)ca.[Name][Categoria],#(lf)    p.TradeName[Fornecedor],#(lf)    c.[Value][Valor do contrato],  #(lf)#(tab)CASE WHEN cfv1.[Value] IS NULL OR cfv1.[Value] = ' ' THEN 'Sem Gestor' ELSE cfv1.[Value] END  AS [Nome do Gestor],#(lf)#(tab)cfv2.[Value][E-mail do Gestor],#(lf)#(tab)cfv3.[Value][Telefone do Gestor]#(lf)#(lf)from [Contract] c with(nolock)#(lf)#(lf)#(tab)#(tab)inner join Building b with(nolock) on b.Id = c.BuildingId#(lf)#(tab)#(tab)INNER JOIN Region r WITH(NOLOCK) ON r.Id = b.RegionId#(lf)#(tab)#(tab)inner join BranchCompany bc with(Nolock) on bc.Id = c.BranchCompanyId#(lf)#(tab)#(tab)inner join [Category] ca with(Nolock) on ca.Id = c.CategoryId#(lf)#(tab)#(tab)inner join [Provider] p with(nolock) on c.ProviderId = p.Id#(lf)#(tab)#(tab)LEFT JOIN CustomFieldValue cfv1 WITH(NOLOCK) ON cfv1.EntityId = c.Id AND cfv1.CustomFieldId = 'C4B327E3-E393-4A56-8BE4-06A3800FECA3'#(lf)#(tab)#(tab)LEFT JOIN CustomFieldValue cfv2 WITH(NOLOCK) ON cfv2.EntityId = c.Id AND cfv2.CustomFieldId = 'E73F3D0E-65F3-4025-ACB7-65AC77313D8F'#(lf)#(tab)#(tab)LEFT JOIN CustomFieldValue cfv3 WITH(NOLOCK) ON cfv3.EntityId = c.Id AND cfv3.CustomFieldId = 'AAED95E9-E631-4E6D-9509-FB7B108AF7E1'#(lf)where b.OrganizationId = 'c6baa887-66a3-4839-a92f-1b4ad0859d6a'#(lf)#(tab)  and c.Removed = 0#(lf)      order by c.OrderNumber #(lf)#(lf)#(tab)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"N° do pedido", type any}, {"Razão Social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Sla", type text}, {"Status", type text}, {"Cadastro no sistema", type date}, {"Vigência", type text}, {"Unidade", type text}, {"Regional", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Valor do contrato", Int64.Type}, {"Nome do Gestor", type text}, {"E-mail do Gestor", type text}, {"Telefone do Gestor", type any}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

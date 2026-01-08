@@ -1,0 +1,57 @@
+table Energia
+	lineageTag: 20809522-8d7b-4031-9268-9eb0089d3fdf
+
+	column DATA
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 52ed909a-305d-4e31-885e-54d69dc855ee
+		summarizeBy: none
+		sourceColumn: DATA
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MINA
+		dataType: string
+		lineageTag: f3e49287-42a8-481d-a457-a028da0340ae
+		summarizeBy: none
+		sourceColumn: MINA
+
+		annotation SummarizationSetBy = Automatic
+
+	column ENERGIA
+		dataType: int64
+		formatString: 0
+		lineageTag: 35076528-6f58-4172-a52c-59833b8193a9
+		summarizeBy: sum
+		sourceColumn: ENERGIA
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mina_Padrão
+		dataType: string
+		lineageTag: 144c0d71-6182-417e-87a3-fc59003c216f
+		summarizeBy: none
+		sourceColumn: Mina_Padrão
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Energia = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\DanielCozendey\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\05. Projetos\3. VC\Projeto Desmonte\Planilhas Importantes\Energia ambos.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true])
+				in
+				    #"Cabeçalhos Promovidos"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Exception
+

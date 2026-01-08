@@ -1,0 +1,264 @@
+table 'Análise de Colaboradores'
+	lineageTag: 790b9f12-9920-423d-a83f-d93e1eb8efbb
+
+	measure 'Quantidade de Colaboradores' =
+			CALCULATE(AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[(Distintos) Colaboradores]),
+			    USERELATIONSHIP(Contratos[Id_Contrato],'Análise de Colaboradores'[Id_Contrato]))
+		lineageTag: 665b424b-2ae0-4a71-bcde-922c961379c4
+
+	measure %Colaboradores = [Quantidade de Colaboradores]/CALCULATE([Quantidade de Colaboradores],ALL('Análise de Colaboradores'[Fornecedor],'Análise de Colaboradores'[Categoria],'Análise de Colaboradores'[Unidade]))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: be1493f4-461b-422e-b7ef-00bce730d79c
+
+	measure '(Disparidade) Ativos - FGTS' = [(ATIVOS) - MENOS MESES] - [(FGTS) - MENOS MESES]
+		formatString: #,0
+		lineageTag: c631c682-8e58-42fd-baab-2b1946c905ba
+
+	measure '(FGTS) Colaboradores' = CALCULATE(DISTINCTCOUNT('Análise de Colaboradores'[Funcionário]),USERELATIONSHIP(Contratos[Id_Contrato],'Análise de Colaboradores'[Id_Contrato]))
+		formatString: 0
+		lineageTag: d9f236ce-ed92-4ddc-a621-6a8d4b8a89b6
+
+	measure '(FGTS) - MENOS MESES' = ```
+			
+			VAR MesAtual = MONTH(TODAY())
+			VAR AnoAtual = YEAR(TODAY())
+			VAR DataInicio = DATE(AnoAtual, MesAtual - [(Number) Mês de Ref], 1)
+			VAR DataFim = EOMONTH(DataInicio, 0)
+			
+			RETURN
+			CALCULATE(
+			    [(FGTS) Colaboradores],
+			    'Análise de Colaboradores'[Competência] >= DataInicio &&
+			    'Análise de Colaboradores'[Competência] <= DataFim
+			)+0
+			
+			```
+		formatString: #,0
+		lineageTag: 5826bea1-c651-4bd9-a2a4-2a7a24d7090d
+
+	measure 'Mês de Referência' =
+			
+			UPPER(FORMAT(EDATE(TODAY(), -[(Number) Mês de Ref]), "MMMM/YY"))
+		lineageTag: 15ac2e2e-3752-493e-b27a-fa803af48aa3
+
+	measure '(AUX) soma de ATIVOS+FGTS' = [(FGTS) - MENOS MESES]+[(ATIVOS) - MENOS MESES]
+		formatString: 0
+		lineageTag: 5045c4ec-eb73-4a00-b4f2-013e4c047a85
+
+	measure %Turnover = CALCULATE([(Rescições) Quantidade]/[Quantidade de Colaboradores])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d79643f9-7135-4ea5-afe6-77bddad80ab9
+
+	measure '(Distintos) Colaboradores' = CALCULATE(DISTINCTCOUNT('Análise de Colaboradores'[CPF]))
+		formatString: 0
+		lineageTag: 7bba357c-2b54-4449-81bf-7930a68e000e
+
+	measure '(Média) Mensal' =
+			CALCULATE(AVERAGEX(VALUES('dCalendário'[Date]),[(Contagem)]),
+			 USERELATIONSHIP(Contratos[Id_Contrato],'Análise de Colaboradores'[Id_Contrato]))
+		lineageTag: 8b2d1581-9581-4616-a19a-d9638cb694aa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure (Contagem) = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 86eb1535-c421-4f21-9a62-0028bfe46519
+
+	measure '(Média Mensal) Colaboradores' = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[(Distintos) Colaboradores])
+		lineageTag: cbb346af-d22a-4346-8fe7-9d78e713c244
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Última Data) FGTS' = ```
+			
+			VAR UltimaData = CALCULATE(MAX('Análise de Colaboradores'[Competência]),
+			USERELATIONSHIP('dCalendário'[Date],'Análise de Colaboradores'[Competência]))
+			
+			RETURN
+			CALCULATE([(Distintos) Colaboradores],
+			USERELATIONSHIP('dCalendário'[Date],'Análise de Colaboradores'[Competência]), 
+			USERELATIONSHIP(Contratos[Id_Contrato],'Análise de Colaboradores'[Id_Contrato]),
+			'Documentos em Análise'[Competência] = UltimaData)
+			```
+		formatString: #,0
+		lineageTag: 7abcf845-7813-49dc-95dd-9e6e4a346e53
+
+	measure '(Number) Mês de Ref' = 2
+		formatString: 0
+		lineageTag: e4167162-b9f8-4f20-9be0-ae335401ecc6
+
+	column Cliente
+		dataType: string
+		lineageTag: 73e0b366-2caa-4b40-b8bf-11bb1825429b
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: b459bb0c-8cf5-4d35-929e-6273d7df8e8b
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 7191e595-c01a-495a-80bb-d2b71cb2ee9c
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 60b6ecf2-64b7-4412-8a7e-50cfe8b77903
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 2967193f-a740-4b1c-bd3e-a1c56718f94e
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 285d6c48-beec-44de-aa27-ae9118afe90a
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b96e1676-2708-4892-b996-faacb50b4ffd
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Valor sefip'
+		dataType: double
+		formatString: 0.00
+		lineageTag: 973871e4-7386-4805-ab0e-8a0810673a2a
+		summarizeBy: sum
+		sourceColumn: Valor sefip
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: f8fbe26a-cbfc-4f71-9a00-c02fbbeb9ada
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: c0ea14f6-271a-4dea-af72-e24a480bc75e
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hoje = FORMAT(TODAY(),"DD/MM/YYYY")
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5f03efc8-2eff-4b0d-b011-a7bf5cbcf6cc
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 2bf0fec5-3e3b-4d7c-a1f6-15f8a9a536cf
+			defaultHierarchy: LocalDateTable_1db90668-1c62-4ea3-8595-bf1822bba0e7.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Chave Movimentações'
+		dataType: string
+		lineageTag: dc395af0-68d4-4c43-af92-771e2a6b143b
+		summarizeBy: none
+		sourceColumn: Chave Movimentações
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 26049ca7-eaf7-4187-a7ec-386fcee71c1d
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origem
+		dataType: string
+		lineageTag: 8fe29f96-7135-47c6-a0e3-c0c69e24a60d
+		summarizeBy: none
+		sourceColumn: Origem
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: 42e6c9b4-b986-4938-9903-c3057e75b5e0
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 92eecc43-7b72-4a55-bf8f-331083d4a7b4
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave_Risco
+		dataType: string
+		lineageTag: ad050097-4ba9-4f9d-8e47-b14e81365842
+		summarizeBy: none
+		sourceColumn: Chave_Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: 137b34cd-5d53-472b-b80f-1f7b7ffb555d
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Análise de Colaboradores' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="select#(lf)#(tab)o.TradeName as 'Cliente',#(lf)#(tab)b.TradeName as 'Unidade',#(lf)#(tab)p.TradeName as 'Fornecedor',#(lf)#(tab)cat.Name as 'Categoria',#(lf)#(tab)r.Name as 'Regional',#(lf)#(tab)c.OrderNumber AS 'Número do Pedido',#(lf)#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)#(tab)#(tab)WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)#(tab)#(tab)ELSE 'Vigente'#(lf)#(tab)END AS 'Vigência de Contrato',#(lf)#(tab)e.Name as 'Funcionário',#(lf)#(tab)e.PisNumber as 'PIS',#(lf)#(tab)e.CpfNumber as 'CPF',#(lf)        ee.Remuneration as 'Valor sefip',#(lf)#(tab)FORMAT(g.Competency, 'MM/yyyy') as 'Competência'#(lf)#(tab)#(lf)from #(lf)#(tab)EmployeeEntry ee#(lf)#(lf)#(tab)left join Employee e#(lf)#(tab)on e.Id = ee.EmployeeId#(lf)#(lf)#(tab)inner join [User] u #(lf)#(tab)on u.Id = ee.ResponsibleId#(lf)#(lf)#(tab)left join [Function] f#(lf)#(tab)on f.Id = ee.FunctionId#(lf)#(lf)#(tab)inner join Gfip g#(lf)#(tab)on g.Id = ee.GfipId#(lf)#(lf)#(tab)inner join ContractSet cs#(lf)#(tab)on cs.Id = g.ContractSetId#(lf)#(lf)#(tab)inner join Contract c#(lf)#(tab)on c.ContractSetId = g.ContractSetId#(lf)#(lf)#(tab)inner join Building b#(lf)#(tab)on b.Id = cs.BuildingId#(lf)#(lf)#(tab)inner join Region r#(lf)#(tab)on r.Id = b.RegionId #(lf)#(lf)#(tab)inner join Provider p #(lf)#(tab)on p.Id = cs.ProviderId#(lf)#(lf)#(tab)inner join Organization o#(lf)#(tab)on o.Id = b.OrganizationId#(lf)#(lf)#(tab)inner join CategoryContractSet catSet#(lf)#(tab)on g.ContractSetId = catSet.ContractSetId#(lf)#(lf)#(tab)inner join Category cat#(lf)#(tab)on catSet.CategoryId = cat.Id#(lf)where#(lf)o.Id = '41cacafc-2823-4a1a-a0db-381a24eb9014' and#(lf)g.Competency >= '2022-02-01 00:00:00.0000000'#(lf)and g.Id NOT IN#(lf)(#(lf)'F950FDB2-E041-4A73-8950-A7E80C3D0E69',#(lf)'679BE57D-5145-4DF1-956D-D08E4CA9E54E',#(lf)'CCCBD6D1-EDCC-4373-9ADF-00C0FE5EAA9C',#(lf)'22E7A015-3F18-4E85-8446-6E1BE76AE6CA'#(lf))#(lf)#(lf)order by #(lf)#(tab)o.TradeName,#(lf)#(tab)b.TradeName,#(lf)#(tab)p.TradeName,#(lf)#(tab)e.Name,#(lf)#(tab)g.Competency"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Cliente", type text}, {"Unidade", type text}, {"Fornecedor", type text}, {"Categoria", type text}, {"Funcionário", type text}, {"PIS", type any}, {"Competência", type date}, {"Valor sefip", type number}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Chave", each [Fornecedor]&[Categoria]&[Unidade]),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Personalização Adicionada", "Chave Movimentações", each Text.Combine({[Fornecedor], [Unidade], [Funcionário]}, ""), type text),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Coluna Mesclada Inserida", "Origem", each "FGTS Digital"),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Personalização Adicionada1",{{"Id_Contrato", Text.Upper, type text}}),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Texto em Maiúscula", "Chave_Risco", each Text.Combine({[Id_Contrato], Text.From([Competência], "pt-BR")}, ""), type text)
+				in
+				    #"Coluna Mesclada Inserida1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

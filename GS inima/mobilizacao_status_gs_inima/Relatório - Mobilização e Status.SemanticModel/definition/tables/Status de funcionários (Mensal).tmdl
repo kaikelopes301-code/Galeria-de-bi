@@ -1,0 +1,481 @@
+table 'Status de funcionários (Mensal)'
+	lineageTag: d98a9ca2-43f7-4bcb-97cb-60734146261d
+
+	measure _Efetivos_ = CALCULATE(DISTINCTCOUNT('Status de funcionários (Mensal)'[Índice]),USERELATIONSHIP(Contratos[N° do Pedido],'Status de funcionários (Mensal)'[Número do Pedido]))
+		formatString: 0
+		lineageTag: 36c60d9f-dbd5-45a9-a747-281759baeea1
+
+	measure _Media_Mensal_Colaboradores = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[_Efetivos_])
+		lineageTag: 6ea2f3de-95db-461b-978e-cba02f730a9c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Ativos_Quantidade_ = CALCULATE(DISTINCTCOUNT('Status de funcionários (Mensal)'[Índice]))
+		formatString: 0
+		lineageTag: 2ff2bbc9-37e4-48e7-9867-b6bbb1485d4c
+
+	measure _Média_Mensal_Ativos_Efetivos_ = AVERAGEX(VALUES('dCalendário'[Date].[Mês]),[_Ativos_Quantidade_])
+		lineageTag: 42ed8031-3f65-4c7c-8b64-173e82114b2b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Documentos_Pendentes = ```
+			
+			VAR MaxCompetencia =
+			    CALCULATE(
+			        MAX('Status de funcionários (Mensal)'[Competência]),
+			        ALL('Status de funcionários (Mensal)')
+			    )
+			RETURN
+			CALCULATE(
+			    CONCATENATEX(
+			        DISTINCT(
+			            FILTER(
+			                'Status de funcionários (Mensal)',
+			                'Status de funcionários (Mensal)'[Competência] = MaxCompetencia
+			                    && 'Status de funcionários (Mensal)'[Documentos pendentes (Não entregues ou Recusados)] <> "---"
+			            )
+			        ),
+			        'Status de funcionários (Mensal)'[Documentos pendentes (Não entregues ou Recusados)],
+			        "; "
+			    )
+			)
+			
+			```
+		lineageTag: 3c1fd920-f098-41b7-8978-a80c57ad563f
+
+	measure _Ultima_Ativos_Quantidade_ =
+			
+			VAR MAXI = CALCULATE(max('Status de funcionários (Mensal)'[Competência]),
+			 ALL('Status de funcionários (Mensal)'))
+			
+			RETURN CALCULATE([_Ativos_Quantidade_],
+			'Status de funcionários (Mensal)'[Competência]  = MAXI,
+			 USERELATIONSHIP('Status de funcionários (Mensal)'[Número do Pedido],Contratos[N° do Pedido]))
+		formatString: 0
+		lineageTag: fb7a77bb-dfc3-4e0d-862f-904c9f8cc412
+
+	measure '_Quantidade de Efetivos Ativos_(Última Competência)' =
+			
+			VAR MAXI = CALCULATE(max('Status de funcionários (Mensal)'[Competência]),
+			 ALL('Status de funcionários (Mensal)'))
+			
+			RETURN CALCULATE([_Ativos_Quantidade_],
+			'Status de funcionários (Mensal)'[Competência]  = MAXI,
+			 USERELATIONSHIP('Status de funcionários (Mensal)'[Número do Pedido],Contratos[N° do Pedido]))
+		formatString: #,0
+		lineageTag: 0b44bc4d-4292-4232-aa55-7f3af2d7c6d9
+
+	column Nome
+		dataType: string
+		lineageTag: 22149041-bb91-49c6-a6f4-df446bb917e8
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número de matrícula'
+		dataType: string
+		lineageTag: 2ef53d77-8dd1-4cbe-a9ef-d752c7f089dd
+		summarizeBy: none
+		sourceColumn: Número de matrícula
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 6475acf3-412d-4b5c-8f82-6cc39a44e614
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 8980fedd-d60d-4043-8e7a-5bdb3503acf6
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: e8a79266-1b92-4b50-97c4-67a72b65ac07
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 91d49cc6-8fae-4325-8c3f-4e4a18e94ddb
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: f5e62f3b-f057-4cc0-9a8f-bf5dbbe31762
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 4d4c021a-6bd1-4d98-809e-3283d0e36df6
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 06d715a4-caec-4581-a54c-ec8b10e8ecdf
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: efa15fad-70b5-43ba-92fb-d9f807cefcba
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social do Contrato'
+		dataType: string
+		lineageTag: a150fa82-3274-45d2-a45d-34e168370d70
+		summarizeBy: none
+		sourceColumn: Razão Social do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Contrato'
+		dataType: string
+		lineageTag: 958d020f-e1c3-4c04-a4ff-ee5eb5749102
+		summarizeBy: none
+		sourceColumn: CNPJ do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número de matrícula_1'
+		dataType: string
+		lineageTag: 61449e03-e904-4921-a837-99e6bb9fef9b
+		summarizeBy: none
+		sourceColumn: Número de matrícula_1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Fornecedor'
+		dataType: string
+		lineageTag: dc0f1900-cd3f-471b-94ea-f361fefa7a9a
+		summarizeBy: none
+		sourceColumn: Tipo de Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia do Subcontrato'
+		dataType: string
+		lineageTag: d6347bda-5462-4467-97a7-a9ddd3309a97
+		summarizeBy: none
+		sourceColumn: Nome Fantasia do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social do Subcontrato'
+		dataType: string
+		lineageTag: ad1de5e9-7cbb-41c5-811b-b5b7e877693f
+		summarizeBy: none
+		sourceColumn: Razão Social do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do Subcontrato'
+		dataType: string
+		lineageTag: b11d6076-290b-4638-a8d5-46188c8cbe54
+		summarizeBy: none
+		sourceColumn: CNPJ do Subcontrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contratação'
+		dataType: string
+		lineageTag: 052a81f4-1ffd-4bfc-a4e2-017dc82df9db
+		summarizeBy: none
+		sourceColumn: Tipo de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modalidade de Contratação'
+		dataType: string
+		lineageTag: 50994202-7e78-447d-8a3b-5f0f0cfa7571
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de moradia'
+		dataType: string
+		lineageTag: fc7ebae8-e95a-4365-b0bb-ff2fec9899a7
+		summarizeBy: none
+		sourceColumn: Tipo de moradia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: 38a2b63a-9334-4953-b6ff-0b207120e81c
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 88f298be-e88a-4ddf-8636-f21a8e69d01e
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escala
+		dataType: string
+		lineageTag: 28f4a3f3-6102-4fe0-9ab4-69eff0e23ad6
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada'
+		dataType: string
+		lineageTag: ac6b3a1e-d684-437e-b7ad-603478163eb7
+		summarizeBy: none
+		sourceColumn: Início da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Término da jornada'
+		dataType: string
+		lineageTag: 8758449e-ef10-42fe-aae5-81af3d0a0466
+		summarizeBy: none
+		sourceColumn: Término da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total de Docs'
+		dataType: string
+		lineageTag: c98a81ae-9db7-4aa1-8580-fc8104492c0c
+		summarizeBy: none
+		sourceColumn: Total de Docs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total de válidos'
+		dataType: string
+		lineageTag: 5fb30d18-c308-458a-8067-c298a897fcc5
+		summarizeBy: none
+		sourceColumn: Total de válidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs válidos'
+		dataType: string
+		lineageTag: 1a8af180-15ea-467c-b9c9-00730740dc06
+		summarizeBy: none
+		sourceColumn: % docs válidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total em análise'
+		dataType: string
+		lineageTag: 8c1f7b75-4608-44f9-9353-be378e3ea9a4
+		summarizeBy: none
+		sourceColumn: Total em análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs em análise'
+		dataType: string
+		lineageTag: a51ab826-5184-4bea-9e08-7c52204a799c
+		summarizeBy: none
+		sourceColumn: % docs em análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total pendentes'
+		dataType: string
+		lineageTag: 30102c67-83df-4161-bf8b-a1a4990c62ee
+		summarizeBy: none
+		sourceColumn: Total pendentes
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% docs entregues'
+		dataType: string
+		lineageTag: 1b7c2eda-9e21-4923-88a1-7cb5555ce0cd
+		summarizeBy: none
+		sourceColumn: % docs entregues
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mobilizado até'
+		dataType: string
+		lineageTag: c2dd225c-3fb1-4273-9ff7-36a107ca5086
+		summarizeBy: none
+		sourceColumn: Mobilizado até
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Próximo documento a vencer'
+		dataType: string
+		lineageTag: 00421859-8541-4b89-b296-e48e14cabce1
+		summarizeBy: none
+		sourceColumn: Próximo documento a vencer
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Restrição de acesso'
+		dataType: string
+		lineageTag: dc899d3b-4ad4-4372-8895-70d08676b55c
+		summarizeBy: none
+		sourceColumn: Status Restrição de acesso
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documentos pendentes (Não entregues ou Recusados)'
+		dataType: string
+		lineageTag: 0f227ff9-55f2-4a9f-a36c-8a06d6ad501f
+		summarizeBy: none
+		sourceColumn: Documentos pendentes (Não entregues ou Recusados)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: e8f4167a-7f36-4dc2-8084-edec6cd7d461
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Início e Fim das Atividades'
+		dataType: string
+		lineageTag: 1ea12b1f-b42c-4b2e-8c6c-5a994aa6e43d
+		summarizeBy: none
+		sourceColumn: Início e Fim das Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gestor do Contrato'
+		dataType: string
+		lineageTag: bef952c1-b02b-4363-9b36-f5db8614f320
+		summarizeBy: none
+		sourceColumn: Gestor do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 72e05ff7-75ae-4049-a9d3-7320b9bedb5a
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 3e297f0b-d41b-40b7-9582-cfba7a5d818d
+			defaultHierarchy: LocalDateTable_8d84d2c8-12f9-497c-ae6e-d18b7891f15d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e80676bd-0466-4ba8-a935-69b751a08d36
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: b73f87b7-b9a2-44db-b5b5-f940e673ffdf
+			defaultHierarchy: LocalDateTable_a687be90-67fa-4a6c-b942-bf59657787c7.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Competência Mês-Ano'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3266ee8c-cab6-4a4a-ba62-c0b8c8a5bc36
+		summarizeBy: none
+		sourceColumn: Competência Mês-Ano
+
+		variation Variation
+			isDefault
+			relationship: b9f1a57d-414f-42f1-aaa1-9173a7180f8b
+			defaultHierarchy: LocalDateTable_4a7175e1-dfaf-4175-95b2-647299780f1a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: a9d3aaac-e94f-482e-b86b-564789e9f078
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 27c2d78a-041c-452d-971c-5e19e5701f61
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status de funcionários (Mensal)' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/:x:/r/sites/DiretrioPadro/Documentos%20Compartilhados/Relat%C3%B3rios/Dados/02.%20Externo/01.%20AFM%20Gest%C3%A3o/GSInima/05%20-%20Status%20de%20Funcion%C3%A1rios/Relatorio%20-%20Status%20de%20funcionarios.xlsx"), null, true),
+				    #"Status de funcionários_Sheet" = Fonte{[Item="Status de funcionários",Kind="Sheet"]}[Data],
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Status de funcionários_Sheet", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Competência", type date}, {"Número do Pedido", type text}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Tipo Alterado", "Competência Mês-Ano", each Text.PadStart(Text.From(Date.Month([Competência])), 2, "0") & "/" & Text.From(Date.Year([Competência]))),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Competência Mês-Ano", type date}}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Tipo Alterado1", "Vigência do Contrato", Splitter.SplitTextByDelimiter(" - ", QuoteStyle.Csv), {"Vigência Inicial", "Vigência Final"}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência Final", type date}, {"Vigência Inicial", type date}}),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado2", "Status Contrato", each let
+				            Hoje = Date.From(DateTime.LocalNow()),
+				            VigIni = try Date.From([Vigência Inicial]) otherwise null,
+				            VigFin = try Date.From([Vigência Final]) otherwise null
+				        in
+				            if VigFin <> null and VigFin < Hoje then "Contrato Inativo"
+				            else if VigIni <> null and VigIni > Hoje then "Contrato Futuro"
+				            else "Contrato Ativo"),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Personalização Adicionada2", "Índice", 1, 1, Int64.Type),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Índice Adicionado", {"Número do Pedido"}, Contratos, {"N° do Pedido"}, "Contratos", JoinKind.LeftOuter),
+				    #"Contratos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Contratos", {"Nome do Gestor do Contrato"}, {"Gestor do Contrato"})
+				in
+				    #"Contratos Expandido"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

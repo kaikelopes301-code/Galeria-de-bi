@@ -1,0 +1,45 @@
+table Score
+	lineageTag: c7727d7e-1676-463d-8d74-cc5ce5d07135
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 9dd67723-4050-4592-9e64-852825955d89
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 3ef536af-a615-4313-855e-dd400a5714c2
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Score Média'
+		dataType: double
+		lineageTag: fcda9be4-6df4-4a8c-ab98-23ffc0575d26
+		summarizeBy: sum
+		sourceColumn: Score Média
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Score = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\CLIENTES\REDE D'OR\06. Relatórios\Relatório Planilhão\2025\07 - Julho\REDE DOR - Relatorio Informações Contratos - Julho25.xlsx"), null, true),
+				    Score_Sheet = Fonte{[Item="Score",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Score_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Fornecedor", type text}, {"Categoria", type text}, {"Score Média", type number}}),
+				    #"Linhas Inferiores Removidas" = Table.RemoveLastN(#"Tipo Alterado",1)
+				in
+				    #"Linhas Inferiores Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

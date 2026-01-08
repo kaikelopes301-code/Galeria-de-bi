@@ -1,0 +1,136 @@
+table 'Resumo - Minas'
+	lineageTag: aaa64adb-a995-48a2-a73a-d870ec296618
+
+	measure MP
+		lineageTag: d89af1bb-44ab-422e-9949-8d5e43636aad
+
+	measure MediaPonderada = ```
+			
+			DIVIDE(
+			    SUMX('Resumo - Minas', 'Resumo - Minas'[Razão de carga] * 'Resumo - Minas'[Volume desmontado]),
+			    SUM('Resumo - Minas'[Volume desmontado])
+			)
+			
+			```
+		lineageTag: 96802330-5316-4652-ad12-12131731d4b4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Data
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 94b65152-002e-4bb9-95ef-bc8c9ad97c25
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Razão de carga'
+		dataType: double
+		lineageTag: 48895754-3b89-4b03-8d85-f31047b9ae88
+		summarizeBy: sum
+		sourceColumn: Razão de carga
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Volume desmontado'
+		dataType: double
+		lineageTag: 08ebe78f-1173-48ec-b030-ec0232df523f
+		summarizeBy: sum
+		sourceColumn: Volume desmontado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Rocha
+		dataType: string
+		lineageTag: 9e462803-7f4e-4d09-99e4-1a2f879a0889
+		summarizeBy: none
+		sourceColumn: Rocha
+
+		annotation SummarizationSetBy = Automatic
+
+	column MINA
+		dataType: string
+		lineageTag: 5e2bbb80-cb0a-482e-8475-78c50983b9f5
+		summarizeBy: none
+		sourceColumn: MINA
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metros realizados'
+		dataType: double
+		lineageTag: 5bbfa387-7008-41d8-9da7-ecd21e668a97
+		summarizeBy: sum
+		sourceColumn: Metros realizados
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'P80 (mm)'
+		dataType: double
+		lineageTag: 6bc4a1b3-41da-4394-a378-dad2cced3bac
+		summarizeBy: sum
+		sourceColumn: P80 (mm)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Mina_Padrão
+		dataType: string
+		lineageTag: 9a8750d9-30c4-49d1-9d9f-e588879d1cc5
+		summarizeBy: none
+		sourceColumn: Mina_Padrão
+
+		annotation SummarizationSetBy = Automatic
+
+	column NADA
+		dataType: string
+		lineageTag: fa2d7840-9868-4776-913c-01956ced9487
+		summarizeBy: none
+		sourceColumn: NADA
+
+		annotation SummarizationSetBy = Automatic
+
+	column RCxV = ```
+			'Resumo - Minas'[Razão de carga]*'Resumo - Minas'[Volume desmontado]
+			
+			
+			```
+		lineageTag: ad61be17-6652-4f59-a3dd-d168711759c0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Resumo - Minas' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\DanielCozendey\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\05. Projetos\3. VC\Projeto Desmonte\Planilhas Importantes\Resumo ambos.xlsx"), null, true),
+				    Tabela3_Table = Fonte{[Item="Tabela3",Kind="Table"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Tabela3_Table,{{"Data", type date}, {"Nº fogo", type any}, {"Banco", type text}, {"Furos", Int64.Type}, {"Malha", type number}, {"Emulsão bombeada kg", type number}, {"Razão de carga", type number}, {"Diâmetro (polegadas)", type number}, {"Volume desmontado", type number}, {"Rocha", type text}, {"MINA", type text}, {" AFASTAMENTO", type number}, {"ESPAÇAMENTO", type number}, {"ALTURA", type number}, {"Metros realizados", type number}, {"Razão T/m", type number}, {"ano", Int64.Type}, {"mês", Int64.Type}, {"P80 (mm)", type number}, {"Top Size (mm)", type number}, {"Esfericidade", type number}, {"Mina_Padrão", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Nº fogo", "Banco", "Furos", "Malha", "Emulsão bombeada kg", "Diâmetro (polegadas)", " AFASTAMENTO", "ESPAÇAMENTO", "ALTURA", "Razão T/m", "ano", "mês", "Top Size (mm)", "Esfericidade"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Colunas Removidas", each ([Mina_Padrão] <> "NN") and ([Rocha] = "CAL/MISTO" or [Rocha] = "CALCARIO" or [Rocha] = "CALCA´RIO" or [Rocha] = "CALCÁRIO" or [Rocha] = "CALÁRIO" or [Rocha] = "MINÉRIO" or [Rocha] = "MISTO" or [Rocha] = "MISTO " or [Rocha] = "MISTO/CALCARIO" or [Rocha] = "MIXTO")),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Linhas Filtradas","CALCARIO","CALCÁRIO",Replacer.ReplaceText,{"Rocha"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","CALCA´RIO","CALCÁRIO",Replacer.ReplaceText,{"Rocha"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1","MIXTO","MISTO",Replacer.ReplaceText,{"Rocha"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","MISTO ","MISTO",Replacer.ReplaceText,{"Rocha"}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Valor Substituído3", each true),
+				    #"Valor Substituído4" = Table.ReplaceValue(#"Linhas Filtradas1","CALÁRIO","CALCÁRIO",Replacer.ReplaceText,{"Rocha"}),
+				    #"Linhas Filtradas2" = Table.SelectRows(#"Valor Substituído4", each true)
+				in
+				    #"Linhas Filtradas2"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

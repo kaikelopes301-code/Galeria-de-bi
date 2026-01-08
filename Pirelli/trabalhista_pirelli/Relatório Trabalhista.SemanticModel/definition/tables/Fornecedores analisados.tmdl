@@ -1,0 +1,32 @@
+table 'Fornecedores analisados'
+	lineageTag: f7596c9d-b223-4ce1-b91f-713b193bdc69
+
+	column Fornecedores
+		dataType: string
+		lineageTag: 4f1aa8c4-247d-4cdf-96f3-03e819425ec8
+		summarizeBy: none
+		sourceColumn: Fornecedores
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 9970b417-ad60-4b55-8ffd-9923a4c91a4c
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Fornecedores analisados' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("bVZLcts4FLwKymsLAQESBJcQCcsYk4QGJDVxUlkwtpLRxJFckpyqzHYWOcqcYE7gi83Dh1Kc8kr+PDz06+7X0Pv3F7KyWva6vLi8yAQWnOKCZG8IIcksIxcfLl3FO9Qpu9Kl6VCjStm6n6CeJFgkFHOWh/o0C/ULXSPVKru4Ra2xlep6danaBW5kO/QYKaTbDj4rhdTvg15i1JlSq0rCH4ZWL1XXGVmjuq8kXJImmOcFprwIl1DmL5mr1mGCgoRhXqQ4S2hEkfuCcvf142aH1Ha9/7wZUYdds4RglnOcZW7CNJmJ0Kw0AMgOvbESLVVdq4XVrXaMJDjlAtM0TpgLX1/9sQDM9dBrOBjbUgqt01AmAgRVLVHXSNtDCSDMBfBL/Bh0lqWh5GH9bbzf7dcHtNo8PIz744jq4/3o7k4xhaYpSULTJLALRKpGLgP9CWOY5FEuEoa5MrZHN615CyWAnSU55iICK0LJojZzYNgRONFMAD4HFomIzeivlVF0mFXkUJiTUMjDIIuld0SGKQG+koiZiemfyOFuryWYDQzg+z3/AD/F6xOBU0agK4/Wi10HaSsNx5wROIwKbuNTCfcl13iONY4IlcPAcEoZLtIIUCS+7jeLhk63Ethz94HNRQ5yTNYtfNGNE98i2cy1antZh5GKPMGsiJUiEFOv7+52+8BHkVJMeByZhuvqYQ4eQv7jSpeylAZsXw3gM302N0hIcuHMEzUOM9W3qDJobmUHm3Q6BbyVplG21MbtDvhKXckeOIRf5sZaWV5L3xhDZ5qAlqA84y/0bMbtYb3/5goIzqFAeGsk/FQgbXcN91ir/DpUTqzFYM9SccDMBM6KiJkGXzal55VjnmRguritPLDRqN65KK7MeQx1DhalrardztEUF1mO85S+2LlG1zVgMJ7Ky5/Owd8WuoMEk27J/ew5JgWDLXdeZnSWRBANssZxdK0XIK9+J59/PP9jTlowENltQBSax7mGuofQQz68VBuOvKJkhjMByyji6SJkZ7MqUW9l2y1hK9WvYB1WjhnjYCFvHza5unXlwNiwtLoBK8Kgpzv1SQq3EmmKScbgMCUTVe1gVrIHzKpWcKDUPlpPBINGGXXKR4JFOGX6Rr9F5W57OO6fnv99/g8ySW/vn+DXzbg5uBmBV5eIWfQUDTMuraqAnRDFGctxQWMiJSIW6Eb6OCKYu/WcdkXEBvvdcX133M369R3qNofj+ut4QPdr1K0/P+3H7d14srUXCW4QMaZ4cC2YtZfIu2ywC8eu+jmzIFnyFFw5hRsN+WxX8lWnO2ZzCLIUp0mUkwWk3fgIWe0mAQzQkeQvg87d6eU++xPawgtYSrtwoFQbNKeQ7kUxJVlwWrf7dNyPd19cBQQKBEs6uYkGV3TmCrqXN36TSqPA/Q1qTKvdAN4mJ6JACpJBNIkplljs0JgV6t54y6ZOKczCJXRGQwZ2IBdktUWA2Wr4jFvlg05gnrmOrJixENFdp9H1bWXlUOuym0yQ4ZxnL/bX+bExg/W+dVpQcGCM6CLc3P/5/XBYb7/snx4f3ZMJryroIHyQ03RGwoW97mX7aio6pSlO8gweickfgbje3BpnENgKt7RueO7WBl6qNAwfX8Ye7HYAjY/uUR6R/Gv3ab2fXmRYtaRIzrAnQE/7j/GLxvf4fcSxP30ZiN+KVhIiAPXGBeFr+RdXuuCePSJYpCYYfFWuzo9m2IMcRihOz3WAv1rv/x63G1cgPHlsei1TKPjwPw==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Fornecedores = _t, CNPJ = _t]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(Fonte,{{"Fornecedores", type text}, {"CNPJ", type text}})
+				in
+				    #"Tipo Alterado1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

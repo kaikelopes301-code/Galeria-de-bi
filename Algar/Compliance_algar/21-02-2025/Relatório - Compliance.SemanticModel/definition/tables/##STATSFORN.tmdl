@@ -1,0 +1,49 @@
+table ##STATSFORN
+	lineageTag: 19988fc7-b8b1-488a-9167-258e7e60d091
+
+	column ##STATSFORN
+		lineageTag: 2b8179fe-cedb-4bca-b77f-ad74cde3734f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '##STATSFORN Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '##STATSFORN Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '##STATSFORN Campos'
+		isHidden
+		lineageTag: 7f2428dd-6e3c-4090-a93e-59eb19d2a187
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '##STATSFORN Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '##STATSFORN Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 78e39d14-2f8e-435d-b8f6-9e566981a1a0
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ##STATSFORN = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Status do Fornecedores'[Fornecedor]), 0),
+				    ("Categoria", NAMEOF('Status do Fornecedores'[Categoria]), 1),
+				    ("Unidade", NAMEOF('Status do Fornecedores'[Unidade]), 2)
+				}
+
+	annotation PBI_Id = 8928876a30d94424a6b8320f47ca81e2
+

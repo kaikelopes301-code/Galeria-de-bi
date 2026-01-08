@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "f24fe25500b1d5ea9e1b",
+  "position": {
+    "x": 10,
+    "y": 286,
+    "z": 1000,
+    "height": 276,
+    "width": 347,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Dia a Dia - Contratos"
+                        }
+                      },
+                      "Property": "Chave_Contratos"
+                    }
+                  },
+                  "Function": 2
+                }
+              },
+              "queryRef": "Min(Dia a Dia - Contratos.Chave_Contratos)",
+              "nativeQueryRef": "Contagem de Chave_Contratos"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Dia a Dia - Contratos"
+                      }
+                    },
+                    "Property": "Chave_Contratos"
+                  }
+                },
+                "Function": 2
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

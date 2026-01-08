@@ -1,0 +1,556 @@
+table 'Documentos em Análise'
+	lineageTag: 941748fe-575a-4074-ae85-ff049f2ce062
+
+	measure '(Total) Documentos' = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]))
+		formatString: #,0
+		lineageTag: 04d5e06f-36b4-43ce-8f4f-22bbd1954c85
+
+	measure '(Em Análise)' = ```
+			
+			 VAR Analise =  CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Em Análise")
+			RETURN IF(Analise=0,0,Analise)
+			```
+		formatString: 0
+		lineageTag: 2af97cb3-ff8f-40b7-9231-ac5b3dfb19ba
+
+	measure '(Aprovados) Quantidade' =
+			
+			VAR Aprovados = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Aprovado")
+			
+			RETURN IF(Aprovados=0,
+			0
+			, Aprovados)
+		formatString: #,0
+		lineageTag: 11ee845c-1ee6-49f2-8a6f-8c6ee98a4c5d
+
+	measure (Atrasados) =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado")
+		formatString: #,0
+		lineageTag: 1333a4cf-2038-48a7-9d87-23b33dac0f17
+
+	measure (%)Recusados =
+			
+			VAR Recusado = (CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado"))
+			
+			VAR Enviados = [(Enviados) Quantidade]
+			
+			RETURN IF(Recusado = 0 && Enviados > 0, 0 , Recusado/Enviados)
+		lineageTag: bf8ea3ae-05c6-4da5-b1d2-48a02abd6a7f
+
+		formatStringDefinition =
+				VAR vRecusado = FORMAT([(%)Recusados],"0.0%")
+				VAR vEnviados = [(Enviados) Quantidade]
+				VAR vresultado = """" & vRecusado & " (" & vEnviados & ")"
+				return vresultado
+
+	measure (Recusados) =
+			CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] = "Atrasado Recusado")
+		formatString: 0
+		lineageTag: 6b7513c8-21ca-431b-8a71-3638f9bc270c
+
+	measure '(Enviados) Quantidade' =
+			
+			
+			VAR ENVIADOS = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			'Documentos em Análise'[Status] <> "Atrasado")
+			
+			RETURN IF(ENVIADOS=BLANK(),0,ENVIADOS)
+		formatString: #,0
+		lineageTag: 227b0b6c-139e-4bbc-91f5-5947713a5084
+
+	measure (%)Conformidade = ```
+			
+			 VAR Aprovados = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Status] = "Aprovado")
+			 VAR Agendados = [(Total) Documentos]
+			
+			 RETURN IF(Aprovados=0 && Agendados >0,0,Aprovados/Agendados)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c6bd1d2a-cea2-4029-86f1-befe81dc18f2
+
+	measure (%)Aderência = ```
+			
+			 VAR Enviados = (CALCULATE([(Total) Documentos],
+			        'Documentos em Análise'[Status] <> "Atrasado"))
+			 VAR Agendados = [(Total) Documentos]
+			
+			 RETURN IF(Enviados=0 && Agendados >0,0,Enviados/Agendados)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 686f7950-5935-4cb6-b511-dbc9223258eb
+
+	measure '(%)Peso 3' = ```
+			VAR Peso1 = CALCULATE(
+			    DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]), 
+			    'Documentos em Análise'[Peso do Documentos] = 1
+			)
+			
+			VAR Peso3NaoAprovado = CALCULATE(
+			    DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]), 
+			    'Documentos em Análise'[Peso do Documentos] = 3,
+			    'Documentos em Análise'[Status] <> "Aprovado"
+			)
+			
+			VAR QtdPeso3 = [(Peso 3) Quantidade] -- Variável para evitar chamadas repetidas
+			
+			RETURN
+			IF(
+			    Peso1 < 1,
+			    (Peso3NaoAprovado / QtdPeso3) + 0,
+			    (((3/4) * Peso3NaoAprovado) / QtdPeso3) + 0
+			)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9a286f2f-04b6-40fb-abbb-81b31291dbd4
+
+	measure '(Peso 1) Quantidade' = ```
+			
+			VAR Peso1 = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 1)
+			        
+			RETURN 
+			    IF (Peso1=0,
+			            0,
+			            Peso1)
+			```
+		formatString: 0
+		lineageTag: df2541e8-9a25-4f00-9435-7608e39c3f15
+
+	measure '(%)Peso 1' = ```
+			
+			VAR Peso3 = CALCULATE(
+			    DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]), 
+			    'Documentos em Análise'[Peso do Documentos] = 3
+			)
+			
+			VAR Peso1NaoAprovado = CALCULATE(
+			    DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]), 
+			    'Documentos em Análise'[Peso do Documentos] = 1,
+			    'Documentos em Análise'[Status] <> "Aprovado"
+			)
+			
+			VAR QtdPeso1 = [(Peso 1) Quantidade] -- Variável para evitar chamadas repetidas
+			
+			RETURN
+			IF(
+			    Peso3 < 1,
+			    (Peso1NaoAprovado / QtdPeso1) + 0,
+			    ((1/4) * Peso1NaoAprovado / QtdPeso1) + 0
+			)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bd6c8b62-db58-4b25-b8e1-4d014c447849
+
+	measure '(Peso 3) Quantidade' =
+			
+			
+			Var Peso3 = CALCULATE(DISTINCTCOUNT('Documentos em Análise'[DocumentScheduleId]),
+			        'Documentos em Análise'[Peso do Documentos] = 3)
+			
+			RETURN IF (
+			    Peso3 = 0,
+			    0,
+			    Peso3)
+		formatString: 0
+		lineageTag: 3848ae26-b978-40dd-87fe-a74deb120435
+
+	measure '(%)Grau de Risco' = ([(%)Peso 1] + [(%)Peso 3]+0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 08a200f9-cdae-45c7-9e60-790a9c9582c0
+
+	measure '(Soma Peso) Documentos' = [(Peso 1) Quantidade]+[(Peso 3) Quantidade]
+		formatString: 0
+		lineageTag: cdbf7558-b6f0-4978-a224-cdd02cc09839
+
+	measure (%Aderência(Enviados|Total)) = [(%)Aderência]
+		lineageTag: 0abcafe7-29ed-4f56-a4ea-717d9cdb5f80
+
+		formatStringDefinition =
+				VAR ADE = FORMAT([(%)Aderência],"#.0%")
+				
+				VAR TOTAL = FORMAT([(Total) Documentos],"#,###")
+				
+				VAR ENV = FORMAT([(Enviados) Quantidade],"#,###")
+				
+				RETURN """" & ADE & " (" & TOTAL & " | " &ENV& ")"
+
+	measure (%Conformidade(Aprovados|Denominador)) = [(%)Conformidade]
+		lineageTag: 986980be-6bce-4e27-9c6c-de6acec47d89
+
+		formatStringDefinition =
+				VAR CONF = FORMAT([(%)Conformidade],"#.0%")
+				
+				VAR APRO = FORMAT([(Aprovados) Quantidade],"#,###")
+				
+				VAR TOTAL = FORMAT([(Total) Documentos],"#,###")
+				
+				RETURN """" & CONF & " (" & APRO & " | " &TOTAL& ")"
+
+	measure '(FGTS) Documentos' = CALCULATE([(Total) Documentos])
+		formatString: #,0
+		lineageTag: 0fc6529b-a645-46cb-9c0a-5763b7102552
+
+	measure '(%) Ocorrência Aderência' =
+			CALCULATE([(%)Aderência],
+			'Documentos em Análise'[Documento] = "Relatório Mensal de Ocorrências",
+			USERELATIONSHIP('Documentos em Análise'[Id do Contrato],'Ocorrências'[Contract_Id]))
+		formatString: 0%;-0%;0%
+		lineageTag: 724ce731-5f39-4333-9078-b98002a582a5
+
+	measure _Enviados_Documentos = ```
+			
+			CALCULATE(
+			    [(Total) Documentos],
+			    'Documentos em Análise'[Status de Janela] IN {
+			        "Enviado no Prazo",
+			        "Enviado Atrasado"
+			    }
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: ba9f42e0-6391-4fe9-a35c-6314b03826e5
+
+	measure _%Enviados = ```
+			
+			VAR ENVIADOS = [_Enviados_Documentos]
+			
+			VAR TOTAL = 
+			    CALCULATE(
+			        [(Total) Documentos],
+			        REMOVEFILTERS('Documentos em Análise'[Status de Janela])
+			    )
+			
+			RETURN
+			    IF(
+			        ENVIADOS = 0 && TOTAL > 0,
+			        0,
+			        DIVIDE(ENVIADOS, TOTAL)
+			    )
+			
+			```
+		lineageTag: 1551e882-6465-4f7d-ad6a-17e1ab9446c2
+
+		formatStringDefinition =
+				VAR PORCE = FORMAT([_%Enviados],"0.0%")
+				
+				VAR TOTAL = FORMAT([_Enviados_Documentos],"#,###")
+				
+				RETURN """" & TOTAL & " (" & PORCE &")"
+
+	column Documento
+		dataType: string
+		lineageTag: d5f82226-1c97-4b36-856d-fe9033aa5fe0
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentScheduleId
+		dataType: string
+		lineageTag: abd7cc4e-5251-4dd9-bca6-2fdefef44b0f
+		summarizeBy: none
+		sourceColumn: DocumentScheduleId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do Pedido'
+		dataType: string
+		lineageTag: d1db0887-7608-4921-b0d0-55e8d967cfae
+		summarizeBy: none
+		sourceColumn: Número do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Contrato'
+		dataType: string
+		lineageTag: 3643d765-de0a-41b0-baf5-0d6d577e16a1
+		summarizeBy: none
+		sourceColumn: Tipo de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: b3cd0473-d63b-419b-b1dc-d03b258440e2
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 8c86c10a-baf0-4066-9d85-63ccd661bee4
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 88631286-9557-4c4a-99e1-e66718300c15
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		variation Variation
+			isDefault
+			relationship: b6118b9f-17b5-4365-b86a-94681a560edc
+			defaultHierarchy: LocalDateTable_601600e6-bb4d-43b9-b6d2-852c3b8420b6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: 3dfe1e27-a33e-4342-9b1e-08c28976946d
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: fe7f7f20-4582-46a3-9b12-cd3d02ff1fa8
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status (Reclassificado)'
+		dataType: string
+		lineageTag: aa9f93ea-f496-4430-b672-823e7a1c17ee
+		summarizeBy: none
+		sourceColumn: Status (Reclassificado)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: yyyy-mm
+		lineageTag: 5813ea47-6254-43c1-b215-017a8c334e3f
+		summarizeBy: none
+		sourceColumn: Competência
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Chave
+		dataType: string
+		lineageTag: 63f5bf03-e1a4-47cd-ad96-94d47f271c71
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data da Análise'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: eab0069a-5b47-46f7-b4a3-47c3cfbd278e
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		variation Variation
+			isDefault
+			relationship: e3235d18-953f-4421-a55e-8ccd744820af
+			defaultHierarchy: LocalDateTable_357696e8-dd17-4215-94fe-b3ee76ea8695.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Peso do Documentos' = LOOKUPVALUE('Pesos'[Peso],'Pesos'[Documento],'Documentos em Análise'[Documento])
+		formatString: 0
+		lineageTag: aaea68fa-a9a8-4ea7-b743-2bd84f46926a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: ad745f08-3e1f-480a-937e-14c8c5d9a3a6
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 274b1110-a63f-4eb2-a937-c2bc799a992a
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Indicador'
+		dataType: string
+		lineageTag: d87e1673-a663-4f5e-9647-49fa68cfac59
+		summarizeBy: none
+		sourceColumn: Status de Indicador
+
+		annotation SummarizationSetBy = Automatic
+
+	column (Nova)ID = LOOKUPVALUE(Id_Documents[Indice],Id_Documents[DocumentScheduleId],'Documentos em Análise'[DocumentScheduleId])
+		formatString: 0
+		lineageTag: 9bdb479d-69ce-4b53-977f-2b7a79593b16
+		summarizeBy: count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Janela'
+		dataType: string
+		lineageTag: 48b7a5db-5b8d-4308-96d8-2767a1a60d80
+		summarizeBy: none
+		sourceColumn: Status de Janela
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 46c3dad7-80ed-4490-b474-7cd0a7840599
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Empresa ou Funcionário'
+		dataType: string
+		lineageTag: aac35012-18de-4b85-b3e4-41fed8c62bd4
+		summarizeBy: none
+		sourceColumn: Documento Empresa ou Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave_Risco
+		dataType: string
+		lineageTag: f0cfddf7-f31e-4f53-849c-bdbf325f365e
+		summarizeBy: none
+		sourceColumn: Chave_Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Id do Contrato'
+		dataType: string
+		lineageTag: f30d2208-9bb4-4d72-ae7c-e6eb9366ac98
+		summarizeBy: none
+		sourceColumn: Id do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Distribuidora
+		dataType: string
+		lineageTag: 9f4ff253-e95f-4756-b743-facdda42db46
+		summarizeBy: none
+		sourceColumn: Distribuidora
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Envio'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 216b5a8c-d119-425c-861d-0cfbd887311c
+		summarizeBy: none
+		sourceColumn: Data de Envio
+
+		variation Variation
+			isDefault
+			relationship: 8391d853-c3f0-43fb-92f9-cd49e27bea40
+			defaultHierarchy: LocalDateTable_a7e0362f-ef3f-4c1c-9574-348c6794895f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Documentos Críticos'
+		dataType: string
+		lineageTag: 5c47463b-b2c3-4448-b4e1-52cf3dff0cfa
+		summarizeBy: none
+		sourceColumn: Documentos Críticos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: bb5958c4-de03-4320-8dc6-a19f2d01ff61
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos em Análise' = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 =  '2025-12-11 23:59:59';#(lf)DECLARE @organizationId uniqueidentifier = '41CACAFC-2823-4A1A-A0DB-381A24EB9014';#(lf)DECLARE @initialDate datetime2 = '2024-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = '2025-12-11 23:59:59';#(lf)#(lf)WITH ContractBuildings AS (#(lf)    SELECT#(lf)        [c].[Id] AS ContractId,#(lf)        STRING_AGG([b].[TradeName], ', ') AS Buildings#(lf)    FROM#(lf)        [Contract] AS [c]#(lf)        INNER JOIN [Building] AS [b] ON [c].[BuildingId] = [b].[Id]#(lf)    WHERE#(lf)        [c].[Removed] = 0#(lf)        AND [b].[Removed] = 0#(lf)    GROUP BY#(lf)        [c].[Id]#(lf)),#(lf)ContractCategories AS (#(lf)    SELECT#(lf)        [c].[Id] AS ContractId,#(lf)        STRING_AGG([cat].[Name], ', ') AS Categories#(lf)    FROM#(lf)        [Contract] AS [c]#(lf)        INNER JOIN [Category] AS [cat] ON [c].[CategoryId] = [cat].[Id]#(lf)    WHERE#(lf)        [c].[Removed] = 0#(lf)    GROUP BY#(lf)        [c].[Id]#(lf))#(lf)#(lf)SELECT DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)#(lf)    CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)        WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)    END AS 'Tipo do documento',#(lf)#(lf)    [ds].[Id] AS [DocumentScheduleId],#(lf)    [c].[Id] AS [Id_Contrato],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)#(tab)#(tab)WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)#(tab)#(tab)ELSE 'Vigente'#(lf)#(tab)END AS 'Vigência de Contrato',#(lf)#(lf)    CASE WHEN [c].[OrderNumber] IS NULL THEN '---' ELSE [c].[OrderNumber] END AS [Número do Pedido],#(lf)#(lf)    CASE#(lf)        WHEN [c].[Type] IS NULL THEN '---'#(lf)        ELSE#(lf)            CASE#(lf)                WHEN [c].[Type] & 1 = 1 THEN 'Contínuo'#(lf)                WHEN [c].[Type] & 2 = 2 THEN 'Grandes Paradas'#(lf)                WHEN [c].[Type] & 4 = 4 THEN 'Eventual'#(lf)                WHEN [c].[Type] & 8 = 8 THEN 'Temporário'#(lf)                WHEN [c].[Type] & 16 = 16 THEN 'Visitante técnico'#(lf)                WHEN [c].[Type] & 32 = 32 THEN 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)                WHEN [c].[Type] & 64 = 64 THEN 'Prestação de serviço eventual fora da área operacional'#(lf)                WHEN [c].[Type] & 128 = 128 THEN 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)                WHEN [c].[Type] & 256 = 256 THEN 'Compra Direta, Regulariza e Delegada'#(lf)                ELSE 'Nenhum'#(lf)            END#(lf)    END AS [Tipo de Contrato],#(lf)#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)    [bc].[CompanyName] AS [Razão Social],#(lf)    dbo.FormatCNPJ(bc.Document) as [CNPJ],#(lf)#(lf)    ISNULL([er].[Name], '---') AS [Funcionário],#(lf)#(lf)        FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(tab)FORMAT([ds].[UploadedAt], 'dd/MM/yyyy') AS [Data de Envio],#(lf)        FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)#(lf)    CASE#(lf)        WHEN [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL) OR ([ds].[UploadedAt] >@currentDate) THEN 'Atrasado'#(lf)        WHEN [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL) THEN 'Próxima Entrega'#(lf)        WHEN [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] = 0) THEN 'Atrasado Recusado'#(lf)        WHEN [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] = 0) THEN 'Próxima Entrega Recusado'#(lf)        WHEN [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL THEN 'Em Análise'#(lf)        WHEN [ds].[UploadedAt] IS NOT NULL AND ([ds].[RequiresValidation] = 0 OR [ds].[IsValidated] = 1) THEN 'Aprovado'#(lf)        ELSE '--'#(lf)    END AS [Status],#(lf)#(lf)    ISNULL(cb.Buildings, '---') AS [Unidade(s)],#(lf)    ISNULL(cc.Categories, '---') AS [Categoria(s)]#(lf)#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)    INNER JOIN [Contract] AS [c] WITH (NOLOCK) ON (#(lf)        [c].[Removed] = 0#(lf)        AND [c].[BranchCompanyId] = [ds].[BranchCompanyId]#(lf)        AND EXISTS (SELECT 1 FROM [Building] AS [b] WITH (NOLOCK) WHERE [b].[Id] = [c].[BuildingId] AND [b].[Removed] = 0 AND [b].[OrganizationId] = @organizationId)#(lf)        AND (#(lf)            (#(lf)                ([ds].[ContractId] IS NOT NULL AND [ds].[ContractId] = [c].[Id])#(lf)                OR [ds].[ContractId] IS NULL#(lf)            )#(lf)            OR (#(lf)                (#(lf)                    ([d].[OrderNumberInclusiveOrExclusive] IS NULL#(lf)                     OR ([d].[OrderNumberInclusiveOrExclusive] = 1 AND EXISTS (#(lf)                            SELECT 1 FROM STRING_SPLIT([d].[OrderNumber], ';') WHERE value = [c].[OrderNumber]#(lf)                        ))#(lf)                     OR ([d].[OrderNumberInclusiveOrExclusive] = 0 AND NOT EXISTS (#(lf)                            SELECT 1 FROM STRING_SPLIT([d].[OrderNumber], ';') WHERE value = [c].[OrderNumber]#(lf)                        ))#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([ds].[ContractSetId] IS NOT NULL AND [ds].[ContractSetId] = [c].[ContractSetId])#(lf)                    OR [ds].[ContractSetId] IS NULL#(lf)                )#(lf)                AND ([d].[TypeContract] IS NULL OR ([d].[TypeContract] & [c].[Type]) = [c].[Type])#(lf)                AND (#(lf)                    ([ds].[BuildingId] IS NOT NULL AND [ds].[BuildingId] = [c].[BuildingId])#(lf)                    OR NOT EXISTS (#(lf)                        SELECT 1 FROM [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                        WHERE [dsb].[DocumentScheduleId] = [ds].[Id] AND [dsb].[Removed] = 0#(lf)                    )#(lf)                    OR EXISTS (#(lf)                        SELECT 1 FROM [DocumentScheduleBuilding] AS [dsb] WITH (NOLOCK)#(lf)                        WHERE [dsb].[DocumentScheduleId] = [ds].[Id] AND [dsb].[BuildingId] = [c].[BuildingId] AND [dsb].[Removed] = 0#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([ds].[CategoryId] IS NOT NULL AND [ds].[CategoryId] = [c].[CategoryId])#(lf)                    OR NOT EXISTS (#(lf)                        SELECT 1 FROM [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                        WHERE [dsc].[DocumentScheduleId] = [ds].[Id] AND [dsc].[Removed] = 0#(lf)                    )#(lf)                    OR EXISTS (#(lf)                        SELECT 1 FROM [DocumentScheduleCategory] AS [dsc] WITH (NOLOCK)#(lf)                        WHERE [dsc].[DocumentScheduleId] = [ds].[Id] AND [dsc].[CategoryId] = [c].[CategoryId] AND [dsc].[Removed] = 0#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([d].[Frequency] = 7 AND [d].[OccurrenceKind] = 15 AND [c].[ValidityFinal] < GETDATE())#(lf)                    OR ([d].[Frequency] <> 7 OR [d].[OccurrenceKind] <> 15)#(lf)                )#(lf)                AND (#(lf)                    ([d].[Kind] = 4 AND [d].[DeliveryKind] = 3 AND [c].[ValidityFinal] < GETDATE())#(lf)                    OR ([d].[Kind] <> 4 OR [d].[DeliveryKind] <> 3)#(lf)                )#(lf)                AND (#(lf)                    ([d].[DeliveryKind] <> 0 AND [d].[DeliveryKind] <> 1)#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 1#(lf)                        AND (#(lf)                            [ds].[ExpectedUploadAt] <= [c].[ValidityFinal]#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0 AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                        AND (#(lf)                            ([d].[DeliveryDay] < 0 AND DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) >= [c].[ValidityInitial])#(lf)                            OR ([d].[DeliveryDay] > 0 AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial])#(lf)                        )#(lf)                    )#(lf)                    OR (#(lf)                        [d].[DeliveryKind] = 0#(lf)                        AND [ds].[ExpectedUploadAt] >= [c].[ValidityInitial]#(lf)                        AND (#(lf)                            (#(lf)                                [d].[DeliveryDay] > 0 AND (#(lf)                                    DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR DATEDIFF(MONTH, DATEADD(day, ([d].[DeliveryDay] * -1), [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                )#(lf)                            )#(lf)                            OR (#(lf)                                [d].[DeliveryDay] < 0 AND (#(lf)                                    DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]) <= [c].[ValidityFinal]#(lf)                                    OR DATEDIFF(MONTH, DATEADD(day, [d].[DeliveryDay], [ds].[ExpectedUploadAt]), [c].[ValidityFinal]) <= 1#(lf)                                )#(lf)                            )#(lf)                        )#(lf)                    )#(lf)                )#(lf)                AND (#(lf)                    ([er].[Id] IS NOT NULL AND [c].[BranchCompanyId] = [bc].[Id] AND [ds].[Kind] = 5#(lf)                        AND EXISTS (#(lf)                            SELECT 1 FROM [EmployeeRegisterContract] AS [erc] WITH (NOLOCK)#(lf)                            WHERE [erc].[EmployeeRegisterId] = [er].[Id]#(lf)                            AND [erc].[ContractId] = [c].[Id]#(lf)                            AND [erc].[Removed] = 0#(lf)                        )#(lf)                    )#(lf)                    OR ([ds].[EmployeeRegisterId] IS NULL AND [ds].[ContractId] IS NULL AND [ds].[Kind] = 1)#(lf)                    OR ([ds].Kind = 4)#(lf)                )#(lf)            )#(lf)        )#(lf)    )#(lf)#(lf)LEFT JOIN ContractBuildings AS cb ON cb.ContractId = c.Id#(lf)LEFT JOIN ContractCategories AS cc ON cc.ContractId = c.Id#(lf)#(lf)WHERE#(lf)    [ds].[Removed] = 0#(lf)    AND [d].[Removed] = 0#(lf)    AND [d].[Archived] = 0#(lf)    AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] <= @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)#(tab)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Documento", type text}, {"DocumentScheduleId", type text}, {"Número do Pedido", type any}, {"Tipo de Contrato", type text}, {"Razão Social", type text}, {"CNPJ", type text}, {"Funcionário", type text}, {"Prazo de Envio", type date}, {"Status", type text}, {"Unidade(s)", type text}, {"Categoria(s)", type text}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado", "Status (Reclassificado)", each if Text.Contains([Status], "Recusado") then "Enviado" else if [Status] = "Aprovado" then "Enviado" else if [Status] = "Em Análise" then "Enviado" else if [Status] = "Atrasado" then "Não Enviado" else null),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Coluna Condicional Adicionada", "Competência", each if [Prazo de Envio] < Date.FromText("01/12/2024") then Date.FromText("01/12/2024") 
+				
+				else if  Date.Year([Prazo de Envio]) = 2024 and Date.Month([Prazo de Envio]) = 12 then  [Prazo de Envio]
+				
+				else Date.AddMonths([Prazo de Envio],-1)),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Personalização Adicionada","NULL","",Replacer.ReplaceValue,{"Data de Envio"}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Valor Substituído1", "Data de Envio", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Data de Envio.1", "Data de Envio.2"}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Dividir Coluna por Delimitador",{"Data de Envio.2"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"Data de Envio.1", "Data de Envio"}}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Competência", type date}}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Tipo Alterado1",{{"Número do Pedido", type text}, {"Data de Envio", type date}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado2","---","",Replacer.ReplaceValue,{"Data da Análise"}),
+				    #"Tipo Alterado3" = Table.TransformColumnTypes(#"Valor Substituído",{{"Data da Análise", type date}}),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Tipo Alterado3", "Chave", each [Razão Social]&[#"Categoria(s)"]&[#"Unidade(s)"]),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Personalização Adicionada3",{{"Id_Contrato", "Id do Contrato"}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Renomeadas1", "Status de Indicador", each if [Data de Envio] = null then
+				        "Não Enviado"
+				    else
+				        let
+				            PrazoMes = Date.Month([Prazo de Envio]),
+				            PrazoAno = Date.Year([Prazo de Envio]),
+				            MesSeguinte = if PrazoMes = 12 then 1 else PrazoMes + 1,
+				            AnoSeguinte = if PrazoMes = 12 then PrazoAno + 1 else PrazoAno, // Ajuste para avançar o ano apenas em dezembro
+				            DataLimiteJanela25 = #date(PrazoAno, PrazoMes, 25), // Dia 25 do mês do prazo
+				            DataLimiteJanela11 = #date(AnoSeguinte, MesSeguinte, 11) // Dia 11 do próximo mês
+				        in
+				            if [Data de Envio] <= DataLimiteJanela25 then
+				                "Enviado na Janela 25"
+				            else if [Data de Envio] <= DataLimiteJanela11 then
+				                "Enviado na Janela 11"
+				            else
+				                "Enviado Atrasado"),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "Status de Janela", each if [Status de Indicador] = "Enviado na Janela 25" then "Enviado no Prazo" else if [Status de Indicador] <> "Não Enviado" then "Enviado Atrasado" else "Não Enviado"),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Personalização Adicionada2", each ([Razão Social] <> "Ambiente Teste Fornecedor")),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Linhas Filtradas1",{{"Unidade(s)", "Distribuidora"}}),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Colunas Renomeadas2", "Documento Empresa ou Funcionário", each if [Funcionário] = "---" 
+				    then "Empresa"
+				    else "Funcionário"),
+				    #"Início do Mês Inserido" = Table.AddColumn(#"Personalização Adicionada4", "Início do Mês", each Date.StartOfMonth([Competência]), type date),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Início do Mês Inserido", "Chave_Risco", each Text.Combine({[Id do Contrato], Text.From([Início do Mês], "pt-BR")}, ""), type text),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Coluna Mesclada Inserida",{"Início do Mês"}),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Colunas Removidas1", "Documentos Críticos", each if [Documento] = "FGTS - Comprovante de pagamento" or
+				       [Documento] = "FGTS - RE - Relação de Empregados/Trabalhadores" or
+				       [Documento] = "FGTS - Guia de recolhimento (boleto)" then "FGTS"
+				    else if [Documento] = "Comprovante Bancário de Pagamento de Salários" or
+				            [Documento] = "Folha de Pagamento Mensal Analítica" then "Salários"
+				    else if [Documento] = "Comprovante de Recolhimento" or
+				            [Documento] = "DARF – Documento de Arrecadação de Receitas Federais" or
+				            [Documento] = "Recibo de Entrega da Declaração de Débitos e Créditos Tributários Federais Previdenciários – DCTFWeb" or
+				            [Documento] = "Relatório da Declaração Completa – DCTFWeb" then null
+				    else null)
+				in
+				    #"Personalização Adicionada5"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

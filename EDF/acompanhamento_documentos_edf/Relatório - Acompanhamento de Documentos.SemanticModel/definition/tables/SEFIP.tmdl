@@ -1,0 +1,118 @@
+table SEFIP
+	lineageTag: e4d2e098-9105-4faf-afca-4e6172ce14f2
+
+	measure 'Quantidade 2' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: a5fd555c-b0d9-430d-8e2b-aa7087a66d47
+
+	measure 'Doccumentos Pendentes' =
+			
+			CALCULATE(
+			    CONCATENATEX(
+			        FILTER(
+			            VALUES(SEFIP[Documentos]),
+			            SEFIP[Documentos] <> "Ok"
+			        ),
+			       SEFIP[Documentos],
+			        "; "
+			    )
+			)
+		lineageTag: 69e5fd9d-0e09-41eb-99b7-3d7dc024c584
+
+	column Unidade
+		dataType: string
+		lineageTag: 3a77d258-ff91-4ba1-8a49-c069145c7ca8
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 73c15c19-cbbc-4d1e-aaba-6b496cacd05d
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 33c65aec-c8de-471e-920a-2d9d01e0ec72
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do Pedido'
+		dataType: int64
+		formatString: 0
+		lineageTag: bac1e093-1944-4c25-9747-37b98f5b95ac
+		summarizeBy: sum
+		sourceColumn: Nº do Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: deb1e429-a5fb-4377-9712-c923ebbcd7ea
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 8f884b65-af89-4250-a686-f8c53f51d113
+			defaultHierarchy: LocalDateTable_a237b398-b28a-4219-85d7-96aaae9b82cc.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Documentos
+		dataType: string
+		lineageTag: c53d8e6e-23d9-41c4-96b6-1862f8b1a28e
+		summarizeBy: none
+		sourceColumn: Documentos
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 87bb4d12-b61d-4699-b108-7c1c54b08cf0
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SEFIP = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\EDF\afm_gestao_report_documentos_16_21_03_05_2024.xlsx"), null, true),
+				    #"Entrega de documentos_Sheet" = Fonte{[Item="Entrega de documentos",Kind="Sheet"]}[Data],
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Entrega de documentos_Sheet",{"Column1"}),
+				    #"Linhas Superiores Removidas" = Table.Skip(#"Colunas Removidas",13),
+				    #"Cabeçalhos Promovidos1" = Table.PromoteHeaders(#"Linhas Superiores Removidas", [PromoteAllScalars=true]),
+				    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Cabeçalhos Promovidos1", {"Column1", "Column2", "Column3", "Column4"}, "Atributo", "Valor"),
+				    #"Linhas Superiores Removidas1" = Table.Skip(#"Colunas Não Dinâmicas",11),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas Superiores Removidas1", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{ {"Unidade", type text}, {"Fornecedor", type text}, {"Categoria", type text}, {"Nº do Pedido", Int64.Type}, {"ABR/24_8", type text}, {"C. Pgto", type text}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado",{{"ABR/24_8", "Competência"}, {"C. Pgto", "Status"}}),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Colunas Renomeadas", {"Competência"}, Referência, {"Atributo"}, "Referência", JoinKind.LeftOuter),
+				    #"Referência Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Referência", {"Valor"}, {"Referência.Valor"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Referência Expandido",{{"Referência.Valor", "Documentos"}}),
+				    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Colunas Renomeadas1", "Competência", Splitter.SplitTextByDelimiter("_", QuoteStyle.Csv), {"Competência.1", "Competência.2"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Competência.1", type date}, {"Competência.2", Int64.Type}}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Tipo Alterado1",{{"Competência.1", "Competência"}}),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Colunas Renomeadas2",{"Competência.2"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Colunas Removidas1", each ([Status] <> "---")),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Linhas Filtradas","X","Pendentes",Replacer.ReplaceText,{"Status"}),
+				    #"Colunas Reordenadas" = Table.ReorderColumns(#"Valor Substituído",{ "Unidade", "Fornecedor", "Categoria", "Nº do Pedido", "Competência", "Documentos", "Status"}),
+				    #"Linhas Filtradas1" = Table.SelectRows(#"Colunas Reordenadas", each ([Competência] <> #date(2024, 4, 1)))
+				in
+				    #"Linhas Filtradas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,61 @@
+table 'Classificação Docs'
+	lineageTag: 2b8b65d5-b772-4b40-85b9-939d3ab73014
+
+	column Documento
+		dataType: string
+		lineageTag: e7224fe6-1a88-4353-9c2c-8cbb036d5fc4
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Recorrência
+		dataType: string
+		lineageTag: 3c82d1d1-b574-4d7f-9be4-4f0fbe166610
+		summarizeBy: none
+		sourceColumn: Recorrência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Referência
+		dataType: string
+		lineageTag: 8c9b49b6-ac85-462b-bec6-8b63f1da4c26
+		summarizeBy: none
+		sourceColumn: Referência
+
+		annotation SummarizationSetBy = Automatic
+
+	column Restrição
+		dataType: string
+		lineageTag: 5b797e7b-844b-42be-a10e-0a13312615d1
+		summarizeBy: none
+		sourceColumn: Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: int64
+		formatString: 0
+		lineageTag: 7aa0e3e5-9391-4318-9a45-39254b1590ff
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Classificação Docs' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\EDP\documentos EDP - Peso e restrição.xlsx"), null, false),
+				    Planilha1_sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    #"Linhas Inferiores Removidas" = Table.RemoveLastN(Planilha1_sheet, each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas Inferiores Removidas", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Documento", type text}, {"Recorrência", type text}, {"Referência", type text}, {"Restrição", type text}, {"Peso", Int64.Type}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

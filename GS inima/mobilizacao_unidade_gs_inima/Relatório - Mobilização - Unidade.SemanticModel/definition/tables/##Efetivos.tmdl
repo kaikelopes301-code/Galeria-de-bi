@@ -1,0 +1,48 @@
+table ##Efetivos
+	lineageTag: fd1f56e2-a464-4680-9dc2-4b98dc1cfe66
+
+	column '(Efetivos) Parâmetros'
+		lineageTag: 41042213-d21c-411d-808e-cde2a323106f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '(Efetivos) Parâmetros Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '(Efetivos) Parâmetros Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Efetivos) Parâmetros Campos'
+		isHidden
+		lineageTag: 3ecd2428-b76f-4a6e-bf25-6d14575e5f67
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '(Efetivos) Parâmetros Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Efetivos) Parâmetros Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 1493780a-dcde-4aec-a14d-1ede95c65629
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ##Efetivos = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Efetivos'[Razão Social Fornecedor - Contrato]), 0),
+				    ("Unidade", NAMEOF('Efetivos'[Nome Fantasia Unidade]), 1)
+				}
+
+	annotation PBI_Id = 4752d99c34934218b44f69d301ac38fc
+

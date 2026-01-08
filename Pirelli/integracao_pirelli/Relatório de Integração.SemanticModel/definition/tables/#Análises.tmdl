@@ -1,0 +1,48 @@
+table #Análises
+	lineageTag: b4e8a468-003a-4a3b-ab73-e73d635f3296
+
+	column #Análises
+		lineageTag: 48a40aa1-0d43-4248-a28a-a5a39a09da7c
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Análises Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Análises Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Campos'
+		isHidden
+		lineageTag: 45f88410-1203-40f1-80ce-c4de22751af5
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Análises Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 84b63568-be05-46cb-b46b-03ad7933eb36
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Análises = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('SLA''s Análise'[Fornecedor]), 0),
+				    ("Documento", NAMEOF('SLA''s Análise'[Nome_Documento]), 1)
+				}
+
+	annotation PBI_Id = d1e38ebf02fa45a5919972c75fbeb687
+

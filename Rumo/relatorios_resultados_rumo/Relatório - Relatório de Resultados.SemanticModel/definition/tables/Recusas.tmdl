@@ -1,0 +1,163 @@
+table Recusas
+	lineageTag: 81cf8ae3-21ea-4d4e-b027-bbce8f80bc50
+
+	measure '(Analises) Quantidade de Análises' = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: f42b0025-96e5-4d45-a247-06d7fa3ee086
+
+	measure (Ocorrências) = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 0d025a97-1b4f-49a1-beb1-29b4a1cb0de3
+
+	column Fornecedor
+		dataType: string
+		lineageTag: e354a4e2-dd52-46e6-9ccd-bc3b54be0f31
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 0d550fb5-1c94-4559-8341-03443e0cc009
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Documento
+		dataType: string
+		lineageTag: b6551008-7576-470e-bd8f-fadd89491e3f
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 53a1c6f3-9eae-4ed5-af2c-37e420b71325
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: bea2da05-77f6-438e-8d28-b0aa4c17af87
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de envio'
+		dataType: string
+		lineageTag: 74dd5c60-bae1-4033-9258-dac1ac1212cb
+		summarizeBy: none
+		sourceColumn: Prazo de envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Análise'
+		dataType: string
+		lineageTag: acf0f223-b56a-4278-a525-fa5a6f0a31d8
+		summarizeBy: none
+		sourceColumn: Data de Análise
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de entrega'
+		dataType: string
+		lineageTag: 1f67da8b-2385-4ac6-aba9-c1253a6db984
+		summarizeBy: none
+		sourceColumn: Data de entrega
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Analisado por'
+		dataType: string
+		lineageTag: 2693c619-11f4-4c77-82e1-49c3cd96ed81
+		summarizeBy: none
+		sourceColumn: Analisado por
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: 210a3156-172b-462d-a21d-9520d4078415
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 1ec5b061-0eb8-4942-9ded-7fe0e327439a
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Pis
+		dataType: string
+		lineageTag: 98621bd0-9fb8-426c-8eb3-b3502667ebc1
+		summarizeBy: none
+		sourceColumn: Pis
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número do pedido'
+		dataType: string
+		lineageTag: 1ec0b6e3-9501-463a-b467-91000937bd88
+		summarizeBy: none
+		sourceColumn: Número do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: e8404a26-498b-4ac6-b0f9-61b312e46042
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: 3aeab9bb-a2ef-42f4-8a21-38638e6a129b
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mensagem de Validação'
+		dataType: string
+		lineageTag: f4de1567-17e1-473f-9e58-0d5d9866c542
+		summarizeBy: none
+		sourceColumn: Mensagem de Validação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Motivo
+		dataType: string
+		lineageTag: d75fdf64-f2f9-4193-abb6-972511f040a0
+		summarizeBy: none
+		sourceColumn: Motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Recusas = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\SETUP\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Rumo\Relatório de Recusas.xlsx"), null, true),
+				    Recusas_Sheet = Fonte{[Item="Plan1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Recusas_Sheet, [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas em Branco Removidas1" = Table.SelectRows(#"Linhas em Branco Removidas", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+				in
+				    #"Linhas em Branco Removidas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,233 @@
+table 'Status de Efetivos'
+	lineageTag: 683980d1-46e0-4951-bd6a-888b2b3276de
+
+	measure '(Cadastro) Quantidade de Efetivos Cadastrados' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 20a8d200-0d5a-4da4-9404-a824ffade7c1
+
+	measure '(Relação) Quantidade Efetivos Cadastrados' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			USERELATIONSHIP('Status de Efetivos'[Id_Contrato],'Número de Contrato'[Id.Contrato]))
+		formatString: #,0
+		lineageTag: 3d6df304-cac1-492b-8dac-078b2a2cbb55
+
+	measure '(Distintas) Quantidade Fornecedores' = CALCULATE(DISTINCTCOUNT('Status de Efetivos'[CNPJ Fornecedor - Faturamento]))
+		formatString: 0
+		lineageTag: da978b34-e2e8-4335-8b24-abe2f44f303f
+
+	measure '(Contratos) Quantidade de Contrato' = DISTINCTCOUNT('Status de Efetivos'[Número Contrato])
+		formatString: 0
+		lineageTag: 6023832d-fe24-42d7-acb1-c50085e967da
+
+	measure '(Ativos Relação) Quantidade Efetivos Cadastrados' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivos'[Situação] <> "Inativo")
+		formatString: #,0
+		lineageTag: e533a15c-119b-4c28-8396-f8f0e1553ae9
+
+	measure '(Eventual) Quantidade de Contratos Eventuais' = CALCULATE(DISTINCTCOUNT('Status de Efetivos'[Número Contrato]))
+		formatString: 0
+		lineageTag: b0aed4b8-afbc-4f80-80c2-c733b261fbac
+
+	measure '(Contínuos) Quantidade de Contratos Eventuais' =
+			CALCULATE(DISTINCTCOUNT('Status de Efetivos'[Número Contrato]),
+			'Status de Efetivos'[Tipo do Contrato] = "Contínuo")
+		formatString: 0
+		lineageTag: a908ee4c-b4c7-47cd-b208-6ea560641d39
+
+	measure Quantidade_Efetivos_Ativos = CALCULATE(COUNT('Status de Efetivos'[CPF]))
+		formatString: 0
+		lineageTag: b070ab45-1981-4965-a2ea-98c0bf533650
+
+	column Chave
+		dataType: string
+		lineageTag: 2016d9e7-1bd3-4066-a768-9029944c2878
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 7a1065c7-99b7-4158-911f-6e4e4bcff3c1
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: af203b9a-d5af-4642-b0c9-af29d5b3c3b7
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: 6a91296f-aa61-4541-9d76-dcf103f4cd6c
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6174e215-a62f-4a42-b654-0ae1a6231686
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		variation Variation
+			isDefault
+			relationship: da662618-6c41-4086-9f8f-5105e029793e
+			defaultHierarchy: LocalDateTable_5229595e-3bd9-449b-ae68-b27c994eb21f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de início da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3f3c8942-b11a-41d2-9c7c-3062b9a96ca4
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		variation Variation
+			isDefault
+			relationship: d35d9234-f5b2-4acb-a2cb-b8c5164848da
+			defaultHierarchy: LocalDateTable_b84c6a68-eb22-47f6-9c5a-272828697006.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de fim da vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3f513f68-493e-417c-b101-0796be7f3c3f
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		variation Variation
+			isDefault
+			relationship: af245971-dd2a-4572-b00c-d42d2d8c6e12
+			defaultHierarchy: LocalDateTable_8d676a90-5326-4fe5-a492-3e4457580b1f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PIS
+		dataType: string
+		lineageTag: 46fb6f10-bb70-4d43-98df-360f133f604f
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 8ad2a35f-5c88-42f7-abd9-65d5fa10e7b1
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: c4e5a829-100d-43f4-9216-f1b6e0439575
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2413d17d-8605-439e-bd83-8858c55749f3
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Situação
+		dataType: string
+		lineageTag: 292e8c1e-2a05-46b1-9e01-5dd1d2a4791b
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 25e3f27e-8447-46d4-914d-1ef7db4b16b8
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 5183c635-bbfb-4c5a-b6df-c6216ab62b98
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: d1b4a2c6-26ab-41a6-be54-6c69f1bc9d9b
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 7b0a8b7f-a0f5-4f32-8cf4-ef2e3efd849f
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: c77739a9-59f5-4235-a2d0-d4c8b5dacc8c
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Contrato'
+		dataType: string
+		lineageTag: 86ef3af2-d2ae-417b-ab31-81a6f9476621
+		summarizeBy: none
+		sourceColumn: Vigência Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Restrição'
+		dataType: string
+		lineageTag: d1170257-d918-4fa3-8440-4f5e56dade20
+		summarizeBy: none
+		sourceColumn: Status de Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status de Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = 'a0920144-8e1e-4354-bd41-09f61a42ae24'#(lf)Declare @Date DateTime = GETDATE()#(lf)#(lf)Select #(lf)#(tab)bc.Id As 'Chave',#(lf)#(tab)c.OrderNumber As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)   CASE#(lf)        WHEN c.ValidityInitial > @Date THEN 'Vigência Futura'#(lf)        WHEN c.ValidityFinal < @Date THEN 'Vigência Finalizada'#(lf)        ELSE 'Vigente'#(lf)    END AS 'Vigência Contrato',#(lf)#(tab)p.TradeName As 'Fornecedor',#(lf)#(tab)bc.CompanyName As 'Razão Social',#(lf)#(tab)(Select dbo.FNCNPJMask(bc.Document)) As 'CNPJ',#(lf)#(tab)b.TradeName As 'Unidade',#(lf)#(tab)ca.Name As 'Categoria',#(lf)#(tab)(#(lf)#(tab)#(tab)Case#(lf)#(tab)#(tab)#(tab)When c.Type = 1 Then 'Contínuo'#(lf)#(tab)#(tab)#(tab)When c.Type = 2 Then 'Grandes Paradas'#(lf)#(tab)#(tab)#(tab)When c.Type = 4 Then 'Eventual'#(lf)#(tab)#(tab)#(tab)When c.Type = 8 Then 'Temporário'#(lf)#(tab)#(tab)#(tab)When c.Type = 16 Then 'Visitante técnico'#(lf)#(tab)#(tab)#(tab)When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)#(tab)#(tab)#(tab)When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)#(tab)#(tab)#(tab)When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)#(tab)#(tab)#(tab)When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)#(tab)#(tab)#(tab)Else 'Tipo de contrato desconhecido'#(lf)#(tab)#(tab)End#(lf)#(tab)) As 'Tipo do Contrato',#(lf)#(tab)Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)#(tab)Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)#(tab)Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(tab)(Select dbo.FNPISMask(e.PisNumber)) As 'PIS',#(lf)#(tab)(Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)#(tab)#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN E.Situation = 1 OR E.Removed = 1 THEN 'Inativo'#(lf)#(tab)#(tab)ELSE cs.statusRestriction #(lf)#(tab)END AS 'Status de Restrição',#(lf)#(tab)#(lf)#(tab)#(lf)#(tab)e.Name As 'Nome',#(lf)#(tab)CASE #(lf)        WHEN (E.Situation <> 1 AND E.Removed = 0) THEN 'Ativo' #(lf)        WHEN (E.Situation = 1 OR E.Removed = 1) THEN 'Inativo' #(lf)        --WHEN E.Situation = 2 THEN 'Folguista' #(lf)    END AS 'Situação',#(lf)#(tab)Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro'#(lf)#(lf)#(tab)#(lf)From #(lf)#(tab)Effective As e#(lf)#(tab)Inner Join [Contract] As c On c.Id = e.ContractId#(lf)#(tab)Inner Join Building As b On b.Id = c.BuildingId#(lf)#(tab)Inner Join [Provider] As p On p.Id = c.ProviderId#(lf)#(tab)Inner Join BranchCompany As bc On bc.Id = c.BranchCompanyId#(lf)#(tab)Inner Join Category As ca On ca.Id = c.CategoryId#(lf)#(tab)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)#(tab)LEFT JOIN  EmployeeRegisterContractStatus AS cs WITH(NOLOCK) ON cs.EmployeeRegisterContractId = erc.Id AND cs.DeliveryKind IS NULL#(lf)Where#(lf)#(tab)b.OrganizationId = @OrganizationId#(lf)#(tab)And c.Removed = 0#(lf)#(tab)And e.Removed = 0#(lf)#(tab)And e.CreatedAt < @Date#(lf)    And c.[Status] = 0#(lf)#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Chave", type text}, {"Número Contrato", type text}, {"Fornecedor", type text}, {"Razão Social", type text}, {"CNPJ", type text},  {"Unidade", type text}, {"Categoria", type text}, {"Tipo do Contrato", type text}, {"Data de cadastro do contrato", type date}, {"Data de início da vigência", type date}, {"Data de fim da vigência", type date}, {"PIS", type text}, {"CPF", type text}, {"Nome", type text}, {"Situação", type text}, {"Data de cadastro", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

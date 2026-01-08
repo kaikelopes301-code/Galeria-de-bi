@@ -1,0 +1,47 @@
+table 'Tipo Documento'
+	lineageTag: 01d156c1-11e9-48d1-a1ec-6ecb55c0785d
+
+	column Documento
+		dataType: string
+		lineageTag: 6912aa45-de23-459b-bbc2-5e4bbc83bbf5
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 8c222c06-5637-48c7-b789-f0e44602bb5b
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Restrição de Pagamento'
+		dataType: string
+		lineageTag: 89c205e7-f5a5-42d4-a10d-3461c1247571
+		summarizeBy: none
+		sourceColumn: Restrição de Pagamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Restrição de Acesso'
+		dataType: string
+		lineageTag: 7acd63ab-c55e-41ec-beaf-25a9dfaf85fa
+		summarizeBy: none
+		sourceColumn: Restrição de Acesso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tipo Documento' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @organizationId uniqueidentifier = '23691bb8-3910-436a-9467-0df7b443fb38' ;#(lf) #(lf)SELECT#(lf)#(tab)DISTINCT#(lf)    [d].[Name] AS [Documento],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)#(tab)#(tab)ELSE '--'#(lf)#(tab)END AS 'Tipo do documento',#(lf)#(lf)#(tab)CASE d.OrganizationRestrictions#(lf)        WHEN 0 THEN 'Nenhuma'#(lf)        WHEN 1 THEN 'Restrição de acesso'#(lf)        WHEN 2 THEN 'Restrição de pagamento'#(lf)        WHEN 3 THEN 'Restrição de acesso e Restrição de pagamento'#(lf)        ELSE '--'#(lf)    END AS [Restrição de Pagamento],#(lf)#(lf)#(lf)CASE WHEN d.EmployeeRestrictions = 0 THEN 'Não'#(lf)         WHEN d.EmployeeRestrictions = 1 THEN 'Sim'#(lf)         ELSE '--' END AS [Restrição de Acesso]#(lf)#(lf)#(lf)#(tab)FROM#(lf)#(tab)[Document] AS [d] WITH (NOLOCK)#(lf)INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON#(lf)#(tab)[d].[OrganizationId] = [o].[Id]#(lf) #(lf)#(tab)WHERE#(lf)#(tab)[d].[Removed] = CAST(0 AS bit)#(lf)#(tab)AND [d].[Archived] = CAST(0 AS bit)#(lf)#(tab)AND [d].[OrganizationId] = @organizationId#(lf)"])
+				in
+				    Fonte
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

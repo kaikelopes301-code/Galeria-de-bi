@@ -1,0 +1,34 @@
+table Gestores
+	lineageTag: 49e370d9-3bc8-422e-ad5e-e5d7862083af
+
+	column Fornecedores
+		dataType: string
+		lineageTag: 4f32fbda-c46d-4915-9516-262839875cea
+		summarizeBy: none
+		sourceColumn: Fornecedores
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gestor
+		dataType: string
+		lineageTag: ed19a6d2-7cb2-4ff8-8576-05ef04fccf88
+		summarizeBy: none
+		sourceColumn: Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Gestores = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("5VhLcuM2EL0KymtbOQMEtijEJMEAoGJ7ahYwxZkwoUiHH1cl2yx8jlQWc4I5gS6WBj8SHZNKSvZMJZUV9cEDGv15/Zrv3l1QR3KqOSMK5IYzICEwqgj034Uinnbo4uLygpmyyNI8IXdmd1/kF+8vLfqO8MCJlMZdEMSED5Jx0YIQ822TpYaooqlMt97lHoEApHtLAiEdUBouIXAXPg0ivcAdeKDw6QCB7yIeLogSjIND8Yco4CEoJajX7k5w+7BMqzjN2hN+7U5YQmAtR0vaJ2VUjC5zSXwRzNxlQGq8AXDJ71qsM/bEDNL53j24bzBtdp3wIs3RuNZCLSMmwLob7dLURRMG12mzS8ukIsrkdVG1+Gsa2WVwQ2jgUO7DqcWuJ5boqoPxeBGP+yHc2Ti17oagdQ6X4PEZi91QEcUxSD5VnSvcSNJg/0TnAJIuQU5hGB2M/T/ieHC1ppE6Fos3LjEbG+Hinvz0LlqEh0Q7gOFojfpmFlk8EJWUj2mc9M+iIvgxrepkZ6pTyPPP/G8hz/aQLRLkMAjWtGPB9uD9kzhVnlRZZhsoBpyIdZ8FWSOH+vZHilW6tnDf/FIZsk7K3OTbpOeCJMuSktDdfZrktcmIV28Nrl2WTW6IX5Qm7ReC52HGgh9KULRNWBoA9SHQlhmBCZt6tOeBweIX23hJHBcl8ZusTqtq8M+JXP0KgGgpeUDax4p3/hvV1+xNzoM5SWyaGjtN1uw/7T9jNHm+baq6THHF4H23SbMfknKXkI3B8KRFd+KtjetSUoXdb7Jd2mhLDSuqOzZYCikpW9ND853eGBOkbVkryrjHNYfT3dqnUq3xUClBC0kP5HVM1KlMOxNl8qZOcnTVHwVh6WOaYTH5Sb3/PUtjM10Tvk+ksLdec5dDgB14/7T/TZzKAT/ytA9saGjd+pfR/BdBN4xobBcqFBhwMiZ+teicWcboMZNtk9J0GKF9fkNYkWO2TSTftDO/HiiU3Kc3o1spFJGKOuMEeXGn80BlUSdxXVzpJD4y89YS9scGF8XmZP6/Eo75rynxQVMvkq6N2D9Uya8FDtJwXpMESOroRSQOOfCMmqvMfuWQbS8XvPV+KNxHBHXsyl1HwoLh6lTFWECbJs/0Eo4OjErXuhLmFP0rkMWHujTxTwR+btIHs0tsslsjMYqWjc19mWIDNm0ZmLwbPZRY4WnsutX4naz3bfC4pc2u3x7o/AttUOyKRyJ7QdC59NUrhS82vfo5e4Xi3TzX3WIkg4+hf9FwzwLpawIebJBHMLeG1D2lqL/w+pWdDLjCHopdfrPAaOKsMD25amDtv2PdehAIeCjenB3ZcWoDrrFw5/TFCmSXRO10HwKKH3i2419ndS1uhWUfigMxNrXZ4GpkzuqhKGuzxTgQ+mPxAYVpL4gmSFxHcimGlwBooWUB1brzKJJaMdpOpdPC5y322FjeIhrv6I38/JyYp1JsY/CyRBe2ciBPyo/otX5k2H8qqreCsM1ojrAjwnHCmJ8qzkOtsP+S60DczMz6WNtzvecIxfQN+lHiOXjurUn//qPTlNQL5Yx1OKHgHQ5t6ECNNvhghZOaDfEroD73PMwB0c4Hl+OafCbY5rk4sKIGD42s0pklMK+JUYJsEmyXcX9yEIkN1hwbap63b7/68eyqa0AT1f83LPz+Tw==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Fornecedores = _t, #"Gestor Pirelli" = _t]),
+				    #"Duplicatas Removidas" = Table.Distinct(Fonte, {"Fornecedores"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Duplicatas Removidas",{{"Gestor Pirelli", "Gestor"}}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Fornecedores", type text}, {"Gestor", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,49 @@
+table #Grupo_Rel_Forn
+	lineageTag: 4ff021be-434e-4102-bcde-d689a71d3f92
+
+	column ###FORN,UNID
+		lineageTag: 96bf86f5-f95f-4a6b-9493-96f899de4dae
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '###FORN,UNID Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '###FORN,UNID Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###FORN,UNID Campos'
+		isHidden
+		lineageTag: 0b50e412-3c6f-4fb5-9506-88fc5c85b542
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '###FORN,UNID Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '###FORN,UNID Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 30cafcdf-0151-46d9-950f-96bfa649e7a9
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Grupo_Rel_Forn = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Documentos em Análise'[Razão Social]), 0),
+				    ("Distribuidora", NAMEOF('Documentos em Análise'[Distribuidora]), 1),
+				    ("Documento", NAMEOF('Documentos em Análise'[Documento]), 1)
+				}
+
+	annotation PBI_Id = fb41fed4f8a949ad97d4ae31acc7e461
+

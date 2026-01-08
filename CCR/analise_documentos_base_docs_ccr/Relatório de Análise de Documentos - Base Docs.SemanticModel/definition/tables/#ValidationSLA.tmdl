@@ -1,0 +1,48 @@
+table #ValidationSLA
+	lineageTag: 1f98a876-41bb-4ed4-baf9-fa043fb22b1b
+
+	column '1 - Parâmetro'
+		lineageTag: fa06de61-94c5-43af-a691-d494886febde
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '1 - Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '1 - Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1 - Parâmetro Campos'
+		isHidden
+		lineageTag: da09440e-a245-45ab-bca2-662d8a33241a
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '1 - Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1 - Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 853417a3-e3f2-4cdd-afc5-423738a57e49
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #ValidationSLA = calculated
+		mode: import
+		source =
+				{
+				    ("Documento", NAMEOF('DocumentValidationSla1'[Documento]), 0),
+				    ("Fornecedor", NAMEOF('DocumentValidationSla1'[Fornecedor]), 1)
+				}
+
+	annotation PBI_Id = 25fef9bf6cd34b69b5c515a1568c6868
+

@@ -1,0 +1,46 @@
+table '(Parâmetro) - Mobilização Aderência'
+	lineageTag: ba43fe45-52ca-46f0-a7fe-fccc34929e6a
+
+	column '(Parâmetro) - Mobilização Aderência'
+		lineageTag: 97a0486a-637e-40d6-9bfc-a6b629b55692
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '(Parâmetro) - Mobilização Aderência Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '(Parâmetro) - Mobilização Aderência Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Parâmetro) - Mobilização Aderência Campos'
+		lineageTag: afe20983-c481-4daf-9bab-ea59eae4eb3a
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '(Parâmetro) - Mobilização Aderência Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Parâmetro) - Mobilização Aderência Pedido'
+		formatString: 0
+		lineageTag: a2e7a3fc-a797-403f-a406-e6f86fabd276
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '(Parâmetro) - Mobilização Aderência' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Relatório Fornecedores'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Relatório Fornecedores'[Unidade(s)]), 1)
+				}
+
+	annotation PBI_Id = 74bdf67cf2ca42c5867c24fea4795094
+

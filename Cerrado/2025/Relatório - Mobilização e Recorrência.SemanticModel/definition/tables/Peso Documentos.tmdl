@@ -1,0 +1,33 @@
+table 'Peso Documentos'
+	lineageTag: 2b8b65d5-b772-4b40-85b9-939d3ab73014
+
+	column Documento
+		dataType: string
+		lineageTag: e7224fe6-1a88-4353-9c2c-8cbb036d5fc4
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Peso
+		dataType: double
+		formatString: 0
+		lineageTag: 7aa0e3e5-9391-4318-9a45-39254b1590ff
+		summarizeBy: sum
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Peso Documentos' = m
+		mode: import
+		source =
+				let
+				   Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("pVOxbtswEP0VwlOCuiiKfoFsRUGHFoZjpEOQ4URe3QNonkFSnvsP/YKiQ5GhU7au+pN+SY8STdlGtiw2Jb53792708PDrNLsDaslW4x04Lmc3AFd/7v/Vd6C4k5l4Edn6ECmA6sMqo2HFuw3ns1n72ePcym3758taUyXd7jtPKfTPRkokCX4mIrL+xW7mLgfxgv0kUy+qvunliKHowSFCOqtWn6uNxOBd3vPB3AR1QKc7n96GuvCFnYotQcbYIeL8CJPAGvULAIDoWDqat2of99/qJp1V2pV3qMGA2M8IxcpQlANGvRAk0iN2oKfkKPojkKQR+mrYe+EbNhjKNlckkYQTfp2OGdAFQI5OIm2ud3cpZDO+9sf0yjeMu62I0gAfxKAumrT0Pn6Ery+ST9oJ3M3ooJbkGbe5SHBsZvMlKpwPo9P6IKsTuVkKH8iaSjglQWX59X/lb+rM60FOvxKmsZJqjdqMbiUw0mz1yUIGQu1o0kXk0llQF2GW1ZMhuP7J5PXjdouZpnjUNXKoyw9umJg2IzlpvmCbekgGY7987CDF2rJpPiFF3nn38nrGr8HO3yVLuzZx9ek+Pgf", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Documento = _t, Peso = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Documento", type text}, {"Peso", type number}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

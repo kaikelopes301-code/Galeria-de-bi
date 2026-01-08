@@ -1,0 +1,57 @@
+table ##CAT,FOR
+	isHidden
+	lineageTag: b68e5b0d-308d-4014-85af-c810b2b57e64
+
+	measure ##CAT,FOR =
+			{
+			    ("Fornecedor", NAMEOF('Documentos em Análise'[Fornecedor]), 0),
+			    ("Categoria", NAMEOF('Documentos em Análise'[Categoria(s)]), 1)
+			}
+		isHidden
+		lineageTag: f9d1d56b-9973-4b1c-88cd-2d7b48f8cece
+
+	measure '##CAT FOR' =
+			{
+			    ("Fornecedor", NAMEOF('Documentos em Análise'[Fornecedor]), 0),
+			    ("Categoria", NAMEOF('Documentos em Análise'[Categoria(s)]), 1)
+			}
+		lineageTag: ceecf7b9-75ee-44b9-b656-b1146f352102
+
+	column Value1
+		isHidden
+		lineageTag: 37a437e2-9c63-4b80-b755-0a36292fbf2f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value1]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value2
+		isHidden
+		lineageTag: f5a68570-5da3-4a46-a777-12eb3c0b4145
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value2]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value3
+		isHidden
+		formatString: 0
+		lineageTag: f61db54f-e1a4-47b2-a30c-e3c0f6c9e748
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ##CAT,FOR = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Documentos em Análise'[Fornecedor]), 0),
+				    ("Categoria", NAMEOF('Documentos em Análise'[Categoria(s)]), 1)
+				}
+
+	annotation PBI_Id = c90fed79a90d49f89074b47eca6a8afd
+

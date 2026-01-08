@@ -1,0 +1,106 @@
+table Unidades
+	lineageTag: 38cb0a6a-fd66-4f36-8d23-89e65bd9e652
+
+	column 'Mídia Vaga'
+		dataType: string
+		lineageTag: a6b5b373-b560-4438-8b60-8611fb0cbe3b
+		summarizeBy: none
+		sourceColumn: Mídia Vaga
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Espaços para Locação'
+		dataType: string
+		lineageTag: c36b5297-6b78-4b16-93b4-b536014b7359
+		summarizeBy: none
+		sourceColumn: Espaços para Locação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor do Aluguel'
+		dataType: double
+		lineageTag: dc275044-85b9-4292-ad6d-e145adfc6aed
+		summarizeBy: none
+		sourceColumn: Valor do Aluguel
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Tipo de Mídia'
+		dataType: string
+		lineageTag: 0c1ac4d6-bdfd-4d08-947b-53befa6bc470
+		summarizeBy: none
+		sourceColumn: Tipo de Mídia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 987bca9f-cb65-43bf-96e6-a00f5cd56ee0
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 69bc6081-b94c-4308-86bc-b4fb783ecfd2
+		summarizeBy: none
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column Família
+		dataType: string
+		lineageTag: 9660cfa9-2f60-4676-b163-ad9fa91a8179
+		summarizeBy: none
+		sourceColumn: Família
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 6dc8ef1c-b973-4b0a-b7f5-558e91e13097
+		summarizeBy: none
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	partition Unidades = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="SELECT DISTINCT#(lf)    b.TradeName AS 'Razão Social',#(lf)    dbo.FNCNPJMask([bc].[Document]) AS [CNPJ],    #(lf)    bls.Name AS 'Nome do Espaço de Locação',#(lf)    bls.IdealRentalValue AS 'Valor do Aluguel',#(lf)    bls.Family AS 'Família'#(lf)    #(lf)FROM#(lf)    BuildingLeaseSpace AS bls WITH(NOLOCK)#(lf)    INNER JOIN Building b WITH(NOLOCK) ON bls.BuildingId = b.Id#(lf)    INNER JOIN BranchCompany AS bc WITH(NOLOCK) ON bc.BuildingId = b.Id#(lf)WHERE#(lf)    b.OrganizationId = '1eed0188-e117-41d5-ab47-c8d88649d174';#(lf)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Linhas Classificadas" = Table.Sort(#"Linhas em Branco Removidas",{{"Nome do Espaço de Locação", Order.Ascending}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Classificadas"),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Duplicatas Removidas",{{"Nome do Espaço de Locação", "Local"}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Colunas Renomeadas", "Personalizar", each if [Local] = "" then "erro" else "Mídia Vaga"),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Coluna Condicional Adicionada",{{"Personalizar", "Mídia Vaga"}, {"Local", "Espaços para Locação"}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Colunas Renomeadas1",{ "CNPJ"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Colunas Removidas",{{"Razão Social", "Unidade"}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Renomeadas2","Mídia ","",Replacer.ReplaceText,{"Mídia Vaga"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","NULL","Mídia",Replacer.ReplaceText,{"Família"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1"," Shopping","",Replacer.ReplaceText,{"Unidade"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","Shopping Manaus ","",Replacer.ReplaceText,{"Unidade"}),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Valor Substituído3", each ([Unidade] = "Pátio Roraima")),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Linhas Filtradas", "Índice", 1, 1, Int64.Type),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Índice Adicionado", {"Espaços para Locação"}, #"(Auxiliar) Valor de Mídias", {"Mídia"}, "(Auxiliar) Valor de Mídias", JoinKind.LeftOuter),
+				    #"(Auxiliar) Valor de Mídias Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "(Auxiliar) Valor de Mídias", {"Classificação (Família)", "Valor"}, {"Classificação (Família)", "Valor"}),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"(Auxiliar) Valor de Mídias Expandido",{{"Valor", type number}}),
+				    #"Colunas Renomeadas3" = Table.RenameColumns(#"Tipo Alterado",{{"Família", "Tipo de Mídia"}, {"Classificação (Família)", "Família"}}),
+				    #"Duplicatas Removidas1" = Table.Distinct(#"Colunas Renomeadas3", {"Índice"})
+				in
+				    #"Duplicatas Removidas1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

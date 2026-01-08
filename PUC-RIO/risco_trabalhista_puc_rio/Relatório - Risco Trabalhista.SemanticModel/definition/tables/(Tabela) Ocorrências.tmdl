@@ -1,0 +1,40 @@
+table '(Tabela) Ocorrências'
+	lineageTag: ee71a5d4-9960-4871-96a3-153885b4c0f5
+
+	measure (Verificação) = ```
+			
+			
+			VAR OCORR = [(Rescições) Quantidade]
+			
+			VAR COLAB = [Quantidade de Colaboradores]
+			
+			RETURN IF( OCORR>0 && COLAB> 0,"S","N") 
+			```
+		lineageTag: 8a6378f8-6070-4543-915b-03c36963f949
+
+	column Fornecedor = LOOKUPVALUE('Status de funcionários'[Fornecedor], 'Status de funcionários'[Chave Movimentações],'(Tabela) Ocorrências'[Chave Movimentações])
+		lineageTag: b0284a40-1d45-4212-8f1f-2bf4beb3ac27
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade = LOOKUPVALUE('Análise de Colaboradores'[Unidade], 'Análise de Colaboradores'[Chave Movimentações],'(Tabela) Ocorrências'[Chave Movimentações])
+		lineageTag: 350b2f6c-d947-4a81-8dd8-34e95693d825
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Movimentações'
+		lineageTag: 39dc9a32-aa4d-4040-bcf4-65cb5cdb4557
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Status de funcionários[Chave Movimentações]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '(Tabela) Ocorrências' = calculated
+		mode: import
+		source = DISTINCT('Status de funcionários'[Chave Movimentações])
+
+	annotation PBI_Id = 21bbe194c0a649609678745ff71dd3f6
+

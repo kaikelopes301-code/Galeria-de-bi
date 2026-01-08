@@ -1,0 +1,96 @@
+table Unidade
+	lineageTag: a6bfb6ad-65f2-4357-8a16-acd3c9dcfcb2
+
+	measure 'Login Teste' = ```
+			
+			VAR SELECIONADO = SELECTEDVALUE(Unidade[Unidade], "Todos") // Captura o valor selecionado
+			VAR LOGIN = HASONEVALUE(Unidade[Unidade])
+			VAR VAZIA = [Valor Senha] = BLANK()  // Verifica se alguma senha está em branco
+			VAR CORRETO = [Valor Senha] = MAX(Unidade[Senha]) // Verifica se as senhas são corretas
+			
+			RETURN
+			IF(
+			    SELECIONADO = "Todos", 
+			    IF(CORRETO, "Ok", "Senha Inválida"), // Tratando "Todos" como uma senha válida ou não
+			    IF(
+			        NOT(LOGIN), 
+			        "Preencher Usuário", // Se não há unidade selecionada, solicita preenchimento
+			        IF(
+			            VAZIA, 
+			            "Digite a Senha", // Se alguma senha estiver em branco, solicita a senha
+			            IF(
+			                CORRETO, 
+			                "Ok", // Se as senhas estão corretas
+			                "Senha Inválida" // Caso contrário
+			            )
+			        )
+			    )
+			)
+			
+			```
+		lineageTag: 3bd0285a-1c15-4f9d-88c4-addb02a86161
+
+	measure 'Mudar Página' = IF([Login Teste] = "Ok", "Capa","Erro")
+		lineageTag: ee5cc960-8b98-4bdf-9dfa-14a3c32ee1bf
+
+	column Unidade
+		dataType: string
+		lineageTag: 30c37fd6-966a-43b8-acb5-0ffeb32a7784
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 186e5d75-55b0-4f4b-859e-efb076e0db10
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column Senha
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a43a599-bdb1-4db5-8535-1b95cb16c8de
+		summarizeBy: sum
+		sourceColumn: Senha
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Senha 2'
+		dataType: int64
+		formatString: 0
+		lineageTag: fbcc4f00-c620-42c6-b75b-368194bc3144
+		summarizeBy: sum
+		sourceColumn: Senha 2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: e198ba79-3f44-4ffb-87c8-dfdb65fcf076
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Unidade = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("ZVBLbsJADL3KaNbQOzgTQ61mxuk4A4uIRVVYVKqKROmu+x4AcRKOkIvVKYuCs7Ps9/w+fe8FEnLJ7Gdevra7z+POb2a9h2UBcTW6jEV4HFbUcSZw8gAGKxAhW/5zgZYb+7bLVNLiun2/AmNFmDqDCwGaOOqk/eF/uxRHqS6iX6AxjL8bRXBVBiF71YSUHlncGBeiClpnym9VE0npk3wJpmYCpzCccq2VfLuw/3gdLoft28tcwk26wBFk0hdqY3EqgtZ1lbnmtTyRbQewtU/Vv3BThp/hjHcBNr8=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Unidade = _t, Regional = _t]),
+				    #"Duplicatas Removidas" = Table.Distinct(Fonte),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Duplicatas Removidas", "Índice", 1, 1, Int64.Type),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Índice Adicionado", "Senha", each 1500 + Number.Mod([Índice] * 7913, 1001)),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "Senha 2", each 2501 + Number.Mod([Índice] * 7913, 1001)),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Senha", Int64.Type}, {"Senha 2", Int64.Type}}),
+				    #"Linhas Classificadas" = Table.Sort(#"Tipo Alterado2",{{"Unidade", Order.Ascending}})
+				in
+				    #"Linhas Classificadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

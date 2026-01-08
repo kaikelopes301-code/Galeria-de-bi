@@ -1,0 +1,117 @@
+relationship b91ae9b7-3856-4339-bc52-70512d641169
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Tabela Contratos'.'Fim de Contrato'
+	toColumn: LocalDateTable_29fc1538-c279-42d1-8671-51e0fab0af31.Date
+
+relationship 11a7e671-8f0b-4b31-bf2a-f82bfde6fc87
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Data de Hoje'
+	toColumn: LocalDateTable_8eb763b0-2948-46ec-a947-9f596c905869.Date
+
+relationship 171ff5ae-a33e-4e1d-b8c0-f9299f8fb953
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Atual.'Inicio de Contrato'
+	toColumn: LocalDateTable_126ab7af-c8bf-47b1-912e-1459a7d0e1e2.Date
+
+relationship a920ae5c-579d-4fe4-886b-8581432086b1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Atual.'Fim de Contrato'
+	toColumn: LocalDateTable_b54456b1-7e21-498c-b7be-855ac4f6118a.Date
+
+relationship a81338ee-edb0-4638-8831-e4d9e4134e45
+	fromColumn: 'Dia a Dia'.Chave
+	toColumn: 'Tabela Chave'.Chave
+
+relationship 66d0412a-84e3-4963-ad0a-5e1501c8efa8
+	fromColumn: Contratos.Chave
+	toColumn: 'Tabela Contratos'.Chave
+
+relationship 2231be08-c8b2-4957-861c-721a4f7597eb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Tabela Contratos'.'Inicio de Contrato'
+	toColumn: LocalDateTable_4dbf8a0f-e9d3-44eb-9ff6-7a66db440f73.Date
+
+relationship 4e9fd898-5621-4b05-bdb0-d4082a6bcb8f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Atual.'Data de agora'
+	toColumn: LocalDateTable_e187c43b-ff90-4e15-a8e9-922a34efd7b8.Date
+
+relationship AutoDetected_b668ac2b-fd54-4766-9b77-66c0763ea341
+	toCardinality: many
+	fromColumn: 'Dia a Dia'.'Chave de Sobreposição'
+	toColumn: Sobreposição.'Chave de Sobreposição'
+
+relationship 46652ecb-451c-4988-bb60-7b918d62dbe5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dia a Dia'.'Inicio de Contrato'
+	toColumn: LocalDateTable_39eb11a2-c693-46be-a8ae-22d74555e763.Date
+
+relationship 3a546d50-9574-43c7-ae65-c6865eb7e9b6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dia a Dia'.'Fim de Contrato'
+	toColumn: LocalDateTable_bcee6dca-657d-47f0-bd61-4c41aefd49c9.Date
+
+relationship 596c9d3e-1a12-4ea0-b90d-024b374fa5a0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Atual.'Data de Hoje'
+	toColumn: LocalDateTable_4cee8140-cf2b-415b-8265-b9dc1730414c.Date
+
+relationship f66de056-685d-4f5f-ba3d-79d3b9071818
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dia a Dia'.'Data de Hoje'
+	toColumn: LocalDateTable_a04ea3b7-2eed-4781-b6b0-5d7f0c8df8f0.Date
+
+relationship 07201113-1529-46bc-86f2-2b434efdc4ae
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Gráfico - Calendário'.'Inicio de Contrato'
+	toColumn: LocalDateTable_fc1cce0e-19a7-4cd3-9bf2-3cba7e88e392.Date
+
+relationship 6a2d5c93-3871-44d3-8435-06eb83198536
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Gráfico - Calendário'.'Fim de Contrato'
+	toColumn: LocalDateTable_4a33e77d-5c8d-4ff0-8a1b-1891f759842d.Date
+
+relationship 63d186f0-089c-42bd-8193-704ba36874c7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Gráfico - Calendário'.'Data de Hoje'
+	toColumn: LocalDateTable_878645f4-260c-4077-800d-ff8af770eeaa.Date
+
+relationship AutoDetected_fa093702-5176-4826-940b-31be79739dcb
+	crossFilteringBehavior: bothDirections
+	fromColumn: Contratos.'Espaços para Locação'
+	toColumn: Unidades.'Espaços para Locação'
+
+relationship 94db57c6-37f7-4fa7-beda-72ad8a9154ef
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendário.Date
+	toColumn: LocalDateTable_32c0a325-e08e-4784-98d8-311afb811eaa.Date
+
+relationship 5a840379-16d2-409b-adf2-b746bfe162e5
+	fromColumn: Contratos.'Inicio de Contrato'
+	toColumn: Calendário.Date
+
+relationship 1edb2a73-4608-4299-b162-cc5652390fe0
+	isActive: false
+	fromColumn: Contratos.'Fim de Contrato'
+	toColumn: Calendário.Date
+
+relationship 6ee7f84c-e4ed-4349-b26d-1a4624fe71a0
+	fromColumn: 'Dia a Dia'.'Dias Distribuidos'
+	toColumn: Calendário.Date
+
+relationship a7b98332-78b0-4600-942b-0854906a9a66
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Gráfico - Calendário'.'Dias Distribuidos'
+	toColumn: Calendário.Date
+
+relationship 0446b794-a673-d5cd-c8ed-24db2c792655
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: '(Auxiliar) Valor de Mídias'.Mídia
+	toColumn: Unidades.'Espaços para Locação'
+
+relationship ac85786b-55d2-43a2-b760-d5a62a621d52
+	joinOnDateBehavior: datePartOnly
+	fromColumn: RefreshControl.RefreshDate
+	toColumn: LocalDateTable_45638cf4-8b39-4693-bdbb-02ad32959bf6.Date
+

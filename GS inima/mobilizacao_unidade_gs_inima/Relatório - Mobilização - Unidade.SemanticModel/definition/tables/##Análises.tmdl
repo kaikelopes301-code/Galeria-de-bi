@@ -1,0 +1,48 @@
+table ##Análises
+	lineageTag: ce5ec7c7-c16d-4864-ac3c-d8d496c68998
+
+	column #Análises
+		lineageTag: 1682c1b1-a2c0-4d43-8277-7b82e1144694
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Análises Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Análises Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Campos'
+		isHidden
+		lineageTag: f34dadad-9129-429d-b5f1-79702dc46e45
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Análises Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Análises Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: b8cbb7dd-b7f9-47db-ace5-bec184454b48
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ##Análises = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('DocumentValidationSla'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('DocumentValidationSla'[Unidade]), 1)
+				}
+
+	annotation PBI_Id = 02d9ca80bfa04ea99d477fbef737bdd9
+

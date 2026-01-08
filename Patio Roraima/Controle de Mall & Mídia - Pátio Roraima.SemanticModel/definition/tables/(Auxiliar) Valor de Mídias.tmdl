@@ -1,0 +1,75 @@
+table '(Auxiliar) Valor de Mídias'
+	lineageTag: bac941ee-e79c-47ed-a1cd-0580d572cbaf
+
+	column Mídia
+		dataType: string
+		lineageTag: 7dfdbea7-31ea-4f40-85e7-0502c5f5fa3b
+		summarizeBy: none
+		sourceColumn: Mídia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação (Família)'
+		dataType: string
+		lineageTag: 0583531a-d2de-4020-9c0c-01d7b007559e
+		summarizeBy: none
+		sourceColumn: Classificação (Família)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: int64
+		formatString: 0
+		lineageTag: 59ba8ab5-ae05-45d1-97ab-6bb9fabbef1d
+		summarizeBy: sum
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observações
+		dataType: string
+		lineageTag: ff30d2e5-8e5a-4585-b4c4-a27ece6a31da
+		summarizeBy: none
+		sourceColumn: Observações
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column5
+		dataType: string
+		lineageTag: 19406919-4be2-4d3d-a591-29c1ad7018be
+		summarizeBy: none
+		sourceColumn: Column5
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observações Atlas'
+		dataType: string
+		lineageTag: 551f3193-3dce-4c40-ba2d-4b4fe4b95fd8
+		summarizeBy: none
+		sourceColumn: Observações Atlas
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column7
+		dataType: string
+		lineageTag: ff341dc5-df69-425c-9b4a-6a6a4d6878e2
+		summarizeBy: none
+		sourceColumn: Column7
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '(Auxiliar) Valor de Mídias' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\PedroGabrielGuimarãe\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\03. Consultoria\Pátio Roraima\01 - Setup\Relatório Mídias Cadastradas.xlsx"), null, true),
+				    #"Valor de Mídias_Sheet" = Fonte{[Item="Valor de Mídias",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Valor de Mídias_Sheet", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Mídia", type text}, {"Classificação (Família)", type text}, {"Valor", Int64.Type}, {"Observações", type text}, {"Column5", type text}, {"Observações Atlas", type text}, {"Column7", type any}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

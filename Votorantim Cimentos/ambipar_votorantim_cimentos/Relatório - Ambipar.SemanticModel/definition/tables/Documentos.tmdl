@@ -1,0 +1,232 @@
+table Documentos
+	lineageTag: 85c09f6f-6ee2-4d14-941f-c409199a57a9
+
+	measure _Aprovados_Análises = ```
+			
+			COALESCE(
+			    CALCULATE(
+			        COUNTROWS(Documentos),
+			        Documentos[Status] = "Aprovado"
+			    ),
+			    0
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: 856ee3f8-4dcc-40ea-9a43-83d6af5e1ca5
+
+	measure Em_analise = ```
+			
+			COALESCE(
+			    CALCULATE(
+			        COUNTROWS(Documentos),
+			        Documentos[Status] = "Em Análise"
+			    ),
+			    0
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: 2b4834db-99da-44b8-ad1b-c9d1fba35db8
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure Pendentes = ```
+			
+			COALESCE(
+			    CALCULATE(
+			        COUNTROWS('Documentos'),
+			        'Documentos'[Status] IN {"Atrasado", "Atrasado Recusado"}
+			    ),
+			    0
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: c4252384-aa0e-432c-a2d4-3128d3919992
+
+	measure Agendados = ```
+			
+			COALESCE(
+			    COUNTA('Documentos'[Status]),
+			    0
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: 7b4fae07-ad8d-4bbf-ac73-a9187fec051f
+
+	measure _%_Conformidade =
+			
+			VAR APROV = CALCULATE([_Total_Documentos], 'Documentos'[Status] = "Aprovado")
+			
+			VAR TOTAL = [_Total_Documentos]
+			
+			VAR CONF = (APROV/TOTAL)
+			RETURN  IF(
+			            APROV=0 && TOTAL >0,
+			            0,
+			            CONF)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: afae18d1-4735-4ac9-bfba-9341406945fc
+
+	measure _Total_Documentos = CALCULATE(DISTINCTCOUNT('Documentos'[DocumentSchedule]))
+		formatString: 0
+		lineageTag: f7e82270-8bed-45d2-a486-9a58daca6428
+
+	column Documento
+		dataType: string
+		lineageTag: b38eec77-ea04-47fa-9a73-f5a130950461
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentSchedule
+		dataType: string
+		lineageTag: 933bad3d-888c-4310-a155-a29a6b7fa163
+		summarizeBy: none
+		sourceColumn: DocumentSchedule
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do documento'
+		dataType: string
+		lineageTag: 47580b0a-1733-425f-adc2-03849bb7498b
+		summarizeBy: none
+		sourceColumn: Tipo do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Restrição de Pagamento'
+		dataType: string
+		lineageTag: d67e0183-f6ee-4951-9df4-94c3acfaa0c8
+		summarizeBy: none
+		sourceColumn: Restrição de Pagamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 6c8548e5-da23-42ef-b886-9b09ae7c9e0f
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 621377b2-9dee-4c76-96d6-4eafa3f226d0
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: ab028170-9880-4377-9c89-a84955dc59b1
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 852dc5db-11c3-45d5-9d3c-9cf11b343426
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de Envio'
+		dataType: string
+		lineageTag: ced99bb0-70ec-4ebd-ab97-57622724dddd
+		summarizeBy: none
+		sourceColumn: Prazo de Envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: d/m/yyyy
+		lineageTag: 656e5503-545f-4aba-bfaa-9eac672b2785
+		summarizeBy: none
+		sourceColumn: Competência
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Data de Envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: b5116062-fd96-4514-81a7-bf96c2fa690a
+		summarizeBy: none
+		sourceColumn: Data de Envio
+
+		variation Variation
+			isDefault
+			relationship: 4447d543-df43-4ccf-855a-2c8ca10a1e02
+			defaultHierarchy: LocalDateTable_3c87229b-6b69-4a9c-b8ee-e00c7afb33f8.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data da Análise'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b5d6a5ab-8fb3-48e3-ab7a-d26c8fd98a3c
+		summarizeBy: none
+		sourceColumn: Data da Análise
+
+		variation Variation
+			isDefault
+			relationship: 2cc82260-e8c0-4cd3-889f-cd3b125e93ce
+			defaultHierarchy: LocalDateTable_51e5d307-5599-414a-9f3e-8939c6de7801.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: 8d10387e-e036-46c9-b1ef-0016c0c79a0c
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 3997ca97-4082-4bff-ac88-a2e298851b9d
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Documentos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @currentDate datetime2 = GETDATE();#(lf)DECLARE @organizationId uniqueidentifier = 'ed655166-232e-4710-8095-0ae504faa5eb';#(lf)DECLARE @initialDate datetime2 = '2022-01-01 00:00:00';#(lf)DECLARE @finalDate datetime2 = GETDATE();#(lf)#(lf)#(lf)SELECT#(lf)    DISTINCT#(lf)    [ds].[Name] AS [Documento],#(lf)#(tab)[ds].id as [DocumentSchedule],#(lf)#(tab)CASE#(lf)        WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)        WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)        WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)        ELSE '--'#(lf)#(tab)END AS 'Tipo do documento',#(lf)    CASE d.OrganizationRestrictions#(lf)        WHEN 0 THEN 'Nenhuma'#(lf)        WHEN 1 THEN 'Restrição de acesso'#(lf)        WHEN 2 THEN 'Restrição de pagamento'#(lf)        WHEN 3 THEN 'Restrição de acesso e Restrição de pagamento'#(lf)        ELSE '--'#(lf)    END AS [Restrição de Pagamento],#(lf)    [p].[TradeName] AS [Fornecedor],#(lf)#(tab)[bc].[CompanyName] AS [Razão Social],#(lf)    dbo.FormatCNPJ(bc.Document) as [CNPJ],#(lf)    CASE#(lf)        WHEN [er].[Name] IS NULL THEN#(lf)        '---'#(lf)    ELSE#(lf)        [er].[Name]#(lf)    END AS [Funcionário],#(lf)    FORMAT([ds].[ExpectedUploadAt], 'dd/MM/yyyy') AS [Prazo de Envio],#(lf)#(tab)Case#(lf)        WHEN d.Frequency = 2 and d.DeliveryKind = 0 THEN FORMAT(DATEADD(MONTH, -1, [ds].[ExpectedUploadAt]), 'MM/yyyy')#(lf)        ELSE FORMAT([ds].[ExpectedUploadAt], 'MM/yyyy')#(lf)    END AS [Competência],#(lf)#(tab)FORMAT([ds].[UploadedAt], 'dd/MM/yyyy') AS [Data de Envio],#(lf)#(tab)FORMAT([ds].[ValidatedAt], 'dd/MM/yyyy') AS [Data da Análise],#(lf)    CASE#(lf)#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Atrasado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND ([ds].[UploadedAt] IS NULL)#(lf)        THEN#(lf)            'Próxima Entrega'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] < @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Atrasado Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[ExpectedUploadAt] >= @currentDate AND [ds].[RequiresValidation] = 1 AND ([ds].[UploadedAt] IS NOT NULL) AND ([ds].[ValidatedAt] IS NOT NULL) AND ([ds].[IsValidated] IS NOT NULL) AND [ds].[IsValidated] = 0#(lf)        THEN#(lf)            'Próxima Entrega Recusado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 1 AND [ds].[IsValidated] IS NULL#(lf)        THEN#(lf)            'Em Análise'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[RequiresValidation] = 0#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)WHEN#(lf)            [ds].[UploadedAt] IS NOT NULL AND [ds].[IsValidated] IS NOT NULL AND [ds].[IsValidated] = 1#(lf)        THEN#(lf)            'Aprovado'#(lf)#(tab)#(tab)ELSE#(lf)            '--'#(lf)    END AS [Status],#(lf)    b.tradename AS [Unidade]#(lf)FROM#(lf)    [DocumentSchedule] AS [ds] WITH (NOLOCK)#(lf)    INNER JOIN [Document] AS [d] WITH (NOLOCK) ON [ds].[DocumentId] = [d].[Id]#(lf)    INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON [ds].[OrganizationId] = [o].[Id]#(lf)    INNER JOIN [BranchCompany] AS [bc] WITH (NOLOCK) ON [ds].[BranchCompanyId] = [bc].[Id]#(lf)    INNER JOIN [Provider] AS [p] WITH (NOLOCK) ON [bc].[ProviderId] = [p].[Id]#(lf)#(tab)INNER JOIN DocumentScheduleBuilding as [dsb] WITH (NOLOCK) ON [dsb].[DocumentscheduleId] = [ds].[Id]#(lf)#(tab)INNER JOIN [Building] AS [b] ON [dsb].[BuildingId] = [b].[Id]#(lf)    LEFT JOIN [EmployeeRegister] AS [er] WITH (NOLOCK) ON [ds].[EmployeeRegisterId] = [er].[Id]#(lf)#(lf)WHERE#(lf)    [ds].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Removed] = CAST(0 AS bit)#(lf)    AND [d].[Archived] = CAST(0 AS bit)#(lf)    --AND [ds].[ExpectedUploadAt] >= @initialDate#(lf)    AND [ds].[ExpectedUploadAt] < @finalDate#(lf)    AND [ds].[OrganizationId] = @organizationId#(lf)#(tab)and d.DeliveryKind in (0,3)#(lf)#(tab)and (p.tradename like '%Ambipar%'#(lf)#(tab)or bc.Companyname like '%Ambipar%')#(lf)#(lf)#(lf)#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Competência", type text}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado","Nenhuma","Sem Restrição de Pagamento ",Replacer.ReplaceText,{"Restrição de Pagamento"}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","Restrição de Pagamento","Risco de Docuementos",Replacer.ReplaceText,{"Restrição de Pagamento"}),
+				    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1","Sem Risco de Docuementos ","Sem Criticidade",Replacer.ReplaceText,{"Restrição de Pagamento"}),
+				    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","Restrição de pagamento","Documentos Críticos",Replacer.ReplaceText,{"Restrição de Pagamento"})
+				in
+				    #"Valor Substituído3"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

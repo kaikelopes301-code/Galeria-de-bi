@@ -1,0 +1,131 @@
+relationship da7c13e2-58ac-4135-8798-17fcb70265ce
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Data_Envio
+	toColumn: LocalDateTable_aa81911a-1e44-400c-8cf5-43dedb2a2b74.Date
+
+relationship 792245da-9937-4526-b36b-596ba9365185
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de início da vigência'
+	toColumn: LocalDateTable_7340cb95-60b8-4e56-abf3-a6f0a88cd375.Date
+
+relationship 49e003b3-5df2-4c31-aef3-2a61297f7c52
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de fim da vigência'
+	toColumn: LocalDateTable_95948716-5052-491f-ba87-5bad979a9584.Date
+
+relationship AutoDetected_2f709298-4dbf-4d70-af3c-fea3cd6b901d
+	fromColumn: 'Status do Fornecedores'.Unidade
+	toColumn: Unidade.Unidade
+
+relationship AutoDetected_9734ad20-f641-4ff0-8440-c1e7c78eb0ee
+	fromColumn: 'Status de funcionários (Mensal)'.Unidade
+	toColumn: Unidade.Unidade
+
+relationship AutoDetected_7dc92627-e0d4-4921-81be-9c6d7e4335f2
+	fromColumn: Contratos.Unidade
+	toColumn: Unidade.Unidade
+
+relationship 109bd3ab-2aef-4595-b9fe-f5e4316dde55
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de funcionários (Mensal)'.'Competência Mês-Ano'
+	toColumn: LocalDateTable_4d5f3213-6026-40df-96ad-c83ff562c5ae.Date
+
+relationship AutoDetected_ef9a43ff-d7e4-4354-8232-a6f2f9930e94
+	fromColumn: Efetivos.Id_Contrato
+	toColumn: Contratos.Id_Contrato
+
+relationship 48b65370-c848-414c-8350-ee018ac8b7a7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Relatório de Fornecedores'.'Prazo de Envio'
+	toColumn: LocalDateTable_bd6f5be2-feda-4acf-b653-d1d0b614bf22.Date
+
+relationship d2a40615-bbf5-5148-afd4-0717097591b1
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Relatório de Fornecedores'.ContractId
+	toColumn: Contratos.Id_Contrato
+
+relationship fa7e46c8-d725-464a-9620-eaef42f923a8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_287a26e2-3e32-41ab-916a-6832d1dd37a1.Date
+
+relationship 394def2a-218e-1084-7771-85e373aa178a
+	fromColumn: Efetivos.'Data de cadastro'
+	toColumn: dCalendário.Date
+
+relationship bc51710d-59a7-a7cc-32d8-797581b0d19d
+	fromColumn: 'Status de funcionários (Mensal)'.Competência
+	toColumn: dCalendário.Date
+
+relationship 1e9b0c96-7ae5-8a56-774c-ca7ceb2073cc
+	isActive: false
+	fromColumn: 'Relatório de Fornecedores'.Unidade(s)
+	toColumn: Unidade.Unidade
+
+relationship 26cb15e2-94aa-48d7-96de-7ce378225419
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Cadastro no sistema'
+	toColumn: LocalDateTable_426536b6-3f74-4b8c-a401-72973e23cdc8.Date
+
+relationship f4982eb5-9888-4689-9cdb-d3f688624f0e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Inicial'
+	toColumn: LocalDateTable_c37b04e2-dd89-40ea-a573-771f4faadcd5.Date
+
+relationship f00e5f21-2129-480e-b61d-ac6c82af5945
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Vigência Final'
+	toColumn: LocalDateTable_47d59340-11f1-4806-b2e3-3eaf003c690f.Date
+
+relationship 88b84705-bbf7-4551-8e26-e0aa4fadb229
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de funcionários (Mensal)'.'Vigência Inicial'
+	toColumn: LocalDateTable_06ad741c-677c-446e-a0ae-aa2c48ba1474.Date
+
+relationship 4f98ec86-5260-4cbb-948f-f68efc5268e3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de funcionários (Mensal)'.'Vigência Final'
+	toColumn: LocalDateTable_4e8c2b68-a5a3-4ac0-bb01-3952fe940290.Date
+
+relationship 28e77ab4-eaa6-bc01-7d1e-eb564e7bc4c9
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários (Mensal)'.'Número do Pedido'
+	toColumn: Contratos.'N° do Pedido'
+
+relationship 462a8ceb-a240-4aa0-88b7-dfe3c32be627
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.'Prazo de Envio'
+	toColumn: LocalDateTable_84685713-6754-4976-a7f6-1f49867f4302.Date
+
+relationship 17577752-f5fb-40d9-9e0f-a5c4281c1f8d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DocumentValidationSla.Data_Análise
+	toColumn: LocalDateTable_fa6a221b-7eed-41b8-9f9f-7225d08d2d4c.Date
+
+relationship AutoDetected_945cc74b-c645-4235-bb5d-d5f2f2bf3fb6
+	fromColumn: DocumentValidationSla.Unidade
+	toColumn: Unidade.Unidade
+
+relationship 9484f49d-d1df-fded-512e-99c9938c91c6
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários (Mensal)'.'Número do Pedido'
+	toColumn: Efetivos.'Número Contrato'
+
+relationship b9a6ebe6-4baf-4548-a902-bdee9fa3e712
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Inicio'
+	toColumn: LocalDateTable_13ef217d-1847-4a15-adc9-ba5f561ff520.Date
+
+relationship f65d50ff-26d6-4db3-b7a5-28f8bcaad748
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Fim'
+	toColumn: LocalDateTable_726fd567-6f62-44b2-a92b-ff894d9edc59.Date
+
+relationship 7026e919-7147-9cdd-7084-356e01de84b2
+	isActive: false
+	fromColumn: Efetivos.'Nome Fantasia Unidade'
+	toColumn: Unidade.Unidade
+

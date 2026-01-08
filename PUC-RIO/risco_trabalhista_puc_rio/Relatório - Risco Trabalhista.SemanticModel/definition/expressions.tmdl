@@ -1,0 +1,16 @@
+expression 'Valor de Contrato' =
+		let
+		     Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\Equatorial\Risco\Valor de Contrato.xlsx"), null, true),
+		    Ocorrências_Sheet = Fonte{[Item="Plan1",Kind="Sheet"]}[Data],
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Ocorrências_Sheet, [PromoteAllScalars=true]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"N° do pedido", Int64.Type}, {"Id_Contrato", type text}, {".", type any}, {"Razão Social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"Sla", type text}, {"Status", type text}, {"Cadastro no sistema", type date}, {"Início da Vigência", type date}, {"Fim da Vigência", type date}, {"Distribuidora", type text}, {"Regional", type text}, {"Categoria", type text}, {"Fornecedor", type text}, {"Valor contrato", type number}}),
+		    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado", each ([Valor contrato] <> null)),
+		    #"Linhas Classificadas" = Table.Sort(#"Linhas Filtradas",{{"Id_Contrato", Order.Ascending}})
+		in
+		    #"Linhas Classificadas"
+	lineageTag: f1e32360-e8b9-431e-ac51-59dd5ec08b4f
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

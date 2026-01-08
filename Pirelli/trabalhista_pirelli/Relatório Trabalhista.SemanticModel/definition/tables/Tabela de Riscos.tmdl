@@ -1,0 +1,38 @@
+table 'Tabela de Riscos'
+	lineageTag: b16764f9-65f0-4f1b-b89a-56f245c1ab09
+
+	column '%Documentos Críticos' = [%Documentos Críticos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bdb48afd-4c43-47ed-be06-bf17b0eb6be7
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risco =
+			
+			IF([%Documentos Críticos] = 0, "Crítico",
+			    IF ([%Documentos Críticos] < 0.5,"Alto",
+			        If ([%Documentos Críticos]<0.8,"Moderado",
+			            IF([%Documentos Críticos] >= 0.8, "Baixo", "Erro")
+			        )
+			    )
+			)
+		lineageTag: e9956197-5866-4917-b09b-c7e847edf3cd
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		lineageTag: bf907c5d-af7c-4772-881c-a5dc3442bc1e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Fornecedores[Fornecedor]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tabela de Riscos' = calculated
+		mode: import
+		source = DISTINCT(Fornecedores[Fornecedor])
+
+	annotation PBI_Id = 0546737dd6a74e3ba50c46473348b6f1
+

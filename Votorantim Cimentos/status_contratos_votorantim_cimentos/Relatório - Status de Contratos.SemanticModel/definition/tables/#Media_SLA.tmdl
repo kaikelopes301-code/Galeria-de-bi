@@ -1,0 +1,54 @@
+table #Media_SLA
+	lineageTag: db53f60a-ed7b-4347-94fe-404ddc8885f8
+
+	measure _Documentos_Mobilização_Aprovados = CALCULATE(DISTINCTCOUNT('SLA - Relatório Fornecedores'[DocumentScheduleId]), 'SLA - Relatório Fornecedores'[Status] = "Aprovado")
+		formatString: 0
+		lineageTag: b370d838-ef6e-4d62-8de6-696dd986d775
+
+	column Parâmetro
+		lineageTag: 6c63e637-7505-4c5a-b5c8-1e227321bde5
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parâmetro Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Parâmetro Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Campos'
+		isHidden
+		lineageTag: 0c629069-9ecf-48c8-88d0-6bfc9e1e4a30
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parâmetro Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parâmetro Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 11da9961-ead0-4114-b4f7-af96291fdf5d
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #Media_SLA = calculated
+		mode: import
+		source =
+				{
+				    ("SLA Envio 1º Documentação", NAMEOF('Sheet1'[_MÉDIA_SLA_CADASTRP-1PRi]), 0),
+				    ("SLA Envio Toda Documentação", NAMEOF('Sheet1'[_MÉDIA_SLA_1PRi-Ultimo]), 1),
+				    ("SLA Integração", NAMEOF('Sheet1'[_MÉDIA_SLA_Integracao]), 2),
+				    ("SLA Total", NAMEOF('Sheet1'[_Media_SLA_Total_]), 4),
+				   ("SLA Análise Atlas", NAMEOF([_MÉDIA_SLA_Analise_atlas]), 3) }
+
+	annotation PBI_Id = 3cac89dc2f1046b28856bf36778462c6
+

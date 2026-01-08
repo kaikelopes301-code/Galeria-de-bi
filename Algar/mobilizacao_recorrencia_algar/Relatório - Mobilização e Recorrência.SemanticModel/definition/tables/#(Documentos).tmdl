@@ -1,0 +1,51 @@
+table #(Documentos)
+	lineageTag: b544a261-0589-482e-9ae9-8cc922fbe244
+
+	measure Medida = ""
+		lineageTag: a8c15fe9-2efd-42e3-a89a-2ab6e0a67279
+
+	column '(Recusa única)'
+		lineageTag: d3b17327-6495-40b3-bb0c-6a2cf0a0c8be
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '(Recusa única) Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '(Recusa única) Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Recusa única) Campos'
+		isHidden
+		lineageTag: a8ae86eb-69ea-4379-9e9b-4d1e97d65837
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '(Recusa única) Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '(Recusa única) Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 7d624a6c-a411-44c7-957f-a260f55c6c95
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #(Documentos) = calculated
+		mode: import
+		source =
+				{
+				    ("Razão Social", NAMEOF('Documentos em Análise'[Razão Social]), 0),
+				    ("Documento", NAMEOF('Documentos em Análise'[Documento]), 1)
+				}
+
+	annotation PBI_Id = 15102a7a8db3435b831c89f451081276
+

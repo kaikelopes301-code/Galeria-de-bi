@@ -1,0 +1,216 @@
+table 'Documentos fornecedores'
+	lineageTag: 695afe72-eb1e-47c0-aa1f-b817e863f8d2
+
+	measure Contagem = CALCULATE(COUNTROWS())
+		formatString: 0
+		lineageTag: 73f5166b-bb34-4b00-98f8-1db2a09a0af2
+
+	measure Aprovado =
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status] = "Aprovado")+0
+		formatString: 0
+		lineageTag: aaed6534-3cb9-4615-8859-577d192ed81e
+
+	measure Pendente =
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Enviado] = "Não Enviado")+
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status (Reclassificação)] = "Recusado")+0
+		formatString: 0
+		lineageTag: fe81474f-a0f9-4a9a-858c-ff79bdb65c02
+
+	measure 'Em Análise' =
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status] = "Em Análise")+0
+		formatString: 0
+		lineageTag: 7183f3ae-f226-4867-ab07-76cdc0479b1c
+
+	measure %Atrasados =
+			IF(CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status]="Atrasado")/
+			CALCULATE(COUNTROWS(), ALLSELECTED('Documentos fornecedores'))=0,
+			0,CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status]="Atrasado")/
+			CALCULATE(COUNTROWS(), ALLSELECTED('Documentos fornecedores')))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 4eaa2111-fa60-4a0f-8021-802b387a0475
+
+	measure Reprovado =
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Status (Reclassificação)] = "Recusado") + 0
+		formatString: 0
+		lineageTag: 20024b9f-c9eb-4830-9c1e-0e84af5dcc9f
+
+	measure 'Recusados dividido por Contagem' =
+			
+			DIVIDE([Reprovado], [Contagem])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4aea8851-5129-4c42-ba06-8cd2be25751a
+
+	measure %Pendentes = DIVIDE([Pendente],[Contagem])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a2cfc430-7243-47ed-90d6-42ced4d5ac91
+
+	measure 'Aprovados dividido por Contagem' =
+			
+			DIVIDE([Aprovado], [Contagem])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 73d37a15-d20a-4868-a7da-e6d2950e455d
+
+	measure 'Em Análise dividido por Contagem' =
+			
+			DIVIDE([Em Análise], [Contagem])
+		formatString: 0%;-0%;0%
+		lineageTag: b9eb24c4-eff1-4133-be99-12d91dbc2755
+
+	measure 'Não Enviados' =
+			CALCULATE(COUNTROWS(),
+			'Documentos fornecedores'[Enviado] = "Não Enviado")
+		formatString: 0
+		lineageTag: 86443a7d-4451-4d17-b5bf-64aebd935142
+
+	measure '%Não Enviados dividido por Contagem' =
+			
+			DIVIDE([Não Enviados], [Contagem])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: cfdc0d36-5929-49c0-90bf-251202876c35
+
+	measure %Aderência = (CALCULATE(COUNTROWS(),'Documentos fornecedores'[Enviado] = "Enviado")+0)/[Contagem]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0647deef-ee18-4a8b-b8fb-d781e71f3218
+
+	measure %Conformidade = (CALCULATE(COUNTROWS(),'Documentos fornecedores'[Status (Reclassificação)]= "Aprovado")+0)/[Contagem]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8281b43f-ce5a-4fab-ad54-e17b6c492300
+
+	measure Enviados = CALCULATE(COUNTROWS(),'Documentos fornecedores'[Enviado] = "Enviado")
+		formatString: 0
+		lineageTag: 5c90b085-a8ac-4f27-887f-cbd6eec036de
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 7e6a74a4-b4fa-4e18-8008-7fa37bf01556
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Funcionário
+		dataType: string
+		lineageTag: 7dc13fc3-8a29-4f89-8d2e-c4c24576f398
+		summarizeBy: none
+		sourceColumn: Funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 4a9ae9d2-ddef-46df-aac9-8b4e507e6190
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade(s)
+		dataType: string
+		lineageTag: 4a5d7f14-9e8f-403a-913f-4826295144ce
+		summarizeBy: none
+		sourceColumn: Unidade(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria(s)
+		dataType: string
+		lineageTag: b5b520e0-d21f-4b4c-9ae5-7068b77dc2d6
+		summarizeBy: none
+		sourceColumn: Categoria(s)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ do fornecedor'
+		dataType: string
+		lineageTag: 63ab8627-c241-492c-a416-5f6a7b3eca50
+		summarizeBy: none
+		sourceColumn: CNPJ do fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo de envio'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 11d605fc-6f31-4681-9477-bf7e9ebabb5d
+		summarizeBy: none
+		sourceColumn: Prazo de envio
+
+		variation Variation
+			isDefault
+			relationship: 02fe3ef0-4645-470d-932a-fe301f4f2ce3
+			defaultHierarchy: LocalDateTable_b8beef19-1070-426d-8f00-41a733b04393.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 725a3f8c-2e3f-4e14-b714-059e7617f2c1
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: 02a99aad-eb0a-4517-b698-46bbde8b0a21
+			defaultHierarchy: LocalDateTable_9e0ed63e-3eaf-4778-9576-e75a2fffc40d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Documento
+		dataType: string
+		lineageTag: 38b2781b-a412-40aa-b151-618d462767c3
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Enviado
+		dataType: string
+		lineageTag: aa7f7718-d328-4464-b0a3-0428a99f763a
+		summarizeBy: none
+		sourceColumn: Enviado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status (Reclassificação)'
+		dataType: string
+		lineageTag: 4f0f8489-d7ca-4b3b-827a-74174e1f60be
+		summarizeBy: none
+		sourceColumn: Status (Reclassificação)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos fornecedores' = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Skic\Relatório Fornecedores.xlsx"), null, true),
+				    #"Documentos fornecedores_Sheet" = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Documentos fornecedores_Sheet", [PromoteAllScalars=true]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Cabeçalhos Promovidos", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Prazo de envio", type date}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Competência", each 
+				Date.AddMonths([Prazo de envio],-1)),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Competência", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado1", "Enviado", each if Text.Contains([Status], "Não Enviado") then "Não Enviado" else if [Status] = "Próxima Entrega" then "Não Enviado" else "Enviado"),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Coluna Condicional Adicionada", "Status (Reclassificação)", each if [Status] = "Aprovado" then "Aprovado" else if Text.Contains([Status], "Reprovado") then "Recusado" else if [Status] = "Atrasado Não Enviado" then "Atrasado" else if [Status] = "Próxima Entrega" then "Próxima Entrega" else "Sem Classificação"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Coluna Condicional Adicionada1", each ([#"Status (Reclassificação)"] <> "Próxima Entrega"))
+				in
+				    #"Linhas Filtradas"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

@@ -1,0 +1,105 @@
+table 'Tabela de CNPJs'
+	lineageTag: 071890a7-61d1-4672-a92b-b8d04833316a
+
+	measure '(CNPJ) No_Prazo' = ```
+			
+			VAR CONTRATOS = CALCULATE(COUNT('Tabela de CNPJs'[CNPJ]),
+			'Tabela de CNPJs'[Envio no Prazo] = 1)
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+			
+			```
+		lineageTag: 10788849-718d-4d36-81ac-eb10cb8b255a
+
+		formatStringDefinition =
+				VAR FUNC =[(CNPJ) No_Prazo]
+				
+				VAR TOTAL = [_CNPJ_Quantidade_Relacao]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"#0.0%" & ")")
+
+	measure '(CNPJ) Taxa_de_Entrega' =
+			
+			
+			VAR CONTRATOS = CALCULATE(COUNT('Tabela de CNPJs'[Envio no Prazo]),
+			'Número de Contrato'[Aderência]= 0)
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+		lineageTag: ee4e6138-0210-4e70-a3cb-272b19d5e692
+
+		formatStringDefinition =
+				VAR FUNC = [(CNPJ) Taxa_de_Entrega]
+				VAR TOTAL = [_CNPJ_Quantidade_Relacao]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"#0.0%" & ")")
+
+	measure '(CNPJ''s) _Quantidade' =
+			
+			VAR CONTRATOS = CALCULATE(DISTINCTCOUNT('Tabela de CNPJs'[CNPJ]))
+			
+			
+			RETURN IF(CONTRATOS=BLANK(),0,CONTRATOS)
+		formatString: 0
+		lineageTag: c9718970-01c8-4cb9-ae61-e847b0671453
+
+	measure '(Sem CadastroCNPJ) Funcionários' =
+			
+			VAR CPF = CALCULATE(COUNTROWS(),
+			'Número de Contrato'[Contagem_CPFs] = 0)
+			
+			RETURN IF(CPF=BLANK(),0,CPF)
+		lineageTag: 51e3647b-99a4-4032-99be-ce0c777da658
+
+		formatStringDefinition =
+				VAR FUNC = [(Sem CadastroCNPJ) Funcionários]
+				
+				VAR TOTAL = [_CNPJ_Quantidade_Relacao]
+				
+				RETURN """" & FUNC & " (" & FORMAT(FUNC/TOTAL,"#0.0%" & ")")
+
+	column CNPJ
+		lineageTag: d790e74a-5139-418a-a74c-bc6d2a23b188
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Documentos em Análise[CNPJ]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Envio no Prazo' =
+			
+			VAR Enviado =[(Enviado) No Prazo]
+			RETURN if (Enviado=BLANK(),0,Enviado)
+		lineageTag: e671fdd8-8fc8-4ce8-aff4-bbc58640311f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Contagem_CPFs =
+			
+			VAR EFETIVOS = CALCULATE(
+			    DISTINCTCOUNT('Status de Efetivos'[CPF]),
+			    USERELATIONSHIP('Número de Contrato'[Número do Pedido],'Status de Efetivos'[Número do Pedido])
+			)
+			
+			RETURN IF(EFETIVOS=BLANK(),0,EFETIVOS)
+		formatString: 0
+		lineageTag: 18c0bb69-6bc4-4568-aa33-33e534e6687a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coluna
+		type: calculated
+		lineageTag: cf9bc7d7-4056-4ded-905d-db1308c30caf
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tabela de CNPJs' = calculated
+		mode: import
+		source = DISTINCT('Documentos em Análise'[CNPJ])
+
+	annotation PBI_Id = 0ca8773662784589a1618292a204590c
+

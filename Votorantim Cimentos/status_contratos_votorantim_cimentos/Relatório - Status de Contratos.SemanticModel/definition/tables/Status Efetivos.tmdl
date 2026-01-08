@@ -1,0 +1,197 @@
+table 'Status Efetivos'
+	lineageTag: cbd0c1f9-321e-485a-8666-cbf09e98649c
+
+	measure _Efetivos_ = CALCULATE(DISTINCTCOUNT('Status Efetivos'[Nome]))
+		formatString: #,0
+		lineageTag: a9982806-d32e-4e4f-aa4c-b33d49ca39a2
+
+	measure _Efetivos_Mobilizados = CALCULATE(DISTINCTCOUNT('Status Efetivos'[Nome]), 'Status Efetivos'[Status Atual] = "Mobilizado")
+		formatString: 0
+		lineageTag: 65f14452-7ea2-4454-86f9-9c520bce54f8
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 6be82777-b6b7-4bdc-bc45-a54b2964766a
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 8284ea45-11cd-48de-aec5-bd5b12677b1d
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 3c712556-c93d-40e4-b55f-eca28e19b45b
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: a8c9c4f9-c776-468c-9af4-89fd6f9ad0cd
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9a1529ce-3ef5-47e0-bbd6-7f8693553465
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		variation Variation
+			isDefault
+			relationship: aea14033-5bad-46cd-aa72-7b5bf24fd421
+			defaultHierarchy: LocalDateTable_e5178dff-a234-4eb8-8ccd-2f1a5d27c6ff.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status Atual'
+		dataType: string
+		lineageTag: da93c413-5abe-45ea-bd99-eac9699014e5
+		summarizeBy: none
+		sourceColumn: Status Atual
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mobilização atual'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c6d0a3f4-906c-4d97-a511-0f7183a885f0
+		summarizeBy: none
+		sourceColumn: Mobilização atual
+
+		variation Variation
+			isDefault
+			relationship: 639b2bf4-f4cd-4f71-add7-fa86b2bacc7e
+			defaultHierarchy: LocalDateTable_90a7b39f-87bc-42ca-86f0-825c06d85ca4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Histórico'
+		dataType: string
+		lineageTag: 71acfbde-513a-4f4b-865e-5b9fe89b8d64
+		summarizeBy: none
+		sourceColumn: Status Histórico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Historico Mobilizado'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dc978beb-0bce-4087-82e6-df12993f65aa
+		summarizeBy: none
+		sourceColumn: Historico Mobilizado
+
+		variation Variation
+			isDefault
+			relationship: bfc4f7fe-bd09-4344-a8c7-c83924f4f063
+			defaultHierarchy: LocalDateTable_4cd305fa-477f-4faf-82d7-f5e791ed5563.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Antencipância da Mobilização' =
+			
+			
+			VAR INICIO = 'Status Efetivos'[INICIO GP's]
+			
+			VAR CADASTRO = 'Status Efetivos'[Historico Mobilizado]
+			
+			RETURN IF( INICIO = BLANK() || 'Status Efetivos'[Historico Mobilizado] = BLANK(), BLANK(), DATEDIFF(CADASTRO,INICIO,DAY))
+		formatString: 0
+		lineageTag: 3322f199-aa32-476c-9c2c-efa26f54ccf2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido'
+		dataType: string
+		lineageTag: b7b7e78d-1b3e-4157-8db9-315a5d812888
+		summarizeBy: none
+		sourceColumn: Nº Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b1fb8bc-97ee-4680-897d-37360bcd193b
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INICIO GP''s'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 477820d0-e24c-4bd8-8296-a3c6e79a42c8
+		summarizeBy: none
+		sourceColumn: INICIO GP's
+
+		variation Variation
+			isDefault
+			relationship: 2ae2b253-6139-48e2-8396-82d436eb0fb5
+			defaultHierarchy: LocalDateTable_cf769532-5499-4640-9b47-f47df7ff98a1.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Classificação Antecipância Mobilização' = ```
+			
+			VAR dias = 'Status Efetivos'[Antencipância da Mobilização]  -- dias antes do início
+			VAR inicio = 'Status Efetivos'[INICIO GP's]
+			VAR mob = 'Status Efetivos'[Historico Mobilizado]
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(inicio),                                  "Sem data de Início",
+			        mob = BLANK() && inicio <> BLANK(),                       "Mobilização em atraso",
+			
+			    dias >= 5,                                     "Mobilizado",
+			
+			    dias < 5,                       "Mobilizado em atraso",
+			
+			
+			       BLANK()
+			)
+			
+			
+			```
+		lineageTag: d4d03841-c213-4ed3-983b-5ea475525733
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = 'ed655166-232e-4710-8095-0ae504faa5eb';#(lf)DECLARE @Date DATETIME = GETDATE();#(lf)#(lf)SELECT#(lf)    c.Id AS 'Id_Contrato',#(lf)    c.OrderNumber AS 'Nº Pedido',#(lf)    (SELECT dbo.FNCPFMask(e.CpfNumber)) AS 'CPF',#(lf)    e.Name AS 'Nome',#(lf)    CASE#(lf)        WHEN (e.Situation = 0 AND e.Removed = 0) THEN 'Ativo'#(lf)        WHEN (e.Situation = 1 OR  e.Removed = 1) THEN 'Inativo'#(lf)        WHEN  e.Situation = 2 THEN 'Folguista'#(lf)    END AS 'Situação',#(lf)    CONVERT(VARCHAR(10), e.CreatedAt, 103) AS 'Data de cadastro',#(lf)#(lf)    -- Status Atual (da mobilização mais recente não removida)#(lf)    CASE#(lf)        WHEN (ercm_curr.IsMobilized = 1 AND ercm_curr.Removed = 0) THEN 'Mobilizado'#(lf)        ELSE 'Não mobilizado'#(lf)    END AS 'Status Atual',#(lf)#(lf)    ercm_curr.MobilizedAt AS 'Mobilização atual',#(lf)#(lf)    -- Status Histórico da mesma linha da data mínima#(lf)    CASE#(lf)        WHEN mh_first_mob.MobilizedAt IS NOT NULL THEN#(lf)            CASE WHEN (mh_first_mob.IsMobilized = 1 AND mh_first_mob.Removed = 0) THEN 'Mobilizado' ELSE 'Não mobilizado' END#(lf)        WHEN mh_first_created.CreatedAt IS NOT NULL THEN#(lf)            CASE WHEN (mh_first_created.IsMobilized = 1 AND mh_first_created.Removed = 0) THEN 'Mobilizado' ELSE 'Não mobilizado' END#(lf)        ELSE NULL#(lf)    END AS 'Status Histórico',#(lf)#(lf)    -- Data mínima de mobilização (formatada dd/MM/yy)#(lf)    CASE#(lf)        WHEN mh_first_mob.MobilizedAt IS NOT NULL THEN FORMAT(mh_first_mob.MobilizedAt, 'dd/MM/yy')#(lf)        ELSE NULL#(lf)    END AS 'Historico Mobilizado'#(lf)#(lf)FROM Effective AS e WITH (NOLOCK)#(lf)INNER JOIN [Contract] AS c WITH (NOLOCK)#(lf)    ON c.Id = e.ContractId AND c.Removed = 0#(lf)INNER JOIN Building AS b WITH (NOLOCK)#(lf)    ON b.Id = c.BuildingId AND b.Removed = 0#(lf)INNER JOIN Category AS ca WITH (NOLOCK)#(lf)    ON ca.Id = c.CategoryId#(lf)INNER JOIN EmployeeRegisterContract AS erc WITH (NOLOCK)#(lf)    ON erc.EffectiveId = e.Id#(lf)#(lf)-- Mobilização ""atual"" (mais recente válida) por ERC#(lf)OUTER APPLY (#(lf)    SELECT TOP (1) ercm2.*#(lf)    FROM EmployeeRegisterContractMobilization AS ercm2 WITH (NOLOCK)#(lf)    WHERE ercm2.EmployeeRegisterContractId = erc.Id#(lf)      AND ercm2.Removed = 0#(lf)    ORDER BY ISNULL(ercm2.MobilizedAt, ercm2.CreatedAt) DESC#(lf)) AS ercm_curr#(lf)#(lf)-- Primeira (menor) linha por MobilizedAt válida#(lf)OUTER APPLY (#(lf)    SELECT TOP (1) mh2.*#(lf)    FROM EmployeeRegisterContractMobilizationHistory AS mh2 WITH (NOLOCK)#(lf)    WHERE mh2.EmployeeRegisterContractMobilizationId = ercm_curr.Id#(lf)      AND TRY_CONVERT(datetime2, mh2.MobilizedAt) IS NOT NULL#(lf)      AND mh2.MobilizedAt < '9999-12-31T23:59:59'#(lf)    ORDER BY mh2.MobilizedAt ASC#(lf)) AS mh_first_mob#(lf)#(lf)-- Primeira (menor) linha por CreatedAt válida (fallback só para Status)#(lf)OUTER APPLY (#(lf)    SELECT TOP (1) mh3.*#(lf)    FROM EmployeeRegisterContractMobilizationHistory AS mh3 WITH (NOLOCK)#(lf)    WHERE mh3.EmployeeRegisterContractMobilizationId = ercm_curr.Id#(lf)      AND TRY_CONVERT(datetime2, mh3.CreatedAt) IS NOT NULL#(lf)      AND mh3.CreatedAt < '9999-12-31T23:59:59'#(lf)    ORDER BY mh3.CreatedAt ASC#(lf)) AS mh_first_created#(lf)#(lf)WHERE#(lf)    b.OrganizationId = @OrganizationId#(lf)    AND c.Removed = 0#(lf)    AND e.Removed = 0#(lf)    AND e.CreatedAt < @Date#(lf)    AND c.[Status] = 0;#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Data de cadastro", type date}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Tipo Alterado"),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Duplicatas Removidas", "Índice", 0, 1, Int64.Type),
+				    #"Consultas Mescladas" = Table.NestedJoin(#"Índice Adicionado", {"Id_Contrato"}, Contratos, {"Id do Contrato"}, "Contratos", JoinKind.LeftOuter),
+				    #"Contratos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "Contratos", {"INICIO GP's"}, {"INICIO GP's"}),
+				    #"Duplicatas Removidas1" = Table.Distinct(#"Contratos Expandido", {"Índice"}),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Duplicatas Removidas1",{{"Historico Mobilizado", type date}})
+				in
+				    #"Tipo Alterado1"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

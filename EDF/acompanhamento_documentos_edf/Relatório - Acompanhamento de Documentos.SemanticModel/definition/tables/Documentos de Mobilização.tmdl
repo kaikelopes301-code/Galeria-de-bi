@@ -1,0 +1,43 @@
+table 'Documentos de Mobilização'
+	lineageTag: 6309d679-dfbd-4f68-9583-67038f0e8e19
+
+	column Documentos
+		dataType: string
+		lineageTag: 70d85d10-83c8-453e-94fb-ec873f3d6eec
+		summarizeBy: none
+		sourceColumn: Documentos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Documento'
+		dataType: string
+		lineageTag: 7110d5b5-fb5e-4e5c-853c-6ce43763b837
+		summarizeBy: none
+		sourceColumn: Tipo de Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo
+		dataType: string
+		lineageTag: a5f20945-fae0-4c08-b13b-514a657b140e
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos de Mobilização' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\EDF\Docs de Mobilização.xlsx"), null, true),
+				    Plan1_Sheet = Fonte{[Item="Plan1",Kind="Sheet"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Plan1_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Tipo Alterado", [PromoteAllScalars=true]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Documentos", type text}, {"Tipo de Documento", type text}, {"Tipo", type text}})
+				in
+				    #"Tipo Alterado1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

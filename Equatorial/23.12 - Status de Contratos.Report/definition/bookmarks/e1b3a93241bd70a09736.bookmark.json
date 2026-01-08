@@ -1,0 +1,1162 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "ABSENTEÍSMO_A",
+  "name": "e1b3a93241bd70a09736",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "8a7e8e3a00b8a0a47966",
+    "filters": {
+      "byExpr": [
+        {
+          "name": "a8ecda3f7491bbc02076",
+          "type": "Advanced",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Documentos em Análise"
+                }
+              },
+              "Property": "Competência"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "c2cffeebd8200e4c8bb0",
+          "type": "Advanced",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "dCalendário"
+                }
+              },
+              "Property": "Date"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "2ff419708209c98b6d47",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "FGTS Digital"
+                }
+              },
+              "Property": "Status"
+            }
+          },
+          "howCreated": 1
+        }
+      ]
+    },
+    "sections": {
+      "8a7e8e3a00b8a0a47966": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "4448a0478e192c983a9e",
+              "type": "Advanced",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ocorrências"
+                    }
+                  },
+                  "Property": "Data de retorno"
+                }
+              },
+              "howCreated": 1
+            },
+            {
+              "name": "46dfb1d7a02d552137ab",
+              "type": "Advanced",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dCalendário"
+                    }
+                  },
+                  "Property": "Date"
+                }
+              },
+              "howCreated": 1
+            }
+          ]
+        },
+        "visualContainers": {
+          "000dafb2a0b85c0ea9e3": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "c3d7d5244a000875b690",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "o",
+                        "Entity": "Ocorrências",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "o"
+                                  }
+                                },
+                                "Property": "(%Absenteísmo)"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "0b90cd5e540ca903ce18",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "clusteredBarChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "861981b8492aa8a56c77": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "3d7eac647e8b301885b0": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "ea4af42bda102e10043c": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "2687a93688020972ba41": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "3d9d46be71c515ab76b5",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Ativos"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Ativos"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "f2f188b9ae965c796bec": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "Filter201d8cd2574f387a8d2f",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Total) Documentos"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "d7c3efc1ed0588a2102b",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "8efbe1510500198d0dd0",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "o",
+                        "Entity": "Ocorrências",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "o"
+                                  }
+                                },
+                                "Property": "(%Absenteísmo)"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "7a398a3cb4b84373c162",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "d6a67ca980d423764a47": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "Filter201d8cd2574f387a8d2f",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "(Total) Documentos"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "cbb86b581a74131eb706",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Documentos em Análise"
+                        }
+                      },
+                      "Property": "Competência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "ce8524e78d23c0dcaa2c",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "o",
+                        "Entity": "Ocorrências",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "o"
+                                  }
+                                },
+                                "Property": "(%Absenteísmo)"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "94c7d0ea8c0641b12c0a",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Distribuidora"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Distribuidora"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "5825c4cd03741caba4bb": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "27683826a2534a657a6e",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Ativos"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "6ae2fb8ca6d4bc33c5ce",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(HC Perdido) Média"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "519e8b5c4655101508c2",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "8329c30ab4697bdba304",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "clusteredColumnChart",
+              "objects": {},
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "d23a9b59b9012564aae8": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "2796d0eb33e9020b2263",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "fa56e55810850c9e8731",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "ffae7382bcd71b755150",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "clusteredColumnChart",
+              "objects": {},
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dCalendário"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "1fc8ff4410da64ba8850": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "af2807577d059ce8513b",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(HC Perdido) Média"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(HC Perdido) Média"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "e1cec0e236d79a9abba5": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "9cf25685ea9d51e752d0",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "8c8de5d4cc517213441b": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "2a9573eab5351734a770": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "ba64048cb25976da7a83",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Análise de Colaboradores"
+                        }
+                      },
+                      "Property": "(AUX) soma de ATIVOS+FGTS"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "458a84fabd59e1d0b20c",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "CNPJ Fornecedor"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "d4e20225771b428a3bae",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "CPF"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "f4d3cc2686800a80a110",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Data da ocorrência"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "a43e97600b400d4d171c",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "c129e6af14e020e57c9b",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Meses em Atividade"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "6faab8b6dced61e09b4d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Nome do funcionário"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "4c8c48c0300768975481",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Observação da ocorrência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "ed978190737c770ea701",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Razão Social"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "5803945e30ed2b5c8521",
+                  "type": "Categorical",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "o",
+                        "Entity": "Ocorrências",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "o"
+                                    }
+                                  },
+                                  "Property": "(Absenteísmo) Ocorrência"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'Sim'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(Absenteísmo) Ocorrência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "8bc1c0208d4ece644877",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Rescisão"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "2bbba564754ac0c09a34",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Tipo de ocorrência"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "50490ef044da28707700",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Distribuidora"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "c936916eeb724957d3e3",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(Rescisão) Dias em Atividade"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "e608d7c3672804e200cd",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(Rescisão) Contagem"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "68b0452a840c08e83ba8",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Status de funcionários"
+                        }
+                      },
+                      "Property": "(Relação) Quantidade Efetivos Ativos"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "6097437eb8e0aeda24c8",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(HC Perdido) Média"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "5142ca9cc0837141d9d8",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "(%Absenteísmo)"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 1,
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Ocorrências"
+                        }
+                      },
+                      "Property": "Razão Social"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "5dd2a0ea68d4030457eb": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "3dfb1764acfe1f5ad6aa": {
+            "isHidden": false
+          },
+          "4a1c605d49025d75aa0c": {
+            "isHidden": false
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              },
+              "visible": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

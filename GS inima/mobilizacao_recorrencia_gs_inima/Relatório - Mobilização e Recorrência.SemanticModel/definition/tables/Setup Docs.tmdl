@@ -1,0 +1,24 @@
+table 'Setup Docs'
+	lineageTag: fa9394ad-9b5b-433a-8c40-7a539a09d4e4
+
+	column Documento
+		dataType: string
+		lineageTag: a46eed0c-147e-4118-b91f-6c43214eb476
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Setup Docs' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @organizationId uniqueidentifier = '24d80b2f-c0de-4e58-9273-06a8de082474';#(lf) #(lf)SELECT#(lf)#(tab)DISTINCT#(lf)    [d].[Name] AS [Documento],#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 0 THEN 'Recorrente'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 1 THEN 'Mobilização'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 2 THEN 'Treinamento'#(lf)#(tab)#(tab)WHEN d.DeliveryKind = 3 THEN 'Desmobilização'#(lf)#(tab)#(tab)ELSE '--'#(lf)#(tab)END AS 'Tipo do documento'#(lf) #(lf)#(tab)FROM#(lf)#(tab)[Document] AS [d] WITH (NOLOCK)#(lf)INNER JOIN [Organization] AS [o] WITH (NOLOCK) ON#(lf)#(tab)[d].[OrganizationId] = [o].[Id]#(lf) #(lf)#(tab)WHERE#(lf)#(tab)[d].[Removed] = 0 #(lf)#(tab)AND [d].[Archived] = 0#(lf)#(tab)AND [d].[OrganizationId] = @organizationId#(lf)#(tab)and d.DeliveryKind = 0"]),
+				    #"Colunas Removidas" = Table.RemoveColumns(Fonte,{"Tipo do documento"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

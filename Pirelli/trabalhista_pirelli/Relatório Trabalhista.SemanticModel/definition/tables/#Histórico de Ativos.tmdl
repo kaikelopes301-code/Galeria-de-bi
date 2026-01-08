@@ -1,0 +1,49 @@
+table '#Histórico de Ativos'
+	lineageTag: fc393752-1d2f-45bb-a155-cc4fa48faaff
+
+	column '#Histórico de Ativos'
+		lineageTag: 94d57c92-c90f-48b6-b54a-1e56ba1cf4cb
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#Histórico de Ativos Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#Histórico de Ativos Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Histórico de Ativos Campos'
+		isHidden
+		lineageTag: e5715801-c789-4689-8416-ed23a59bc214
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#Histórico de Ativos Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#Histórico de Ativos Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 0e53b8bf-7ada-4a4a-b1dc-b6dfb9b1dfa6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '#Histórico de Ativos' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Histórico - Ativos'[Fornecedor]), 0),
+				    ("Razão Social", NAMEOF('Histórico - Ativos'[Razão Social]), 1),
+				    ("Unidade", NAMEOF('Histórico - Ativos'[Unidade]), 2)
+				}
+
+	annotation PBI_Id = f0d53ccee10a47b7a23535624b4cc3ce
+

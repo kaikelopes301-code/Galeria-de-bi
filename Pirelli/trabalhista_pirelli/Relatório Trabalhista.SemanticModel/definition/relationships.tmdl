@@ -1,0 +1,137 @@
+relationship 5b5a8516-4037-464c-9ca4-21db9f2df3f8
+	fromColumn: Headcount.Chave
+	toColumn: 'Chave Tabela'.Chave
+
+relationship cb0d27c1-6579-466b-8c33-59c13e234f08
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fornecedores.'Prazo de Envio'
+	toColumn: LocalDateTable_70f8d117-66e3-4f33-bc46-2d2597cfc848.Date
+
+relationship AutoDetected_32987cc9-9aa3-40bf-9b43-6a42cf05711a
+	fromColumn: Fornecedores.Documento
+	toColumn: Pesos.Documento
+
+relationship c95d22ae-e212-46fc-a972-26e99cc90902
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fornecedores.Competência
+	toColumn: LocalDateTable_93df0e71-3c7e-488c-8786-410bc3b909c7.Date
+
+relationship 9facf9d4-ef92-4172-9db5-908f3169caea
+	fromColumn: Fornecedores.Fornecedor
+	toColumn: 'Fornecedores analisados'.Fornecedores
+
+relationship 6984a2e4-70be-4106-ab53-93751f3e0d18
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fornecedores.Fornecedor
+	toColumn: 'Tabela de Riscos'.Fornecedor
+
+relationship 01ffb911-dd27-4a3d-b2c9-2cf161031ab3
+	fromColumn: Headcount.'Chave para Fornecedor'
+	toColumn: 'Chave Fornecedores'.'Chave de Fornecedor'
+
+relationship 240d3a34-e288-4031-8ba3-09562134dd7c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Cadastro no sistema'
+	toColumn: LocalDateTable_83cf58b0-074c-431c-a58e-76433a7f71b8.Date
+
+relationship cd59b6ad-4a6b-4ee5-baa3-f651e26b8c2d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.inicioContrato
+	toColumn: LocalDateTable_7b5fccea-9f37-406c-bb30-e4536b16ff45.Date
+
+relationship 7894ad06-03ba-4b05-a75c-c9fe177bdb29
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.fimContrato
+	toColumn: LocalDateTable_e86b11b1-64f7-4b3d-be5b-4465be93496a.Date
+
+relationship 27e6cb88-710f-4bf1-a570-bf65c511693f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de cadastro do contrato'
+	toColumn: LocalDateTable_d4cc921e-09e4-4df0-bd89-597745e5916d.Date
+
+relationship 50a01d14-c4ff-47e6-85a2-2449bce11047
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de início da vigência'
+	toColumn: LocalDateTable_35f7f721-4388-4874-9836-4290b75e7c31.Date
+
+relationship 3b9cc0d3-3d07-4e5a-ba8f-ec4ce6ed3fb3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de fim da vigência'
+	toColumn: LocalDateTable_0929a975-ccfb-4fb5-9200-46aaa883b237.Date
+
+relationship 3372a83d-ca4d-4a6b-bafe-6e721a314f16
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Efetivos.'Data de cadastro'
+	toColumn: LocalDateTable_0e67ccf8-9a4c-429a-9684-41ac2b6891a3.Date
+
+relationship 8cd56587-0f0d-53e3-ba80-8580ff954778
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários'.'Chave 1'
+	toColumn: Contratos.Chave1
+
+relationship 6a2ff00a-b5bc-aea3-2bae-c830636273c0
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Status de funcionários'.Unidade
+	toColumn: Efetivos.'Nome Fantasia Unidade'
+
+relationship fa7762cd-0db7-cbed-cac6-78714f441485
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Efetivos.Gestor
+	toColumn: 'Status de funcionários'.Gestor
+
+relationship 78f64241-10ad-456c-bd53-fd04ee4d5e18
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Histórico - Ativos'.Competência
+	toColumn: LocalDateTable_56e63d7e-a3fe-4818-9942-f08474d99703.Date
+
+relationship 36c2493c-bfcd-4837-b8e8-a5a377b4537d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Mobilizados.'Data de cadastro do contrato'
+	toColumn: LocalDateTable_b946a965-39c2-41fc-b911-9db334ef964e.Date
+
+relationship fb1a7792-bfa8-4a6c-9dfb-ba494e5f6780
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Mobilizados.'Data de início da vigência'
+	toColumn: LocalDateTable_8db4494f-325c-4d71-aa80-8bd756bc5a84.Date
+
+relationship 40b4485a-2251-4d10-aaea-6c13999f395c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Mobilizados.'Data de fim da vigência'
+	toColumn: LocalDateTable_2cc374df-8d66-403a-a49d-7da2710a208e.Date
+
+relationship a7036fe6-9684-4222-8630-118396b99481
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Mobilizados.'Data de cadastro'
+	toColumn: LocalDateTable_6dd83a82-6092-43c6-9bf1-bad402ee641a.Date
+
+relationship 90e334b8-874d-4dbf-94db-cdc25427d0eb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Mobilizados.'Mobilização atual'
+	toColumn: LocalDateTable_23e80769-4d4f-4dc9-be43-95fc268296d7.Date
+
+relationship AutoDetected_cbb15a4e-de80-414b-9ad3-50bc1ec51665
+	fromColumn: Mobilizados.Id_Contrato
+	toColumn: Contratos.'Id.Contrato'
+
+relationship c7b47378-c422-16e3-d948-4cb670c446aa
+	fromColumn: Fornecedores.'Id.Contrato'
+	toColumn: Contratos.'Id.Contrato'
+
+relationship d44d619f-6501-efb7-e935-1b3742bf7cda
+	fromColumn: Headcount.'Id.Contrato'
+	toColumn: Contratos.'Id.Contrato'
+
+relationship 1539d58e-f974-47c4-a071-22ff359f0f53
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendário.Date
+	toColumn: LocalDateTable_96eecd1d-9679-4109-bf80-38533dc24553.Date
+
+relationship 4bd727fa-6718-481d-b2e8-c9c210acb63f
+	isActive: false
+	fromColumn: Headcount.Competência
+	toColumn: Calendário.Date
+

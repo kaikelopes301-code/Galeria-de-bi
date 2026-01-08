@@ -1,0 +1,153 @@
+table 'Contratos Monitorados'
+	lineageTag: eba239a0-6c7b-4190-bcb8-2ba5277ef8f3
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: 1046b24f-2f90-4c20-9b08-60c272a8e4f6
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: a651eb80-4d20-4e23-ad0b-382bb8a85d12
+		summarizeBy: none
+		sourceColumn: Razão social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: fbb0e0b1-405d-4fa4-8d35-9a340f5ebd83
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da contratação'
+		dataType: string
+		lineageTag: 73ed4c48-ec5c-4aa3-8dca-6119ba0fe93a
+		summarizeBy: none
+		sourceColumn: Tipo da contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLA
+		dataType: string
+		lineageTag: 2bd0d1c0-5b2f-4e05-9237-3079fa77dcad
+		summarizeBy: none
+		sourceColumn: SLA
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: efd7d871-f91c-4566-ac1d-78ddad7f7153
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cadastro no sistema'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f8c92faf-f690-4b92-8314-1f1efb284265
+		summarizeBy: none
+		sourceColumn: Cadastro no sistema
+
+		variation Variation
+			isDefault
+			relationship: 688d2a77-8c10-4c27-b986-1b16696dab14
+			defaultHierarchy: LocalDateTable_33941a9c-4b61-4e9a-a451-db12694fb74f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Inicio Vigênia'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d7c79125-20b2-4dc0-82c4-e35d64bae628
+		summarizeBy: none
+		sourceColumn: Inicio Vigênia
+
+		variation Variation
+			isDefault
+			relationship: 43b31b3e-865a-4077-ad83-79270436af28
+			defaultHierarchy: LocalDateTable_0d5617eb-bde7-4777-ad40-93b7a5b5cf5d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fim Vigência'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: def1af6c-8cf5-4af5-9318-16b2a0aba929
+		summarizeBy: none
+		sourceColumn: Fim Vigência
+
+		variation Variation
+			isDefault
+			relationship: f63fe0cb-a407-4e22-920b-137581bdc172
+			defaultHierarchy: LocalDateTable_7e140405-256d-4e88-9dac-6fb9026b2b93.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Status Contrato'
+		dataType: string
+		lineageTag: af2e4c16-afae-490a-95a8-0e91b41868f6
+		summarizeBy: none
+		sourceColumn: Status Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Monitoramento'
+		dataType: string
+		lineageTag: 3f1e906f-f854-4e8c-9de0-2ed48c8383f9
+		summarizeBy: none
+		sourceColumn: Status Monitoramento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 90a90842-113e-4ec7-af6f-fec315764c26
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 92508135-f149-44b4-8176-e13dd75698cf
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 03d8ce11-34e0-46c6-a678-fc8ebe018a76
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Contratos Monitorados' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\EDP\00. Setup\Contratos Monitorados.xlsx"), null, true),
+				    #"Base Contratos_Sheet" = Fonte{[Item="Base Contratos",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Base Contratos_Sheet", [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Nº do pedido", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Tipo da contratação", type text}, {"SLA", type text}, {"Status", type text}, {"Cadastro no sistema", type datetime}, {"Inicio Vigênia", type date}, {"Fim Vigência", type date}, {"Status Contrato", type text}, {"Status Monitoramento", type text}, {"Unidade", type text}, {"Categoria", type text}, {"Fornecedor", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+				in
+				    #"Linhas em Branco Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

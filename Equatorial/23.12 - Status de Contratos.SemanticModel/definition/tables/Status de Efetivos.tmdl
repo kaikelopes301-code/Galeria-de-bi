@@ -1,0 +1,320 @@
+table 'Status de Efetivos'
+	lineageTag: 683980d1-46e0-4951-bd6a-888b2b3276de
+
+	measure '(Cadastro) Quantidade de Efetivos Cadastrados' = ```
+			CALCULATE(DISTINCTCOUNT('Status de Efetivos'[Chave única])) 
+			```
+		formatString: #,0
+		lineageTag: 20a8d200-0d5a-4da4-9404-a824ffade7c1
+
+	measure '(Relação) Quantidade Efetivos Cadastrados' = CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados])
+		formatString: #,0
+		lineageTag: 3d6df304-cac1-492b-8dac-078b2a2cbb55
+
+	measure '(Distintas) Quantidade Fornecedores' = CALCULATE(DISTINCTCOUNT('Status de funcionários'[CNPJ do Contrato]))
+		formatString: 0
+		lineageTag: da978b34-e2e8-4335-8b24-abe2f44f303f
+
+	measure '(Contratos) Quantidade de Contrato' = DISTINCTCOUNT('Status de Efetivos'[Id_Contrato])
+		formatString: 0
+		lineageTag: 6023832d-fe24-42d7-acb1-c50085e967da
+
+	measure '(Ativos) Quantidade Efetivos Ativos' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivos'[Situação]="Ativo")
+		formatString: #,0
+		lineageTag: e533a15c-119b-4c28-8396-f8f0e1553ae9
+
+	measure '(FILTRO) EFETIVOS' =
+			CALCULATE([(Ativos) Quantidade Efetivos Ativos],
+			                    ALL('Documentos em Análise'))
+		formatString: #,0
+		lineageTag: a6cf4382-b9bf-443b-8e9a-3c795034f7d8
+
+	measure '(Média) HC por Fornecedores' =
+			CALCULATE(AVERAGEX(VALUES('Status de Efetivos'[Fornecedor]),[(Cadastro) Quantidade de Efetivos Cadastrados]),
+			'Status de Efetivos'[Situação] = "Ativo")
+		lineageTag: 5ed07d89-4ba9-4843-a247-38b7508f5561
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Acumulativa) Contagem' = ```
+			
+			VAR DataMax = MAX('Status de Efetivos'[Data de Cadastro])
+			RETURN
+			CALCULATE(
+			    DISTINCTCOUNT('Status de Efetivos'[Chave única]),
+			    FILTER(
+			        ALLSELECTED('Status de Efetivos'), 
+			        'Status de Efetivos'[Data de Cadastro] <= DataMax
+			    )
+			)
+			```
+		formatString: #,0
+		lineageTag: bf97ab42-a243-4550-bfbc-f7ad8df692c3
+
+	measure '(Inativo) Colaboradores' =
+			CALCULATE(DISTINCTCOUNT('Status de Efetivos'[CPF]),
+			'Status de Efetivos'[Situação] = "Inativo")
+		formatString: #,0
+		lineageTag: 9a9bfa0c-1ffa-495a-b210-189e2816b5e9
+
+	measure _Ativos_Efetivos =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivos'[Situação]="Ativo",
+			USERELATIONSHIP('dCalendário'[Date],'Status de Efetivos'[Data de Admissão do Colaborador]))
+		formatString: #,0
+		lineageTag: 943b02ce-6475-4207-8a9a-b124315f3d77
+
+	column PIS
+		dataType: string
+		lineageTag: 46fb6f10-bb70-4d43-98df-360f133f604f
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: c4e5a829-100d-43f4-9216-f1b6e0439575
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 3111cc7b-1c32-4732-9cbe-82493bc92f40
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: b9146228-682d-4325-9f47-256375538348
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 5291d5f2-4081-417b-a2fd-74ce86d80820
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: b0064517-3a49-43dc-a411-eeff0a7565c6
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 60a46612-d8e0-4296-8ae0-7dd848f65e15
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contratação'
+		dataType: string
+		lineageTag: 19c0d6a8-dac9-4425-a5f2-6c0acf267af0
+		summarizeBy: none
+		sourceColumn: Tipo de contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: af45ee3f-e782-48f4-890d-777f5785892d
+		summarizeBy: none
+		sourceColumn: Data de Cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Chave Motivo'
+		dataType: string
+		lineageTag: 3666c556-cd53-4d6b-bfa8-bdec2dd67a98
+		summarizeBy: none
+		sourceColumn: Chave Motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origem
+		dataType: string
+		lineageTag: 9f2f37bd-628d-4837-b8c4-985a3dc4a22c
+		summarizeBy: none
+		sourceColumn: Origem
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave Status'
+		dataType: string
+		lineageTag: e48d3f47-f931-47d2-be7e-03f29910cb61
+		summarizeBy: none
+		sourceColumn: Chave Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 35009d74-2077-40df-9394-e2bf146aadd4
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Índice
+		dataType: int64
+		formatString: 0
+		lineageTag: 1a89fdd1-2f86-423e-aad6-c014f43abb02
+		summarizeBy: sum
+		sourceColumn: Índice
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Último Status de Ocorrência' = ```
+			
+			VAR Situacao = 'Status de Efetivos'[Situação]
+			VAR Contrato = 'Status de Efetivos'[Id_Contrato]
+			VAR DataMaisRecente =
+			    CALCULATE (
+			        MAX('Ocorrências'[Data da ocorrência]),
+			        FILTER (
+			            'Ocorrências',
+			            'Ocorrências'[Contract_Id] = Contrato
+			        )
+			    )
+			VAR TipoOcorrenciaMaisRecenteBruto =
+			    CALCULATE (
+			        MAX('Ocorrências'[Tipo de ocorrência]),
+			        FILTER (
+			            'Ocorrências',
+			            'Ocorrências'[Contract_Id] = Contrato &&
+			            'Ocorrências'[Data da ocorrência] = DataMaisRecente
+			        )
+			    )
+			VAR TipoOcorrenciaPadronizado =
+			    IF (
+			        SEARCH("rescisão", LOWER(TipoOcorrenciaMaisRecenteBruto), 1, 0) > 0
+			        || SEARCH("recisão", LOWER(TipoOcorrenciaMaisRecenteBruto), 1, 0) > 0,
+			        "Rescisão",
+			        TipoOcorrenciaMaisRecenteBruto
+			    )
+			RETURN
+			IF (
+			    Situacao = "Inativo",
+			    IF (
+			        ISBLANK(TipoOcorrenciaMaisRecenteBruto),
+			        "Inativado pelo Fornecedor",
+			        TipoOcorrenciaPadronizado
+			    ),
+			    'Status de Efetivos'[Situação]
+			)
+			
+			```
+		lineageTag: 9559c4ca-260e-4e56-a532-c73dce47152d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 293858e8-51a5-4e28-8a2e-ea63c8ada970
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 5ae72443-ba4a-4153-b2d3-073c0e5242fc
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: e13d9d47-995b-497e-9069-c01b4133aa0d
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: f0a13a87-ffa1-496b-a173-0f625e256832
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data Ajustada' =
+			
+			VAR DataAdmissao = 'Status de Efetivos'[Data de Admissão do Colaborador]
+			RETURN
+			    IF(
+			        ISBLANK(DataAdmissao) || DataAdmissao < DATE(2024,12,1),
+			        "Anterior a dez/24",
+			        FORMAT(DataAdmissao, "MM/yyyy")
+			    )
+		lineageTag: 791273dc-5e33-429d-8395-145dcbb8e6eb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Admissão do Colaborador'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 308b3bc2-0f38-48ef-914b-87d04c3961ed
+		summarizeBy: none
+		sourceColumn: Data de Admissão do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Chave única'
+		dataType: string
+		lineageTag: c648081e-b2ef-4ad7-a49b-e0e4138b6e85
+		summarizeBy: none
+		sourceColumn: Chave única
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status de Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = '41cacafc-2823-4a1a-a0db-381a24eb9014';#(lf)#(lf)SELECT #(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)CASE#(lf)#(tab)#(tab)WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)#(tab)#(tab)WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)#(tab)#(tab)ELSE 'Vigente'#(lf)#(tab)END AS 'Vigência de Contrato',#(lf)#(tab)bc.CompanyName AS 'Razão Social',#(lf)#(tab)p.TradeName AS 'Fornecedor',#(lf)#(tab)dbo.FNCNPJMask(bc.Document) AS 'CNPJ',#(lf)#(tab)b.TradeName AS 'Unidade',#(lf)#(tab)e.Name AS 'Nome',#(lf)     CASE #(lf)        WHEN e.CpfNumber IS NULL OR LTRIM(RTRIM(e.CpfNumber)) = '' THEN NULL#(lf)        ELSE FORMAT(CAST(e.CpfNumber AS BIGINT), '000\.000\.000\-00') #(lf)    END AS CPF,#(lf)#(tab)CASE #(lf)        WHEN e.PisNumber IS NULL OR LTRIM(RTRIM(e.PisNumber)) = '' THEN NULL#(lf)        ELSE FORMAT(CAST(e.PisNumber AS BIGINT), '000\.00000\.00\-0') #(lf)    END AS PIS,#(lf)    e.ForeignerDocument AS 'Documento Estrangeiro',#(lf)    CASE#(lf)        WHEN e.Situation = 0 THEN 'Ativo'#(lf)        WHEN e.Situation = 1 THEN 'Inativo'#(lf)    END AS 'Situação', #(lf)#(tab)#(lf)    CASE#(lf)        WHEN e.TypeHiring = 1 THEN 'CLT'#(lf)        WHEN e.TypeHiring = 2 THEN 'PJ (MEI)'#(lf)        WHEN e.TypeHiring = 4 THEN 'Autônomo'#(lf)        WHEN e.TypeHiring = 8 THEN 'Estrangeiro'#(lf)        WHEN e.TypeHiring = 16 THEN 'Sócio'#(lf)        ELSE 'Nenhum'#(lf)    END AS 'Tipo de contratação',#(lf)    F.Name AS 'Função',#(lf)#(tab)FORMAT(TRY_CAST(e.[CreatedAt] AS DATE), 'dd/MM/yyyy') AS 'Data de Cadastro',#(lf)        FORMAT(TRY_CAST(cfvda.[Value] AS DATE), 'dd/MM/yyyy') AS 'Data de Admissão do Colaborador'#(lf)#(lf)#(lf)FROM Effective e WITH(NOLOCK)#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)Contract c WITH(NOLOCK) ON c.Id = e.ContractId#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)BranchCompany bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)Provider p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)#(tab)INNER JOIN #(lf)#(tab)#(tab)[Function] f WITH(NOLOCK) ON f.Id = e.FunctionId#(lf)        LEFT JOIN#(lf)                CustomFieldValue cfvda WITH(NOLOCK) ON cfvda.EntityId = e.Id AND cfvda.Removed = 0 AND cfvda.CustomFieldId = 'B853CCFB-EFAA-47AC-AC83-9E9D7D86B987' -- Data de Admissão#(lf)WHERE#(lf)    b.OrganizationId = @OrganizationId#(lf)    AND c.Removed = 0#(lf)    AND e.Removed = 0#(lf)order by#(lf)#(tab)bc.Document,#(lf)#(tab)e.Name#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"CPF", type text}, {"CNPJ", type text}, {"PIS", type text}, {"Data de Cadastro", type date}, {"Data de Admissão do Colaborador", type date}}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Tipo Alterado", "Personalizar", each if [Situação] = "Inativo" then "Inativo" else "Ativo"),
+				    #"Colunas Removidas1" = Table.RemoveColumns(#"Coluna Condicional Adicionada",{"Situação"}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Colunas Removidas1", "Data de Cadastro2", each Date.AddMonths([Data de Cadastro],-1)),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Data de Cadastro2", type date}}),
+				    #"Colunas Removidas2" = Table.RemoveColumns(#"Tipo Alterado2",{"Data de Cadastro"}),
+				    #"Colunas Renomeadas2" = Table.RenameColumns(#"Colunas Removidas2",{{"Data de Cadastro2", "Data de Cadastro"}}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Colunas Renomeadas2", "Chave Motivo", each Text.Combine({[CNPJ], [Unidade], [CPF]}, ""), type text),
+				    #"Índice Adicionado" = Table.AddIndexColumn(#"Coluna Mesclada Inserida", "Índice", 1, 1, Int64.Type),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Índice Adicionado", "Origem", each "Efetivos Cadastrados"),
+				    #"Coluna Mesclada Inserida2" = Table.AddColumn(#"Personalização Adicionada2", "Chave Status", each Text.Combine({[CPF], [CNPJ]}, ""), type text),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Coluna Mesclada Inserida2", {"Índice"}),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Duplicatas Removidas", "Chave única", each Text.Combine({[Id_Contrato], [CNPJ], [Nome], [Unidade], [CPF], [PIS], [Tipo de contratação], [Personalizar]}, ""), type text),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Coluna Mesclada Inserida1",{{"Personalizar", "Situação"}})
+				in
+				    #"Colunas Renomeadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

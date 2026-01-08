@@ -1,0 +1,130 @@
+table 'Classificação Docs'
+	lineageTag: 2b8b65d5-b772-4b40-85b9-939d3ab73014
+
+	column Peso
+		dataType: int64
+		formatString: 0
+		lineageTag: 7aa0e3e5-9391-4318-9a45-39254b1590ff
+		summarizeBy: none
+		sourceColumn: Peso
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Cobrança'
+		dataType: string
+		lineageTag: b3678782-894c-49de-9257-75d7abdb5137
+		summarizeBy: none
+		sourceColumn: Tipo de Cobrança
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da entrega'
+		dataType: string
+		lineageTag: 1c29e9ad-8b79-40e9-8b0f-7cb89870ee74
+		summarizeBy: none
+		sourceColumn: Tipo da entrega
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Classificação de Risco'
+		dataType: string
+		lineageTag: 90d59bd6-861b-4843-ab68-b50918745b7a
+		summarizeBy: none
+		sourceColumn: Classificação de Risco
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prazo Bloqueio Pagamento'
+		dataType: string
+		lineageTag: 3c0d3ffa-1c4d-4ae2-85c4-08aa520567e7
+		summarizeBy: none
+		sourceColumn: Prazo Bloqueio Pagamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Iipo de Prestação de Serviço '
+		dataType: string
+		lineageTag: 4ad30da2-1efc-47d1-85df-4b677d6e83af
+		summarizeBy: none
+		sourceColumn: "Iipo de Prestação de Serviço "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de fornecedor '
+		dataType: string
+		lineageTag: cb22d6cc-db16-4c3b-8691-90b6a9509069
+		summarizeBy: none
+		sourceColumn: "Tipo de fornecedor "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Modalidade de Contratação'
+		dataType: string
+		lineageTag: c7e4f3cf-900d-4a13-a4ca-b11eba972d38
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Frequência
+		dataType: string
+		lineageTag: 176aaf46-2ec5-4336-9439-0d89ffc84343
+		summarizeBy: none
+		sourceColumn: Frequência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data limite de envio'
+		dataType: string
+		lineageTag: 003f45f0-e981-4697-bc6c-93e5f7df7ecc
+		summarizeBy: none
+		sourceColumn: Data limite de envio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tabela Algar'
+		dataType: string
+		lineageTag: d378aeb9-b688-4e71-bee9-b5ac69767003
+		summarizeBy: none
+		sourceColumn: Tabela Algar
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observação
+		dataType: string
+		lineageTag: b013c129-1682-4d0f-b4a0-5696a39fba6d
+		summarizeBy: none
+		sourceColumn: Observação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column14
+		dataType: string
+		lineageTag: d2c00351-9b83-4003-aff5-3ff44c7cfd2b
+		summarizeBy: none
+		sourceColumn: Column14
+
+		annotation SummarizationSetBy = Automatic
+
+	column Documento
+		dataType: string
+		lineageTag: 2760a8b7-4403-4513-a8bf-4a8726a19c9b
+		summarizeBy: none
+		sourceColumn: Documento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Classificação Docs' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("3VnNbuM2EH6VQU4x4myyWfSwR/8GLbquYRvtIciBkhiXAE26pGQUe+o79AmKPSyywJ62p171JvskHVKyJNuyLDm2HPgQxyRnhjPfDIcz9MPDRUcKXxFfXjQvRtSVSlHhUxy08LsnoSM59dlCNvGbWFARfg4/JbMEZAAx4Y/CYwvmBYSDR2GiiEP47/KQgt7i34fw2WPypk3YnxJGTLtmYajIRwlMeNSnasYE8cys2ccPv4rADGIrcaUJ48BxkyHg4rWRIRUsCGce8Yz1b3/Aj4HR0OHyj4ASRWdSw5xMyQwBkoCcfakEdamHnHSGuhrwwi/CZQQ8AiTQywHVPkUGN7Csbw6HyWPz4eKeKsL0hvc4QkEieULC0skwlqgRN+hkKVDmJkVFuBO0m9BDU/zACtmJe08smITwP8Gs7CPjvstqA2g/QG4pwn8Ukxu4dojyrY8Gw582h8eHzG7zgQoduei4aK1Ytz3WlmQGzxPBcn1KVLZl0AwuQySR+VN30WlNQelevbutnL5WjW8bu9fN1kDm4TecoMJLrIN3t+AxovN0K/A4VT7zYuJu+OwwIz5OS0z7BK4Rnu6kGuk2JA4SD/tBUlb5klCN6DTgRNlLxkbh/WRssjzKWA73Y8mB7v0poHufD10ZIwogRKo+9XCNb4zOLLVkbCvMLHI2V3JBcARtIlx7V9mDmypCYUx4colV53g9eami6gWBlJFko9KVeIytiOJVuJwo5gRG18g9TDcxtlweYIBhdTYYjxv1BOP1Cqh3Rw7HFyKyu5pa32CKSVVJ6F0nVeg2EmGodH21aivww3+FnEnAKudnc11tdAw2YMFoqut1Sw4kxdkjLnrNGVIoP62Hx1QtWPhZQkvrLFgVyCu6Yk2iXkrE7+gAHWAGUoDmzhWjfnz0CUI2Rz5SJgPV22BUAqsoU613Yy/uz0TA+ca/E4GT6bby7e+2Rn34/tff0F3yGwRbuO4SL4UUeSjzSZqDXsZaczFx5Oy9NxBFucNWblj0rqagROVSFK+msrCHoIS190HEqVYuQMc808hGebKjvl/VVaKWsrUEpqOe+aA8DcSeyelTNEnfxB0Wflf2Ll3y5JPDmWG71cxCWNENZLUqjtSGlsDS+KvPXFKe7NUc0VL65tWZXapn0mGcfYywxKkoZuPus8ummPU4gq1dpsNvCtcu7/vd7EQDrtbz2DCTxw4t72gxnNarMo1Gs+HtUcP5sPjsbCYG0ifQR8hwl0KcSxOe2XNuSbtLnqYh9ZhnU5RHZ0xro7YMwCXKJ9Gs5izFsiL5Mc9CE5Jm7hTHohIS20tkHDAnuiLQPrwizMZd6nKS+X0jebPEplUZOKP3S9O5R75Nqj7TrSyYR1HreMWWjp1J/zfq1L/deZXitYK3M1Gm2jyFz8q8WVxhr721XK9IXvstdleT60pYX3RaOfHNJSc3XG8SMZbNZOPAVeU4tzNTzf6S19YEEYj7Xlt3fMr8OJ75aR0uJ53RpGFcXVQhHFbauRWAh0SnqPf5lXCzxxNlUXxcrnRQbSroE0tS5RW0bZe6WgI1csSY6CqWNOibZH0Ch9bZlR4aFuPJ1VdIuwNGg9BzqZB8T//F0moEPWvGzgBNDbzpK2qE3th5tMIJNKqwoPwAMVfnXucT37UAthn5rfEveLWZLgCvLcL3DuLcx/3t/x4f/wc=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Tipo de Cobrança" = _t, #"Tipo da entrega" = _t, Documento = _t, #"Tabela Algar" = _t, Peso = _t, #"Classificação de Risco" = _t, #"Prazo Bloqueio Pagamento" = _t, #"Iipo de Prestação de Serviço " = _t, #"Tipo de fornecedor " = _t, #"Modalidade de Contratação" = _t, Frequência = _t, #"Data limite de envio" = _t, Observação = _t, Column14 = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Tipo de Cobrança", type text}, {"Tipo da entrega", type text}, {"Documento", type text}, {"Peso", Int64.Type}, {"Classificação de Risco", type text}, {"Prazo Bloqueio Pagamento", type text}, {"Iipo de Prestação de Serviço ", type text}, {"Tipo de fornecedor ", type text}, {"Modalidade de Contratação", type text}, {"Frequência", type text}, {"Data limite de envio", type text}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Tipo Alterado", {"Documento"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

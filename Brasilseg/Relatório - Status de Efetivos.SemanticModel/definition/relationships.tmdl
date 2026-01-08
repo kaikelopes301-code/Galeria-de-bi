@@ -1,0 +1,62 @@
+relationship 5d7a8ae4-bc36-430c-8021-0832254111f0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Inicio'
+	toColumn: LocalDateTable_6449c6fd-29ed-4c92-9ca1-c9b2780d30df.Date
+
+relationship 319b503c-18f6-495b-93d9-ec0d371e47e1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status do Fornecedores'.'Vigência do Contrato Fim'
+	toColumn: LocalDateTable_e26b267c-d95e-489a-98bc-fb61236e8596.Date
+
+relationship 330e7b91-47b2-95b2-3d78-3c4ee7e811e7
+	fromColumn: 'Status de funcionários'.chave1
+	toColumn: 'Número de Pedido'.chave1
+
+relationship 33bb50bf-e0a1-a92b-2d9c-5d9b00a42253
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Análise de Colaboradores'.chave1
+	toColumn: 'Número de Pedido'.'Chave 3- Análise de Colaboradores'
+
+relationship ad1da450-cd00-f255-7aeb-7dfec52f5037
+	fromColumn: 'Status de Efetivos'.chave1
+	toColumn: 'Número de Pedido'.chave1
+
+relationship 3bef3ccd-6aeb-0492-ed26-35e526d2aa37
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'Status do Fornecedores'.chave1
+	toColumn: 'Número de Pedido'.chave1
+
+relationship 52c4e893-ce0d-4483-8146-597a75ee059e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Contratos.'Cadastro no sistema'
+	toColumn: LocalDateTable_c9c33bc4-3664-474a-a777-f783198fbdc5.Date
+
+relationship 82e365e7-03ae-4bfd-a16b-58b1c2e55602
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Status de Efetivos'.'Data de cadastro do contrato'
+	toColumn: LocalDateTable_8866ce78-7c45-4e43-9686-5e139d0a43f2.Date
+
+relationship AutoDetected_f808280e-e03b-4ac5-9480-279a978f1621
+	isActive: false
+	toCardinality: many
+	fromColumn: 'Análise de Colaboradores'.CPF
+	toColumn: 'Status de funcionários'.CPF
+
+relationship 5b137784-fa08-4b63-aa9e-b6bdb85dd4d8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendário.Date
+	toColumn: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.Date
+
+relationship 63d9d7c9-b0af-5cbf-c628-9324eef3cf4f
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Análise de Colaboradores'.Competência
+	toColumn: dCalendário.Date
+
+relationship 12a46699-7924-76ab-d22a-a33bbad0acd2
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Status de Efetivos'.'Data de cadastro'
+	toColumn: dCalendário.Date
+

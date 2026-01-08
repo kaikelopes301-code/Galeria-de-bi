@@ -1,0 +1,39 @@
+table 'Contratos Monitorados'
+	lineageTag: eba239a0-6c7b-4190-bcb8-2ba5277ef8f3
+
+	column 'Nº do pedido'
+		dataType: string
+		lineageTag: 1046b24f-2f90-4c20-9b08-60c272a8e4f6
+		summarizeBy: none
+		sourceColumn: Nº do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Monitoramento'
+		dataType: string
+		lineageTag: af2e4c16-afae-490a-95a8-0e91b41868f6
+		summarizeBy: none
+		sourceColumn: Status Monitoramento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Contratos Monitorados' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\RennanCosta\Diretório Padrão\Atlas Inovações - Documentos\Relatórios\Dados\02. Externo\01. AFM Gestão\EDP\00. Setup\Contratos Monitorados - 29.10.25.xlsx"), null, true),
+				    #"Base Contratos_Sheet" = Fonte{[Item="Contratos Geral",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Base Contratos_Sheet", [PromoteAllScalars=true]),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Cabeçalhos Promovidos",{"Razão social", "CNPJ", "Tipo da contratação", "SLA", "Status", "Cadastro no sistema", "Início Vigência", "Fim Vigeência", "Regional", "Categoria", "Fornecedor", "Unidade", "Status Vigência"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"Status Contrato", "Status Monitoramento"}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Colunas Renomeadas", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Linhas em Branco Removidas",{{"Nº do pedido", type text}}),
+				    #"Linhas Classificadas" = Table.Sort(#"Tipo Alterado",{{"Nº do pedido", Order.Ascending}}),
+				    #"Duplicatas Removidas" = Table.Distinct(#"Linhas Classificadas", {"Nº do pedido"})
+				in
+				    #"Duplicatas Removidas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

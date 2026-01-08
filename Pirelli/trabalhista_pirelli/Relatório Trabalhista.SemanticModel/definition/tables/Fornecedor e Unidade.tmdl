@@ -1,0 +1,48 @@
+table 'Fornecedor e Unidade'
+	lineageTag: 8587e5a1-5401-4f2f-b123-6205fc389a52
+
+	column 'Fornecedor e Unidade'
+		lineageTag: 1785e45d-a834-49ce-a6ac-7560e319909f
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Fornecedor e Unidade Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Fornecedor e Unidade Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor e Unidade Campos'
+		isHidden
+		lineageTag: f7da0a5b-9f71-47cb-bdb3-ea89e57b7eba
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Fornecedor e Unidade Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor e Unidade Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 720a0733-cfbc-4dad-bcfb-500287c7f865
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Fornecedor e Unidade' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Fornecedores'[Fornecedor]), 0),
+				    ("Unidade", NAMEOF('Fornecedores'[Unidade(s)]), 1)
+				}
+
+	annotation PBI_Id = 3ad4e326aa004d34b3acd5278f8c2e36
+

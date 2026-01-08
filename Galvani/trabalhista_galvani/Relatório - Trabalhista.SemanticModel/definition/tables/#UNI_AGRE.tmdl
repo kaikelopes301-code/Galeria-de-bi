@@ -1,0 +1,48 @@
+table #UNI_AGRE
+	lineageTag: 96147964-8f00-4690-b3e6-44361b1d84ee
+
+	column #UNI_AGRE
+		lineageTag: 48be34f6-2bb7-4597-9f83-d90f00c305b4
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '#UNI_AGRE Pedido'
+
+		relatedColumnDetails
+			groupByColumn: '#UNI_AGRE Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#UNI_AGRE Campos'
+		isHidden
+		lineageTag: e498d0e2-5ad2-466f-bdb5-e31d3efab516
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '#UNI_AGRE Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '#UNI_AGRE Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: f6644f54-7856-4848-abd2-ae990c8e056b
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition #UNI_AGRE = calculated
+		mode: import
+		source =
+				{
+				    ("Compilado", NAMEOF(Contratos[Unidade (Agregada)]), 0),
+				    ("Expandido", NAMEOF(Contratos[Unidade]), 1)
+				}
+
+	annotation PBI_Id = 5e7baf8eb2db4d18b8dd8bec8cd0fa41
+

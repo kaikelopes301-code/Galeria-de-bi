@@ -1,0 +1,1145 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "Atrasados_F",
+  "name": "61021251418f391fa41a",
+  "options": {
+    "targetVisualNames": [
+      "0d5d0c1f8ad5126a4525"
+    ],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "7eddc5b3204daa7e4574",
+    "filters": {
+      "byExpr": [
+        {
+          "name": "3ca4013f6c55a887ba7b",
+          "type": "Categorical",
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Relatório Fornecedores"
+                }
+              },
+              "Property": "Tipo do documento"
+            }
+          },
+          "howCreated": 1
+        },
+        {
+          "name": "9cb36172a9e048756964",
+          "type": "Categorical",
+          "filter": {
+            "Version": 2,
+            "From": [
+              {
+                "Name": "r",
+                "Entity": "Relatório Fornecedores",
+                "Type": 0
+              }
+            ],
+            "Where": [
+              {
+                "Condition": {
+                  "Not": {
+                    "Expression": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "r"
+                                }
+                              },
+                              "Property": "Tipo do documento"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'--'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "Relatório Fornecedores"
+                }
+              },
+              "Property": "Tipo do documento"
+            }
+          },
+          "howCreated": 1
+        }
+      ]
+    },
+    "sections": {
+      "7eddc5b3204daa7e4574": {
+        "visualContainers": {
+          "75f8c0f35df2979a22f8": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "1a322123eba7db8ea906",
+                  "type": "Advanced",
+                  "expression": {
+                    "Arithmetic": {
+                      "Left": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Demissional"
+                            }
+                          },
+                          "Property": "Quantidade de Rescisões"
+                        }
+                      },
+                      "Right": {
+                        "ScopedEval": {
+                          "Expression": {
+                            "Measure": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Entity": "Demissional"
+                                }
+                              },
+                              "Property": "Quantidade de Rescisões"
+                            }
+                          },
+                          "Scope": []
+                        }
+                      },
+                      "Operator": 3
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "ab14516471a77ec38bd7",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "1e92ea808a087d208707",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Status (Reclassificação)"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "659108021e58d41968c7",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "barChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "e8a8e5ed60724a0d7711": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "1284d5f36689e2267b3a": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "b4f4897ae7be76a76511": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "e61f74e5a1bb39aeb984",
+                  "type": "Advanced",
+                  "expression": {
+                    "Arithmetic": {
+                      "Left": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Demissional"
+                            }
+                          },
+                          "Property": "Quantidade de Rescisões"
+                        }
+                      },
+                      "Right": {
+                        "ScopedEval": {
+                          "Expression": {
+                            "Measure": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Entity": "Demissional"
+                                }
+                              },
+                              "Property": "Quantidade de Rescisões"
+                            }
+                          },
+                          "Scope": []
+                        }
+                      },
+                      "Operator": 3
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "86667cf4aabc0a184499",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "a30ab57bce5c0a603ee8",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Status (Reclassificação)"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "pieChart",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  }
+                }
+              ],
+              "activeProjections": {
+                "Category": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Status (Reclassificação)"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "a660737d285d6a58940f": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "e9eb36714d90181e1ae8",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Enviado) Quantidade de Enviado"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Enviado) Quantidade de Enviado"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "2deaf582b0376d891347": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "d1aec3ec911dce055016",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Aprovado) Quantidade Aprovado"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Aprovado) Quantidade Aprovado"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "7b6251e8918e7f9398d4": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "41fefef1175d8b4e085b",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "card",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "2d9c1e4fd87e88c103e0": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "17ddce033cc32b015062": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "80acbb649623762cf5cc": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "8dfca5bcd02d3adde56e": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "64ceda37e952d0d7d438": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "f8146131faa60e56572d": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "03c39dfdf2900aee02f7": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "881ba177aa3808681967": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "c368442f9dd1688ef9d8": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "35be614b9feeba8cf942": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "4164481ad23e2ad6a5ae": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "f8a9e04eaf7fa61e9e01": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "b6a881ad4f2f87adbe45": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "8f37d7f7c1d3c58a99d4": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "a52f2d473238295a49f3": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "587ad1433514c3efbb5f": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "cb31e76ca44fbbe71732": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "55d6b8d2c1e28b0f0aeb": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "f584c2c5368b0c9f8294": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "301d17da85f0d3f1973c": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "8e0d5e511c45bcabd354": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "354e7eac59d8b8533650": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "36bddeb12b00aee5636a": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "ed77a24332ee4ea9017c": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "0c598fbb708cc8830172": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "6331c4826121978a11af": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "ccacf3dc7d08b8b054a0": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "7aeaba7abceab0e9ecd2",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "textFilter25A4896A83E0487089E2B90C9AE57C8A",
+              "objects": {}
+            }
+          },
+          "add05876f0502b68b864": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "b5163bd2a091c191ca0d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Unidade(s)"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Unidade(s)"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "0d5d0c1f8ad5126a4525": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "4089a933bb7e4e6cd508",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "e28ef1d392fd3d80b92d": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "6a9d82e627be564bdb54",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Tipo do documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {}
+            }
+          },
+          "3e9887ddb020b21c6c73": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "9c3c70f112ccc4b68b3c",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Documento"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Documento"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "12ef9a0e56c80427d49e": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "6f5095f0b1c466eeca84",
+                  "type": "Advanced",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "r",
+                        "Entity": "Relatório Fornecedores",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Comparison": {
+                            "ComparisonKind": 1,
+                            "Left": {
+                              "Measure": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "r"
+                                  }
+                                },
+                                "Property": "(Total) Quantidade de Documentos"
+                              }
+                            },
+                            "Right": {
+                              "Literal": {
+                                "Value": "0L"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Total) Quantidade de Documentos"
+                    }
+                  },
+                  "howCreated": 1
+                },
+                {
+                  "name": "3e6e7ddb03ca1978f1af",
+                  "type": "Categorical",
+                  "filter": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "r",
+                        "Entity": "Relatório Fornecedores",
+                        "Type": 0
+                      }
+                    ],
+                    "Where": [
+                      {
+                        "Condition": {
+                          "Not": {
+                            "Expression": {
+                              "In": {
+                                "Expressions": [
+                                  {
+                                    "Column": {
+                                      "Expression": {
+                                        "SourceRef": {
+                                          "Source": "r"
+                                        }
+                                      },
+                                      "Property": "Status"
+                                    }
+                                  }
+                                ],
+                                "Values": [
+                                  [
+                                    {
+                                      "Literal": {
+                                        "Value": "'Aprovado'"
+                                      }
+                                    }
+                                  ],
+                                  [
+                                    {
+                                      "Literal": {
+                                        "Value": "'Em Análise'"
+                                      }
+                                    }
+                                  ],
+                                  [
+                                    {
+                                      "Literal": {
+                                        "Value": "'Atrasado Recusado'"
+                                      }
+                                    }
+                                  ]
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Status"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "84170535addb8442b1b0",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Fornecedor"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "c2fff6e81e01a03630d2",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Documento"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "f0fa22cd3d4595215330",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Índice"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "f44a191b90eb7668e383",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Prazo de Envio"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "7ca68bd530707a50ddc1",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Unidade(s)"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "9c4e158b2c479bdb0b65",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Meses de Atraso"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "74f87392368c2e3e8094",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Data de Hoje"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "9502c87e0a41d570a5be",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "Tempo de Atraso (Dias)"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "92090f20a81de0b7b0c4",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "CNPJ"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Relatório Fornecedores"
+                        }
+                      },
+                      "Property": "(Atraso) Tempo"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "6cf3bb99f7e582db7ab9": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "ba26b718b8c53963cf49": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "9954b768956010a50651": {
+            "isHidden": false
+          },
+          "e7782e048a83014d0691": {
+            "isHidden": true
+          },
+          "2e8d049a094d81f4acc7": {
+            "isHidden": true
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "true"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

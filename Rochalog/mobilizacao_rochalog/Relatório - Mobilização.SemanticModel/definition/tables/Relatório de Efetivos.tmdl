@@ -1,0 +1,380 @@
+table 'Relatório de Efetivos'
+	lineageTag: d29a5522-334d-4ba8-960f-bb4cc49430db
+
+	measure _CPF_Distintos = CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CPF]))
+		formatString: 0
+		lineageTag: e93118bd-71c6-4dc8-83ef-d33a48486310
+
+	measure 'Quantidade de Colaboradores' = CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CPF]))
+		formatString: #,0
+		lineageTag: 81fab84d-5772-4aca-b5a0-9fbefce37c5f
+
+	measure '%Pendência de Colaboradores' =
+			CALCULATE(DISTINCTCOUNT('Relatório de Efetivos'[CPF]),
+			'Relatório de Efetivos'[Status de Restrição] = "Documentação Pendente")/[Quantidade de Colaboradores]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 84fa091a-588f-4e07-a8f4-5be8900bc0a1
+
+	measure 'Quantidade de Fornecedores' = CALCULATE(DISTINCTCOUNT('Relatório Fornecedores'[CNPJ]))
+		formatString: 0
+		lineageTag: 02e9252f-1778-4e93-a608-3eb38f56090c
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 4b28f201-43c0-4a58-be7a-a45b0c2c8029
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 54bbcf0d-73fa-44fc-a3a9-9d2425d723a9
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: 429dbb6f-000d-4572-9e27-e7cb6d158b14
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 45f78376-72de-40fd-9c87-32ac4b0bfe03
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: 894b2a01-8586-4f40-8dcf-e8e44f323874
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 67fc4a80-866d-496d-9b54-f3783639d7a9
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Restrição'
+		dataType: string
+		lineageTag: 9c464d3e-227f-46f1-ab0b-779d912b010b
+		summarizeBy: none
+		sourceColumn: Status de Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: a552fa11-402f-4f13-a2bd-7ed5a0a7a511
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 478ed552-e80e-4b54-977b-75316cc0bd75
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 204cd5c1-5d10-44be-a7f3-a57830740e19
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: cb701fa8-9b37-4459-ab38-6abfcf87eee6
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contratação'
+		dataType: string
+		lineageTag: 42291dc3-277b-43f0-9ba1-e3bfd5bd5434
+		summarizeBy: none
+		sourceColumn: Tipo de contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 39d20c62-fb45-4b08-82c3-ebeb2f023f79
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atividades
+		dataType: string
+		lineageTag: 747f9867-21cf-4110-a8d6-254577169700
+		summarizeBy: none
+		sourceColumn: Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Moradia'
+		dataType: string
+		lineageTag: 6b5c4f0c-521b-49ee-935b-a0e019501e47
+		summarizeBy: none
+		sourceColumn: Tipo de Moradia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro do Efetivo'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a741ed62-2003-439c-9bd8-a83c8d57e88b
+		summarizeBy: none
+		sourceColumn: Data de Cadastro do Efetivo
+
+		variation Variation
+			isDefault
+			relationship: 8cfff0cd-6894-4e7f-94b1-64b4f06b0ec3
+			defaultHierarchy: LocalDateTable_13af740f-6b48-4ae4-bbf9-b8d984d97107.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Admissão do Colaborador'
+		dataType: string
+		lineageTag: 781c2be5-0180-4440-94c7-22a245c745a0
+		summarizeBy: none
+		sourceColumn: Data de Admissão do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Atividades'
+		dataType: string
+		lineageTag: b0ff087f-4b43-41f5-bf8a-301ae2249d51
+		summarizeBy: none
+		sourceColumn: Início Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Atividades'
+		dataType: string
+		lineageTag: 732c7b77-5945-421d-8b11-78a7f0b5aeaf
+		summarizeBy: none
+		sourceColumn: Fim Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column Salário
+		dataType: double
+		lineageTag: 58223ea9-d622-473e-b4cb-5b1f5534d1e5
+		summarizeBy: sum
+		sourceColumn: Salário
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Escala
+		dataType: string
+		lineageTag: 93a0afa8-99c1-4e49-88a8-49a5a8708761
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada'
+		dataType: string
+		lineageTag: b6d8c324-d17f-4c9a-8906-9aae76663e8f
+		summarizeBy: none
+		sourceColumn: Início da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Término da jornada'
+		dataType: string
+		lineageTag: bcc208b2-d015-486a-9e4a-a4c6365c0c70
+		summarizeBy: none
+		sourceColumn: Término da jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada descansada'
+		dataType: string
+		lineageTag: ac8f86cf-25a3-4bca-ab25-f64aeb2c6e37
+		summarizeBy: none
+		sourceColumn: Intrajornada descansada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada remunerada'
+		dataType: string
+		lineageTag: 7015ec04-cf33-465f-8140-e7049b3a50a7
+		summarizeBy: none
+		sourceColumn: Intrajornada remunerada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Extras'
+		dataType: string
+		lineageTag: 71eca364-9ab7-4372-9571-993d4f570e8c
+		summarizeBy: none
+		sourceColumn: Horas Extras
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trabalha em Feriados'
+		dataType: string
+		lineageTag: acb48d16-3bd9-4518-a5c7-e5c04784d6c0
+		summarizeBy: none
+		sourceColumn: Trabalha em Feriados
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insalubridade
+		dataType: double
+		lineageTag: e2eacced-621d-4e53-9368-ad36c3e0a2ec
+		summarizeBy: sum
+		sourceColumn: Insalubridade
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Periculosidade
+		dataType: double
+		lineageTag: 0ed053fe-a1bd-42f3-917b-1fcd142849e3
+		summarizeBy: sum
+		sourceColumn: Periculosidade
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Gratificação por Acúmulo de Função*'
+		dataType: double
+		lineageTag: 4e7e2eba-f181-435f-b579-72654ce27a5e
+		summarizeBy: sum
+		sourceColumn: Gratificação por Acúmulo de Função*
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Data de Admissão'
+		dataType: string
+		lineageTag: ccc5cc5d-68bb-49f6-8e4e-ef3fd7600f02
+		summarizeBy: none
+		sourceColumn: Data de Admissão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cargo do colaborador'
+		dataType: string
+		lineageTag: f7f63b62-8339-4f9a-b85c-a3835f1c706e
+		summarizeBy: none
+		sourceColumn: Cargo do colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Serviço'
+		dataType: string
+		lineageTag: c8570eef-4f20-490d-9926-85b93b114754
+		summarizeBy: none
+		sourceColumn: Tipo de Serviço
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grau de Instrução'
+		dataType: string
+		lineageTag: e6db4039-441a-481d-9bac-13bb91285aad
+		summarizeBy: none
+		sourceColumn: Grau de Instrução
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status do Contrato do Colaborador'
+		dataType: string
+		lineageTag: 51911181-8c49-49ff-b7bd-ef8ba46d64d6
+		summarizeBy: none
+		sourceColumn: Status do Contrato do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Município Base'
+		dataType: string
+		lineageTag: 2bd56117-3772-4e03-a13d-54393b413e67
+		summarizeBy: none
+		sourceColumn: Município Base
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 94a685fb-6b8c-4447-aa0b-e212c49e7b32
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Próximas Férias Agendadas'
+		dataType: string
+		lineageTag: b7f61f95-2783-4de9-aa44-49d04dbfcaed
+		summarizeBy: none
+		sourceColumn: Início Próximas Férias Agendadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Próximas Férias Agendadas'
+		dataType: string
+		lineageTag: 18d4b618-17f3-4df2-81d4-f6a8392dda35
+		summarizeBy: none
+		sourceColumn: Fim Próximas Férias Agendadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Últimas Férias Cumpridas'
+		dataType: string
+		lineageTag: c403a3d1-1126-4667-b318-6d047e881238
+		summarizeBy: none
+		sourceColumn: Início Últimas Férias Cumpridas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Últimas Férias Cumpridas'
+		dataType: string
+		lineageTag: 25762c6a-29da-406e-92a6-7657791a83ae
+		summarizeBy: none
+		sourceColumn: Fim Últimas Férias Cumpridas
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relatório de Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="DECLARE @OrganizationId UNIQUEIDENTIFIER = '49443CB2-548F-4529-AA0B-019F6FC55E27';#(lf)#(lf)SELECT #(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)#(tab)bc.CompanyName AS 'Razão Social',#(lf)#(tab)p.TradeName AS 'Fornecedor',#(lf)#(tab)dbo.FNCNPJMask(bc.Document) AS 'CNPJ',#(lf)#(tab)b.TradeName AS 'Unidade',#(lf)#(tab)e.Name AS 'Nome',#(lf)#(tab)CASE WHEN cs.statusRestriction IS NULL THEN 'Inativo'#(lf)         ELSE cs.statusRestriction END AS 'Status de Restrição',#(lf)#(lf)#(tab)-- CPF formatado#(lf)#(tab)CASE #(lf)        WHEN TRY_CONVERT(BIGINT, REPLACE(REPLACE(REPLACE(e.CpfNumber, '.', ''), '-', ''), ' ', '')) IS NULL THEN NULL#(lf)        ELSE FORMAT(TRY_CONVERT(BIGINT, REPLACE(REPLACE(REPLACE(e.CpfNumber, '.', ''), '-', ''), ' ', '')), '000\.000\.000\-00') #(lf)    END AS CPF,#(lf)#(lf)#(tab)-- PIS formatado#(lf)#(tab)CASE #(lf)        WHEN TRY_CONVERT(BIGINT, REPLACE(REPLACE(REPLACE(e.PisNumber, '.', ''), '-', ''), ' ', '')) IS NULL THEN NULL#(lf)        ELSE FORMAT(TRY_CONVERT(BIGINT, REPLACE(REPLACE(REPLACE(e.PisNumber, '.', ''), '-', ''), ' ', '')), '000\.00000\.00\-0') #(lf)    END AS PIS,#(lf)#(lf)    e.ForeignerDocument AS 'Documento Estrangeiro',#(lf)    CASE#(lf)        WHEN e.Situation = 0 THEN 'Ativo'#(lf)        WHEN e.Situation = 1 THEN 'Inativo'#(lf)    END AS 'Situação', #(lf)#(tab)#(lf)    CASE#(lf)        WHEN e.TypeHiring = 1 THEN 'CLT'#(lf)        WHEN e.TypeHiring = 2 THEN 'PJ (MEI)'#(lf)        WHEN e.TypeHiring = 4 THEN 'Autônomo'#(lf)        WHEN e.TypeHiring = 8 THEN 'Estrangeiro'#(lf)        WHEN e.TypeHiring = 16 THEN 'Sócio'#(lf)        ELSE 'Nenhum'#(lf)    END AS 'Tipo de contratação',#(lf)    F.Name AS 'Função',#(lf)#(lf)#(tab)(#(lf)#(tab)#(tab)select STRING_AGG(CONVERT(NVARCHAR(MAX), a.Name), ', ') #(lf)#(tab)#(tab)from #(lf)#(tab)#(tab)#(tab)EffectiveActivity ea#(lf)#(tab)#(tab)#(tab)inner join Activity a on a.Id = ea.ActivityId#(lf)#(tab)#(tab)where EffectiveId = e.Id and ea.Removed = 0 and a.Removed = 0#(lf)#(tab)) As 'Atividades',#(lf)#(lf)    CASE#(lf)        WHEN e.TypeHousing = 1 THEN 'Residente Local'#(lf)        WHEN e.TypeHousing = 2 THEN 'Hotel'#(lf)        WHEN e.TypeHousing = 4 THEN 'Alojamento'#(lf)    END AS 'Tipo de Moradia',#(lf)#(lf)#(tab)FORMAT(TRY_CONVERT(DATE, e.[CreatedAt]), 'dd/MM/yyyy') AS 'Data de Cadastro do Efetivo',#(lf)#(tab)FORMAT(TRY_CONVERT(DATE, cfvda.[Value]), 'dd/MM/yyyy') AS 'Data de Admissão do Colaborador',#(lf)#(tab)FORMAT(TRY_CONVERT(DATE, e.ActivityStartDate), 'dd/MM/yyyy') AS 'Início Atividades',#(lf)#(tab)FORMAT(TRY_CONVERT(DATE, e.ActivityEndDate), 'dd/MM/yyyy') AS 'Fim Atividades',#(lf)#(tab)e.Salary AS 'Salário',#(lf)#(lf)#(tab)CASE#(lf)        WHEN e.ScheduleKind = 0 THEN '0x0'#(lf)        WHEN e.ScheduleKind = 1 THEN '2x1'#(lf)        WHEN e.ScheduleKind = 2 THEN '4x2'#(lf)        WHEN e.ScheduleKind = 3 THEN '5x1'#(lf)        WHEN e.ScheduleKind = 4 THEN '5x2'#(lf)        WHEN e.ScheduleKind = 5 THEN '6x1'#(lf)        WHEN e.ScheduleKind = 6 THEN '6x2'#(lf)        WHEN e.ScheduleKind = 7 THEN '12x36'#(lf)        WHEN e.ScheduleKind = 8 THEN '12x48'#(lf)        WHEN e.ScheduleKind = 9 THEN '12x36 (36hrs)'#(lf)        WHEN e.ScheduleKind = 10 THEN '4x4'#(lf)        WHEN e.ScheduleKind = 11 THEN '14x14'#(lf)    END AS 'Escala',#(lf)#(lf)#(tab)FORMAT(e.StartTime, 'HH:mm') AS 'Início da jornada',#(lf)    FORMAT(e.EndTime, 'HH:mm') AS 'Término da jornada',#(lf)    FORMAT(e.Interval, 'HH:mm') as 'Intrajornada descansada',#(lf)    FORMAT(e.OvertimeInterval, 'HH:mm') as 'Intrajornada remunerada',#(lf)#(tab)FORMAT(e.OverTime, 'HH:mm') as 'Horas Extras',#(lf)#(lf)#(tab)CASE#(lf)        WHEN e.HolidayWorkingKind = 0 THEN 'Sim, Dia Remunerado'#(lf)        WHEN e.HolidayWorkingKind = 1 THEN 'Não'#(lf)        WHEN e.HolidayWorkingKind = 2 THEN 'Sim, Folga Compensada'#(lf)    END AS 'Trabalha em Feriados',#(lf)#(lf)#(tab)e.Unhealthiness AS 'Insalubridade',#(lf)#(tab)e.Dangerousness AS 'Periculosidade',#(lf)#(tab)e.Bonus AS 'Gratificação por Acúmulo de Função*',#(lf)#(tab)FORMAT(TRY_CONVERT(DATE, cfvda.[Value]), 'dd/MM/yyyy') AS 'Data de Admissão',#(lf)    cfiCargo.Cargo AS 'Cargo do colaborador',#(lf)    cfiService.[Tipo de Serviço] AS 'Tipo de Serviço',#(lf)    cfiEducation.[Grau de Instrução] AS 'Grau de Instrução',#(lf)    cfiContractStatus.[Status do Contrato do Colaborador] AS 'Status do Contrato do Colaborador',#(lf)    cfiBaseCity.[Município Base] AS 'Município Base',#(lf)    cfiRegional.[Regional] AS 'Regional',#(lf)    #(lf)    FORMAT(TRY_CONVERT(DATE, cfvIniPFA.[Value]), 'dd/MM/yyyy') AS 'Início Próximas Férias Agendadas',#(lf)    FORMAT(TRY_CONVERT(DATE, cfvFimPFA.[Value]), 'dd/MM/yyyy') AS 'Fim Próximas Férias Agendadas',#(lf)    FORMAT(TRY_CONVERT(DATE, cfvIniUFC.[Value]), 'dd/MM/yyyy') AS 'Início Últimas Férias Cumpridas',#(lf)    FORMAT(TRY_CONVERT(DATE, cfvFimUFC.[Value]), 'dd/MM/yyyy') AS 'Fim Últimas Férias Cumpridas'#(lf)#(lf)FROM Effective e WITH(NOLOCK)#(lf)#(tab)INNER JOIN Contract c WITH(NOLOCK) ON c.Id = e.ContractId#(lf)#(tab)INNER JOIN BranchCompany bc WITH(NOLOCK) ON bc.Id = c.BranchCompanyId#(lf)#(tab)INNER JOIN Building b WITH(NOLOCK) ON b.Id = c.BuildingId#(lf)#(tab)INNER JOIN Provider p WITH(NOLOCK) ON p.Id = c.ProviderId#(lf)#(tab)INNER JOIN [Function] f WITH(NOLOCK) ON f.Id = e.FunctionId#(lf)#(tab)INNER JOIN EmployeeRegisterContract AS erc WITH(NOLOCK) ON erc.EffectiveId = e.Id#(lf)#(tab)LEFT JOIN EmployeeRegisterContractStatus AS cs WITH(NOLOCK) ON cs.EmployeeRegisterContractId = erc.Id AND cs.DeliveryKind IS NULL#(lf)#(tab)LEFT JOIN CustomFieldValue cfvIniPFA WITH(NOLOCK) ON cfvIniPFA.EntityId = e.Id AND cfvIniPFA.Removed = 0 AND cfvIniPFA.CustomFieldId = '7b43518d-eedd-44bf-bf2c-eebf6d95990e'#(lf)    LEFT JOIN CustomFieldValue cfvFimPFA WITH(NOLOCK) ON cfvFimPFA.EntityId = e.Id AND cfvFimPFA.Removed = 0 AND cfvFimPFA.CustomFieldId = '29adfa9d-d656-46c7-8b65-80157cad814b'#(lf)    LEFT JOIN CustomFieldValue cfvIniUFC WITH(NOLOCK) ON cfvIniUFC.EntityId = e.Id AND cfvIniUFC.Removed = 0 AND cfvIniUFC.CustomFieldId = 'cfd45797-1ad6-43e5-8d4e-7b91d89c57a4'#(lf)    LEFT JOIN CustomFieldValue cfvFimUFC WITH(NOLOCK) ON cfvFimUFC.EntityId = e.Id AND cfvFimUFC.Removed = 0 AND cfvFimUFC.CustomFieldId = '44a3e1f4-36e4-41b4-bbdf-9d7d8c92471d'#(lf)    LEFT JOIN CustomFieldValue cfvda WITH(NOLOCK) ON cfvda.EntityId = e.Id AND cfvda.Removed = 0 AND cfvda.CustomFieldId = 'f06e540b-0a5f-46f5-a928-9e94ef4d602b'#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS Cargo#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = '09aab5a9-8dd5-4980-9f2e-7f879da33349' AND cfv.Removed = 0#(lf)#(tab)) cfiCargo ON cfiCargo.EntityId = e.Id#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS [Tipo de Serviço]#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = 'f0f9ec82-688a-468b-9fd1-57a37ae08f6c' AND cfv.Removed = 0#(lf)#(tab)) cfiService ON cfiService.EntityId = e.Id#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS [Grau de Instrução]#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = 'df74a393-7c97-4a55-a041-23a7f918c090' AND cfv.Removed = 0#(lf)#(tab)) cfiEducation ON cfiEducation.EntityId = e.Id#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS [Status do Contrato do Colaborador]#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = '7b596fb6-4b96-4c94-a955-17458215fa8c' AND cfv.Removed = 0#(lf)#(tab)) cfiContractStatus ON cfiContractStatus.EntityId = e.Id#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS [Município Base]#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = 'ba2f6c7c-4b76-4081-b77e-06cb55ef03b2' AND cfv.Removed = 0#(lf)#(tab)) cfiBaseCity ON cfiBaseCity.EntityId = e.Id#(lf)    LEFT JOIN (#(lf)#(tab)#(tab)SELECT cfv.EntityId, cfv.[Value] AS [Regional]#(lf)#(tab)#(tab)FROM CustomFieldValue cfv WITH(NOLOCK)#(lf)#(tab)#(tab)WHERE cfv.CustomFieldId = '0f3c5c62-2a0a-40b4-aee4-cd2a6f89c646' AND cfv.Removed = 0#(lf)#(tab)) cfiRegional ON cfiRegional.EntityId = e.Id#(lf)WHERE b.OrganizationId = @OrganizationId#(lf)And c.Removed = 0#(lf)#(tab)And e.Removed = 0"]),
+				    #"Valor Substituído" = Table.ReplaceValue(Fonte,"","Inativo",Replacer.ReplaceValue,{"Status de Restrição"})
+				in
+				    #"Valor Substituído"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

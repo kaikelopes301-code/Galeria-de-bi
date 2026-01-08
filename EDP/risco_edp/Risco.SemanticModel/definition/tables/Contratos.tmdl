@@ -1,0 +1,1198 @@
+table Contratos
+	lineageTag: 88275f21-0375-463b-9d71-0203547583c7
+
+	measure _Risco_FGTS = ```
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR FGTS_AGEN = SUM(Contratos[FGTS])
+			VAR FGTS_ENVIA = SUM(Contratos[FGTS_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[_Valor_FGTS_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((FGTS_AGEN - FGTS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0), 
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (FGTS_AGEN - FGTS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4* 0.08 
+			                    ),
+			                    FOLHA*0.4
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		lineageTag: d448e6c2-112b-4056-a9f8-6f9a9297368c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Valor_FGTS_Contrato_Outras_Competências_1 = ```
+			
+			// Medida que trás os Valores de Contratos ou Valor da Folha para contratos que não possuem documentação agendadas ou valores para o cálculo
+			
+			VAR COMPETENCIA_ATUAL = MAX(Contratos[Competência])
+			VAR ID_CONTRATO = MAX(Contratos[Id_Contrato])
+			VAR DIFERENCA_FGTS = SUM(Contratos[FGTS]) - SUM(Contratos[FGTS_Aprovado])
+			VAR AGENDADOS = SUM(Contratos[FGTS]) 
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			            Contratos[Id_Contrato] = ID_CONTRATO &&
+			            Contratos[Valor contrato.1] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Contratos[Valor contrato.1]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    )* 0.08 * 0.4
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			            Contratos[Id_Contrato] = ID_CONTRATO &&
+			            SUM(Contratos[Valor_Total_SEFIP]) > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			       SUM(Contratos[Valor_Total_SEFIP]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.4
+			
+			RETURN
+			IF(
+			    (DIFERENCA_FGTS > 0),
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    0
+			)
+			
+			```
+		formatString: 0
+		lineageTag: c36e1b56-7708-42c7-b161-e1b564b6d763
+
+	measure _Valor_INSS_Contrato_Outras_Competências_1 =
+			
+			// Medida que trás os Valores de Contratos ou Valor da Folha para contratos que não possuem documentação agendadas ou valores para o cálculo
+			
+			VAR COMPETENCIA_ATUAL = MAX(Contratos[Competência])
+			VAR ID_CONTRATO = MAX(Contratos[Id_Contrato])
+			VAR DIFERENCA_INSS = SUM(Contratos[INSS]) - SUM(Contratos[INSS_Aprovado])
+			VAR AGENDADOS = SUM(Contratos[INSS])
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			           Contratos[Id_Contrato] = ID_CONTRATO &&
+			            Contratos[Valor contrato.1] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Contratos[Valor contrato.1]),
+			        FILTER(
+			            ALL(Contratos),
+			           Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.28*0.4
+			
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			            Contratos[Id_Contrato] = ID_CONTRATO &&
+			            SUM(Contratos[Valor_Total_SEFIP]) > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			        SUM(Contratos[Valor_Total_SEFIP]),
+			        FILTER(
+			            ALL(Contratos),
+			           Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    )*0.28
+			
+			RETURN
+			IF(
+			    (DIFERENCA_INSS > 0),
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    0
+			)
+		lineageTag: f1b2fb07-056d-416a-9243-70a42a7fc03d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Risco_INSS = ```
+			
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR INSS_AGEN = SUM(Contratos[INSS])
+			VAR INSS_ENVIA = SUM(Contratos[INSS_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[_Valor_INSS_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((INSS_AGEN - INSS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0),
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (INSS_AGEN - INSS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4*0.28
+			                    ),
+			                    FOLHA*0.28
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 89d93a45-2b7d-4dec-afa6-b461891b181b
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure _Valor_SALARIOS_Contrato_Outras_Competências_1 = ```
+			
+			// Medida que traz os Valores de Contratos ou Valor da Folha para contratos que não Possuem Valores para cálculo do Risco
+			VAR COMPETENCIA_ATUAL = MAX(Contratos[Competência])
+			VAR ID_CONTRATO = MAX(Contratos[Id_Contrato])
+			VAR DIFERENCA_SALARIOS = SUM(Contratos[Salários]) - SUM(Contratos[Salários_Aprovado])
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_CONTRATO =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			            Contratos[Id_Contrato] = ID_CONTRATO &&
+			            Contratos[Valor contrato.1] > 0
+			        )
+			    )
+			
+			VAR CONTRATO_FUTURO =
+			    CALCULATE(
+			        MAX(Contratos[Valor contrato.1]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_CONTRATO &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    ) * 0.4
+			
+			VAR COMPETENCIA_MAXIMA_VALIDA_FGTS =
+			    CALCULATE(
+			        MAX(Contratos[Competência]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] <> COMPETENCIA_ATUAL &&
+			           Contratos[Id_Contrato] = ID_CONTRATO &&
+			           SUM(Contratos[Valor_Total_SEFIP]) > 0
+			        )
+			    )
+			
+			VAR FGTS_FUTURO =
+			    CALCULATE(
+			        SUM(Contratos[Valor_Total_SEFIP]),
+			        FILTER(
+			            ALL(Contratos),
+			            Contratos[Competência] = COMPETENCIA_MAXIMA_VALIDA_FGTS &&
+			            Contratos[Id_Contrato] = ID_CONTRATO
+			        )
+			    )
+			
+			RETURN
+			IF(DIFERENCA_SALARIOS>0,
+			    IF(CONTRATO_FUTURO > 0, CONTRATO_FUTURO, FGTS_FUTURO),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 5f0d6a4f-29b4-49b5-b5e0-252353d26f00
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _Risco_SALARIOS = ```
+			
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR SALARIOS_AGEN = SUM(Contratos[Salários])
+			VAR SALARIOS_ENVIA = SUM(Contratos[Salários_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[_Valor_SALARIOS_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((SALARIOS_AGEN - SALARIOS_ENVIA > 0 && CONTRATO = 0 && FOLHA = 0)),
+			                IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (SALARIOS_AGEN - SALARIOS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.4
+			                    ),
+			                    FOLHA
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 925dc318-00f6-4996-8e08-de56af5a52ef
+
+		annotation PBI_FormatHint = {"currencyCulture":"kgp-Latn-BR"}
+
+	measure _Total_Risco_Somado_Contrato_Competencia = ```
+			
+			SUMX(
+			    SUMMARIZE(
+			        Contratos,
+			        Contratos[Id_Contrato],
+			       Contratos[Competência],
+			        "_TotalRiscoPorLinha",
+			        VAR vFGTS = IF(ISBLANK([_Risco_FGTS]) || ISTEXT([_Risco_FGTS]), 0, [_Risco_FGTS])
+			        VAR vINSS = IF(ISBLANK([_Risco_INSS]) || ISTEXT([_Risco_INSS]), 0, [_Risco_INSS])
+			        VAR vSALARIOS = IF(ISBLANK([_Risco_SALARIOS]) || ISTEXT([_Risco_SALARIOS]), 0, [_Risco_SALARIOS])
+			        VAR vCND = IF(ISBLANK([_Risco_CND]) || ISTEXT([_Risco_CND]), 0, [_Risco_CND])
+			        VAR vREGULA = IF(ISBLANK([_Risco_Regularização]) || ISTEXT([_Risco_Regularização]), 0, [_Risco_Regularização])
+			        VAR vPonto = IF(ISBLANK([_Risco_Cartão]) || ISTEXT([_Risco_Cartão]), 0, [_Risco_Cartão])
+			        RETURN
+			            vFGTS + vINSS + vSALARIOS + vCND + vREGULA + vPonto
+			    ),
+			    [_TotalRiscoPorLinha]
+			)
+			
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: acb9b7ad-ffd9-4f90-8a03-207a01f79e27
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	measure _Risco_Cartão = ```
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR FGTS_AGEN = SUM(Contratos[Cartão de Ponto])
+			VAR FGTS_ENVIA = SUM(Contratos[Cartão de Ponto_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[Valor_Pontos_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((FGTS_AGEN - FGTS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0), 
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (FGTS_AGEN - FGTS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.05* 0.08 
+			                    ),
+			                    FOLHA*0.05
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: d0c69e5f-7853-4b43-bf07-66cd10fc294b
+
+		annotation PBI_FormatHint = {"currencyCulture":"kgp-Latn-BR"}
+
+	measure _Risco_CND = ```
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR FGTS_AGEN = SUM(Contratos[CND Federal])
+			VAR FGTS_ENVIA = SUM(Contratos[CND Federal_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[_Valor_CND_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((FGTS_AGEN - FGTS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0), 
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (FGTS_AGEN - FGTS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.05* 0.08 
+			                    ),
+			                    FOLHA*0.05
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 66194a9c-b25a-4601-893d-464407aa5107
+
+		annotation PBI_FormatHint = {"currencyCulture":"kgp-Latn-BR"}
+
+	measure _Risco_Regularização = ```
+			
+			VAR FOLHA = SUM(Contratos[Valor_Total_SEFIP])
+			VAR CONTRATO = CALCULATE(SUM(Contratos[Valor contrato.1]))
+			VAR FGTS_AGEN = SUM(Contratos[Certidão de Regularidade ou CND do FGTS])
+			VAR FGTS_ENVIA = SUM(Contratos[Certidão de Regularidade ou CND do FGTS_Aprovado])
+			VAR VIGENCIA_INICIAL = MAX(Contratos[Vigência Inicial])
+			VAR VIGENCIA_FINAL = MAX(Contratos[Vigência Final])
+			VAR COMPETENCIA = MAX(Contratos[Competência])
+			VAR CONTRATO_FUTURO = SUM(Contratos[_Valor_Regularização_Contrato_Outras_Competências])
+			
+			/* Normalização mês/ano */
+			VAR IniMes  = DATE(YEAR(VIGENCIA_INICIAL), MONTH(VIGENCIA_INICIAL), 1)
+			VAR FimMes  = EOMONTH(VIGENCIA_FINAL, 0)
+			VAR CompMes = DATE(YEAR(COMPETENCIA ),   MONTH(COMPETENCIA ),   1)
+			
+			RETURN 
+			IF(IniMes > CompMes,
+			    "VIGÊNCIA INICIAL FORA DA COMPETÊNCIA",
+			    IF (
+			        FimMes < CompMes,
+			        "VIGÊNCIA FINAL CONTRATO FORA DA COMPETÊNCIA",
+			        IF (
+			            ((FGTS_AGEN - FGTS_ENVIA) > 0 && CONTRATO = 0 && FOLHA = 0), 
+			               IF(CONTRATO_FUTURO=0,
+			                     "SEM VALOR EM OUTRAS COMPETÊNCIAS",
+			                     CONTRATO_FUTURO),
+			            IF (
+			                (FGTS_AGEN - FGTS_ENVIA) > 0,
+			                IF (
+			                    FOLHA = 0,
+			                    IF (
+			                        CONTRATO = 0,
+			                        "SEM VALOR DE CONTRATO",
+			                        CONTRATO * 0.05* 0.08 
+			                    ),
+			                    FOLHA*0.05
+			                ),
+			                0
+			            )
+			        )
+			    )
+			)
+			
+			```
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 8efcf8e7-4aca-4268-a07b-284725967bfa
+
+		annotation PBI_FormatHint = {"currencyCulture":"kgp-Latn-BR"}
+
+	column 'N° do pedido'
+		dataType: string
+		lineageTag: ed450a4c-db65-45f3-aa5b-eadf5ae41440
+		summarizeBy: none
+		sourceColumn: N° do pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 43097c9f-fcfd-43c3-8252-515ff39d3583
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 0a4a6974-1bb2-4e7c-baf1-dc96c85a4433
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 50a2c3de-3e9e-4364-b393-65cbce180a55
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência de Contrato'
+		dataType: string
+		lineageTag: db5de7b0-e53e-45c5-9b3e-6d2c21338994
+		summarizeBy: none
+		sourceColumn: Vigência de Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência na Competência'
+		dataType: string
+		lineageTag: a53665af-9187-4173-9546-8e775f7c29eb
+		summarizeBy: none
+		sourceColumn: Vigência na Competência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vigência Inicial'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: f705cf62-a84c-4f2b-97a4-df16544d1df5
+		summarizeBy: none
+		sourceColumn: Vigência Inicial
+
+		variation Variation
+			isDefault
+			relationship: 31a7d3ce-4d64-4978-bdb3-f5fe466497cb
+			defaultHierarchy: LocalDateTable_a9b68c6f-7598-41e8-9348-92e13dcf1880.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Vigência Final'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 1d5a93c9-4742-44ee-9168-7fb40bb79241
+		summarizeBy: none
+		sourceColumn: Vigência Final
+
+		variation Variation
+			isDefault
+			relationship: 5f47efc8-5382-46de-860f-1972528888ed
+			defaultHierarchy: LocalDateTable_6f99e69d-31c3-40cf-ade3-83399cf4cad2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Unidade
+		dataType: string
+		lineageTag: 0eaf8235-36fc-4c67-8c78-a9a54920df12
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: f49376a1-61e7-4ea2-8a9f-1d745d43d6b8
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 1215d13f-b366-431a-ae88-8d0e079862cb
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: dbf411a3-a74c-4948-9c77-92518ad67c25
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 523fe0ce-68aa-451b-b64d-5fa04b8075ef
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: dac67ef1-7d31-4b6a-9a7f-dad8332bc80e
+			defaultHierarchy: LocalDateTable_d581937c-328b-4b24-810c-cad6addc8470.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Qtd_Funcionários
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e375aed-974d-4772-9643-00b38925c338
+		summarizeBy: sum
+		sourceColumn: Qtd_Funcionários
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor_Total_SEFIP
+		dataType: double
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: e4bbe021-d3b2-4f0e-93f2-26c19fdd8d38
+		summarizeBy: sum
+		sourceColumn: Valor_Total_SEFIP
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"yrl-Latn-BR"}
+
+	column 'Valor Contrato'
+		dataType: double
+		lineageTag: 12880faf-333d-4089-98a1-b97d1fd49193
+		summarizeBy: sum
+		sourceColumn: Valor Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Valor contrato.1'
+		dataType: double
+		lineageTag: 00428f33-8775-4b22-985d-2cf9a9b712c6
+		summarizeBy: sum
+		sourceColumn: Valor contrato.1
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FGTS
+		dataType: int64
+		formatString: 0
+		lineageTag: 16e55671-7c66-494a-859b-3d4ae2ca74e3
+		summarizeBy: sum
+		sourceColumn: FGTS
+
+		annotation SummarizationSetBy = Automatic
+
+	column FGTS_Aprovado
+		dataType: int64
+		formatString: 0
+		lineageTag: 9871000d-bdda-432b-b68b-4139a8eb3c41
+		summarizeBy: sum
+		sourceColumn: FGTS_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Salários
+		dataType: int64
+		formatString: 0
+		lineageTag: a5e1a1bb-b613-4330-8c4e-1e5ba2949cb9
+		summarizeBy: sum
+		sourceColumn: Salários
+
+		annotation SummarizationSetBy = Automatic
+
+	column Salários_Aprovado
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e242b96-9825-4136-a75f-e186d4856269
+		summarizeBy: sum
+		sourceColumn: Salários_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column INSS
+		dataType: int64
+		formatString: 0
+		lineageTag: 94509b17-9711-4db3-a58f-d3a2f3efe1ef
+		summarizeBy: sum
+		sourceColumn: INSS
+
+		annotation SummarizationSetBy = Automatic
+
+	column INSS_Aprovado
+		dataType: int64
+		formatString: 0
+		lineageTag: fe2378b3-220b-47b6-a074-59bb6dc1db61
+		summarizeBy: sum
+		sourceColumn: INSS_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Valor_FGTS_Contrato_Outras_Competências
+		dataType: double
+		lineageTag: b334d3d3-1f5e-40bc-8d47-9c8269abcb2b
+		summarizeBy: sum
+		sourceColumn: _Valor_FGTS_Contrato_Outras_Competências
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _Valor_INSS_Contrato_Outras_Competências
+		dataType: double
+		lineageTag: a027f09a-1969-4705-bc67-5e65418bb2e2
+		summarizeBy: sum
+		sourceColumn: _Valor_INSS_Contrato_Outras_Competências
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _Valor_SALARIOS_Contrato_Outras_Competências
+		dataType: double
+		lineageTag: dd77f35c-4e21-4387-9fd8-bd5e4b7cc18d
+		summarizeBy: sum
+		sourceColumn: _Valor_SALARIOS_Contrato_Outras_Competências
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Efetivos Ativos'
+		dataType: int64
+		formatString: 0
+		lineageTag: ff6b7fdc-9da4-4c60-9726-af841c194ce6
+		summarizeBy: sum
+		sourceColumn: Efetivos Ativos
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mesclado
+		dataType: string
+		lineageTag: 01f6a6f5-032d-42f2-85c1-b31b0edc0100
+		summarizeBy: none
+		sourceColumn: Mesclado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mesclado.1'
+		dataType: string
+		lineageTag: 63228eac-e159-4f58-87ef-4880b77b98b9
+		summarizeBy: none
+		sourceColumn: Mesclado.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CND Federal'
+		dataType: int64
+		formatString: 0
+		lineageTag: 44b4f98c-b3ef-49be-a631-b83d23a30fcf
+		summarizeBy: sum
+		sourceColumn: CND Federal
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CND Federal_Aprovado'
+		dataType: int64
+		formatString: 0
+		lineageTag: 67dec018-2cb5-4bae-b01c-71f96c510cfa
+		summarizeBy: sum
+		sourceColumn: CND Federal_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cartão de Ponto'
+		dataType: int64
+		formatString: 0
+		lineageTag: a8e2732f-5cf3-4e0b-b7f8-27dfda197289
+		summarizeBy: sum
+		sourceColumn: Cartão de Ponto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cartão de Ponto_Aprovado'
+		dataType: int64
+		formatString: 0
+		lineageTag: e2b2f8c9-2ed5-4506-ab3e-f8a3f363c9e4
+		summarizeBy: sum
+		sourceColumn: Cartão de Ponto_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Certidão de Regularidade ou CND do FGTS'
+		dataType: int64
+		formatString: 0
+		lineageTag: dd3fde89-ad56-4502-9560-e89428dd2063
+		summarizeBy: sum
+		sourceColumn: Certidão de Regularidade ou CND do FGTS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Certidão de Regularidade ou CND do FGTS_Aprovado'
+		dataType: int64
+		formatString: 0
+		lineageTag: 54af88be-1f87-4a35-8625-04685daa8122
+		summarizeBy: sum
+		sourceColumn: Certidão de Regularidade ou CND do FGTS_Aprovado
+
+		annotation SummarizationSetBy = Automatic
+
+	column _Valor_CND_Contrato_Outras_Competências
+		dataType: double
+		lineageTag: 81e27180-29ce-4437-bd41-5ad8926e1dbc
+		summarizeBy: sum
+		sourceColumn: _Valor_CND_Contrato_Outras_Competências
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _Valor_Regularização_Contrato_Outras_Competências
+		dataType: double
+		lineageTag: 1e9b003a-0f4d-428f-90ad-d272b80a1781
+		summarizeBy: sum
+		sourceColumn: _Valor_Regularização_Contrato_Outras_Competências
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Valor_Pontos_Contrato_Outras_Competências
+		dataType: double
+		formatString: 0
+		lineageTag: 15577c6e-56ce-4047-8cf7-c2ed4bdc614e
+		summarizeBy: sum
+		sourceColumn: Valor_Pontos_Contrato_Outras_Competências
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Contratos = m
+		mode: import
+		source = ```
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="/* Parâmetros */#(lf)DECLARE @currentDate       datetime2        = EOMONTH(GETDATE(),-1);#(lf)DECLARE @organizationId    uniqueidentifier = '0ba2c073-2a0d-4625-9985-8c32e95d7c27';#(lf)#(lf)/* Recorte de período */#(lf)DECLARE @startDate  datetime2 = '2024-11-01T00:00:00';#(lf)DECLARE @endDateEx datetime2 = EOMONTH(GETDATE(),-1);#(lf);WITH#(lf)/* === 1) Agregado GFIP por contrato e competência (YYYYMM) === */#(lf)gfip_agg AS (#(lf)    SELECT#(lf)        c.Id AS ContractId,#(lf)        (YEAR(g.Competency) * 100 + MONTH(g.Competency)) AS PeriodKey, -- YYYYMM#(lf)        COUNT(DISTINCT e.Id)      AS Qtd_Funcionarios,#(lf)        SUM(ee.Remuneration)      AS Valor_Total_SEFIP#(lf)    FROM EmployeeEntry ee#(lf)    LEFT JOIN Employee  e  ON e.Id = ee.EmployeeId#(lf)    INNER JOIN Gfip     g  ON g.Id = ee.GfipId#(lf)    INNER JOIN Contract c  ON c.ContractSetId = g.ContractSetId#(lf)    INNER JOIN Organization o ON o.Id = c.OrganizationId#(lf)    WHERE#(lf)        o.Id = @organizationId#(lf)        AND g.Competency >= '2024-12-01T00:00:00'   -- ajuste se quiser casar com @startDate/@endDateEx#(lf)        AND g.Id NOT IN (#(lf)            'F950FDB2-E041-4A73-8950-A7E80C3D0E69',#(lf)            '679BE57D-5145-4DF1-956D-D08E4CA9E54E',#(lf)            'CCCBD6D1-EDCC-4373-9ADF-00C0FE5EAA9C',#(lf)            '22E7A015-3F18-4E85-8446-6E1BE76AE6CA'#(lf)        )#(lf)    GROUP BY#(lf)        c.Id, (YEAR(g.Competency) * 100 + MONTH(g.Competency))#(lf)),#(lf)#(lf)/* === 2) Camada base (relatório principal) — sem pendências === */#(lf)base AS (#(lf)    SELECT#(lf)        c.OrderNumber                                AS [N° do pedido],#(lf)        c.Id                                         AS [Id_Contrato],#(lf)        bc.CompanyName                               AS [Razão Social],#(lf)        dbo.FNCNPJMask(bc.Document)                  AS [CNPJ],#(lf)#(lf)        CASE#(lf)            WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)            WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)            ELSE 'Vigente'#(lf)        END AS [Vigência de Contrato],#(lf)#(lf)        CASE #(lf)            WHEN ((YEAR(c.ValidityInitial) * 100 + MONTH(c.ValidityInitial))#(lf)                 <= (YEAR(DATEADD(MONTH, -1, ds.ExpectedUploadAt)) * 100 + MONTH(DATEADD(MONTH, -1, ds.ExpectedUploadAt))))#(lf)             AND ((YEAR(c.ValidityFinal) * 100 + MONTH(c.ValidityFinal))#(lf)                 >= (YEAR(DATEADD(MONTH, -1, ds.ExpectedUploadAt)) * 100 + MONTH(DATEADD(MONTH, -1, ds.ExpectedUploadAt))))#(lf)            THEN 'Vigente na Competência'#(lf)            ELSE 'Fora da Vigência na Competência'#(lf)        END AS [Vigência na Competência],#(lf)#(lf)        CONVERT(date, c.ValidityInitial)             AS [Vigência Inicial],#(lf)        CONVERT(date, c.ValidityFinal)               AS [Vigência Final],#(lf)        b.TradeName                                  AS [Unidade],#(lf)        r.Name                                       AS [Regional],#(lf)        ca.[Name]                                    AS [Categoria],#(lf)        p.TradeName                                  AS [Fornecedor],#(lf)#(lf)        FORMAT(DATEADD(MONTH, -1, ds.ExpectedUploadAt), 'MM/yyyy') AS [Competência],#(lf)#(lf)        COALESCE(gf.Qtd_Funcionarios, 0)  AS [Qtd_Funcionários],#(lf)        COALESCE(ef.Efetivos_Ativos, 0)   AS [Efetivos Ativos],#(lf)        COALESCE(gf.Valor_Total_SEFIP, 0) AS [Valor_Total_SEFIP],#(lf)        MAX(c.Value)                      AS [Valor Contrato],#(lf)#(lf)        /* Contagens por classificação existentes */#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('FGTS - Comprovante de pagamento','FGTS - Guia de recolhimento (boleto)','FGTS - RE - Relação de Empregados/Trabalhadores')#(lf)            THEN ds.Id END) AS [FGTS],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('FGTS - Comprovante de pagamento','FGTS - Guia de recolhimento (boleto)','FGTS - RE - Relação de Empregados/Trabalhadores')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [FGTS_Aprovado],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Comprovante Bancário de Pagamento de Salários','Folha de Pagamento Mensal Analítica')#(lf)            THEN ds.Id END) AS [Salários],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Comprovante Bancário de Pagamento de Salários','Folha de Pagamento Mensal Analítica')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [Salários_Aprovado],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Comprovante de Recolhimento','DARF – Documento de Arrecadação de Receitas Federais','Relatório da Declaração Completa – DCTFWeb','Recibo de Entrega da Declaração de Débitos e Créditos Tributários Federais Previdenciários – DCTFWeb')#(lf)            THEN ds.Id END) AS [INSS],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Comprovante de Recolhimento','DARF – Documento de Arrecadação de Receitas Federais','Relatório da Declaração Completa – DCTFWeb','Recibo de Entrega da Declaração de Débitos e Crédititos Tributários Federais Previdenciários – DCTFWeb')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [INSS_Aprovado],#(lf)#(lf)        /* NOVOS: CND Federal */#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('CND Federal') #(lf)            THEN ds.Id END) AS [CND Federal],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('CND Federal')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [CND Federal_Aprovado],#(lf)#(lf)        /* NOVOS: Cartão de Ponto */#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Cartão de Ponto') #(lf)            THEN ds.Id END) AS [Cartão de Ponto],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Cartão de Ponto')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [Cartão de Ponto_Aprovado],#(lf)#(lf)        /* NOVOS: Certidão de Regularidade do FGTS ou CND do FGTS */#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Certidão de Regularidade do FGTS ou CND do FGTS') #(lf)            THEN ds.Id END) AS [Certidão de Regularidade ou CND do FGTS],#(lf)#(lf)        COUNT(DISTINCT CASE #(lf)            WHEN ds.Name IN ('Certidão de Regularidade do FGTS ou CND do FGTS')#(lf)             AND ds.UploadedAt IS NOT NULL AND ds.IsValidated = 1#(lf)            THEN ds.Id END) AS [Certidão de Regularidade ou CND do FGTS_Aprovado]#(lf)#(lf)    FROM DocumentSchedule ds WITH (NOLOCK)#(lf)    INNER JOIN [Document] d                 WITH (NOLOCK) ON d.Id = ds.DocumentId#(lf)    LEFT  JOIN EmployeeRegister er          WITH (NOLOCK) ON er.Id = ds.EmployeeRegisterId#(lf)    INNER JOIN BranchCompany bc             WITH (NOLOCK) ON bc.Id = ds.BranchCompanyId#(lf)    INNER JOIN DocumentScheduleContractBI dscBI WITH (NOLOCK) ON dscBI.DocumentScheduleId = ds.Id#(lf)    INNER JOIN [Contract] c                 WITH (NOLOCK) ON c.Id = dscBI.ContractId#(lf)    INNER JOIN Building b                   WITH (NOLOCK) ON b.Id = c.BuildingId#(lf)    INNER JOIN Region  r                    WITH (NOLOCK) ON r.Id = b.RegionId#(lf)    INNER JOIN [Category] ca                WITH (NOLOCK) ON ca.Id = c.CategoryId#(lf)    INNER JOIN [Provider] p                 WITH (NOLOCK) ON p.Id = c.ProviderId#(lf)#(lf)    /* GFIP agregada, casando por contrato + competência (mês anterior ao ExpectedUploadAt) */#(lf)    LEFT JOIN gfip_agg gf#(lf)      ON gf.ContractId = c.Id#(lf)     AND gf.PeriodKey  = (YEAR(DATEADD(MONTH, -1, ds.ExpectedUploadAt)) * 100#(lf)                        + MONTH(DATEADD(MONTH, -1, ds.ExpectedUploadAt)))#(lf)#(lf)    /* Efetivos ativos do contrato */#(lf)    CROSS APPLY (#(lf)        SELECT COUNT(DISTINCT CASE WHEN e2.Situation <> 1 THEN e2.EmployeeRegisterId END) AS Efetivos_Ativos#(lf)        FROM [Effective] e2 WITH (NOLOCK)#(lf)        WHERE e2.ContractId = c.Id#(lf)    ) ef#(lf)#(lf)    WHERE#(lf)        b.OrganizationId = @organizationId#(lf)        AND c.Removed = 0#(lf)        AND ds.Removed = 0#(lf)        AND d.Removed = 0#(lf)        AND d.Archived = 0#(lf)        AND ds.Name IN (#(lf)            'Comprovante de Recolhimento',#(lf)            'DARF – Documento de Arrecadação de Receitas Federais',#(lf)            'Relatório da Declaração Completa – DCTFWeb',#(lf)            'Recibo de Entrega da Declaração de Débitos e Créditos Tributários Federais Previdenciários – DCTFWeb',#(lf)            'Comprovante Bancário de Pagamento de Salários',#(lf)            'Folha de Pagamento Mensal Analítica',#(lf)            'FGTS - Comprovante de pagamento',#(lf)            'FGTS - Guia de recolhimento (boleto)',#(lf)            'FGTS - RE - Relação de Empregados/Trabalhadores',#(lf)            -- NOVOS#(lf)            'CND Federal',#(lf)            'Cartão de Ponto',#(lf)            'Certidão de Regularidade do FGTS ou CND do FGTS'#(lf)        )#(lf)        AND ds.ExpectedUploadAt >= @startDate#(lf)        AND ds.ExpectedUploadAt <=  @endDateEx#(lf)        #(lf)    GROUP BY#(lf)        c.OrderNumber, c.Id, bc.CompanyName, dbo.FNCNPJMask(bc.Document),#(lf)        CASE WHEN c.ValidityInitial > GETDATE() THEN 'Vigência Futura'#(lf)             WHEN c.ValidityFinal < GETDATE() THEN 'Vigência Finalizada'#(lf)             ELSE 'Vigente' END,#(lf)        CASE WHEN ((YEAR(c.ValidityInitial) * 100 + MONTH(c.ValidityInitial))#(lf)                 <= (YEAR(DATEADD(MONTH, -1, ds.ExpectedUploadAt)) * 100 + MONTH(DATEADD(MONTH, -1, ds.ExpectedUploadAt))))#(lf)               AND ((YEAR(c.ValidityFinal) * 100 + MONTH(c.ValidityFinal))#(lf)                 >= (YEAR(DATEADD(MONTH, -1, ds.ExpectedUploadAt)) * 100 + MONTH(DATEADD(MONTH, -1, ds.ExpectedUploadAt))))#(lf)             THEN 'Vigente na Competência' ELSE 'Fora da Vigência na Competência' END,#(lf)        CONVERT(date, c.ValidityInitial), CONVERT(date, c.ValidityFinal),#(lf)        b.TradeName, r.Name, ca.[Name], p.TradeName,#(lf)        FORMAT(DATEADD(MONTH, -1, ds.ExpectedUploadAt), 'MM/yyyy'),#(lf)        COALESCE(gf.Qtd_Funcionarios, 0),#(lf)        COALESCE(gf.Valor_Total_SEFIP, 0),#(lf)        COALESCE(ef.Efetivos_Ativos, 0)#(lf))#(lf)#(lf)/* === Saída final — sem “Motivo de Pendência” === */#(lf)SELECT#(lf)    b.[N° do pedido],#(lf)    b.[Id_Contrato],#(lf)    b.[Razão Social],#(lf)    b.[CNPJ],#(lf)    b.[Vigência de Contrato],#(lf)    b.[Vigência na Competência],#(lf)    b.[Vigência Inicial],#(lf)    b.[Vigência Final],#(lf)    b.[Unidade],#(lf)    b.[Regional],#(lf)    b.[Categoria],#(lf)    b.[Fornecedor],#(lf)    b.[Competência],#(lf)#(lf)    b.[Qtd_Funcionários],#(lf)    b.[Efetivos Ativos],#(lf)    b.[Valor_Total_SEFIP],#(lf)    b.[Valor Contrato],#(lf)#(lf)    b.[FGTS],#(lf)    b.[FGTS_Aprovado],#(lf)    b.[Salários],#(lf)    b.[Salários_Aprovado],#(lf)    b.[INSS],#(lf)    b.[INSS_Aprovado],#(lf)#(lf)    b.[CND Federal],#(lf)    b.[CND Federal_Aprovado],#(lf)    b.[Cartão de Ponto],#(lf)    b.[Cartão de Ponto_Aprovado],#(lf)    b.[Certidão de Regularidade ou CND do FGTS],#(lf)    b.[Certidão de Regularidade ou CND do FGTS_Aprovado]#(lf)FROM base b#(lf)ORDER BY#(lf)    b.[N° do pedido],#(lf)    b.[Competência];#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Competência", type date}, {"Vigência Final", type date}, {"Vigência Inicial", type date}}),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Tipo Alterado", "Mesclado", each Text.Combine({[Fornecedor], [Unidade]}, ""), type text),
+				    #"Texto em Maiúscula" = Table.TransformColumns(#"Coluna Mesclada Inserida",{{"Id_Contrato", Text.Upper, type text}}),
+				    #"Consultas Mescladas2" = Table.NestedJoin(#"Texto em Maiúscula", {"N° do pedido"}, #"Valor de Contrato", {"Personalizar"}, "Valor de Contrato", JoinKind.LeftOuter),
+				    #"Valor de Contrato Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas2", "Valor de Contrato", {"R$ - MÉDIA REAL"}, {"R$ - MÉDIA REAL"}),
+				    #"Colunas Renomeadas1" = Table.RenameColumns(#"Valor de Contrato Expandido",{{"R$ - MÉDIA REAL", "Valor contrato.1"}}),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Colunas Renomeadas1",{{"Valor contrato.1", Currency.Type}}),
+				    #"Valor Substituído" = Table.ReplaceValue(#"Tipo Alterado2",null,0,Replacer.ReplaceValue,{"Valor_Total_SEFIP"}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Valor Substituído", "Valor Consolidade Contrato", each if  [Valor contrato.1] = 0 then 
+				            if [Valor Contrato] <> 0 then [Valor Contrato] else null
+				        else if [Valor contrato.1] <> 0 then [Valor contrato.1]
+				        else null),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Personalização Adicionada",{"Valor contrato.1"}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Colunas Removidas",{{"Valor Consolidade Contrato", "Valor contrato.1"}}),
+				    #"Valor Substituído1" = Table.ReplaceValue(#"Colunas Renomeadas",null,0,Replacer.ReplaceValue,{"Valor contrato.1"}),
+				    #"Colunas Reordenadas" = Table.ReorderColumns(#"Valor Substituído1",{"N° do pedido", "Id_Contrato", "Razão Social", "CNPJ", "Vigência de Contrato", "Vigência na Competência", "Vigência Inicial", "Vigência Final", "Unidade", "Regional", "Categoria", "Fornecedor", "Competência", "Qtd_Funcionários", "Valor_Total_SEFIP", "Valor Contrato", "Valor contrato.1", "FGTS", "FGTS_Aprovado", "Salários", "Salários_Aprovado", "INSS", "INSS_Aprovado"}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Reordenadas", "_Valor_FGTS_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([FGTS]) otherwise 0) - (try Number.From([FGTS_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp * 0.08 * 0.4,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp * 0.4
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0),
+				    #"Personalização Adicionada2" = Table.AddColumn(#"Personalização Adicionada1", "_Valor_INSS_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([INSS]) otherwise 0) - (try Number.From([INSS_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp * 0.28 * 0.4,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp*0.28
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0),
+				    #"Personalização Adicionada3" = Table.AddColumn(#"Personalização Adicionada2", "_Valor_SALARIOS_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([Salários]) otherwise 0) - (try Number.From([Salários_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp*0.4 ,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada3",{{"_Valor_SALARIOS_Contrato_Outras_Competências", type number}}),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Tipo Alterado1", "Mesclado.1", each Text.Combine({[Id_Contrato], Text.From([Competência], "pt-BR")}, ""), type text),
+				    #"Personalização Adicionada4" = Table.AddColumn(#"Coluna Mesclada Inserida1", "_Valor_CND_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([CND Federal]) otherwise 0) - (try Number.From([CND Federal_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp*0.4 ,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0),
+				    #"Personalização Adicionada5" = Table.AddColumn(#"Personalização Adicionada4", "_Valor_Regularização_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([Certidão de Regularidade ou CND do FGTS]) otherwise 0) - (try Number.From([Certidão de Regularidade ou CND do FGTS_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp*0.4 ,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0),
+				    #"Personalização Adicionada6" = Table.AddColumn(#"Personalização Adicionada5", "Valor_Pontos_Contrato_Outras_Competências", each let
+				    diferenca = (try Number.From([Cartão de Ponto]) otherwise 0) - (try Number.From([Cartão de Ponto_Aprovado]) otherwise 0),
+				    idContrato = [Id_Contrato],
+				    compAtual  = [Competência],
+				
+				    // linhas do mesmo contrato (exceto a competência atual)
+				    tblMesmoContrato =
+				        Table.SelectRows(
+				            #"Colunas Reordenadas",
+				            each [Id_Contrato] = idContrato and [Competência] <> compAtual
+				        ),
+				
+				    // --- CONTRATO_FUTURO ---
+				    tblContratoValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([#"Valor contrato.1"]) > 0 otherwise false
+				        ),
+				    maxCompContrato =
+				        if Table.IsEmpty(tblContratoValidas) then null else List.Max(tblContratoValidas[Competência]),
+				    valorContratoNaMaxComp =
+				        if maxCompContrato = null then 0 else
+				            let
+				                r = Table.SelectRows(tblContratoValidas, each [Competência] = maxCompContrato),
+				                maxValor = List.Max(List.Transform(r[#"Valor contrato.1"], each try Number.From(_) otherwise 0))
+				            in
+				                maxValor,
+				    contratoFuturo = valorContratoNaMaxComp*0.4 ,
+				
+				    // --- FGTS_FUTURO ---
+				    tblFgtsValidas =
+				        Table.SelectRows(
+				            tblMesmoContrato,
+				            each try Number.From([Valor_Total_SEFIP]) > 0 otherwise false
+				        ),
+				    maxCompFgts =
+				        if Table.IsEmpty(tblFgtsValidas) then null else List.Max(tblFgtsValidas[Competência]),
+				    somaFgtsNaMaxComp =
+				        if maxCompFgts = null then 0 else
+				            let
+				                r2 = Table.SelectRows(tblFgtsValidas, each [Competência] = maxCompFgts),
+				                soma = List.Sum(List.Transform(r2[Valor_Total_SEFIP], each try Number.From(_) otherwise 0))
+				            in
+				                soma,
+				    fgtsFuturo = somaFgtsNaMaxComp
+				in
+				    if diferenca > 0 then (if contratoFuturo > 0 then contratoFuturo else fgtsFuturo) else 0)
+				in
+				    #"Personalização Adicionada6"
+				```
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,29 @@
+expression 'Status do Fornecedores' =
+		let
+		    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\01. AFM Gestão\EDF\Relatorio - Status de fornecedores - 2410101229.xlsx")),
+		    #"Status de fornecedores_sheet" = Fonte{[Item="Status de fornecedores",Kind="Sheet"]}[Data],
+		    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+		    #"Linhas Superiores Removidas" = Table.Skip(#"Status de fornecedores_sheet", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+		    #"Outras Colunas Removidas" = Table.SelectColumns(#"Linhas Superiores Removidas", List.Select(Table.ColumnNames(#"Linhas Superiores Removidas"), each try not List.IsEmpty(FilterNullAndWhitespace(Table.Column(#"Linhas Superiores Removidas", _))) otherwise true)),
+		    #"Linhas em Branco Removidas" = Table.SelectRows(#"Outras Colunas Removidas", each not List.IsEmpty(FilterNullAndWhitespace(Record.FieldValues(_)))),
+		    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Nome", type text}, {"Razão social", type text}, {"CNPJ", type text}, {"Categoria", type text}, {"Unidade", type text}, {"Razão Social do Contrato", type text}, {"CNPJ do Contrato", type text}, {"Tipo de Fornecedor", type text}, {"Nome Fantasia do Subcontrato", type text}, {"Razão Social do Subcontrato", type text}, {"CNPJ do Subcontrato", type text}, {"Vigência do Contrato", type text}, {"Tipo de Contratação", type text}, {"Número do Pedido", type text}, {"Quantidade de efetivos", Int64.Type}, {"Total Docs", Int64.Type}, {"Documentos entregues", Int64.Type}, {"Taxa de entrega", type number}, {"Restrições", type text}, {"Docs pendentes com restrição de pgto", type text}, {"Documentos pendentes", type text}}),
+		    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "N de Docs Pendentes", each [Total Docs] - [Documentos entregues]),
+		    #"Colunas Reordenadas" = Table.ReorderColumns(#"Personalização Adicionada",{"Nome", "Razão social", "CNPJ", "Categoria", "Unidade", "Razão Social do Contrato", "CNPJ do Contrato", "Tipo de Fornecedor", "Nome Fantasia do Subcontrato", "Razão Social do Subcontrato", "CNPJ do Subcontrato", "Vigência do Contrato", "Tipo de Contratação", "Número do Pedido", "Quantidade de efetivos", "Total Docs", "Documentos entregues", "N de Docs Pendentes", "Taxa de entrega", "Restrições", "Docs pendentes com restrição de pgto", "Documentos pendentes"}),
+		    #"Personalização Adicionada1" = Table.AddColumn(#"Colunas Reordenadas", "Taxa de Pendência", each if [N de Docs Pendentes]= 0 then 0
+		else [N de Docs Pendentes]/[Total Docs]),
+		    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Taxa de Pendência", Percentage.Type}}),
+		    #"Personalização Adicionada2" = Table.AddColumn(#"Tipo Alterado1", "Status do Fornecedor", each if [Taxa de Pendência] = 1 then "Não Entregue" else if [Taxa de Pendência] >= 0.8 then "Não Habilitado" else if [Taxa de Pendência] >= 0.5 then "Habilitado com Ressalva" else if [Taxa de Pendência] >= 0 then "Habilitado" else "Sem Classificação"),
+		    #"Colunas Renomeadas" = Table.RenameColumns(#"Personalização Adicionada2",{{"Nome", "Fornecedor"}}),
+		    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Colunas Renomeadas", "Vigência do Contrato", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"Vigência do Contrato.1", "Vigência do Contrato.2"}),
+		    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Vigência do Contrato.1", type date}, {"Vigência do Contrato.2", type date}}),
+		    #"Colunas Renomeadas1" = Table.RenameColumns(#"Tipo Alterado2",{{"Vigência do Contrato.1", "Vigência do Contrato Inicio"}, {"Vigência do Contrato.2", "Vigência do Contrato Fim"}}),
+		    #"Personalização Adicionada3" = Table.AddColumn(#"Colunas Renomeadas1", "Chave", each [Fornecedor]&[Categoria]&[Unidade])
+		in
+		    #"Personalização Adicionada3"
+	lineageTag: 981028cd-098b-4874-be83-efcbd72f44fa
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

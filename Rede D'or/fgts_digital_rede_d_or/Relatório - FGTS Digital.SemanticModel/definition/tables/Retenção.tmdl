@@ -1,0 +1,116 @@
+table Retenção
+	lineageTag: d410a7f2-fdd1-42c9-a1c0-103d18e2ef8b
+
+	measure 'Quantidade de Retenção' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 6f7a6b8e-c4b7-455a-9133-b0c22fad3bcc
+
+	column Funcionários
+		dataType: string
+		lineageTag: 5da922e0-e1d2-44e3-ad3e-2ef63319e918
+		summarizeBy: none
+		sourceColumn: Funcionários
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: int64
+		formatString: 0
+		lineageTag: 015e6e8f-1535-4be0-b6bc-2003e56b8c3b
+		summarizeBy: sum
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Admissão'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 984ade5b-de21-4366-b8f1-f95b6ce8d3ae
+		summarizeBy: none
+		sourceColumn: Data de Admissão
+
+		variation Variation
+			isDefault
+			relationship: bbde01bf-b485-4646-9940-f294a882a121
+			defaultHierarchy: LocalDateTable_03c798d6-fccd-45c9-ad7a-6b975202905a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Demissão'
+		dataType: string
+		lineageTag: 7be8eb8b-59f1-4568-83a4-7c44cf1a71dd
+		summarizeBy: none
+		sourceColumn: Data de Demissão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Permanência em Meses'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c67b9cb-0fac-4e0b-8e0b-bc6afd57a3f7
+		summarizeBy: sum
+		sourceColumn: Permanência em Meses
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: d65a6128-3383-4142-8e93-070f209722ae
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: eb90d7c8-c2c3-47ec-a4d6-213ca629481a
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: d4180f9f-c56d-4359-9db2-629008d61814
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Demitido
+		dataType: string
+		lineageTag: a8fe80d3-9a09-42b1-bea2-52ed0037720d
+		summarizeBy: none
+		sourceColumn: Demitido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de Retenção'
+		dataType: string
+		lineageTag: 09fb61c1-2539-4593-9a9e-6b4b8b577eff
+		summarizeBy: none
+		sourceColumn: Faixa de Retenção
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Retenção = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="#(lf)declare @p0 date = '2024-01-01T00:00:00.0000000'#(lf)declare @p1 date = EOMONTH(GETDATE())#(lf)declare @OrganizationId uniqueidentifier ='3d9bc20b-b80d-4118-85bf-48bb22b13535'#(lf)SELECT [a].[EmployeeName], [a].[EmployeePisNumber],#(lf)convert(varchar, [a].[AdmissionDate], 105) as AdmissionDate,#(lf)convert(varchar, [a].[DismissedAt], 105) as DismissedAt,#(lf)convert(varchar, [a].[FirstAppearance], 105) as FirstAppearance,#(lf)convert(varchar, [a].[LastAppearance], 105) as LastAppearance,#(lf)convert(varchar, [a].[PermanencyInMonths], 105) as PermanencyInMonths, [a].[BuildingName], [a].ProviderName, [a].CategoryName#(lf)FROM (#(lf)#(lf)                    SELECT#(lf)                        ge.[EmployeeId],#(lf)                        e.[Name] as EmployeeName,#(lf)                        e.[PisNumber] as EmployeePisNumber,#(lf)                        MIN(per.FirstAppearance) as FirstAppearance,#(lf)                        MAX(per.LastAppearance) as LastAppearance,#(lf)                        MAX(dm.MovementDate) as DismissedAt,#(lf)                        MIN(e.AdmissionDate) as AdmissionDate,#(lf)                        MAX(per.PermanencyInMonths) as PermanencyInMonths,#(lf)                        b.TradeName as BuildingName,#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)pv.TradeName as ProviderName,#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)ca.Name as CategoryName,#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)r.Name as RegionName,#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)#(tab)MAX(dm.CreatedAt) as MovementDate#(lf)#(lf)                    FROM dbo.[GfipEmployee] ge WITH (NOLOCK)#(lf)                    INNER JOIN dbo.[Employee] e WITH (NOLOCK) ON ge.EmployeeId = e.Id#(lf)                    INNER JOIN dbo.[Gfip] g WITH (NOLOCK) ON ge.GfipId = g.Id#(lf)                    INNER JOIN dbo.[ContractSet] s WITH (NOLOCK) ON g.ContractSetId = s.Id#(lf)                    INNER JOIN dbo.[Building] b ON s.BuildingId = b.Id#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)INNER JOIN dbo.[Region] r WITH (NOLOCK) ON r.Id = b.RegionId#(lf)                    INNER JOIN dbo.[Organization] o WITH (NOLOCK) ON b.OrganizationId = o.Id#(lf)                    INNER JOIN dbo.[ContractEmployee] ce WITH (NOLOCK)#(lf)                        ON ge.EmployeeId = ce.EmployeeId AND ce.ContractSetId = s.Id and ce.BuildingId In (select Id from Building where OrganizationId = @OrganizationId)#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)INNER JOIN dbo.[Provider] pv WITH(NOLOCK) ON pv.Id = ce.ProviderId#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)INNER JOIN dbo.[CategoryContractSet] caSet WITH(NOLOCK) ON caSet.ContractSetId = s.Id#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)INNER JOIN dbo.[Category] ca WITH(NOLOCK) ON ca.Id = caSet.CategoryId#(lf)                    LEFT JOIN dbo.[Gfip] d WITH (NOLOCK) ON ce.GfipIdDismissedIn = d.Id AND d.ContractSetId = s.Id#(lf)                    LEFT JOIN dbo.[MovementEntry] dm WITH (NOLOCK)#(lf)                        ON dm.EmployeeId = e.Id AND dm.GfipId = d.Id AND dm.MovementKindId = ge.DismissalMovementKindId#(lf)                    INNER JOIN#(lf)                    (#(lf)                        SELECT#(lf)                            ge.[EmployeeId],#(lf)                            SUM(CAST(ge.IsPresent AS INT)) as PermanencyInMonths,#(lf)                            SUM(CASE WHEN ge.IsPresent = 0 THEN 1 ELSE 0 END) as AbscenceInMonths,#(lf)                            MIN(CASE WHEN ge.IsPresent = 1 THEN g.Competency ELSE NULL END) FirstAppearance,#(lf)                            MAX(CASE WHEN ge.IsPresent = 1 THEN g.Competency ELSE NULL END) LastAppearance#(lf)                        FROM dbo.[GfipEmployee] ge WITH (NOLOCK)#(lf)                        INNER JOIN dbo.[Gfip] g WITH (NOLOCK) ON ge.GfipId = g.Id#(lf)                        INNER JOIN dbo.[ContractSet] s WITH (NOLOCK) ON g.ContractSetId = s.Id#(lf)                        INNER JOIN dbo.[Building] b ON s.BuildingId = b.Id#(lf)                        INNER JOIN dbo.Organization o WITH (NOLOCK) ON b.OrganizationId = o.Id#(lf)                        WHERE g.Removed = 0 AND s.Removed = 0 AND o.Removed = 0#(lf)                         AND b.OrganizationId = @OrganizationId AND b.Removed = 0 AND (o.Resource & 2) = 2                                           #(lf)                        #(lf)                        #(lf)                        GROUP BY ge.EmployeeId, s.Id#(lf)                    )#(lf)                    per ON ge.EmployeeId = per.EmployeeId#(lf)#(lf)                    WHERE e.Removed = 0 AND g.Removed = 0 AND s.Removed = 0 AND o.Removed = 0 AND ge.IsPresent = 1#(lf)                     AND b.OrganizationId = @OrganizationId AND b.Removed = 0 AND (o.Resource & 2) = 2#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)and g.Id NOT IN#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)(#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)'F950FDB2-E041-4A73-8950-A7E80C3D0E69',#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)'679BE57D-5145-4DF1-956D-D08E4CA9E54E',#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)'CCCBD6D1-EDCC-4373-9ADF-00C0FE5EAA9C',#(lf)#(tab)#(tab)#(tab)#(tab)#(tab)'22E7A015-3F18-4E85-8446-6E1BE76AE6CA'#(lf)#(tab)#(tab)#(tab)#(tab)#(tab))#(lf)                    #(lf)                    #(lf)                    #(lf)                    #(lf)                    AND g.Competency >= @p0 AND g.Competency <= @p1#(lf)                    AND ge.DismissalMovementKindId IS NULL OR (ge.DismissalMovementKindId IS NOT NULL AND dm.MovementDate >= @p0 AND dm.MovementDate <= @p1)#(lf)                    GROUP BY ge.EmployeeId, e.[Name], e.[PisNumber], b.TradeName, r.Name, pv.TradeName, ca.Name#(lf)                    HAVING NOT MIN(per.FirstAppearance) IS NULL AND NOT MAX(per.LastAppearance) IS NULL#(lf)) AS [a]#(lf)ORDER BY [a].[EmployeeName], [a].[FirstAppearance]#(lf)"]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"EmployeeName", type any}, {"EmployeePisNumber", Int64.Type}, {"AdmissionDate", type date}, {"DismissedAt", type any}, {"FirstAppearance", type date}, {"LastAppearance", type date}, {"PermanencyInMonths", Int64.Type}, {"BuildingName", type text}, {"ProviderName", type text}, {"CategoryName", type text}}),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(#"Tipo Alterado", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Linhas em Branco Removidas",{{"EmployeeName", "Funcionários"}, {"EmployeePisNumber", "PIS"}, {"AdmissionDate", "Data de Admissão"}, {"DismissedAt", "Data de Demissão"}, {"PermanencyInMonths", "Permanência em Meses"}, {"BuildingName", "Unidade"}, {"ProviderName", "Fornecedor"}, {"CategoryName", "Categoria"}}),
+				    #"Outras Colunas Removidas" = Table.SelectColumns(#"Colunas Renomeadas",{"Funcionários", "PIS", "Data de Admissão", "Data de Demissão", "Permanência em Meses", "Unidade", "Fornecedor", "Categoria"}),
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Outras Colunas Removidas", "Demitido", each if [Data de Demissão] = "NULL" then "Não" else "Sim"),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Coluna Condicional Adicionada", "Faixa de Retenção", each if [Permanência em Meses] < 1 then "Menos de 1 Mês" else if [Permanência em Meses] <= 2 then "1-2 Meses" else if [Permanência em Meses] <= 4 then "2-4 Meses" else if [Permanência em Meses] <= 6 then "4-6 Meses" else if [Permanência em Meses] <= 8 then "6-8 Meses" else if [Permanência em Meses] <= 12 then "8-12 Meses" else if [Permanência em Meses] <= 17 then "12-17 Meses" else "Mais de 17 Meses"),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Personalização Adicionada", each ([Categoria] = "Alimentação" or [Categoria] = "Limpeza"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

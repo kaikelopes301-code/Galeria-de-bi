@@ -1,0 +1,41 @@
+table dCalendário
+	lineageTag: deefdb87-1b73-4596-ba7a-295ae91f816d
+
+	measure _Hoje_ = TODAY()
+		formatString: General Date
+		lineageTag: ac8fed2c-315d-4b39-89e8-880cc0b46d03
+
+	column Date
+		formatString: Short Date
+		lineageTag: b3568cac-232b-463c-9633-d649178a538e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: ef6f9c11-0545-4fef-baf9-ff73de707a54
+			defaultHierarchy: LocalDateTable_4f578043-c8e1-4d75-848f-c39f99fb4f91.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hoje = TODAY()
+		formatString: General Date
+		lineageTag: c7f58e2b-006d-4bf4-8577-2ed2a884aff4
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 89f49ee2-810b-4b2f-b5e9-92cb0608d3a6
+			defaultHierarchy: LocalDateTable_486842a2-64de-44d4-96eb-52de12c484b0.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendário = calculated
+		mode: import
+		source =
+				
+				CALENDAR(DATE(2024,04,01),ENDOFMONTH('Análise de Colaboradores'[Hoje]))
+
+	annotation PBI_Id = 47228ca7a2ec489686807956ed4015c1
+

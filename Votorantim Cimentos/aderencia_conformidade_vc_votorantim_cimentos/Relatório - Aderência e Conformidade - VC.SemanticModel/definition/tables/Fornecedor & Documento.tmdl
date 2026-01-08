@@ -1,0 +1,48 @@
+table 'Fornecedor & Documento'
+	lineageTag: 71212b06-b76d-4789-affb-8fc95c128eec
+
+	column 'Fornecedor & Documento'
+		lineageTag: b8a26f6e-3b77-4e0c-839b-7e9982829a82
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Fornecedor & Documento Pedido'
+
+		relatedColumnDetails
+			groupByColumn: 'Fornecedor & Documento Campos'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor & Documento Campos'
+		isHidden
+		lineageTag: a948e365-9838-4b2e-8997-e2e7e217f1a7
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Fornecedor & Documento Pedido'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fornecedor & Documento Pedido'
+		isHidden
+		formatString: 0
+		lineageTag: 8864642a-72fc-472f-8141-c38a6331e6a7
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Fornecedor & Documento' = calculated
+		mode: import
+		source =
+				{
+				    ("Fornecedor", NAMEOF('Relatório Fornecedores'[Fornecedor]), 0),
+				    ("Documento", NAMEOF('Relatório Fornecedores'[Documento]), 1)
+				}
+
+	annotation PBI_Id = ea3143d6eca247ccb48cae9e74749796
+

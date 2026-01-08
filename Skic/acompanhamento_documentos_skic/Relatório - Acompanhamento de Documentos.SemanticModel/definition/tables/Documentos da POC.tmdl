@@ -1,0 +1,67 @@
+table 'Documentos da POC'
+	lineageTag: 6309d679-dfbd-4f68-9583-67038f0e8e19
+
+	column 'Tipo de Cobrança'
+		dataType: string
+		lineageTag: c103b216-2c39-41ce-b7de-71938fd9fc03
+		summarizeBy: none
+		sourceColumn: Tipo de Cobrança
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo da entrega'
+		dataType: string
+		lineageTag: b2266e83-f684-43ab-b65e-55fd6c0a6637
+		summarizeBy: none
+		sourceColumn: Tipo da entrega
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de documentação'
+		dataType: string
+		lineageTag: 1878f945-4092-4436-a5ab-ec56e082837e
+		summarizeBy: none
+		sourceColumn: Tipo de documentação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome do documento'
+		dataType: string
+		lineageTag: f8b72364-e643-4900-a47c-dce2dd58c51a
+		summarizeBy: none
+		sourceColumn: Nome do documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DOCs importantes para Teste'
+		dataType: string
+		lineageTag: 6f069ddf-ede1-488b-8192-e38ad4c2af29
+		summarizeBy: none
+		sourceColumn: DOCs importantes para Teste
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column6
+		dataType: string
+		lineageTag: b7460689-dfdb-4491-88ea-f96838c31f49
+		summarizeBy: none
+		sourceColumn: Column6
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Documentos da POC' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\JoãoLima\Diretório Padrão\Atlas Inovações - Documentos\Produtos\AFM\Gestão\16. Relatório Interno e Externo - Power BI\02. Externo\04. Produto\Skic\Sugestão de exigências de documentações (POC) - Skic.xlsx"), null, true),
+				    Plan1_Sheet = Fonte{[Item="Documentos",Kind="Sheet"]}[Data],
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Plan1_Sheet, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Linhas em Branco Removidas", [PromoteAllScalars=true]),
+				    #"Linhas Filtradas" = Table.SelectRows(#"Cabeçalhos Promovidos", each ([DOCs importantes para Teste] = "SIM") and ([Nome do documento] <> "LTCAT"))
+				in
+				    #"Linhas Filtradas"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navegação
+

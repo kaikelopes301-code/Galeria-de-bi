@@ -1,0 +1,29 @@
+table Calendário
+	lineageTag: caedaad5-4058-4374-92fa-4a62968e2957
+
+	column Date
+		formatString: General Date
+		lineageTag: 71885098-7fbb-46c4-a250-e230da34f3ac
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 07da46cf-89e4-477c-99e9-dc9e048d448e
+			defaultHierarchy: LocalDateTable_5913cc90-8545-4c29-94fc-9c4750d36194.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mesano = FORMAT('Calendário'[Date],"mm/yyyy")
+		lineageTag: c4fc342f-b345-42d2-b126-501539696e06
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendário = calculated
+		mode: import
+		source = CALENDAR(DATE(2024,07,01),DATE(2025,01,31))
+
+	annotation PBI_Id = 8d3d8ad51d524aeea266eaa7e5129d8a
+

@@ -1,0 +1,31 @@
+table 'Relação de Contratos'
+	lineageTag: 515c88ce-f124-4bec-8e10-4fc33f1e8139
+
+	measure Adesão = [_Contratos_Docs_Enviados]/[Quantidade de Contratos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: df98589e-2d98-40e8-9323-f62d0470a3e6
+
+	measure 'Adesão de Contratos com Aprovação' = [_Contratos_Enviados_Aprovados]/[Quantidade de Contratos]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e9da56bf-8785-435a-abc3-95e250a7e200
+
+	column Numero_Pedido
+		lineageTag: d5b0f348-f896-4590-aaa9-543e3aef9619
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: DocumentValidationSla1[Numero_Pedido]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contratos = LOOKUPVALUE(Contratos[Nº do pedido],Contratos[Nº do pedido],'Relação de Contratos'[Numero_Pedido])
+		lineageTag: 2cb66e1c-a5a1-450d-bb83-a52468257f73
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Relação de Contratos' = calculated
+		mode: import
+		source = DISTINCT('DocumentValidationSla1'[Numero_Pedido])
+
+	annotation PBI_Id = 6fd6ec33b18f4f0bb2d38f097224986c
+

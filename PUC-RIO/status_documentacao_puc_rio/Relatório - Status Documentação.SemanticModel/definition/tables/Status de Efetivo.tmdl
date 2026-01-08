@@ -1,0 +1,432 @@
+table 'Status de Efetivo'
+	lineageTag: 1d63d6c0-4dcc-4a5d-bbfa-09830758a793
+
+	measure '(Ativos) Quantidade Efetivos Cadastrados' =
+			
+			
+			VAR ATIVO = CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivo'[Situação] <> "Inativo")
+			
+			RETURN IF(ATIVO = BLANK(),0,ATIVO)
+		formatString: 0
+		lineageTag: cbb90330-cb99-413e-acf0-6cf803886c67
+
+	measure '(Cadastro) Quantidade de Efetivos Cadastrados' =
+			
+			
+			VAR CADASTRADOS = CALCULATE(COUNTROWS())
+			
+			RETURN IF(CADASTRADOS=BLANK(),0,CADASTRADOS)
+		formatString: #,0
+		lineageTag: e6b6a2b5-5608-481b-90a4-735abb70d463
+
+	measure '(Inativos) Quantidade Efetivos Cadastrados' =
+			
+			
+			VAR ATIVO = CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivo'[Situação] = "Inativo")
+			
+			RETURN IF(ATIVO = BLANK(),0,ATIVO)
+		formatString: #,0
+		lineageTag: e39f8cf9-9fdc-4453-a31d-6fb2b85295a2
+
+	measure '(CNPJ) Quantidade' = DISTINCTCOUNT('Status de Efetivo'[CNPJ])
+		formatString: 0
+		lineageTag: 5acf850d-beca-4ba3-a34e-9c2a911991e3
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 1c62cc73-a293-4da5-9103-603139dc8e1c
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social'
+		dataType: string
+		lineageTag: 02470e29-1775-4f8b-ba5e-ffe4554350c2
+		summarizeBy: none
+		sourceColumn: Razão Social
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fornecedor
+		dataType: string
+		lineageTag: e2a88425-a979-489f-9ec9-8ffc20be7b0b
+		summarizeBy: none
+		sourceColumn: Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: 47d54884-179c-4f4b-af91-9a8bedab1c45
+		summarizeBy: none
+		sourceColumn: CNPJ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidade
+		dataType: string
+		lineageTag: c8c78707-f4f5-4ef7-ac2d-be19067897a5
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: 2ecd33f1-c2ef-47a5-a66b-e82d88220704
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status de Restrição'
+		dataType: string
+		lineageTag: dba25d4b-e110-4364-8057-26b394b782bb
+		summarizeBy: none
+		sourceColumn: Status de Restrição
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: a897868c-7d3f-49b1-ab8d-37212741d120
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 5c316574-b65e-4bf6-bcf7-25bf343df722
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento Estrangeiro'
+		dataType: string
+		lineageTag: 91adc494-f0fa-4710-a941-9037376f8283
+		summarizeBy: none
+		sourceColumn: Documento Estrangeiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: 6d86f4f8-bca2-4a3d-9a9b-e43fd158e5ff
+		summarizeBy: none
+		sourceColumn: Situação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de contratação'
+		dataType: string
+		lineageTag: 67e130ca-aeae-4083-9fa4-df5926a1b97a
+		summarizeBy: none
+		sourceColumn: Tipo de contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: f72e0903-95da-44ad-8d45-cbe754622dc8
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Atividades
+		dataType: string
+		lineageTag: 678feb84-260a-42c4-a31d-ede5b316c3de
+		summarizeBy: none
+		sourceColumn: Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Moradia'
+		dataType: string
+		lineageTag: 0ad6ee5a-e5ee-4f90-afc8-851d19b0c12b
+		summarizeBy: none
+		sourceColumn: Tipo de Moradia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Cadastro do Efetivo'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: eb20e82a-73ed-4076-b038-3bd73b1ce98c
+		summarizeBy: none
+		sourceColumn: Data de Cadastro do Efetivo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de Admissão do Colaborador'
+		dataType: string
+		lineageTag: cdfc8cde-cd5b-4955-ac90-40c312437db5
+		summarizeBy: none
+		sourceColumn: Data de Admissão do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Atividades'
+		dataType: string
+		lineageTag: 7cad6278-636c-44a8-8b33-ba0351da3c7c
+		summarizeBy: none
+		sourceColumn: Início Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Atividades'
+		dataType: string
+		lineageTag: d332c7b2-33f1-41c2-90e3-c577687751ff
+		summarizeBy: none
+		sourceColumn: Fim Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column Salário
+		dataType: int64
+		formatString: 0
+		lineageTag: f0d082a5-f258-4ba4-b0c2-2f977ac95762
+		summarizeBy: sum
+		sourceColumn: Salário
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escala
+		dataType: string
+		lineageTag: b95979fc-2396-43f4-bf54-fd780f9d5b88
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início da jornada'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: cc460b2c-e28a-45dd-bb08-d1258de91180
+		summarizeBy: none
+		sourceColumn: Início da jornada
+
+		variation Variation
+			isDefault
+			relationship: 0dbb6a3b-346f-4ce2-ac5d-78ca93ac1c33
+			defaultHierarchy: LocalDateTable_5825c343-ae8f-4214-96d1-67d39a546fe4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Término da jornada'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f8b35da2-ac9f-4e13-b834-8bc992956635
+		summarizeBy: none
+		sourceColumn: Término da jornada
+
+		variation Variation
+			isDefault
+			relationship: e912e959-4a7c-4f80-9d0c-3fe5fb4c1a17
+			defaultHierarchy: LocalDateTable_53b64ec1-915a-4fc6-a374-3c8957b6377b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada descansada'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 85d7b968-9d93-4b70-93f9-d375d7342e92
+		summarizeBy: none
+		sourceColumn: Intrajornada descansada
+
+		variation Variation
+			isDefault
+			relationship: 31125fd5-d195-4365-861b-adda8f8d5c4b
+			defaultHierarchy: LocalDateTable_0e9f5f00-64c1-4b11-ba2e-a5d609bd4b57.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intrajornada remunerada'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ca9173a8-dea4-4368-bb85-622a7b7d3e21
+		summarizeBy: none
+		sourceColumn: Intrajornada remunerada
+
+		variation Variation
+			isDefault
+			relationship: 20b67f2c-fe2c-496f-98b1-59221889525f
+			defaultHierarchy: LocalDateTable_b2e0c670-963f-458c-9025-ff7af1031606.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Horas Extras'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1cfc934f-cbe0-49b4-93bc-77ad88ff4232
+		summarizeBy: none
+		sourceColumn: Horas Extras
+
+		variation Variation
+			isDefault
+			relationship: adab9b41-e684-4cc5-8277-6774a93b660e
+			defaultHierarchy: LocalDateTable_0fddac71-ded2-43ae-85c5-76d639faac7f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trabalha em Feriados'
+		dataType: string
+		lineageTag: a1dcd915-b834-4d4b-9316-2f60a1a0fe4e
+		summarizeBy: none
+		sourceColumn: Trabalha em Feriados
+
+		annotation SummarizationSetBy = Automatic
+
+	column Insalubridade
+		dataType: int64
+		formatString: 0
+		lineageTag: aff6688e-09d1-4af4-a8a1-d29a34ca0331
+		summarizeBy: sum
+		sourceColumn: Insalubridade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Periculosidade
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e876abb-e2e4-42d5-a5ce-d626b38e3bde
+		summarizeBy: sum
+		sourceColumn: Periculosidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gratificação por Acúmulo de Função*'
+		dataType: int64
+		formatString: 0
+		lineageTag: dda7faf3-fd88-411b-ab90-e5508770c636
+		summarizeBy: sum
+		sourceColumn: Gratificação por Acúmulo de Função*
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de Admissão'
+		dataType: string
+		lineageTag: c890dd4d-60bb-4fa7-943b-376a9a1b1cf8
+		summarizeBy: none
+		sourceColumn: Data de Admissão
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cargo do colaborador'
+		dataType: string
+		lineageTag: a09fc5eb-17bc-4387-a552-5d133dd3cd04
+		summarizeBy: none
+		sourceColumn: Cargo do colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Serviço'
+		dataType: string
+		lineageTag: 166381a4-d3b7-4b0d-b526-19e358a1fd85
+		summarizeBy: none
+		sourceColumn: Tipo de Serviço
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grau de Instrução'
+		dataType: string
+		lineageTag: fd9d0425-2f67-492c-9039-bf7c64230f3d
+		summarizeBy: none
+		sourceColumn: Grau de Instrução
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status do Contrato do Colaborador'
+		dataType: string
+		lineageTag: 95d390cc-9c14-4c84-9107-5cc2b7a5130f
+		summarizeBy: none
+		sourceColumn: Status do Contrato do Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Município Base'
+		dataType: string
+		lineageTag: 0bbf34e5-5870-40f3-9fdf-ae23f84cae1f
+		summarizeBy: none
+		sourceColumn: Município Base
+
+		annotation SummarizationSetBy = Automatic
+
+	column Regional
+		dataType: string
+		lineageTag: 980b4bc0-71f5-4ef8-a224-8362baf9b33c
+		summarizeBy: none
+		sourceColumn: Regional
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Próximas Férias Agendadas'
+		dataType: string
+		lineageTag: d4b58174-db08-4955-87ad-3b7c0273280a
+		summarizeBy: none
+		sourceColumn: Início Próximas Férias Agendadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Próximas Férias Agendadas'
+		dataType: string
+		lineageTag: 45503b27-000c-464d-b686-dd12401f53f4
+		summarizeBy: none
+		sourceColumn: Fim Próximas Férias Agendadas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Últimas Férias Cumpridas'
+		dataType: string
+		lineageTag: 597fba51-f166-4d41-973c-07e77b80a778
+		summarizeBy: none
+		sourceColumn: Início Últimas Férias Cumpridas
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Últimas Férias Cumpridas'
+		dataType: string
+		lineageTag: 6b22de30-fb4f-43c6-9b14-065a7430cb0e
+		summarizeBy: none
+		sourceColumn: Fim Últimas Férias Cumpridas
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9ad16cab-ae5d-4850-a9c3-53f13fe7784d
+		summarizeBy: none
+		sourceColumn: Competência
+
+		variation Variation
+			isDefault
+			relationship: ab6a1850-c772-4dd1-832d-d9785995cb30
+			defaultHierarchy: LocalDateTable_2423b008-4098-4f6f-afda-600dc20d0d99.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'Status de Efetivo' = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(Web.Contents("https://adminatlasinovacoescom.sharepoint.com/:x:/r/sites/DiretrioPadro/Documentos%20Compartilhados/Relat%C3%B3rios/Relat%C3%B3rios%20SQL/PUC-Rio/Status%20de%20Efetivo/Efetivos%20-%20Hist%C3%B3rico.xlsx"), null, true),
+				    Planilha1_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Id_Contrato", type text}, {"Razão Social", type text}, {"Fornecedor", type text}, {"CNPJ", type text}, {"Unidade", type text}, {"Nome", type text}, {"Status de Restrição", type text}, {"CPF", type text}, {"PIS", type text}, {"Documento Estrangeiro", type text}, {"Situação", type text}, {"Tipo de contratação", type text}, {"Função", type text}, {"Atividades", type text}, {"Tipo de Moradia", type text}, {"Data de Cadastro do Efetivo", type date}, {"Data de Admissão do Colaborador", type text}, {"Início Atividades", type any}, {"Fim Atividades", type text}, {"Salário", Int64.Type}, {"Escala", type text}, {"Início da jornada", type datetime}, {"Término da jornada", type datetime}, {"Intrajornada descansada", type datetime}, {"Intrajornada remunerada", type datetime}, {"Horas Extras", type datetime}, {"Trabalha em Feriados", type text}, {"Insalubridade", Int64.Type}, {"Periculosidade", Int64.Type}, {"Gratificação por Acúmulo de Função*", Int64.Type}, {"Data de Admissão", type text}, {"Cargo do colaborador", type text}, {"Tipo de Serviço", type text}, {"Grau de Instrução", type text}, {"Status do Contrato do Colaborador", type text}, {"Município Base", type text}, {"Regional", type text}, {"Início Próximas Férias Agendadas", type text}, {"Fim Próximas Férias Agendadas", type text}, {"Início Últimas Férias Cumpridas", type text}, {"Fim Últimas Férias Cumpridas", type text}, {"Competência", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

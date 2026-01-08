@@ -1,0 +1,297 @@
+table 'Status de Efetivos'
+	lineageTag: 683980d1-46e0-4951-bd6a-888b2b3276de
+
+	measure '(Cadastro) Quantidade de Efetivos Cadastrados' = CALCULATE(COUNTROWS())
+		formatString: #,0
+		lineageTag: 20a8d200-0d5a-4da4-9404-a824ffade7c1
+
+	measure '(Relação) Quantidade Efetivos Cadastrados' = CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados])
+		formatString: #,0
+		lineageTag: 3d6df304-cac1-492b-8dac-078b2a2cbb55
+
+	measure '(Distintas) Quantidade Fornecedores' = CALCULATE(DISTINCTCOUNT('Status de Efetivos'[CNPJ Fornecedor - Faturamento]))
+		formatString: 0
+		lineageTag: da978b34-e2e8-4335-8b24-abe2f44f303f
+
+	measure '(Contratos) Quantidade de Contrato' = DISTINCTCOUNT('Status de Efetivos'[Número Contrato])
+		formatString: 0
+		lineageTag: 6023832d-fe24-42d7-acb1-c50085e967da
+
+	measure '(Ativos Relação) Quantidade Efetivos Cadastrados' =
+			CALCULATE([(Cadastro) Quantidade de Efetivos Cadastrados],
+			'Status de Efetivos'[Status] = "Ativo")
+		formatString: #,0
+		lineageTag: e533a15c-119b-4c28-8396-f8f0e1553ae9
+
+	column Chave
+		dataType: string
+		lineageTag: 2016d9e7-1bd3-4066-a768-9029944c2878
+		summarizeBy: none
+		sourceColumn: Chave
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número Contrato'
+		dataType: string
+		lineageTag: 7a1065c7-99b7-4158-911f-6e4e4bcff3c1
+		summarizeBy: none
+		sourceColumn: Número Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Fornecedor'
+		dataType: string
+		lineageTag: 81a47618-64c7-4a56-ad34-88d010d48c0b
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Contrato'
+		dataType: string
+		lineageTag: 43b0c651-4fd0-406f-b019-9444aa33d5e2
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Contrato'
+		dataType: string
+		lineageTag: c14645d4-c18e-473e-96f4-10c83fb0e81a
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão Social Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: d9218abe-8aa3-433d-958b-712ee46d6e38
+		summarizeBy: none
+		sourceColumn: Razão Social Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CNPJ Fornecedor - Faturamento'
+		dataType: string
+		lineageTag: 30546ea9-1424-40e3-a3bd-0b78ef094c24
+		summarizeBy: none
+		sourceColumn: CNPJ Fornecedor - Faturamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Origem dos dados de fornecedor'
+		dataType: string
+		lineageTag: 692b37a4-55cc-421e-971b-b8418cc68e7f
+		summarizeBy: none
+		sourceColumn: Origem dos dados de fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome Fantasia Unidade'
+		dataType: string
+		lineageTag: 84e706ce-d7b6-4f24-9b01-33028cee79e1
+		summarizeBy: none
+		sourceColumn: Nome Fantasia Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: af203b9a-d5af-4642-b0c9-af29d5b3c3b7
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo do Contrato'
+		dataType: string
+		lineageTag: 6a91296f-aa61-4541-9d76-dcf103f4cd6c
+		summarizeBy: none
+		sourceColumn: Tipo do Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro do contrato'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 6174e215-a62f-4a42-b654-0ae1a6231686
+		summarizeBy: none
+		sourceColumn: Data de cadastro do contrato
+
+		variation Variation
+			isDefault
+			relationship: 82e365e7-03ae-4bfd-a16b-58b1c2e55602
+			defaultHierarchy: LocalDateTable_8866ce78-7c45-4e43-9686-5e139d0a43f2.'Hierarquia de datas'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data de início da vigência'
+		dataType: string
+		lineageTag: 3f3c8942-b11a-41d2-9c7c-3062b9a96ca4
+		summarizeBy: none
+		sourceColumn: Data de início da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de fim da vigência'
+		dataType: string
+		lineageTag: 3f513f68-493e-417c-b101-0796be7f3c3f
+		summarizeBy: none
+		sourceColumn: Data de fim da vigência
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIS
+		dataType: string
+		lineageTag: 46fb6f10-bb70-4d43-98df-360f133f604f
+		summarizeBy: none
+		sourceColumn: PIS
+
+		annotation SummarizationSetBy = Automatic
+
+	column CPF
+		dataType: string
+		lineageTag: 8ad2a35f-5c88-42f7-abd9-65d5fa10e7b1
+		summarizeBy: none
+		sourceColumn: CPF
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome
+		dataType: string
+		lineageTag: c4e5a829-100d-43f4-9216-f1b6e0439575
+		summarizeBy: none
+		sourceColumn: Nome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data de cadastro'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 2413d17d-8605-439e-bd83-8858c55749f3
+		summarizeBy: none
+		sourceColumn: Data de cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo de cobrança do funcionário'
+		dataType: string
+		lineageTag: b48fe487-3d7e-4715-8f05-9c7cacb101f2
+		summarizeBy: none
+		sourceColumn: Tipo de cobrança do funcionário
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chave.1'
+		dataType: string
+		lineageTag: ed5ca3ea-085e-44cd-9943-c5dfc215bc8a
+		summarizeBy: none
+		sourceColumn: Chave.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave1
+		dataType: string
+		lineageTag: 3a40ccc7-0da0-4fb1-86de-e98f610fd09d
+		summarizeBy: none
+		sourceColumn: chave1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Início Atividades'
+		dataType: string
+		lineageTag: c23c1871-91c5-48a4-a095-8c454d6135e1
+		summarizeBy: none
+		sourceColumn: Início Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fim Atividades'
+		dataType: string
+		lineageTag: 0603c8d5-0b6f-4b4b-9c54-537771333506
+		summarizeBy: none
+		sourceColumn: Fim Atividades
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 4703c2bb-16c0-4b8e-833f-e51cefa70a0a
+		summarizeBy: none
+		sourceColumn: Função
+
+		annotation SummarizationSetBy = Automatic
+
+	column Salario
+		dataType: double
+		lineageTag: 4e8b3826-799f-4c07-9400-92437494fe47
+		summarizeBy: sum
+		sourceColumn: Salario
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Modalidade de Contratação'
+		dataType: string
+		lineageTag: 7b7a2ac2-d8bb-4657-93ab-ac648bf1d937
+		summarizeBy: none
+		sourceColumn: Modalidade de Contratação
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Moradia'
+		dataType: string
+		lineageTag: 9e50a9fd-eb08-4979-bb71-5fe0c9dfb469
+		summarizeBy: none
+		sourceColumn: Tipo de Moradia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 4f5c5853-0ef2-44a3-a098-bfa0da16cab5
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escala
+		dataType: string
+		lineageTag: 95a47412-4ade-4979-a458-ef65bf110ea2
+		summarizeBy: none
+		sourceColumn: Escala
+
+		annotation SummarizationSetBy = Automatic
+
+	column Id_Contrato
+		dataType: string
+		lineageTag: 66179179-bca5-4163-bc19-a37d0ad1c476
+		summarizeBy: none
+		sourceColumn: Id_Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Status de Efetivos' = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("atlas-sql-report-production.database.windows.net", "afm-encargos-prod-bi", [Query="Declare @OrganizationId Uniqueidentifier = '221958d1-9f73-4e46-a28e-e559f45445d5'#(lf)Declare @Date DateTime = CAST(GETDATE() AS DATETIME)#(lf)#(lf)Select #(lf)    bc.Id As 'Chave',#(lf)    c.OrderNumber As 'Número Contrato',#(lf)#(tab)c.Id AS 'Id_Contrato',#(lf)    p.TradeName As 'Nome Fantasia Fornecedor',#(lf)    bc.CompanyName As 'Razão Social Fornecedor - Contrato',#(lf)    (Select dbo.FNCNPJMask(bc.Document)) As 'CNPJ Fornecedor - Contrato',#(lf)    (#(lf)        Case#(lf)            When (cb.CompanyName is not null) then cb.CompanyName#(lf)            When (c.FatherId is not null) then BranchCompanyFather.CompanyName#(lf)            When (c.FatherId is null) and (c.OrderNumber like '%Subcontratada%') then#(lf)            (#(lf)                select top 1 BranchCompanyFatherSub.CompanyName from Contract as ContractSub with(nolock)#(lf)                inner join BranchCompany as BranchCompanyFatherSub with(nolock)#(lf)                    On BranchCompanyFatherSub.Id = ContractSub.BranchCompanyId#(lf)                where#(lf)                    ContractSub.OrderNumber like#(lf)                    (#(lf)                        CONCAT(#(lf)                            '%',#(lf)                            (select top 1 * from STRING_SPLIT((SELECT REPLACE(c.OrderNumber, ' ', '')), '-') where value not like 'Subcontratada'),#(lf)                            '%'#(lf)                        )#(lf)                    )#(lf)                Order by LEN(ContractSub.OrderNumber)#(lf)            )#(lf)            Else bc.CompanyName#(lf)        End#(lf)    ) As 'Razão Social Fornecedor - Faturamento',#(lf)    (#(lf)        Case#(lf)            When (c.ContractBillingId is not null) then dbo.FNCNPJMask(cb.Document)#(lf)            When (c.FatherId is not null) then dbo.FNCNPJMask(BranchCompanyFather.Document)#(lf)            When (c.FatherId is null) and (c.OrderNumber like '%Subcontratada%') then#(lf)            dbo.FNCNPJMask((#(lf)                select top 1 BranchCompanyFatherSub.Document from Contract as ContractSub with(nolock)#(lf)                inner join BranchCompany as BranchCompanyFatherSub with(nolock)#(lf)                    On BranchCompanyFatherSub.Id = ContractSub.BranchCompanyId#(lf)                where#(lf)                    ContractSub.OrderNumber like#(lf)                    (#(lf)                        CONCAT(#(lf)                            '%',#(lf)                            (select top 1 * from STRING_SPLIT((SELECT REPLACE(c.OrderNumber, ' ', '')), '-') where value not like 'Subcontratada'),#(lf)                            '%'#(lf)                        )#(lf)                    )#(lf)                Order by LEN(ContractSub.OrderNumber)#(lf)            ))#(lf)            Else dbo.FNCNPJMask(bc.Document)#(lf)        End#(lf)    ) As 'CNPJ Fornecedor - Faturamento',#(lf)    (#(lf)        Case #(lf)            When c.ContractBillingId is null Then 'Contrato'#(lf)            Else 'Dados de faturamento'#(lf)        End#(lf)    ) As 'Origem dos dados de fornecedor',#(lf)    b.TradeName As 'Nome Fantasia Unidade',#(lf)    ca.Name As 'Categoria',#(lf)    (#(lf)        Case#(lf)            When c.Type = 1 Then 'Contínuo'#(lf)            When c.Type = 2 Then 'Grandes Paradas'#(lf)            When c.Type = 4 Then 'Eventual'#(lf)            When c.Type = 8 Then 'Temporário'#(lf)            When c.Type = 16 Then 'Visitante técnico'#(lf)            When c.Type = 32 Then 'Prestação de Serviço de Consultor Proprietário da empresa'#(lf)            When c.Type = 64 Then 'Prestação de serviço eventual fora da área operacional'#(lf)            When c.Type = 128 Then 'Prestação de serviço de auditoria, sem acesso as áreas restritas'#(lf)            When c.Type = 256 Then 'Compra Direta, Regulariza e Delegada'#(lf)            Else 'Tipo de contrato desconhecido'#(lf)        End#(lf)    ) As 'Tipo do Contrato',#(lf)    Convert(Varchar, c.CreatedAt, 103) As 'Data de cadastro do contrato',#(lf)    Convert(Varchar, c.ValidityInitial, 103) As 'Data de início da vigência',#(lf)    Convert(Varchar, c.ValidityFinal, 103) As 'Data de fim da vigência',#(lf)#(tab)Convert(Varchar, e.ActivityStartDate, 103) As 'Início Atividades',#(lf)#(tab)Convert(Varchar, e.ActivityEndDate, 103) As 'Fim Atividades',#(lf)#(lf)#(tab) e.Name As 'Nome',#(lf)    (Select dbo.FNPISMask(e.PisNumber)) As 'PIS',#(lf)    (Select dbo.FNCPFMask(e.CpfNumber)) As 'CPF',#(lf)#(tab)f.Name as 'Função',#(lf)#(tab)e.Salary as 'Salario',#(lf)#(tab)(#(lf)        Case#(lf)            When e.TypeHiring = 1 Then 'CLT'#(lf)            When e.TypeHiring = 2 Then 'PJ (MEI)' #(lf)#(tab)#(tab)#(tab)When e.TypeHiring = 4 Then 'Autonômo'#(lf)#(tab)#(tab)#(tab)When e.TypeHiring = 8 Then 'Estrangeiro'#(lf)#(tab)#(tab)#(tab)When e.TypeHiring = 16 Then 'Sócio'#(lf)        End#(lf)#(tab)#(tab)) As 'Modalidade de Contratação',#(lf)#(tab)#(tab)CASE#(lf)        WHEN e.TypeHousing = 1 THEN 'Residente Local' #(lf)        WHEN e.TypeHousing = 2  THEN 'Hotel' #(lf)        WHEN e.TypeHousing = 4 THEN 'Alojamento' #(lf)    END AS 'Tipo de Moradia',#(lf)#(tab)    #(lf)#(tab)#(tab)CASE #(lf)        WHEN (E.Situation = 0 AND E.Removed = 0) THEN 'Ativo' #(lf)        WHEN (E.Situation = 1 OR E.Removed = 1) THEN 'Inativo' #(lf)        WHEN E.Situation = 2 THEN 'Folguista' #(lf)    END AS 'Status',#(lf)#(tab) Case#(lf)            When e.ScheduleKind = 0 Then '0x0'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 1 Then '2x1'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 2 Then '4x2'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 3 Then '5x1'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 4 Then '5x2'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 5 Then '6x1'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 6 Then '6x2'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 7 Then '12x36'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 8 Then '12x48'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 9 Then '12x36 (36hrs)'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 10 Then '4x4'#(lf)#(tab)#(tab)#(tab)When e.ScheduleKind = 11Then '14x14'#(lf)#(lf)        End  As 'Escala',#(lf)#(tab)#(lf)    Convert(Varchar, e.CreatedAt, 103) As 'Data de cadastro',#(lf)    (#(lf)        Case #(lf)            When c.Type = 1 Then#(lf)                Case #(lf)                    When Month(e.CreatedAt) = Month(@Date) And Year(e.CreatedAt) = Year(@Date) Then 'Mobilização'#(lf)                    When @Date > e.CreatedAt And (@Date Between c.ValidityInitial And dbo.FNLastDayOfMonth(DateAdd(Month, 1, c.ValidityFinal))) Then 'Recorrente'#(lf)                    Else 'Não cobrar'#(lf)                End#(lf)            Else#(lf)                Case #(lf)                    When Month(e.CreatedAt) = Month(@Date) And Year(@Date) = Year(@Date) Then 'Mobilização'#(lf)                    When @Date > e.CreatedAt And (@Date Between c.ValidityInitial And dbo.FNLastDayOfMonth(c.ValidityFinal)) Then 'Recorrente'#(lf)                    Else 'Não cobrar'#(lf)                End#(lf)        End#(lf)    ) As 'Tipo de cobrança do funcionário'#(lf)    #(lf)From #(lf)    Effective As e#(lf)    Inner Join [Contract] As c On c.Id = e.ContractId#(lf)    Inner Join Building As b On b.Id = c.BuildingId#(lf)    Inner Join [Provider] As p On p.Id = c.ProviderId#(lf)    Inner Join BranchCompany As bc On bc.Id = c.BranchCompanyId#(lf)    Inner Join Category As ca On ca.Id = c.CategoryId#(lf)    Left Join ContractBilling cb on c.ContractBillingId = cb.Id#(lf)    Left Join [Contract] as ContractFather On ContractFather.Id = c.FatherId#(lf)    Left Join BranchCompany as BranchCompanyFather On BranchCompanyFather.Id = ContractFather.BranchCompanyId#(lf)#(tab)Inner Join [Function] As f On f.Id = e.FunctionId#(lf)Where#(lf)    b.OrganizationId = @OrganizationId#(lf)    And c.Removed = 0#(lf)    And e.Removed = 0#(lf)    And e.CreatedAt < @Date#(lf)    And c.[Status] = 0#(lf)"]),
+				    #"Linhas em Branco Removidas" = Table.SelectRows(Fonte, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Linhas em Branco Removidas", "Chave.1", each Text.Combine({[Nome Fantasia Fornecedor], [Categoria], [Nome Fantasia Unidade]}, ""), type text),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida",{{"Número Contrato", type text}}),
+				    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Tipo Alterado1", "chave1", each Text.Combine({ [#"CNPJ Fornecedor - Faturamento"], [Categoria], [Nome Fantasia Unidade], [Número Contrato]}, ""), type text),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Coluna Mesclada Inserida1",{{"Data de cadastro", type date}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+
